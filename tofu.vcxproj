@@ -22,7 +22,7 @@
     <ProjectGuid>{5F714986-756F-48F5-9174-036C86AE06F0}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>tofu</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -71,15 +71,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)3rd_party\DirectXTex;$(SolutionDir)3rd_party\DirectXTK\Inc;$(SolutionDir)3rd_party\lua-5.3.4\src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)3rd_party\DirectXTex;$(SolutionDir)3rd_party\DirectXTK\Inc;$(SolutionDir)3rd_party\lua-5.3.4\src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)3rd_party\DirectXTex;$(SolutionDir)3rd_party\DirectXTK\Inc;$(SolutionDir)3rd_party\lua-5.3.4\src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)3rd_party\DirectXTex;$(SolutionDir)3rd_party\DirectXTK\Inc;$(SolutionDir)3rd_party\lua-5.3.4\src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -142,6 +146,98 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="3rd_party\DirectXTex\DDSTextureLoader.cpp" />
+    <ClCompile Include="3rd_party\DirectXTex\DDSTextureLoader12.cpp" />
+    <ClCompile Include="3rd_party\DirectXTex\WICTextureLoader.cpp" />
+    <ClCompile Include="3rd_party\DirectXTex\WICTextureLoader12.cpp" />
+    <ClCompile Include="3rd_party\DirectXTK\Src\Keyboard.cpp" />
+    <ClCompile Include="3rd_party\DirectXTK\Src\Mouse.cpp" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\lapi.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\lauxlib.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\lbaselib.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\lbitlib.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\lcode.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\lcorolib.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\lctype.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\ldblib.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\ldebug.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\ldo.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\ldump.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\lfunc.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\lgc.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\linit.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\liolib.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\llex.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\lmathlib.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\lmem.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\loadlib.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\lobject.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\lopcodes.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\loslib.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\lparser.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\lstate.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\lstring.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\lstrlib.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\ltable.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\ltablib.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\ltm.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\lundump.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\lutf8lib.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\lvm.c" />
+    <ClCompile Include="3rd_party\lua-5.3.4\src\lzio.c" />
+    <ClCompile Include="Engine.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="NativeContext.cpp" />
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="RenderingSystem.cpp" />
+    <ClCompile Include="Script.cpp" />
+    <ClCompile Include="ScriptingSystem.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="3rd_party\DirectXTex\d3dx12.h" />
+    <ClInclude Include="3rd_party\DirectXTex\DDSTextureLoader.h" />
+    <ClInclude Include="3rd_party\DirectXTex\DDSTextureLoader12.h" />
+    <ClInclude Include="3rd_party\DirectXTex\WICTextureLoader.h" />
+    <ClInclude Include="3rd_party\DirectXTex\WICTextureLoader12.h" />
+    <ClInclude Include="3rd_party\DirectXTK\Inc\Keyboard.h" />
+    <ClInclude Include="3rd_party\DirectXTK\Inc\Mouse.h" />
+    <ClInclude Include="3rd_party\DirectXTK\Src\pch.h" />
+    <ClInclude Include="3rd_party\DirectXTK\Src\PlatformHelpers.h" />
+    <ClInclude Include="3rd_party\lua-5.3.4\src\lapi.h" />
+    <ClInclude Include="3rd_party\lua-5.3.4\src\lauxlib.h" />
+    <ClInclude Include="3rd_party\lua-5.3.4\src\lcode.h" />
+    <ClInclude Include="3rd_party\lua-5.3.4\src\lctype.h" />
+    <ClInclude Include="3rd_party\lua-5.3.4\src\ldebug.h" />
+    <ClInclude Include="3rd_party\lua-5.3.4\src\ldo.h" />
+    <ClInclude Include="3rd_party\lua-5.3.4\src\lfunc.h" />
+    <ClInclude Include="3rd_party\lua-5.3.4\src\lgc.h" />
+    <ClInclude Include="3rd_party\lua-5.3.4\src\llex.h" />
+    <ClInclude Include="3rd_party\lua-5.3.4\src\llimits.h" />
+    <ClInclude Include="3rd_party\lua-5.3.4\src\lmem.h" />
+    <ClInclude Include="3rd_party\lua-5.3.4\src\lobject.h" />
+    <ClInclude Include="3rd_party\lua-5.3.4\src\lopcodes.h" />
+    <ClInclude Include="3rd_party\lua-5.3.4\src\lparser.h" />
+    <ClInclude Include="3rd_party\lua-5.3.4\src\lprefix.h" />
+    <ClInclude Include="3rd_party\lua-5.3.4\src\lstate.h" />
+    <ClInclude Include="3rd_party\lua-5.3.4\src\lstring.h" />
+    <ClInclude Include="3rd_party\lua-5.3.4\src\ltable.h" />
+    <ClInclude Include="3rd_party\lua-5.3.4\src\ltm.h" />
+    <ClInclude Include="3rd_party\lua-5.3.4\src\lua.h" />
+    <ClInclude Include="3rd_party\lua-5.3.4\src\lua.hpp" />
+    <ClInclude Include="3rd_party\lua-5.3.4\src\luaconf.h" />
+    <ClInclude Include="3rd_party\lua-5.3.4\src\lualib.h" />
+    <ClInclude Include="3rd_party\lua-5.3.4\src\lundump.h" />
+    <ClInclude Include="3rd_party\lua-5.3.4\src\lvm.h" />
+    <ClInclude Include="3rd_party\lua-5.3.4\src\lzio.h" />
+    <ClInclude Include="common.h" />
+    <ClInclude Include="Engine.h" />
+    <ClInclude Include="Error.h" />
+    <ClInclude Include="NativeContext.h" />
+    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="RenderingSystem.h" />
+    <ClInclude Include="Script.h" />
+    <ClInclude Include="ScriptingSystem.h" />
+    <ClInclude Include="StringUtils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
