@@ -22,7 +22,7 @@
     <ProjectGuid>{5F714986-756F-48F5-9174-036C86AE06F0}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>tofu</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -147,9 +147,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="3rd_party\DirectXTex\DDSTextureLoader.cpp" />
-    <ClCompile Include="3rd_party\DirectXTex\DDSTextureLoader12.cpp" />
     <ClCompile Include="3rd_party\DirectXTex\WICTextureLoader.cpp" />
-    <ClCompile Include="3rd_party\DirectXTex\WICTextureLoader12.cpp" />
     <ClCompile Include="3rd_party\DirectXTK\Src\Keyboard.cpp" />
     <ClCompile Include="3rd_party\DirectXTK\Src\Mouse.cpp" />
     <ClCompile Include="3rd_party\lua-5.3.4\src\lapi.c" />
@@ -194,11 +192,8 @@
     <ClCompile Include="ScriptingSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="3rd_party\DirectXTex\d3dx12.h" />
     <ClInclude Include="3rd_party\DirectXTex\DDSTextureLoader.h" />
-    <ClInclude Include="3rd_party\DirectXTex\DDSTextureLoader12.h" />
     <ClInclude Include="3rd_party\DirectXTex\WICTextureLoader.h" />
-    <ClInclude Include="3rd_party\DirectXTex\WICTextureLoader12.h" />
     <ClInclude Include="3rd_party\DirectXTK\Inc\Keyboard.h" />
     <ClInclude Include="3rd_party\DirectXTK\Inc\Mouse.h" />
     <ClInclude Include="3rd_party\DirectXTK\Src\pch.h" />

@@ -156,13 +156,7 @@
     <ClCompile Include="3rd_party\DirectXTex\DDSTextureLoader.cpp">
       <Filter>3rd_party\DirectXTex</Filter>
     </ClCompile>
-    <ClCompile Include="3rd_party\DirectXTex\DDSTextureLoader12.cpp">
-      <Filter>3rd_party\DirectXTex</Filter>
-    </ClCompile>
     <ClCompile Include="3rd_party\DirectXTex\WICTextureLoader.cpp">
-      <Filter>3rd_party\DirectXTex</Filter>
-    </ClCompile>
-    <ClCompile Include="3rd_party\DirectXTex\WICTextureLoader12.cpp">
       <Filter>3rd_party\DirectXTex</Filter>
     </ClCompile>
   </ItemGroup>
@@ -284,19 +278,10 @@
     <ClInclude Include="3rd_party\DirectXTK\Inc\Mouse.h">
       <Filter>3rd_party\DirectXTK</Filter>
     </ClInclude>
-    <ClInclude Include="3rd_party\DirectXTex\d3dx12.h">
-      <Filter>3rd_party\DirectXTex</Filter>
-    </ClInclude>
     <ClInclude Include="3rd_party\DirectXTex\DDSTextureLoader.h">
       <Filter>3rd_party\DirectXTex</Filter>
     </ClInclude>
-    <ClInclude Include="3rd_party\DirectXTex\DDSTextureLoader12.h">
-      <Filter>3rd_party\DirectXTex</Filter>
-    </ClInclude>
     <ClInclude Include="3rd_party\DirectXTex\WICTextureLoader.h">
-      <Filter>3rd_party\DirectXTex</Filter>
-    </ClInclude>
-    <ClInclude Include="3rd_party\DirectXTex\WICTextureLoader12.h">
       <Filter>3rd_party\DirectXTex</Filter>
     </ClInclude>
     <ClInclude Include="Module.h">
