@@ -33,6 +33,11 @@ namespace tofu
 		return TF_OK;
 	}
 
+	int32_t ScriptingSystem::Update()
+	{
+		return int32_t();
+	}
+
 	Script* ScriptingSystem::LoadScript(const wchar_t * filename)
 	{
 		std::wstring path(filename);

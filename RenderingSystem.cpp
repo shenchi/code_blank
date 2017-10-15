@@ -32,4 +32,9 @@ namespace tofu
 		return TF_OK;
 	}
 
+	int32_t RenderingSystem::Update()
+	{
+		return TF_OK;
+	}
+
 }

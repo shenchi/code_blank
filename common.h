@@ -13,3 +13,8 @@
 #define SINGLETON_IMPL(CLASS_NAME) \
 	CLASS_NAME* CLASS_NAME::_instance = nullptr;
 
+
+namespace tofu
+{
+	constexpr uint32_t MAX_USER_MODULES = 8;
+}

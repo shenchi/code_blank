@@ -5,6 +5,7 @@
 namespace tofu
 {
 	struct NativeContext;
+	class Module;
 	class RenderingSystem;
 	class ScriptingSystem;
 
@@ -25,7 +26,11 @@ namespace tofu
 
 	private:
 		NativeContext*		nativeContext;
+
 		RenderingSystem*	renderingSystem;
 		ScriptingSystem*	scriptingSystem;
+
+		Module*				userModules[MAX_USER_MODULES];
+		uint32_t			numUserModules;
 	};
 }

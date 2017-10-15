@@ -1,13 +1,14 @@
 #pragma once
 
 #include "common.h"
+#include "Module.h"
 
 #include "Renderer.h"
 
 namespace tofu
 {
 	
-	class RenderingSystem
+	class RenderingSystem : public Module
 	{
 		SINGLETON_DECL(RenderingSystem)
 
@@ -16,8 +17,10 @@ namespace tofu
 		~RenderingSystem();
 
 	public:
-		int32_t Init();
-		int32_t Shutdown();
+		int32_t Init() override;
+		int32_t Shutdown() override;
+
+		int32_t Update() override;
 
 	private:
 		Renderer*	renderer;

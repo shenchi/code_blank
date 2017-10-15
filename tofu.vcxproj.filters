@@ -299,5 +299,8 @@
     <ClInclude Include="3rd_party\DirectXTex\WICTextureLoader12.h">
       <Filter>3rd_party\DirectXTex</Filter>
     </ClInclude>
+    <ClInclude Include="Module.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

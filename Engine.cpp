@@ -63,6 +63,11 @@ namespace tofu
 
 		while(nativeContext->ProcessEvent())
 		{
+
+			scriptingSystem->Update();
+
+			renderingSystem->Update();
+
 		}
 
 		err = Shutdown();
