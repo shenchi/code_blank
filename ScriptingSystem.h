@@ -1,12 +1,13 @@
 #pragma once
 
+#include "Common.h"
+
 #include "Script.h"
 
 #include "Module.h"
 
 #include <unordered_map>
 #include <string>
-#include "common.h"
 
 namespace tofu
 {
