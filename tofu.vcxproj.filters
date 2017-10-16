@@ -159,6 +159,9 @@
     <ClCompile Include="3rd_party\DirectXTex\WICTextureLoader.cpp">
       <Filter>3rd_party\DirectXTex</Filter>
     </ClCompile>
+    <ClCompile Include="TestGame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -285,6 +288,9 @@
       <Filter>3rd_party\DirectXTex</Filter>
     </ClInclude>
     <ClInclude Include="Module.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestGame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

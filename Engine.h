@@ -16,6 +16,8 @@ namespace tofu
 	public:
 		Engine();
 
+		int32_t AddModule(Module* module);
+
 		int32_t Init(const wchar_t* filename);
 
 		int32_t Run();

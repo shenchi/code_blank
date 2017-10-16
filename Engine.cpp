@@ -14,9 +14,26 @@ namespace tofu
 	SINGLETON_IMPL(Engine);
 
 	Engine::Engine()
+		:
+		nativeContext(nullptr),
+		renderingSystem(nullptr),
+		scriptingSystem(nullptr),
+		userModules(),
+		numUserModules(0)
 	{
 		assert(nullptr == _instance);
 		_instance = this;
+	}
+
+	int32_t Engine::AddModule(Module * module)
+	{
+		if (numUserModules >= MAX_USER_MODULES)
+			return TF_UNKNOWN_ERR;
+
+		userModules[numUserModules] = module;
+		numUserModules++;
+
+		return module->Init();
 	}
 
 	int32_t Engine::Init(const wchar_t* filename)
@@ -53,7 +70,6 @@ namespace tofu
 		if (TF_OK != err) 
 			return err;
 
-		
 		return err;
 	}
 
@@ -63,11 +79,16 @@ namespace tofu
 
 		while(nativeContext->ProcessEvent())
 		{
-
 			scriptingSystem->Update();
 
-			renderingSystem->Update();
+			for (uint32_t i = 0; i < numUserModules; i++)
+			{
+				err = userModules[i]->Update();
+				if (TF_OK != err)
+					return err;
+			}
 
+			renderingSystem->Update();
 		}
 
 		err = Shutdown();
@@ -76,6 +97,12 @@ namespace tofu
 
 	int32_t Engine::Shutdown()
 	{
+		for (uint32_t i = 0; i < numUserModules; i++)
+		{
+			assert(TF_OK == userModules[i]->Shutdown());
+			delete userModules[i];
+		}
+
 		assert(TF_OK == nativeContext->Shutdown());
 		delete nativeContext;
 
@@ -84,7 +111,6 @@ namespace tofu
 
 		assert(TF_OK == renderingSystem->Shutdown());
 		delete renderingSystem;
-
 
 		return TF_OK;
 	}

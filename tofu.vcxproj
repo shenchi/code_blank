@@ -190,6 +190,7 @@
     <ClCompile Include="RenderingSystem.cpp" />
     <ClCompile Include="Script.cpp" />
     <ClCompile Include="ScriptingSystem.cpp" />
+    <ClCompile Include="TestGame.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3rd_party\DirectXTex\DDSTextureLoader.h" />
@@ -234,6 +235,7 @@
     <ClInclude Include="Script.h" />
     <ClInclude Include="ScriptingSystem.h" />
     <ClInclude Include="StringUtils.h" />
+    <ClInclude Include="TestGame.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
