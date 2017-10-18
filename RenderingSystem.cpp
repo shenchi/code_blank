@@ -2,19 +2,21 @@
 
 #include <cassert>
 
+#include "Renderer.h"
+
 namespace tofu
 {
 
 	SINGLETON_IMPL(RenderingSystem);
 
-	RenderingSystem::RenderingSystem(RendererType type)
+	RenderingSystem::RenderingSystem()
 		:
 		renderer(nullptr)
 	{
 		assert(nullptr == _instance);
 		_instance = this;
 
-		renderer = Renderer::CreateRenderer(type);
+		renderer = Renderer::CreateRenderer();
 	}
 
 	RenderingSystem::~RenderingSystem()

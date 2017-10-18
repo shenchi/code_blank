@@ -34,11 +34,6 @@ namespace tofu
 		//void Add(RendererCommand cmd, void* param);
 	};
 
-	enum class RendererType
-	{
-		Auto = 0,
-		Direct3D11,
-	};
 
 	struct Renderer
 	{
@@ -50,7 +45,7 @@ namespace tofu
 
 		virtual int32_t Present() = 0;
 
-		static Renderer* CreateRenderer(RendererType type);
+		static Renderer* CreateRenderer();
 	};
 
 }
