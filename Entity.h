@@ -34,7 +34,7 @@ namespace tofu
 
 	public:
 
-		Entity(uint32_t _id) : id(_id) {}
+		Entity(uint32_t _id = MAX_ENTITIES) : id(_id) {}
 
 		static Entity Create();
 

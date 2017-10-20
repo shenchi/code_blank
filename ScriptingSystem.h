@@ -25,7 +25,7 @@ namespace tofu
 
 		int32_t Update() override;
 
-		Script* LoadScript(const wchar_t* filename);
+		Script* LoadScript(const char* filename);
 
 	private:
 		void*	context;

@@ -25,6 +25,9 @@ namespace tofu
 
 		int32_t Update() override;
 
+		MeshHandle CreateMesh(const char* filename);
+		//MeshHandle CreateMesh()
+
 	private:
 		Renderer*	renderer;
 	};

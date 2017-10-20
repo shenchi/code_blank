@@ -3,6 +3,7 @@
 #include <cassert>
 
 #include "Renderer.h"
+#include "ModelLoader.h"
 
 namespace tofu
 {
@@ -37,6 +38,12 @@ namespace tofu
 	int32_t RenderingSystem::Update()
 	{
 		return TF_OK;
+	}
+
+	MeshHandle RenderingSystem::CreateMesh(const char * filename)
+	{
+		//model::LoadModelFile()
+		return MeshHandle();
 	}
 
 }

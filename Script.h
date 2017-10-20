@@ -10,10 +10,10 @@ namespace tofu
 	{
 	private:
 		friend class ScriptingSystem;
-		Script(void* context, const wchar_t* filename);
+		Script(void* context, const char* filename);
 
 	public:
-		Script(const wchar_t* filename);
+		Script(const char* filename);
 		~Script();
 
 		Script(const Script& s) = delete;
@@ -35,7 +35,7 @@ namespace tofu
 
 	private:
 
-		void			LoadFromFile(const wchar_t* filename);
+		void			LoadFromFile(const char* filename);
 
 	private:
 		void*	context;
