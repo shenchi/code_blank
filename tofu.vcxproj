@@ -231,8 +231,9 @@
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Error.h" />
+    <ClInclude Include="FileIO.h" />
+    <ClInclude Include="MemoryAllocator.h" />
     <ClInclude Include="Mesh.h" />
-    <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="ModelFormat.h" />
     <ClInclude Include="Module.h" />
     <ClInclude Include="NativeContext.h" />
@@ -241,7 +242,6 @@
     <ClInclude Include="RenderingSystem.h" />
     <ClInclude Include="Script.h" />
     <ClInclude Include="ScriptingSystem.h" />
-    <ClInclude Include="StringUtils.h" />
     <ClInclude Include="TestGame.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
