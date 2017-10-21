@@ -38,10 +38,10 @@ namespace tofu
 		return int32_t();
 	}
 
-	Script* ScriptingSystem::LoadScript(const wchar_t * filename)
+	Script* ScriptingSystem::LoadScript(const char* filename)
 	{
-		std::wstring path(filename);
-		std::wstring basename = StringUtils::Basename(path);
+		std::string path(filename);
+		std::string basename = StringUtils::Basename(path);
 
 		if (scripts.find(basename) != scripts.end())
 			return &(scripts.at(basename));

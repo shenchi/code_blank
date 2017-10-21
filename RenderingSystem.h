@@ -3,17 +3,20 @@
 #include "Common.h"
 #include "Module.h"
 
-#include "Renderer.h"
-
 namespace tofu
 {
+	class Renderer;
+
+	HANDLE_DECL(Mesh);
+	HANDLE_DECL(Material);
+
 	
 	class RenderingSystem : public Module
 	{
 		SINGLETON_DECL(RenderingSystem)
 
 	public:
-		RenderingSystem(RendererType type);
+		RenderingSystem();
 		~RenderingSystem();
 
 	public:
@@ -21,6 +24,9 @@ namespace tofu
 		int32_t Shutdown() override;
 
 		int32_t Update() override;
+
+		MeshHandle CreateMesh(const char* filename);
+		//MeshHandle CreateMesh()
 
 	private:
 		Renderer*	renderer;

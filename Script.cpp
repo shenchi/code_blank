@@ -6,14 +6,14 @@
 namespace tofu
 {
 
-	Script::Script(void* context, const wchar_t* filename)
+	Script::Script(void* context, const char* filename)
 		:
 		context(context), standalone(false)
 	{
 		LoadFromFile(filename);
 	}
 
-	Script::Script(const wchar_t * filename)
+	Script::Script(const char* filename)
 		:
 		context(nullptr), standalone(true)
 	{
@@ -142,7 +142,7 @@ namespace tofu
 		return ret;
 	}
 
-	void Script::LoadFromFile(const wchar_t * filename)
+	void Script::LoadFromFile(const char* filename)
 	{
 		std::ifstream fin(filename, std::ios::in | std::ios::binary);
 		if (!fin.is_open())

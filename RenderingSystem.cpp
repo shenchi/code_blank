@@ -2,19 +2,22 @@
 
 #include <cassert>
 
+#include "Renderer.h"
+#include "ModelLoader.h"
+
 namespace tofu
 {
 
 	SINGLETON_IMPL(RenderingSystem);
 
-	RenderingSystem::RenderingSystem(RendererType type)
+	RenderingSystem::RenderingSystem()
 		:
 		renderer(nullptr)
 	{
 		assert(nullptr == _instance);
 		_instance = this;
 
-		renderer = Renderer::CreateRenderer(type);
+		renderer = Renderer::CreateRenderer();
 	}
 
 	RenderingSystem::~RenderingSystem()
@@ -35,6 +38,12 @@ namespace tofu
 	int32_t RenderingSystem::Update()
 	{
 		return TF_OK;
+	}
+
+	MeshHandle RenderingSystem::CreateMesh(const char * filename)
+	{
+		//model::LoadModelFile()
+		return MeshHandle();
 	}
 
 }

@@ -36,7 +36,7 @@ namespace tofu
 		return module->Init();
 	}
 
-	int32_t Engine::Init(const wchar_t* filename)
+	int32_t Engine::Init(const char* filename)
 	{
 		int32_t err = TF_OK;
 
@@ -58,7 +58,7 @@ namespace tofu
 
 		// initialize rendering system
 
-		renderingSystem = new RenderingSystem(RendererType::Auto);
+		renderingSystem = new RenderingSystem();
 		err = renderingSystem->Init();
 		if (TF_OK != err)
 			return err;

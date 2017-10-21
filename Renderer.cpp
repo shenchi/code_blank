@@ -3,7 +3,7 @@
 namespace tofu
 {
 
-	Renderer* Renderer::CreateRenderer(RendererType type)
+	Renderer* Renderer::CreateRenderer()
 	{
 		return nullptr;
 	}
