@@ -10,7 +10,6 @@ namespace tofu
 	HANDLE_DECL(Mesh);
 	HANDLE_DECL(Material);
 
-	
 	class RenderingSystem : public Module
 	{
 		SINGLETON_DECL(RenderingSystem)

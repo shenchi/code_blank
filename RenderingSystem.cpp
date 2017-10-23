@@ -3,7 +3,9 @@
 #include <cassert>
 
 #include "Renderer.h"
-#include "ModelLoader.h"
+
+#include "MemoryAllocator.h"
+#include "FileIO.h"
 
 namespace tofu
 {
@@ -27,11 +29,13 @@ namespace tofu
 
 	int32_t RenderingSystem::Init()
 	{
+		assert(TF_OK == MemoryAllocator::Allocators[ALLOC_DEFAULT].Init(128 * 1024 * 1024, 2 * 1024 * 1024));
 		return TF_OK;
 	}
 
 	int32_t RenderingSystem::Shutdown()
 	{
+		assert(TF_OK == MemoryAllocator::Allocators[ALLOC_DEFAULT].Shutdown());
 		return TF_OK;
 	}
 
@@ -42,7 +46,15 @@ namespace tofu
 
 	MeshHandle RenderingSystem::CreateMesh(const char * filename)
 	{
-		//model::LoadModelFile()
+		void* data = nullptr;
+		size_t size = 0u;
+		int32_t err = FileIO::ReadFile(filename, &data, &size, 4, ALLOC_DEFAULT);
+		if (TF_OK != err)
+		{
+
+		}
+
+
 		return MeshHandle();
 	}
 

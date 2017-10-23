@@ -185,9 +185,12 @@
     <ClCompile Include="3rd_party\lua-5.3.4\src\lzio.c" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="FileIO.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MemoryAllocator.cpp" />
     <ClCompile Include="NativeContext.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="RendererDX11.cpp" />
     <ClCompile Include="RenderingSystem.cpp" />
     <ClCompile Include="Script.cpp" />
     <ClCompile Include="ScriptingSystem.cpp" />
@@ -238,6 +241,7 @@
     <ClInclude Include="Module.h" />
     <ClInclude Include="NativeContext.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="RendererDX11.h" />
     <ClInclude Include="RenderingComponent.h" />
     <ClInclude Include="RenderingSystem.h" />
     <ClInclude Include="Script.h" />
