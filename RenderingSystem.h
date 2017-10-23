@@ -3,11 +3,17 @@
 #include "Common.h"
 #include "Module.h"
 
+#include "HandleAllocator.h"
+
+#include <unordered_map>
+#include <string>
+
 namespace tofu
 {
 	class Renderer;
 
 	HANDLE_DECL(Mesh);
+	HANDLE_DECL(Model);
 	HANDLE_DECL(Material);
 
 	class RenderingSystem : public Module
@@ -24,11 +30,16 @@ namespace tofu
 
 		int32_t Update() override;
 
-		MeshHandle CreateMesh(const char* filename);
-		//MeshHandle CreateMesh()
+		ModelHandle CreateModel(const char* filename);
 
 	private:
 		Renderer*	renderer;
+
+		HandleAllocator<ModelHandle, MAX_MODELS>			modelHandleAlloc;
+		HandleAllocator<MeshHandle, MAX_MESHES>				meshHandleAlloc;
+		HandleAllocator<MaterialHandle, MAX_MATERIALS>		materialHandleAlloc;
+
+		std::unordered_map<std::string, ModelHandle>		modelTable;
 	};
 
 }

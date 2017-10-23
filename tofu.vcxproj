@@ -235,6 +235,7 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Error.h" />
     <ClInclude Include="FileIO.h" />
+    <ClInclude Include="HandleAllocator.h" />
     <ClInclude Include="MemoryAllocator.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="ModelFormat.h" />

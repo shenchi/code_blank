@@ -26,5 +26,7 @@ namespace tofu
 {
 	constexpr uint32_t MAX_USER_MODULES = 8;
 	constexpr uint32_t MAX_ENTITIES = 4096;
+	constexpr uint32_t MAX_MODELS = 1024;
 	constexpr uint32_t MAX_MESHES = 1024;
+	constexpr uint32_t MAX_MATERIALS = 1024;
 }

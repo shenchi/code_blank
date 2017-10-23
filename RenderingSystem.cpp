@@ -7,9 +7,10 @@
 #include "MemoryAllocator.h"
 #include "FileIO.h"
 
+#include "ModelFormat.h"
+
 namespace tofu
 {
-
 	SINGLETON_IMPL(RenderingSystem);
 
 	RenderingSystem::RenderingSystem()
@@ -44,18 +45,36 @@ namespace tofu
 		return TF_OK;
 	}
 
-	MeshHandle RenderingSystem::CreateMesh(const char * filename)
+	ModelHandle RenderingSystem::CreateModel(const char* filename)
 	{
-		void* data = nullptr;
-		size_t size = 0u;
-		int32_t err = FileIO::ReadFile(filename, &data, &size, 4, ALLOC_DEFAULT);
-		if (TF_OK != err)
-		{
+		std::string strFilename(filename);
 
+		{
+			auto iter = modelTable.find(strFilename);
+			if (iter != modelTable.end())
+			{
+				return iter->second;
+			}
 		}
 
+		uint8_t* data = nullptr;
+		size_t size = 0u;
+		int32_t err = FileIO::ReadFile(filename, reinterpret_cast<void**>(&data), &size, 4, ALLOC_DEFAULT);
+		if (TF_OK != err)
+		{
+			return ModelHandle();
+		}
 
-		return MeshHandle();
+		model::ModelHeader* header = reinterpret_cast<model::ModelHeader*>(data);
+
+		assert(header->Magic == model::MODEL_FILE_MAGIC);
+		assert(header->StructOfArray == 0);
+		assert(header->HasIndices == 1);
+		assert(header->HasTangent == 1);
+		assert(header->NumTexcoordChannels == 1);
+
+
+		return ModelHandle();
 	}
 
 }
