@@ -8,6 +8,7 @@
 #include "FileIO.h"
 
 #include "ModelFormat.h"
+#include "RenderingComponent.h"
 
 namespace tofu
 {
@@ -42,6 +43,15 @@ namespace tofu
 
 	int32_t RenderingSystem::Update()
 	{
+		RenderingComponent* comps = RenderingComponent::GetAllComponents();
+		uint32_t count = RenderingComponent::GetComponentCount();
+		
+		for (uint32_t i = 0; i < count; ++i)
+		{
+			//if (!comp)
+			// TODO
+		}
+
 		return TF_OK;
 	}
 
@@ -73,8 +83,38 @@ namespace tofu
 		assert(header->HasTangent == 1);
 		assert(header->NumTexcoordChannels == 1);
 
+		if (header->NumMeshes == 0)
+		{
+			return ModelHandle();
+		}
+
+		model::ModelMesh* meshes = reinterpret_cast<model::ModelMesh*>(header + 1);
+		
+		uint32_t verticesCount = 0;
+		uint32_t indicesCount = 0;
+
+		for (uint32_t i = 0; i < header->NumMeshes; ++i)
+		{
+			// Record Start Index
+
+			verticesCount += meshes[i].NumVertices;
+			indicesCount += meshes[i].NumIndices;
+		}
+
+		uint32_t vertexBufferSize = verticesCount * header->CalculateVertexSize();
+		uint32_t indexBufferSize = indicesCount * sizeof(uint32_t);
+
+		uint8_t* vertices = reinterpret_cast<uint8_t*>(meshes + header->NumMeshes);
+		uint8_t* indices = vertices + vertexBufferSize;
+
+		// Upload Data
 
 		return ModelHandle();
+	}
+
+	MaterialHandle RenderingSystem::CreateMaterial(MaterialType type)
+	{
+		return MaterialHandle();
 	}
 
 }

@@ -29,4 +29,6 @@ namespace tofu
 	constexpr uint32_t MAX_MODELS = 1024;
 	constexpr uint32_t MAX_MESHES = 1024;
 	constexpr uint32_t MAX_MATERIALS = 1024;
+	constexpr uint32_t MAX_VERTEX_BUFFERS = 1024;
+	constexpr uint32_t MAX_INDEX_BUFFERS = 1024;
 }

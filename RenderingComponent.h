@@ -5,16 +5,22 @@
 
 namespace tofu
 {
+	class RenderingSystem;
 
 	class RenderingComponent : public Component<RenderingComponent>
 	{
 	public:
-		void SetMesh(MeshHandle handle) { mesh = handle; }
+		void SetModel(ModelHandle handle) { model = handle; }
 		void SetMaterial(MaterialHandle handle) { material = handle; }
 
 	private:
-		MeshHandle			mesh;
+		friend class RenderingSystem;
+
+		ModelHandle			model;
 		MaterialHandle		material;
+
+		static RenderingComponent* GetAllComponents() { return components; }
+		static uint32_t GetComponentCount() { return numComponents; }
 	};
 
 }

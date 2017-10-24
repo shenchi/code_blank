@@ -15,6 +15,15 @@ namespace tofu
 	HANDLE_DECL(Mesh);
 	HANDLE_DECL(Model);
 	HANDLE_DECL(Material);
+	HANDLE_DECL(VertexBuffer);
+	HANDLE_DECL(IndexBuffer);
+
+	enum class MaterialType
+	{
+		TestMaterial,
+		OpaqueMaterial,
+		MaxMaterialTypes
+	};
 
 	class RenderingSystem : public Module
 	{
@@ -32,12 +41,16 @@ namespace tofu
 
 		ModelHandle CreateModel(const char* filename);
 
+		MaterialHandle CreateMaterial(MaterialType type);
+
 	private:
 		Renderer*	renderer;
 
 		HandleAllocator<ModelHandle, MAX_MODELS>			modelHandleAlloc;
 		HandleAllocator<MeshHandle, MAX_MESHES>				meshHandleAlloc;
 		HandleAllocator<MaterialHandle, MAX_MATERIALS>		materialHandleAlloc;
+		HandleAllocator<VertexBufferHandle, MAX_VERTEX_BUFFERS> vbHandleAlloc;
+		HandleAllocator<IndexBufferHandle, MAX_INDEX_BUFFERS>	ibHandleAlloc;
 
 		std::unordered_map<std::string, ModelHandle>		modelTable;
 	};

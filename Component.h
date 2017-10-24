@@ -25,8 +25,9 @@ namespace tofu
 
 		T* operator -> () const
 		{
+			assert(false && "This implementation is wrong!");
 			assert(true == *this);
-			return &components[entity.id];
+			return &components[entity.id]; // TODO !!!!
 		}
 
 	public:
