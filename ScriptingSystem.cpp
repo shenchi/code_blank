@@ -4,7 +4,6 @@
 
 #include <lua.hpp>
 #include <cassert>
-#include "StringUtils.h"
 
 namespace tofu
 {
@@ -41,14 +40,13 @@ namespace tofu
 	Script* ScriptingSystem::LoadScript(const char* filename)
 	{
 		std::string path(filename);
-		std::string basename = StringUtils::Basename(path);
 
-		if (scripts.find(basename) != scripts.end())
-			return &(scripts.at(basename));
+		if (scripts.find(path) != scripts.end())
+			return &(scripts.at(path));
 
-		scripts.insert(std::pair<std::wstring, Script>(basename, Script(context, filename)));
+		scripts.insert(std::pair<std::string, Script>(path, Script(context, filename)));
 
-		return &(scripts.at(basename));
+		return &(scripts.at(path));
 	}
 }
 

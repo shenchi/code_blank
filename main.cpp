@@ -11,7 +11,7 @@ int CALLBACK WinMain(
 	_In_ int       nCmdShow)
 {
 	tofu::Engine engine;
-	assert(tofu::TF_OK == engine.Init(L"config.lua"));
+	assert(tofu::TF_OK == engine.Init("config.lua"));
 	assert(tofu::TF_OK == engine.AddModule(new TestGame()));
 	return engine.Run();
 }

@@ -7,6 +7,8 @@
 
 namespace tofu
 {
+	class Entity;
+
 	template<class T>
 	class Component
 	{
@@ -20,39 +22,51 @@ namespace tofu
 
 		operator bool() const
 		{
-			return entity.id < numComponents; // TODO
+			return entity.Id() != Entity::Invalid.Id();
 		}
 
 		T* operator -> () const
 		{
-			assert(false && "This implementation is wrong!");
 			assert(true == *this);
-			return &components[entity.id]; // TODO !!!!
+			return &components[entity.Id()];
 		}
 
 	public:
+		//static Component<T> Create(Entity e)
+		//{
+		//	if (numComponents >= MAX_COMPONENTS)
+		//		return Component<T>();
+
+		//	uint32_t loc = numComponents;
+		//	numComponents++;
+
+		//	components[loc] = T();
+		//	components[loc].entity = e;
+
+		//	return Component<T> {e};
+		//}
+
 		static Component<T> Create(Entity e)
 		{
-			if (numComponents >= MAX_COMPONENTS)
-				return Component<T>();
+			if (components[e.Id()])
+				return Component<T> { e };
 
-			uint32_t loc = numComponents;
-			numComponents++;
+			uint32_t loc = e.Id();
 
 			components[loc] = T();
-			T.entity = e;
+			components[loc].entity = e;
 
 			return Component<T> {e};
 		}
 
 	protected:
 		static T components[MAX_ENTITIES];
-		static uint32_t numComponents;
+		//static uint32_t numComponents;
 	};
 
 	template<class T>
 	T Component<T>::components[MAX_ENTITIES] = {};
 
-	template<class T>
-	uint32_t Component<T>::numComponents = 0;
+	//template<class T>
+	//uint32_t Component<T>::numComponents = 0;
 }

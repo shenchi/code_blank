@@ -7,7 +7,13 @@ namespace tofu
 	enum AllocatorType
 	{
 		ALLOC_DEFAULT,
-		MAX_MEMORY_ALLOCATOR
+		ALLOC_LEVEL_BASED_MEM,
+		ALLOC_FRAME_BASED_MEM,
+		ALLOC_FRAME_BASED_MEM_END = ALLOC_FRAME_BASED_MEM + FRAME_BUFFER_COUNT - 1,
+		ALOOC_LEVEL_BASED_VMEN,
+		ALLOC_FRAME_BASED_VMEM,
+		ALLOC_FRAME_BASED_VMEN_END = ALLOC_FRAME_BASED_VMEM + FRAME_BUFFER_COUNT - 1,
+		MAX_MEMORY_ALLOCATOR,
 	};
 
 	//constexpr uint32_t MAX_MEMORY_ALLOCATOR = 16;
@@ -22,6 +28,7 @@ namespace tofu
 	{
 	public:
 		static MemoryAllocator Allocators[MAX_MEMORY_ALLOCATOR];
+		static NativeAllocator* DefaultNativeAllocator;
 
 	private:
 		MemoryAllocator() : nativeAlloc(nullptr), memoryBase(nullptr), memorySize(0u) {}

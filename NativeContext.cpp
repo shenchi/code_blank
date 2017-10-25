@@ -52,11 +52,13 @@ namespace
 namespace tofu
 {
 
-	struct NativeContextWin32 : NativeContext
+	class NativeContextWin32 : public NativeContext
 	{
+	private:
 		HWND		hWnd;
 		HINSTANCE	hInstance;
 
+	public:
 		int32_t Init(Script* config) override
 		{
 			hInstance = GetModuleHandle(nullptr);
@@ -132,11 +134,20 @@ namespace tofu
 			}
 			return true;
 		}
+
+
+		intptr_t GetContextHandle() override
+		{
+			return reinterpret_cast<intptr_t>(hWnd);
+		}
 	};
+
+	SINGLETON_IMPL(NativeContext);
 
 	NativeContext* NativeContext::Create()
 	{
-		return new NativeContextWin32();
+		_instance = new NativeContextWin32();
+		return _instance;
 	}
 
 }

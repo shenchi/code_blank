@@ -30,7 +30,7 @@ namespace tofu
 	private:
 		void*	context;
 
-		std::unordered_map<std::wstring, Script> scripts;
+		std::unordered_map<std::string, Script> scripts;
 	};
 
 }

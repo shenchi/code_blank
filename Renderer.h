@@ -4,44 +4,50 @@
 
 namespace tofu
 {
-	enum class RendererCommand : uint32_t
+	struct RendererCommand
 	{
-		None,
-		CreateBuffer,
-		UpdateBuffer,
-		DestroyBuffer,
-		CreateTexture,
-		UpdateTexture,
-		DestroyTexture,
-		CreateSampler,
-		DestroySampler,
-		CreateVertexShader,
-		DestroyVertexShader,
-		CreatePixelShader,
-		DestroyPixelShader,
-		CreatePipelineState,
-		DestroyPipelineState,
-		Draw,
+		enum
+		{
+			None,
+			CreateBuffer,
+			UpdateBuffer,
+			DestroyBuffer,
+			CreateTexture,
+			UpdateTexture,
+			DestroyTexture,
+			CreateSampler,
+			DestroySampler,
+			CreateVertexShader,
+			DestroyVertexShader,
+			CreatePixelShader,
+			DestroyPixelShader,
+			CreatePipelineState,
+			DestroyPipelineState,
+			Draw,
+			MaxRendererCommands
+		};
 	};
 
 	struct RendererCommandBuffer
 	{
-		RendererCommand*	cmds;
+		uint32_t*			cmds;
 		void**				params;
 
-
+		uint32_t			capacity;
+		uint32_t			size;
 
 		//void Add(RendererCommand cmd, void* param);
 	};
 
 
-	struct Renderer
+	class Renderer
 	{
+	public:
 		virtual int32_t Init() = 0;
 
 		virtual int32_t Release() = 0;
 
-		virtual int32_t Submit(uint32_t count, RendererCommandBuffer* buffers) = 0;
+		virtual int32_t Submit(RendererCommandBuffer* buffer) = 0;
 
 		virtual int32_t Present() = 0;
 

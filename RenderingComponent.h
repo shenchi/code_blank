@@ -20,7 +20,7 @@ namespace tofu
 		MaterialHandle		material;
 
 		static RenderingComponent* GetAllComponents() { return components; }
-		static uint32_t GetComponentCount() { return numComponents; }
+		//static uint32_t GetComponentCount() { return numComponents; }
 	};
 
 }

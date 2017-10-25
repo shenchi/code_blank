@@ -24,11 +24,21 @@
 
 namespace tofu
 {
+	constexpr uint32_t FRAME_BUFFER_COUNT = 2;
+
+	constexpr uint32_t LEVEL_BASED_MEM_SIZE = 128 * 1024 * 1024;
+	constexpr uint32_t LEVEL_BASED_MEM_ALIGN = 2 * 1024 * 1024;
+
+	constexpr uint32_t FRAME_BASED_MEM_SIZE = 128 * 1024 * 1024;
+	constexpr uint32_t FRAME_BASED_MEM_ALIGN = 2 * 1024 * 1024;
+
 	constexpr uint32_t MAX_USER_MODULES = 8;
 	constexpr uint32_t MAX_ENTITIES = 4096;
 	constexpr uint32_t MAX_MODELS = 1024;
 	constexpr uint32_t MAX_MESHES = 1024;
 	constexpr uint32_t MAX_MATERIALS = 1024;
-	constexpr uint32_t MAX_VERTEX_BUFFERS = 1024;
-	constexpr uint32_t MAX_INDEX_BUFFERS = 1024;
+
+
+	constexpr uint32_t MAX_BUFFERS = 1024;
+	constexpr uint32_t MAX_TEXTURES = 1024;
 }

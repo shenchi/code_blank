@@ -9,6 +9,7 @@ namespace tofu
 {
 
 	MemoryAllocator MemoryAllocator::Allocators[MAX_MEMORY_ALLOCATOR];
+	NativeAllocator* MemoryAllocator::DefaultNativeAllocator = nullptr;
 
 	int32_t MemoryAllocator::Init(size_t size, size_t alignment, NativeAllocator * nativeAlloc)
 	{
@@ -18,6 +19,10 @@ namespace tofu
 		if (nullptr != nativeAlloc)
 		{
 			ptr = nativeAlloc->Allocate(size, alignment);
+		}
+		else if (nullptr != DefaultNativeAllocator)
+		{
+			ptr = DefaultNativeAllocator->Allocate(size, alignment);
 		}
 #ifdef _MSC_VER
 		else

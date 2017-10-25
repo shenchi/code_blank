@@ -15,8 +15,8 @@ namespace tofu
 	HANDLE_DECL(Mesh);
 	HANDLE_DECL(Model);
 	HANDLE_DECL(Material);
-	HANDLE_DECL(VertexBuffer);
-	HANDLE_DECL(IndexBuffer);
+	HANDLE_DECL(Buffer);
+	HANDLE_DECL(Texture);
 
 	enum class MaterialType
 	{
@@ -49,10 +49,11 @@ namespace tofu
 		HandleAllocator<ModelHandle, MAX_MODELS>			modelHandleAlloc;
 		HandleAllocator<MeshHandle, MAX_MESHES>				meshHandleAlloc;
 		HandleAllocator<MaterialHandle, MAX_MATERIALS>		materialHandleAlloc;
-		HandleAllocator<VertexBufferHandle, MAX_VERTEX_BUFFERS> vbHandleAlloc;
-		HandleAllocator<IndexBufferHandle, MAX_INDEX_BUFFERS>	ibHandleAlloc;
+		HandleAllocator<BufferHandle, MAX_BUFFERS>			bufferHandleAlloc;
 
 		std::unordered_map<std::string, ModelHandle>		modelTable;
+
+		size_t		frameNo;
 	};
 
 }

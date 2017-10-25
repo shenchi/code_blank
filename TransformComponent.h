@@ -6,6 +6,6 @@ namespace tofu
 {
 	class TransformComponent : public Component<TransformComponent>
 	{
-
+		// TODO
 	};
 }

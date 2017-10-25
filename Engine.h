@@ -4,7 +4,7 @@
 
 namespace tofu
 {
-	struct NativeContext;
+	class NativeContext;
 	class Module;
 	class RenderingSystem;
 	class ScriptingSystem;
