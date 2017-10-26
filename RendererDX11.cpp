@@ -93,7 +93,7 @@ namespace
 		D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
 	};
 
-	DXGI_FORMAT PixelFormatTable[] =
+	DXGI_FORMAT PixelFormatTable[tofu::NUM_PIXEL_FORMAT] =
 	{
 		DXGI_FORMAT_UNKNOWN, // AUTO
 		DXGI_FORMAT_R8G8B8A8_UNORM,
@@ -113,7 +113,11 @@ namespace
 	{
 		ID3D11Buffer*				buf;
 		ID3D11ShaderResourceView*	srv;
+		uint32_t					dynamic : 1;
+		uint32_t					format : 15;
+		uint32_t					bindingFlags : 16;
 		uint32_t					size;
+		uint32_t					stride;
 	};
 
 	struct Texture
@@ -122,11 +126,14 @@ namespace
 		ID3D11ShaderResourceView*	srv;
 		ID3D11RenderTargetView*		rtv;
 		ID3D11DepthStencilView*		dsv;
+		uint32_t					dynamic : 1;
+		uint32_t					cubeMap : 1;
+		uint32_t					format : 14;
+		uint32_t					arraySize : 8;
+		uint32_t					bindingFlags : 8;
 		uint32_t					width;
 		uint32_t					height;
 		uint32_t					pitch;
-
-
 	};
 
 }
@@ -201,8 +208,8 @@ namespace tofu
 
 
 		private:
-			int							width;
-			int							height;
+			int							winWidth;
+			int							winHeight;
 
 			HWND						hWnd;
 
@@ -300,13 +307,13 @@ namespace tofu
 
 				RECT rect = {};
 				GetClientRect(hWnd, &rect);
-				width = rect.right - rect.left;
-				height = rect.bottom - rect.top;
+				winWidth = rect.right - rect.left;
+				winHeight = rect.bottom - rect.top;
 
 				DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
 
-				swapChainDesc.Width = width;
-				swapChainDesc.Height = height;
+				swapChainDesc.Width = winWidth;
+				swapChainDesc.Height = winHeight;
 				swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 				swapChainDesc.SampleDesc.Count = 1;
 				swapChainDesc.SampleDesc.Quality = 0;
@@ -345,8 +352,9 @@ namespace tofu
 
 					//rt.Reset(TextureType::TEXTURE_2D, PixelFormatFromDXGI(desc.Format), BINDING_RENDER_TARGET, width, height);
 					rt = {};
-					rt.width = width;
-					rt.height = height;
+					rt.width = winWidth;
+					rt.height = winHeight;
+					rt.arraySize = 1;
 
 					if (S_OK != (hr = device->CreateRenderTargetView(backbufferTex, nullptr, &(rt.rtv))))
 					{
@@ -360,14 +368,15 @@ namespace tofu
 
 					//ds.Reset(TextureType::TEXTURE_2D, PixelFormat::FORMAT_D24_UNORM_S8_UINT, width, height);
 					ds = {};
-					ds.width = width;
-					ds.height = height;
+					ds.width = winWidth;
+					ds.height = winHeight;
+					ds.arraySize = 1;
 
 					ID3D11Texture2D* depthStencilTex = nullptr;
 					D3D11_TEXTURE2D_DESC depthDesc{ 0 };
 					depthDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-					depthDesc.Width = width;
-					depthDesc.Height = height;
+					depthDesc.Width = winWidth;
+					depthDesc.Height = winHeight;
 					depthDesc.ArraySize = 1;
 					depthDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 					depthDesc.MipLevels = 1;
@@ -390,33 +399,266 @@ namespace tofu
 			
 			int32_t Nop(void*) { return TF_OK; }
 
-			int32_t CreateBuffer(void* params)
+			int32_t CreateBuffer(void* _params)
 			{
+				CreateBufferParams* params = reinterpret_cast<CreateBufferParams*>(_params);
+				
+				assert(true == params->handle);
+				uint32_t id = params->handle.id;
+
+				bool isShaderResource = ((params->bindingFlags & BINDING_SHADER_RESOURCE) != 0u);
+
+				assert(
+					!isShaderResource ||
+					(params->stride > sizeof(float) * 4)
+				);
+
+
+				assert(nullptr == buffers[id].buf);
+				buffers[id] = {};
+
+				CD3D11_BUFFER_DESC bufDesc(
+					params->size, 
+					(params->bindingFlags & 0x7u),
+					(params->dynamic == 1 ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT),
+					(params->dynamic == 1 ? D3D11_CPU_ACCESS_WRITE : 0U),
+					(isShaderResource ? D3D11_RESOURCE_MISC_BUFFER_STRUCTURED : 0U),
+					params->stride
+					);
+
+				D3D11_SUBRESOURCE_DATA subResData = {};
+				subResData.pSysMem = params->data;
+
+				if (S_OK != device->CreateBuffer(
+					&bufDesc, 
+					(nullptr == params->data ? nullptr : &subResData),
+					&(buffers[id].buf)))
+				{
+					return TF_UNKNOWN_ERR;
+				}
+
+				if (isShaderResource)
+				{
+					D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+					srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+					srvDesc.Buffer.NumElements = params->size / params->stride;
+					srvDesc.Format = PixelFormatTable[params->format];
+					HRESULT ret = device->CreateShaderResourceView(
+						buffers[id].buf, 
+						&srvDesc, 
+						&(buffers[id].srv)
+					);
+					assert(S_OK == ret);
+				}
+
+				buffers[id].dynamic = params->dynamic;
+				buffers[id].format = params->format;
+				buffers[id].bindingFlags = params->bindingFlags & 0x7u;
+				buffers[id].size = params->size;
+				buffers[id].stride = params->stride;
+
 				return TF_OK;
 			}
 
-			int32_t UpdateBuffer(void* params)
+			int32_t UpdateBuffer(void* _params)
 			{
+				UpdateBufferParams* params = reinterpret_cast<UpdateBufferParams*>(_params);
+
+				assert(true == params->handle);
+				uint32_t id = params->handle.id;
+
+				assert(nullptr != buffers[id].buf);
+				assert(params->size > 0 && params->offset + params->size < buffers[id].size);
+				
+				bool updateWholeBuffer = (params->offset == 0 && params->size == buffers[id].size);
+
+				if (buffers[id].dynamic)
+				{
+					if (updateWholeBuffer)
+					{
+						D3D11_MAPPED_SUBRESOURCE res = {};
+						context->Map(buffers[id].buf, 0, D3D11_MAP_WRITE_DISCARD, 0, &res);
+						memcpy(res.pData, params->data, params->size);
+						context->Unmap(buffers[id].buf, 0);
+					}
+					else
+					{
+						D3D11_MAPPED_SUBRESOURCE res = {};
+						context->Map(buffers[id].buf, 0, D3D11_MAP_WRITE, 0, &res);
+						uint8_t* ptr = reinterpret_cast<uint8_t*>(res.pData);
+						memcpy(ptr + params->offset, params->data, params->size);
+						context->Unmap(buffers[id].buf, 0);
+					}
+				}
+				else
+				{
+					assert(
+						((buffers[id].bindingFlags & BINDING_CONSTANT_BUFFER) == 0) ||
+						(params->offset == 0)
+					);
+					D3D11_BOX box = {};
+					box.left = params->offset;
+					box.right = params->offset + params->size;
+
+					context->UpdateSubresource(
+						buffers[id].buf, 0, 
+						(updateWholeBuffer ? nullptr : &box), 
+						params->data, 
+						0, 
+						0);
+				}
+
 				return TF_OK;
 			}
 
 			int32_t DestroyBuffer(void* params)
 			{
+				BufferHandle* handle = reinterpret_cast<BufferHandle*>(params);
+				
+				assert(true == *handle);
+				uint32_t id = handle->id;
+
+				assert(nullptr != buffers[id].buf);
+
+				buffers[id].buf->Release();
+
+				if (nullptr != buffers[id].srv)
+				{
+					buffers[id].srv->Release();
+				}
+
+				buffers[id] = {};
+
 				return TF_OK;
 			}
 
-			int32_t CreateTexture(void* params)
+			int32_t CreateTexture(void* _params)
 			{
+				CreateTextureParams* params = reinterpret_cast<CreateTextureParams*>(_params);
+
+				assert(true == params->handle && params->handle.id < MAX_TEXTURES);
+
+				uint32_t id = params->handle.id;
+
+				assert(nullptr == textures[id].tex);
+				CD3D11_TEXTURE2D_DESC texDesc(
+					PixelFormatTable[params->format],
+					params->width,
+					params->height,
+					params->arraySize,
+					0U,
+					D3D11_BIND_CONSTANT_BUFFER,
+					(params->dynamic == 1 ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT),
+					(params->dynamic == 1 ? D3D11_CPU_ACCESS_WRITE : 0U),
+					1U,
+					0U,
+					(params->cubeMap == 1 ? D3D11_RESOURCE_MISC_TEXTURECUBE : 0U)
+
+				);
+
+				D3D11_SUBRESOURCE_DATA subResData = {};
+				subResData.pSysMem = params->data;
+				subResData.SysMemPitch = params->pitch;
+
+				if (S_OK != device->CreateTexture2D(
+					&texDesc, 
+					(nullptr == params->data ? nullptr : &subResData), 
+					&(textures[id].tex)))
+				{
+					return TF_UNKNOWN_ERR;
+				}
+
+				if (params->bindingFlags & BINDING_SHADER_RESOURCE)
+				{
+					HRESULT ret = device->CreateShaderResourceView(textures[id].tex, nullptr, &(textures[id].srv));
+					assert(S_OK == ret);
+				}
+				if (params->bindingFlags & BINDING_RENDER_TARGET)
+				{
+					HRESULT ret = device->CreateRenderTargetView(textures[id].tex, nullptr, &(textures[id].rtv));
+					assert(S_OK == ret);
+				}
+				if (params->bindingFlags & BINDING_DEPTH_STENCIL)
+				{
+					HRESULT ret = device->CreateDepthStencilView(textures[id].tex, nullptr, &(textures[id].dsv));
+					assert(S_OK == ret);
+				}
+
+				textures[id].dynamic = params->dynamic;
+				textures[id].cubeMap = params->cubeMap;
+				textures[id].format = params->format;
+				textures[id].arraySize = params->arraySize;
+				textures[id].bindingFlags = params->bindingFlags;
+				textures[id].width = params->width;
+				textures[id].height = params->height;
+				textures[id].pitch = params->pitch;
+
 				return TF_OK;
 			}
 
-			int32_t UpdateTexture(void* params)
+			int32_t UpdateTexture(void* _params)
 			{
+				UpdateTextureParams* params = reinterpret_cast<UpdateTextureParams*>(_params);
+
+				assert(true == params->handle && params->handle.id < MAX_TEXTURES);
+
+				uint32_t id = params->handle.id;
+
+				assert(nullptr == textures[id].tex);
+
+				if (textures[id].dynamic)
+				{
+					// TODO for mipmaps and texture array
+					D3D11_MAPPED_SUBRESOURCE res = {};
+					context->Map(textures[id].tex, 0, D3D11_MAP_WRITE_DISCARD, 0, &res);
+					const uint8_t* pSrc = reinterpret_cast<const uint8_t*>(params->data);
+					uint8_t* pDst = reinterpret_cast<uint8_t*>(res.pData);
+
+					for (uint32_t i = 0; i < textures[id].height; ++i)
+					{
+						memcpy(pDst, pSrc, params->pitch);
+
+						pSrc += params->pitch;
+						pDst += res.RowPitch;
+					}
+
+					context->Unmap(textures[id].tex, 0);
+				}
+				else
+				{
+					// TODO for mipmaps and texture array
+					context->UpdateSubresource(textures[id].tex, 0, nullptr, params->data, params->pitch, 0);
+				}
+
 				return TF_OK;
 			}
 
 			int32_t DestroyTexture(void* params)
 			{
+				TextureHandle* handle = reinterpret_cast<TextureHandle*>(params);
+
+				assert(true == *handle && handle->id < MAX_TEXTURES);
+
+				uint32_t id = handle->id;
+
+				assert(nullptr == textures[id].tex);
+
+				textures[id].tex->Release();
+				if (nullptr != textures[id].srv)
+				{
+					textures[id].srv->Release();
+				}
+				if (nullptr != textures[id].rtv)
+				{
+					textures[id].rtv->Release();
+				}
+				if (nullptr != textures[id].dsv)
+				{
+					textures[id].dsv->Release();
+				}
+
+				textures[id] = {};
+
 				return TF_OK;
 			}
 

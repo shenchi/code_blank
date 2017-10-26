@@ -4,6 +4,9 @@
 
 namespace tofu
 {
+	HANDLE_DECL(Buffer);
+	HANDLE_DECL(Texture);
+
 	struct RendererCommand
 	{
 		enum
@@ -28,6 +31,44 @@ namespace tofu
 		};
 	};
 
+	enum PixelFormat
+	{
+		FORMAT_AUTO,
+		FORMAT_R8G8B8A8_UNORM,
+		FORMAT_R8G8B8A8_SNORM,
+		FORMAT_R16G16B16B16_UNORM,
+		FORMAT_R16G16B16B16_SNORM,
+		FORMAT_R32G32B32A32_FLOAT,
+		FORMAT_R16_SINT,
+		FORMAT_R32_SINT,
+		FORMAT_R16_UINT,
+		FORMAT_R32_UINT,
+		FORMAT_D24_UNORM_S8_UINT,
+		NUM_PIXEL_FORMAT
+	};
+
+	enum ComparisonFunc
+	{
+		COMPARISON_NEVER,
+		COMPARISON_LESS,
+		COMPARISON_EQUAL,
+		COMPARISON_LESS_EQUAL,
+		COMPARISON_GREATER,
+		COMPARISON_NOT_EQUAL,
+		COMPARISON_GREATER_EQUAL,
+		COMPARISON_ALWAYS
+	};
+
+	enum BindingFlag
+	{
+		BINDING_VERTEX_BUFFER = 1 << 0,
+		BINDING_INDEX_BUFFER = 1 << 1,
+		BINDING_CONSTANT_BUFFER = 1 << 2,
+		BINDING_SHADER_RESOURCE = 1 << 3,
+		BINDING_RENDER_TARGET = 1 << 5,
+		BINDING_DEPTH_STENCIL = 1 << 6,
+	};
+
 	struct RendererCommandBuffer
 	{
 		uint32_t*			cmds;
@@ -39,6 +80,45 @@ namespace tofu
 		//void Add(RendererCommand cmd, void* param);
 	};
 
+	struct CreateBufferParams
+	{
+		BufferHandle		handle;
+		uint32_t			dynamic : 1;
+		uint32_t			format : 15;
+		uint32_t			bindingFlags : 16;
+		uint32_t			size;
+		uint32_t			stride;
+		void*				data;
+	};
+
+	struct UpdateBufferParams
+	{
+		BufferHandle		handle;
+		uint32_t			offset;
+		uint32_t			size;
+		void*				data;
+	};
+
+	struct CreateTextureParams
+	{
+		TextureHandle		handle;
+		uint32_t			dynamic : 1;
+		uint32_t			cubeMap : 1;
+		uint32_t			format : 14;
+		uint32_t			arraySize : 8;
+		uint32_t			bindingFlags : 8;
+		uint32_t			width;
+		uint32_t			height;
+		uint32_t			pitch;
+		void*				data;
+	};
+
+	struct UpdateTextureParams
+	{
+		TextureHandle		handle;
+		uint32_t			pitch;
+		void*				data;
+	};
 
 	class Renderer
 	{

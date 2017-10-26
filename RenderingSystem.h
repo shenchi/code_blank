@@ -3,6 +3,8 @@
 #include "Common.h"
 #include "Module.h"
 
+#include "Renderer.h"
+
 #include "HandleAllocator.h"
 
 #include <unordered_map>
@@ -10,13 +12,10 @@
 
 namespace tofu
 {
-	class Renderer;
-
 	HANDLE_DECL(Mesh);
 	HANDLE_DECL(Model);
 	HANDLE_DECL(Material);
-	HANDLE_DECL(Buffer);
-	HANDLE_DECL(Texture);
+
 
 	enum class MaterialType
 	{
