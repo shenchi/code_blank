@@ -5,6 +5,14 @@
 #include <malloc.h>
 #endif
 
+namespace
+{
+	constexpr size_t align_to(size_t address, size_t alignment)
+	{
+		return (address + (alignment - 1u)) & ~(alignment - 1u);
+	}
+}
+
 namespace tofu
 {
 
@@ -71,16 +79,27 @@ namespace tofu
 
 	int32_t MemoryAllocator::Reset()
 	{
-		assert(false && "Not implemented");
 		assert(nullptr != memoryBase);
-		return int32_t();
+
+		currentSize = 0u;
+
+		return TF_OK;
 	}
 
 	void * MemoryAllocator::Allocate(size_t size, size_t alignment)
 	{
-		assert(false && "Not implemented");
 		assert(nullptr != memoryBase);
-		return nullptr;
+
+		size_t newSize = align_to(currentSize + size, alignment);
+
+		if (newSize > memorySize)
+		{
+			return nullptr;
+		}
+
+		currentSize = newSize;
+
+		return reinterpret_cast<uint8_t*>(memoryBase) + newSize;
 	}
 
 }

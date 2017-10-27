@@ -38,6 +38,9 @@ namespace tofu
 	constexpr uint32_t MAX_MESHES = 1024;
 	constexpr uint32_t MAX_MATERIALS = 1024;
 
+	constexpr uint32_t MAX_MESHES_PER_MODEL = 8;
+
+	constexpr uint32_t COMMAND_BUFFER_CAPACITY = 64;
 
 	constexpr uint32_t MAX_BUFFERS = 1024;
 	constexpr uint32_t MAX_TEXTURES = 1024;

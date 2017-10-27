@@ -79,6 +79,10 @@ namespace tofu
 
 		while(nativeContext->ProcessEvent())
 		{
+			// TODO timing
+
+			renderingSystem->BeginFrame();
+
 			scriptingSystem->Update();
 
 			for (uint32_t i = 0; i < numUserModules; i++)
@@ -89,6 +93,8 @@ namespace tofu
 			}
 
 			renderingSystem->Update();
+
+			renderingSystem->EndFrame();
 		}
 
 		err = Shutdown();

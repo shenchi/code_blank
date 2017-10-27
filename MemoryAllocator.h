@@ -62,5 +62,6 @@ namespace tofu
 		NativeAllocator*	nativeAlloc;
 		void*				memoryBase;
 		size_t				memorySize;
+		size_t				currentSize;
 	};
 }

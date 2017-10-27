@@ -16,12 +16,32 @@ namespace tofu
 	HANDLE_DECL(Model);
 	HANDLE_DECL(Material);
 
-
 	enum class MaterialType
 	{
 		TestMaterial,
 		OpaqueMaterial,
 		MaxMaterialTypes
+	};
+
+	struct Mesh
+	{
+		BufferHandle	VertexBuffer;
+		BufferHandle	IndexBuffer;
+		uint32_t		StartIndex;
+		uint32_t		StartVertex;
+		uint32_t		NumIndices;
+		uint32_t		NumVertices;
+	};
+
+	struct Model
+	{
+		MeshHandle		Meshes[MAX_MESHES_PER_MODEL];
+		uint32_t		NumMeshes;
+	};
+
+	struct Material
+	{
+		PipelineStateHandle		pipelineState;
 	};
 
 	class RenderingSystem : public Module
@@ -34,9 +54,14 @@ namespace tofu
 
 	public:
 		int32_t Init() override;
+
 		int32_t Shutdown() override;
 
+		int32_t BeginFrame();
+
 		int32_t Update() override;
+
+		int32_t EndFrame();
 
 		ModelHandle CreateModel(const char* filename);
 
@@ -48,11 +73,25 @@ namespace tofu
 		HandleAllocator<ModelHandle, MAX_MODELS>			modelHandleAlloc;
 		HandleAllocator<MeshHandle, MAX_MESHES>				meshHandleAlloc;
 		HandleAllocator<MaterialHandle, MAX_MATERIALS>		materialHandleAlloc;
-		HandleAllocator<BufferHandle, MAX_BUFFERS>			bufferHandleAlloc;
 
 		std::unordered_map<std::string, ModelHandle>		modelTable;
 
+		HandleAllocator<BufferHandle, MAX_BUFFERS>					bufferHandleAlloc;
+		HandleAllocator<VertexShaderHandle, MAX_VERTEX_SHADERS>		vertexShaderHandleAlloc;
+		HandleAllocator<PixelShaderHandle, MAX_PIXEL_SHADERS>		pixelShaderHandleAlloc;
+		HandleAllocator<PipelineStateHandle, MAX_PIPELINE_STATES>	pipelineStateHandleAlloc;
+
 		size_t		frameNo;
+		uint32_t	allocNo;
+
+		VertexShaderHandle		defaultVertexShader;
+		PixelShaderHandle		defaultPixelShader;
+
+		Mesh		meshes[MAX_MESHES];
+		Model		models[MAX_MODELS];
+		Material	materials[MAX_MATERIALS];
+
+		RendererCommandBuffer* cmdBuf;
 	};
 
 }

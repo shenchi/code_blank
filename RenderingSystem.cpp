@@ -48,11 +48,21 @@ namespace tofu
 
 		frameNo = 0;
 
+		{
+			// TODO
+			//defaultVertexShader = vertexShaderHandleAlloc.Allocate();
+			//defaultPixelShader = pixelShaderHandleAlloc.Allocate();
+			//assert(defaultVertexShader && defaultPixelShader);
+			
+		}
+
 		return TF_OK;
 	}
 
 	int32_t RenderingSystem::Shutdown()
 	{
+		renderer->Release();
+
 		for (uint32_t i = ALLOC_FRAME_BASED_MEM;
 			i <= ALLOC_FRAME_BASED_MEM_END;
 			++i)
@@ -64,6 +74,19 @@ namespace tofu
 		return TF_OK;
 	}
 
+	int32_t RenderingSystem::BeginFrame()
+	{
+		assert(false && "sync need to be done.");
+
+		allocNo = ALLOC_FRAME_BASED_MEM + frameNo % FRAME_BUFFER_COUNT;
+		MemoryAllocator::Allocators[allocNo].Reset();
+
+		cmdBuf = RendererCommandBuffer::Create(COMMAND_BUFFER_CAPACITY, allocNo);
+		assert(nullptr != cmdBuf);
+
+		return TF_OK;
+	}
+
 	int32_t RenderingSystem::Update()
 	{
 		RenderingComponent* comps = RenderingComponent::GetAllComponents();
@@ -71,12 +94,41 @@ namespace tofu
 		
 		for (uint32_t i = 0; i < MAX_ENTITIES; ++i)
 		{
-			//if (!comp)
-			// TODO
+			RenderingComponent& comp = comps[i];
+			if (!comp) continue;
+
+			assert(comp.model && comp.material);
+
+			Model& model = models[comp.model.id];
+			Material& mat = materials[comp.material.id];
+
+			for (uint32_t iMesh = 0; iMesh < model.NumMeshes; ++iMesh)
+			{
+				assert(model.Meshes[iMesh]);
+				Mesh& mesh = meshes[model.Meshes[iMesh].id];
+
+				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
+				params->pipelineState = mat.pipelineState;
+				params->vertexBuffer = mesh.VertexBuffer;
+				params->indexBuffer = mesh.IndexBuffer;
+				params->startIndex = mesh.StartIndex;
+				params->startVertex = mesh.StartVertex;
+				params->indexCount = mesh.NumIndices;
+
+				cmdBuf->Add(RendererCommand::Draw, params);
+			}
 		}
 
-		frameNo++;
+		return TF_OK;
+	}
 
+	int32_t RenderingSystem::EndFrame()
+	{
+		assert(TF_OK == renderer->Submit(cmdBuf));
+
+		renderer->Present();
+
+		frameNo++;
 		return TF_OK;
 	}
 
@@ -94,7 +146,7 @@ namespace tofu
 
 		uint8_t* data = nullptr;
 		size_t size = 0u;
-		int32_t err = FileIO::ReadFile(filename, reinterpret_cast<void**>(&data), &size, 4, ALLOC_LEVEL_BASED_MEM);
+		int32_t err = FileIO::ReadFile(filename, reinterpret_cast<void**>(&data), &size, 4, ALLOC_FRAME_BASED_MEM);
 		if (TF_OK != err)
 		{
 			return ModelHandle();
@@ -113,34 +165,90 @@ namespace tofu
 			return ModelHandle();
 		}
 
-		model::ModelMesh* meshes = reinterpret_cast<model::ModelMesh*>(header + 1);
+		model::ModelMesh* meshInfos = reinterpret_cast<model::ModelMesh*>(header + 1);
 		
 		uint32_t verticesCount = 0;
 		uint32_t indicesCount = 0;
 
+		assert(header->NumMeshes <= MAX_MESHES_PER_MODEL);
+		ModelHandle modelHandle = modelHandleAlloc.Allocate();
+		assert(modelHandle);
+		Model& model = models[modelHandle.id];
+
+		model = {};
+		model.NumMeshes = header->NumMeshes;
+
+		BufferHandle vbHandle = bufferHandleAlloc.Allocate();
+		BufferHandle ibHandle = bufferHandleAlloc.Allocate();
+		assert(vbHandle && ibHandle);
+
 		for (uint32_t i = 0; i < header->NumMeshes; ++i)
 		{
-			// TODO Record Start Index
+			model.Meshes[i] = meshHandleAlloc.Allocate();
+			assert(model.Meshes[i]);
+			uint32_t id = model.Meshes[i].id;
+			meshes[id] = {};
+			meshes[id].VertexBuffer = vbHandle;
+			meshes[id].IndexBuffer = ibHandle;
+			meshes[id].StartVertex = verticesCount;
+			meshes[id].StartIndex = indicesCount;
+			meshes[id].NumVertices = meshInfos[i].NumVertices;
+			meshes[id].NumIndices = meshInfos[i].NumIndices;
 
-			verticesCount += meshes[i].NumVertices;
-			indicesCount += meshes[i].NumIndices;
+			verticesCount += meshInfos[i].NumVertices;
+			indicesCount += meshInfos[i].NumIndices;
 		}
 
 		uint32_t vertexBufferSize = verticesCount * header->CalculateVertexSize();
 		uint32_t indexBufferSize = indicesCount * sizeof(uint32_t);
 
-		uint8_t* vertices = reinterpret_cast<uint8_t*>(meshes + header->NumMeshes);
+		uint8_t* vertices = reinterpret_cast<uint8_t*>(meshInfos + header->NumMeshes);
 		uint8_t* indices = vertices + vertexBufferSize;
 
-		// TODO Upload Data
+		{
+			CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(ALLOC_FRAME_BASED_MEM);
+			params->handle = vbHandle;
+			params->bindingFlags = BINDING_VERTEX_BUFFER;
+			params->data = vertices;
+			params->size = vertexBufferSize;
 
-		return ModelHandle();
+			cmdBuf->Add(RendererCommand::CreateBuffer, params);
+		}
+
+		{
+			CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(ALLOC_FRAME_BASED_MEM);
+			params->handle = ibHandle;
+			params->bindingFlags = BINDING_INDEX_BUFFER;
+			params->data = indices;
+			params->size = indexBufferSize;
+
+			cmdBuf->Add(RendererCommand::CreateBuffer, params);
+		}
+
+		return modelHandle;
 	}
 
 	MaterialHandle RenderingSystem::CreateMaterial(MaterialType type)
 	{
-		// TODO
-		return MaterialHandle();
+		MaterialHandle handle = materialHandleAlloc.Allocate();
+		assert(handle);
+
+		PipelineStateHandle psHandle = pipelineStateHandleAlloc.Allocate();
+		assert(psHandle);
+
+		{
+			CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
+			params->handle = psHandle;
+			params->vertexShader = defaultVertexShader;
+			params->pixelShader = defaultPixelShader;
+			
+			cmdBuf->Add(RendererCommand::CreatePipelineState, params);
+		}
+
+		Material& mat = materials[handle.id];
+		mat.pipelineState = psHandle;
+
+		return handle;
 	}
 
 }
