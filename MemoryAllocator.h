@@ -30,6 +30,13 @@ namespace tofu
 		static MemoryAllocator Allocators[MAX_MEMORY_ALLOCATOR];
 		static NativeAllocator* DefaultNativeAllocator;
 
+		template<typename T>
+		static T* Allocate(uint32_t allocNo, size_t alignment = 4)
+		{
+			void* ptr = Allocators[allocNo].Allocate(sizeof(T), alignment);
+			return new(ptr) T();
+		}
+
 	private:
 		MemoryAllocator() : nativeAlloc(nullptr), memoryBase(nullptr), memorySize(0u) {}
 		//~MemoryAllocator();

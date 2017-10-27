@@ -41,4 +41,13 @@ namespace tofu
 
 	constexpr uint32_t MAX_BUFFERS = 1024;
 	constexpr uint32_t MAX_TEXTURES = 1024;
+	constexpr uint32_t MAX_SAMPLERS = 256;
+	constexpr uint32_t MAX_VERTEX_SHADERS = 256;
+	constexpr uint32_t MAX_PIXEL_SHADERS = 256;
+	constexpr uint32_t MAX_PIPELINE_STATES = 256;
+
+	constexpr uint32_t MAX_CONSTANT_BUFFER_BINDINGS = 16;
+	constexpr uint32_t MAX_TEXTURE_BINDINGS = 16;
+	constexpr uint32_t MAX_SAMPLER_BINDINGS = 16;
+	
 }

@@ -6,6 +6,10 @@ namespace tofu
 {
 	HANDLE_DECL(Buffer);
 	HANDLE_DECL(Texture);
+	HANDLE_DECL(Sampler);
+	HANDLE_DECL(VertexShader);
+	HANDLE_DECL(PixelShader);
+	HANDLE_DECL(PipelineState);
 
 	struct RendererCommand
 	{
@@ -77,7 +81,9 @@ namespace tofu
 		uint32_t			capacity;
 		uint32_t			size;
 
-		//void Add(RendererCommand cmd, void* param);
+		static RendererCommandBuffer* Create(uint32_t capacity, uint32_t allocNo);
+
+		void Add(uint32_t cmd, void* param);
 	};
 
 	struct CreateBufferParams
@@ -118,6 +124,47 @@ namespace tofu
 		TextureHandle		handle;
 		uint32_t			pitch;
 		void*				data;
+	};
+
+	struct CreateSamplerParams
+	{
+		SamplerHandle		handle;
+		// TODO
+	};
+
+	struct CreateVertexShaderParams
+	{
+		VertexShaderHandle	handle;
+		const void*			data;
+		size_t				size;
+	};
+
+	struct CreatePixelShaderParams
+	{
+		PixelShaderHandle	handle;
+		const void*			data;
+		size_t				size;
+	};
+
+	struct CreatePipelineStateParams
+	{
+		PipelineStateHandle	handle;
+		VertexShaderHandle	vertexShader;
+		PixelShaderHandle	pixelShader;
+		// TODO
+	};
+
+	struct DrawParams
+	{
+		PipelineStateHandle pipelineState;
+		BufferHandle		vertexBuffer;
+		BufferHandle		indexBuffer;
+		uint32_t			startIndex;
+		uint32_t			startVertex;
+		uint32_t			indexCount;
+		BufferHandle		constantBuffers[MAX_CONSTANT_BUFFER_BINDINGS];
+		TextureHandle		textures[MAX_TEXTURE_BINDINGS];
+		SamplerHandle		samplers[MAX_SAMPLER_BINDINGS];
 	};
 
 	class Renderer

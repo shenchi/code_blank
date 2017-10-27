@@ -71,12 +71,14 @@ namespace tofu
 
 	int32_t MemoryAllocator::Reset()
 	{
+		assert(false && "Not implemented");
 		assert(nullptr != memoryBase);
 		return int32_t();
 	}
 
 	void * MemoryAllocator::Allocate(size_t size, size_t alignment)
 	{
+		assert(false && "Not implemented");
 		assert(nullptr != memoryBase);
 		return nullptr;
 	}

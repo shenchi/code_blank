@@ -136,6 +136,29 @@ namespace
 		uint32_t					pitch;
 	};
 
+	struct Sampler
+	{
+		ID3D11SamplerState*			samp;
+	};
+
+	struct VertexShader
+	{
+		ID3D11VertexShader*			shader;
+	};
+
+	struct PixelShader
+	{
+		ID3D11PixelShader*			shader;
+	};
+
+	struct PipelineState
+	{
+		ID3D11RasterizerState*		rasterizerState;
+		ID3D11DepthStencilState*	depthStencilState;
+		ID3D11BlendState*			blendState;
+		tofu::VertexShaderHandle	vertexShader;
+		tofu::PixelShaderHandle		pixelShader;
+	};
 }
 
 namespace tofu
@@ -219,6 +242,11 @@ namespace tofu
 
 			Buffer						buffers[MAX_BUFFERS];
 			Texture						textures[MAX_TEXTURES + 2];
+			Sampler						samplers[MAX_SAMPLERS];
+			VertexShader				vertexShaders[MAX_VERTEX_SHADERS];
+			PixelShader					pixelShaders[MAX_PIXEL_SHADERS];
+			PipelineState				pipelineStates[MAX_PIPELINE_STATES];
+
 
 			typedef int32_t(RendererDX11::*cmd_callback_t)(void*);
 
@@ -604,7 +632,7 @@ namespace tofu
 
 				uint32_t id = params->handle.id;
 
-				assert(nullptr == textures[id].tex);
+				assert(nullptr != textures[id].tex);
 
 				if (textures[id].dynamic)
 				{
@@ -641,7 +669,7 @@ namespace tofu
 
 				uint32_t id = handle->id;
 
-				assert(nullptr == textures[id].tex);
+				assert(nullptr != textures[id].tex);
 
 				textures[id].tex->Release();
 				if (nullptr != textures[id].srv)
@@ -662,48 +690,164 @@ namespace tofu
 				return TF_OK;
 			}
 
-			int32_t CreateSampler(void* params)
+			int32_t CreateSampler(void* _params)
 			{
+				CreateSamplerParams* params = reinterpret_cast<CreateSamplerParams*>(_params);
+
+				assert(true == params->handle);
+
+				uint32_t id = params->handle.id;
+
+				assert(nullptr == samplers[id].samp);
+
+				CD3D11_SAMPLER_DESC samplerDesc(D3D11_DEFAULT);
+				
+				if (S_OK != device->CreateSamplerState(&samplerDesc, &(samplers[id].samp)))
+				{
+					return TF_UNKNOWN_ERR;
+				}
+
 				return TF_OK;
 			}
 
 			int32_t DestroySampler(void* params)
 			{
+				SamplerHandle* handle = reinterpret_cast<SamplerHandle*>(params);
+
+				assert(true == *handle);
+
+				uint32_t id = handle->id;
+
+				assert(nullptr != samplers[id].samp);
+
+				samplers[id].samp->Release();
+
+				samplers[id] = {};
+
 				return TF_OK;
 			}
 
-			int32_t CreateVertexShader(void* params)
+			int32_t CreateVertexShader(void* _params)
 			{
+				CreateVertexShaderParams* params = reinterpret_cast<CreateVertexShaderParams*>(_params);
+
+				assert(true == params->handle);
+
+				uint32_t id = params->handle.id;
+
+				assert(nullptr == vertexShaders[id].shader);
+
+				if (S_OK != device->CreateVertexShader(params->data, params->size, nullptr, &(vertexShaders[id].shader)))
+				{
+					return TF_UNKNOWN_ERR;
+				}
+
 				return TF_OK;
 			}
 
 			int32_t DestroyVertexShader(void* params)
 			{
+				VertexShaderHandle* handle = reinterpret_cast<VertexShaderHandle*>(params);
+
+				assert(true == *handle);
+
+				uint32_t id = handle->id;
+
+				assert(nullptr != vertexShaders[id].shader);
+
+				vertexShaders[id].shader->Release();
+
+				vertexShaders[id] = {};
+
 				return TF_OK;
 			}
 
-			int32_t CreatePixelShader(void* params)
+			int32_t CreatePixelShader(void* _params)
 			{
+				CreatePixelShaderParams* params = reinterpret_cast<CreatePixelShaderParams*>(_params);
+
+				assert(true == params->handle);
+
+				uint32_t id = params->handle.id;
+
+				assert(nullptr == pixelShaders[id].shader);
+
+				if (S_OK != device->CreatePixelShader(params->data, params->size, nullptr, &(pixelShaders[id].shader)))
+				{
+					return TF_UNKNOWN_ERR;
+				}
+
 				return TF_OK;
 			}
 
 			int32_t DestroyPixelShader(void* params)
 			{
+				PixelShaderHandle* handle = reinterpret_cast<PixelShaderHandle*>(params);
+
+				assert(true == *handle);
+
+				uint32_t id = handle->id;
+
+				assert(nullptr != pixelShaders[id].shader);
+
+				pixelShaders[id].shader->Release();
+
+				pixelShaders[id] = {};
+
 				return TF_OK;
 			}
 
-			int32_t CreatePipelineState(void* params)
+			int32_t CreatePipelineState(void* _params)
 			{
+				CreatePipelineStateParams* params = reinterpret_cast<CreatePipelineStateParams*>(_params);
+
+				assert(true == params->handle);
+
+				uint32_t id = params->handle.id;
+
+				assert(nullptr == pipelineStates[id].depthStencilState);
+
+				CD3D11_DEPTH_STENCIL_DESC dsState(D3D11_DEFAULT);
+				assert(S_OK == device->CreateDepthStencilState(&dsState, &(pipelineStates[id].depthStencilState)));
+
+				CD3D11_RASTERIZER_DESC rsState(D3D11_DEFAULT);
+				assert(S_OK == device->CreateRasterizerState(&rsState, &(pipelineStates[id].rasterizerState)));
+
+				CD3D11_BLEND_DESC blendState(D3D11_DEFAULT);
+				assert(S_OK == device->CreateBlendState(&blendState, &(pipelineStates[id].blendState)));
+
+				assert(true == params->vertexShader && nullptr != vertexShaders[id].shader);
+				assert(true == params->pixelShader && nullptr != pixelShaders[id].shader);
+
+				pipelineStates[id].vertexShader = params->vertexShader;
+				pipelineStates[id].pixelShader = params->pixelShader;
+
 				return TF_OK;
 			}
 
 			int32_t DestroyPipelineState(void* params)
 			{
+				PipelineStateHandle* handle = reinterpret_cast<PipelineStateHandle*>(params);
+
+				assert(true == *handle);
+
+				uint32_t id = handle->id;
+
+				assert(nullptr != pipelineStates[id].depthStencilState);
+
+				pipelineStates[id].depthStencilState->Release();
+				pipelineStates[id].rasterizerState->Release();
+				pipelineStates[id].blendState->Release();
+
+				pipelineStates[id] = {};
+
 				return TF_OK;
 			}
 
 			int32_t Draw(void* params)
 			{
+				// TODO
+
 				return TF_OK;
 			}
 
