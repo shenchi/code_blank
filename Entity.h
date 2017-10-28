@@ -1,7 +1,7 @@
 #pragma once
 
 #include "common.h"
-#include <type_traits>
+#include "HandleAllocator.h"
 #include "Component.h"
 
 namespace tofu
@@ -11,15 +11,17 @@ namespace tofu
 
 	class Entity
 	{
-	private:
+	public:
 		uint32_t	id;
-	public:
-		inline uint32_t	Id() const { return id; }
-	public:
+
+		Entity(uint32_t _id = MAX_ENTITIES) : id(_id) {}
+
+		inline operator bool() const { return entityAlloc.IsValid(id); }
+
 		template<class T>
 		Component<T> AddComponent()
 		{
-			static_assert(std::is_base_of<Component<T>, T>::value, "This is not a component type");
+			//static_assert(std::is_base_of<Component<T>, T>::value, "This is not a component type");
 			Component<T> c = GetComponent<T>();
 
 			if (c)
@@ -33,21 +35,15 @@ namespace tofu
 		template<class T>
 		Component<T> GetComponent()
 		{
-			static_assert(std::is_base_of<Component<T>, T>::value, "This is not a component type");
-			return Component<T>{*this};
+			//static_assert(std::is_base_of<Component<T>, T>::value, "This is not a component type");
+			return Component<T>(*this);
 		}
 
-	public:
-
-		Entity(uint32_t _id = MAX_ENTITIES) : id(_id) {}
+		int32_t Destroy();
 
 		static Entity Create();
 
-		static Entity Invalid;
-
 	private:
-
-		static Entity entities[MAX_ENTITIES];
-		static uint32_t numEntities;
+		static HandleAllocator<Entity, MAX_ENTITIES> entityAlloc;
 	};
 }

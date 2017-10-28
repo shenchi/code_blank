@@ -135,14 +135,14 @@ namespace tofu
 	struct CreateVertexShaderParams
 	{
 		VertexShaderHandle	handle;
-		const void*			data;
+		void*				data;
 		size_t				size;
 	};
 
 	struct CreatePixelShaderParams
 	{
 		PixelShaderHandle	handle;
-		const void*			data;
+		void*				data;
 		size_t				size;
 	};
 

@@ -4,8 +4,10 @@
 
 namespace tofu
 {
-	class TransformComponent : public Component<TransformComponent>
+	class TransformComponentData
 	{
 		// TODO
 	};
+
+	typedef Component<TransformComponentData> TransformComponent;
 }

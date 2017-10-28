@@ -66,18 +66,46 @@ namespace tofu
 		// Initialize Renderer Backend
 		assert(TF_OK == renderer->Init());
 
-		// Create Built-in Shaders
-		{
-			// TODO
-			//defaultVertexShader = vertexShaderHandleAlloc.Allocate();
-			//defaultPixelShader = pixelShaderHandleAlloc.Allocate();
-			//assert(defaultVertexShader && defaultPixelShader);
-			
-		}
-
 		//
 		frameNo = 0;
 		BeginFrame();
+
+		// Create Built-in Shaders
+		{
+			defaultVertexShader = vertexShaderHandleAlloc.Allocate();
+			defaultPixelShader = pixelShaderHandleAlloc.Allocate();
+			assert(defaultVertexShader && defaultPixelShader);
+
+			{
+				CreateVertexShaderParams* params = MemoryAllocator::Allocate<CreateVertexShaderParams>(allocNo);
+				params->handle = defaultVertexShader;
+
+				assert(TF_OK == FileIO::ReadFile(
+					"assets/test_vs.shader", 
+					&(params->data), 
+					&(params->size), 
+					4, 
+					allocNo)
+					);
+
+				cmdBuf->Add(RendererCommand::CreateVertexShader, params);
+			}
+
+			{
+				CreatePixelShaderParams* params = MemoryAllocator::Allocate<CreatePixelShaderParams>(allocNo);
+				params->handle = defaultPixelShader;
+
+				assert(TF_OK == FileIO::ReadFile(
+					"assets/test_ps.shader",
+					&(params->data),
+					&(params->size),
+					4,
+					allocNo)
+				);
+
+				cmdBuf->Add(RendererCommand::CreatePixelShader, params);
+			}
+		}
 
 		return TF_OK;
 	}
@@ -117,13 +145,12 @@ namespace tofu
 
 	int32_t RenderingSystem::Update()
 	{
-		RenderingComponent* comps = RenderingComponent::GetAllComponents();
-		//uint32_t count = RenderingComponent::GetComponentCount();
+		RenderingComponentData* comps = RenderingComponent::GetAllComponents();
+		uint32_t count = RenderingComponent::GetNumComponents();
 		
-		for (uint32_t i = 0; i < MAX_ENTITIES; ++i)
+		for (uint32_t i = 0; i < count; ++i)
 		{
-			RenderingComponent& comp = comps[i];
-			if (!comp) continue;
+			RenderingComponentData& comp = comps[i];
 
 			assert(comp.model && comp.material);
 

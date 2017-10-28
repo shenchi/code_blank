@@ -1,17 +1,25 @@
 #include "Entity.h"
 
+#include <cassert>
+
 namespace tofu
 {
+	HandleAllocator<Entity, MAX_ENTITIES> Entity::entityAlloc;
 
-	Entity Entity::entities[MAX_ENTITIES] = {};
+	int32_t Entity::Destroy()
+	{
+		assert(!*this);
 
-	uint32_t Entity::numEntities = 0;
+		entityAlloc.Free(*this);
 
-	Entity Entity::Invalid = Entity{ MAX_ENTITIES };
+		// TODO remove all components;
+
+		return TF_OK;
+	}
 
 	Entity Entity::Create()
 	{
-		return Entity(numEntities++); // TODO
+		return Entity(entityAlloc.Allocate());
 	}
 
 }

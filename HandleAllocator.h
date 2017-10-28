@@ -53,12 +53,17 @@ namespace tofu
 				indices[lastIdx] = handle.id;
 
 				indices[idx] = lastHandle;
-				handles[lasthandle] = idx;
+				handles[lastHandle] = idx;
 			}
 
 			handles[handle.id] = UINT32_MAX;
 
 			numInUse--;
+		}
+
+		inline bool IsValid(Handle handle) const
+		{
+			return handles[handle.id] < numInUse;
 		}
 
 	private:

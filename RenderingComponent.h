@@ -7,7 +7,7 @@ namespace tofu
 {
 	class RenderingSystem;
 
-	class RenderingComponent : public Component<RenderingComponent>
+	class RenderingComponentData
 	{
 	public:
 		void SetModel(ModelHandle handle) { model = handle; }
@@ -18,9 +18,7 @@ namespace tofu
 
 		ModelHandle			model;
 		MaterialHandle		material;
-
-		static RenderingComponent* GetAllComponents() { return components; }
-		//static uint32_t GetComponentCount() { return numComponents; }
 	};
 
+	typedef Component<RenderingComponentData> RenderingComponent;
 }

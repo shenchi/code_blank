@@ -16,7 +16,7 @@ int32_t TestGame::Init()
 
 	Component<RenderingComponent> r = e.AddComponent<RenderingComponent>();
 
-	ModelHandle model = RenderingSystem::instance()->CreateModel("assets/torus.model");
+	ModelHandle model = RenderingSystem::instance()->CreateModel("assets/cube.model");
 	MaterialHandle material = RenderingSystem::instance()->CreateMaterial(MaterialType::TestMaterial);
 
 	r->SetMaterial(material);
