@@ -18,7 +18,7 @@
 	struct CLASS_NAME##Handle \
 	{ \
 		uint32_t id; \
-		explicit CLASS_NAME##Handle(uint32_t _id = UINT32_MAX) : id (id) {} \
+		explicit CLASS_NAME##Handle(uint32_t _id = UINT32_MAX) : id (_id) {} \
 		operator bool() const { return id != UINT32_MAX; } \
 	};
 

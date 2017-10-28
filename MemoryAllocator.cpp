@@ -46,6 +46,7 @@ namespace tofu
 
 		memoryBase = ptr;
 		memorySize = size;
+		currentSize = 0u;
 
 		this->nativeAlloc = nativeAlloc;
 
@@ -90,16 +91,16 @@ namespace tofu
 	{
 		assert(nullptr != memoryBase);
 
-		size_t newSize = align_to(currentSize + size, alignment);
+		size_t offset = align_to(currentSize, alignment);
 
-		if (newSize > memorySize)
+		if (offset + size > memorySize)
 		{
 			return nullptr;
 		}
 
-		currentSize = newSize;
+		currentSize = offset + size;
 
-		return reinterpret_cast<uint8_t*>(memoryBase) + newSize;
+		return reinterpret_cast<uint8_t*>(memoryBase) + offset;
 	}
 
 }

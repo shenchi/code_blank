@@ -16,7 +16,23 @@ namespace tofu
 
 	RenderingSystem::RenderingSystem()
 		:
-		renderer(nullptr)
+		renderer(nullptr),
+		modelHandleAlloc(),
+		meshHandleAlloc(),
+		materialHandleAlloc(),
+		modelTable(),
+		bufferHandleAlloc(),
+		vertexShaderHandleAlloc(),
+		pixelShaderHandleAlloc(),
+		pipelineStateHandleAlloc(),
+		frameNo(0),
+		allocNo(0),
+		defaultVertexShader(),
+		defaultPixelShader(),
+		meshes(),
+		models(),
+		materials(),
+		cmdBuf(nullptr)
 	{
 		assert(nullptr == _instance);
 		_instance = this;
@@ -31,6 +47,7 @@ namespace tofu
 
 	int32_t RenderingSystem::Init()
 	{
+		// Initialize Memory Management for Rendering
 		assert(TF_OK == MemoryAllocator::Allocators[ALLOC_LEVEL_BASED_MEM].Init(
 			LEVEL_BASED_MEM_SIZE, 
 			LEVEL_BASED_MEM_ALIGN)
@@ -46,8 +63,10 @@ namespace tofu
 			);
 		}
 
-		frameNo = 0;
+		// Initialize Renderer Backend
+		assert(TF_OK == renderer->Init());
 
+		// Create Built-in Shaders
 		{
 			// TODO
 			//defaultVertexShader = vertexShaderHandleAlloc.Allocate();
@@ -55,6 +74,10 @@ namespace tofu
 			//assert(defaultVertexShader && defaultPixelShader);
 			
 		}
+
+		//
+		frameNo = 0;
+		BeginFrame();
 
 		return TF_OK;
 	}
@@ -76,7 +99,12 @@ namespace tofu
 
 	int32_t RenderingSystem::BeginFrame()
 	{
-		assert(false && "sync need to be done.");
+		if (nullptr != cmdBuf)
+		{
+			return TF_OK;
+		}
+
+		//assert(false && "sync need to be done.");
 
 		allocNo = ALLOC_FRAME_BASED_MEM + frameNo % FRAME_BUFFER_COUNT;
 		MemoryAllocator::Allocators[allocNo].Reset();
@@ -129,6 +157,9 @@ namespace tofu
 		renderer->Present();
 
 		frameNo++;
+
+		cmdBuf = nullptr;
+
 		return TF_OK;
 	}
 

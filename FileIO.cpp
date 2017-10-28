@@ -11,6 +11,10 @@ namespace tofu
 		MemoryAllocator& alloc = MemoryAllocator::Allocators[allocNo];
 
 		FILE* fp = fopen(file, "rb");
+		if (nullptr == fp)
+		{
+			return TF_UNKNOWN_ERR;
+		}
 
 		if (0 != fseek(fp, 0, SEEK_END))
 		{
@@ -20,6 +24,12 @@ namespace tofu
 
 		long fileSize = ftell(fp);
 		if (fileSize < 0)
+		{
+			fclose(fp);
+			return TF_UNKNOWN_ERR;
+		}
+
+		if (0 != fseek(fp, 0, SEEK_SET))
 		{
 			fclose(fp);
 			return TF_UNKNOWN_ERR;
