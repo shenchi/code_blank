@@ -247,6 +247,7 @@ namespace tofu
 			PixelShader					pixelShaders[MAX_PIXEL_SHADERS];
 			PipelineState				pipelineStates[MAX_PIPELINE_STATES];
 
+			PipelineStateHandle			currentPipelineState;
 
 			typedef int32_t(RendererDX11::*cmd_callback_t)(void*);
 
@@ -844,9 +845,52 @@ namespace tofu
 				return TF_OK;
 			}
 
-			int32_t Draw(void* params)
+			int32_t Draw(void* _params)
 			{
-				// TODO
+				DrawParams* params = reinterpret_cast<DrawParams*>(_params);
+
+				assert(true == params->pipelineState);
+
+				if (params->pipelineState != currentPipelineState)
+				{
+					PipelineState& pso = pipelineStates[params->pipelineState.id];
+
+					context->VSSetShader(vertexShaders[pso.vertexShader.id].shader, nullptr, 0);
+					context->PSSetShader(pixelShaders[pso.pixelShader.id].shader, nullptr, 0);
+					context->RSSetState(pso.rasterizerState);
+					context->OMSetDepthStencilState(pso.depthStencilState, 0u);
+					context->OMSetBlendState(pso.blendState, nullptr, 0xffffffffu);
+
+					currentPipelineState = params->pipelineState;
+				}
+
+				{
+					context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+					context->IASetInputLayout(nullptr); // TODO
+
+					assert(true == params->vertexBuffer);
+					Buffer& vb = buffers[params->vertexBuffer.id];
+					assert(vb.bindingFlags & BINDING_VERTEX_BUFFER);
+					assert(nullptr != vb.buf);
+					{
+						ID3D11Buffer* buffers[] = { vb.buf };
+						UINT strides[] = { vb.stride };
+						UINT offsets[] = { 0 };
+						context->IASetVertexBuffers(0, 1, buffers, strides, offsets);
+					}
+
+					assert(true == params->indexBuffer);
+					Buffer& ib = buffers[params->indexBuffer.id];
+					assert(ib.bindingFlags & BINDING_INDEX_BUFFER);
+					assert(nullptr != ib.buf);
+					context->IASetIndexBuffer(ib.buf, DXGI_FORMAT_R16_UINT, 0);
+				}
+
+				{
+					//context->vssetcon
+				}
+				
+
 
 				return TF_OK;
 			}

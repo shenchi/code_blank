@@ -12,9 +12,9 @@ int32_t TestGame::Init()
 {
 	Entity e = Entity::Create();
 
-	Component<TransformComponent> t = e.AddComponent<TransformComponent>();
+	TransformComponent t = e.AddComponent<TransformComponent>();
 
-	Component<RenderingComponent> r = e.AddComponent<RenderingComponent>();
+	RenderingComponent r = e.AddComponent<RenderingComponent>();
 
 	ModelHandle model = RenderingSystem::instance()->CreateModel("assets/cube.model");
 	MaterialHandle material = RenderingSystem::instance()->CreateMaterial(MaterialType::TestMaterial);

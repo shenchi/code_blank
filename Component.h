@@ -19,6 +19,8 @@ namespace tofu
 	template<class T>
 	class Component
 	{
+	public:
+		typedef T component_data_t;
 	protected:
 		Entity		entity;
 		uint32_t*	compIdx;

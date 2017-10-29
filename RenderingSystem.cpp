@@ -269,6 +269,7 @@ namespace tofu
 			params->bindingFlags = BINDING_VERTEX_BUFFER;
 			params->data = vertices;
 			params->size = vertexBufferSize;
+			params->stride = header->CalculateVertexSize();
 
 			cmdBuf->Add(RendererCommand::CreateBuffer, params);
 		}

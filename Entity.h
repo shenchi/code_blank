@@ -19,24 +19,24 @@ namespace tofu
 		inline operator bool() const { return entityAlloc.IsValid(id); }
 
 		template<class T>
-		Component<T> AddComponent()
+		Component<typename T::component_data_t> AddComponent()
 		{
 			//static_assert(std::is_base_of<Component<T>, T>::value, "This is not a component type");
-			Component<T> c = GetComponent<T>();
+			Component<typename T::component_data_t> c = GetComponent<T>();
 
 			if (c)
 			{
 				return c;
 			}
 
-			return Component<T>::Create(*this);
+			return Component<typename T::component_data_t>::Create(*this);
 		}
 
 		template<class T>
-		Component<T> GetComponent()
+		Component<typename T::component_data_t> GetComponent()
 		{
 			//static_assert(std::is_base_of<Component<T>, T>::value, "This is not a component type");
-			return Component<T>(*this);
+			return Component<typename T::component_data_t>(*this);
 		}
 
 		int32_t Destroy();
