@@ -162,9 +162,12 @@ namespace tofu
 		uint32_t			startIndex;
 		uint32_t			startVertex;
 		uint32_t			indexCount;
-		BufferHandle		constantBuffers[MAX_CONSTANT_BUFFER_BINDINGS];
-		TextureHandle		textures[MAX_TEXTURE_BINDINGS];
-		SamplerHandle		samplers[MAX_SAMPLER_BINDINGS];
+		BufferHandle		vsConstantBuffers[MAX_CONSTANT_BUFFER_BINDINGS];
+		BufferHandle		psConstantBuffers[MAX_CONSTANT_BUFFER_BINDINGS];
+		TextureHandle		vsTextures[MAX_TEXTURE_BINDINGS];
+		TextureHandle		psTextures[MAX_TEXTURE_BINDINGS];
+		SamplerHandle		vsSamplers[MAX_SAMPLER_BINDINGS];
+		SamplerHandle		psSamplers[MAX_SAMPLER_BINDINGS];
 	};
 
 	class Renderer

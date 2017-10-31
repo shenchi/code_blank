@@ -865,6 +865,93 @@ namespace tofu
 				}
 
 				{
+					ID3D11Buffer* cbs[MAX_CONSTANT_BUFFER_BINDINGS] = {};
+					for (uint32_t i = 0; i < MAX_CONSTANT_BUFFER_BINDINGS; i++)
+					{
+						if (params->vsConstantBuffers[i])
+						{
+							Buffer& buf = buffers[params->vsConstantBuffers[i].id];
+							assert(nullptr != buf.buf);
+							assert(buf.bindingFlags & BINDING_CONSTANT_BUFFER);
+
+							cbs[i] = buf.buf;
+						}
+					}
+					context->VSSetConstantBuffers(0, MAX_CONSTANT_BUFFER_BINDINGS, cbs);
+
+					ID3D11ShaderResourceView* srvs[MAX_TEXTURE_BINDINGS] = {};
+					for (uint32_t i = 0; i < MAX_TEXTURE_BINDINGS; i++)
+					{
+						if (params->vsTextures[i])
+						{
+							Texture& tex = textures[params->vsTextures[i].id];
+							assert(nullptr != tex.srv);
+							assert(tex.bindingFlags & BINDING_SHADER_RESOURCE);
+
+							srvs[i] = tex.srv;
+						}
+					}
+					context->VSSetShaderResources(0, MAX_TEXTURE_BINDINGS, srvs);
+					
+					ID3D11SamplerState* samps[MAX_SAMPLER_BINDINGS] = {};
+					for (uint32_t i = 0; i < MAX_SAMPLER_BINDINGS; i++)
+					{
+						if (params->vsSamplers[i])
+						{
+							Sampler& samp = samplers[params->vsSamplers[i].id];
+							assert(nullptr != samp.samp);
+							
+							samps[i] = samp.samp;
+						}
+					}
+					context->VSSetSamplers(0, MAX_SAMPLER_BINDINGS, samps);
+				}
+				
+				{
+					ID3D11Buffer* cbs[MAX_CONSTANT_BUFFER_BINDINGS] = {};
+					for (uint32_t i = 0; i < MAX_CONSTANT_BUFFER_BINDINGS; i++)
+					{
+						if (params->psConstantBuffers[i])
+						{
+							Buffer& buf = buffers[params->psConstantBuffers[i].id];
+							assert(nullptr != buf.buf);
+							assert(buf.bindingFlags & BINDING_CONSTANT_BUFFER);
+
+							cbs[i] = buf.buf;
+						}
+					}
+					context->PSSetConstantBuffers(0, MAX_CONSTANT_BUFFER_BINDINGS, cbs);
+
+					ID3D11ShaderResourceView* srvs[MAX_TEXTURE_BINDINGS] = {};
+					for (uint32_t i = 0; i < MAX_TEXTURE_BINDINGS; i++)
+					{
+						if (params->psTextures[i])
+						{
+							Texture& tex = textures[params->psTextures[i].id];
+							assert(nullptr != tex.srv);
+							assert(tex.bindingFlags & BINDING_SHADER_RESOURCE);
+
+							srvs[i] = tex.srv;
+						}
+					}
+					context->PSSetShaderResources(0, MAX_TEXTURE_BINDINGS, srvs);
+
+					ID3D11SamplerState* samps[MAX_SAMPLER_BINDINGS] = {};
+					for (uint32_t i = 0; i < MAX_SAMPLER_BINDINGS; i++)
+					{
+						if (params->psSamplers[i])
+						{
+							Sampler& samp = samplers[params->psSamplers[i].id];
+							assert(nullptr != samp.samp);
+
+							samps[i] = samp.samp;
+						}
+					}
+					context->PSSetSamplers(0, MAX_SAMPLER_BINDINGS, samps);
+				}
+				
+
+				{
 					context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 					context->IASetInputLayout(nullptr); // TODO
 
@@ -884,13 +971,9 @@ namespace tofu
 					assert(ib.bindingFlags & BINDING_INDEX_BUFFER);
 					assert(nullptr != ib.buf);
 					context->IASetIndexBuffer(ib.buf, DXGI_FORMAT_R16_UINT, 0);
-				}
 
-				{
-					//context->vssetcon
+					context->DrawIndexed(params->indexCount, params->startIndex, params->startVertex);
 				}
-				
-
 
 				return TF_OK;
 			}
