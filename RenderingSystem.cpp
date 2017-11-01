@@ -258,7 +258,7 @@ namespace tofu
 		}
 
 		uint32_t vertexBufferSize = verticesCount * header->CalculateVertexSize();
-		uint32_t indexBufferSize = indicesCount * sizeof(uint32_t);
+		uint32_t indexBufferSize = indicesCount * sizeof(uint16_t);
 
 		uint8_t* vertices = reinterpret_cast<uint8_t*>(meshInfos + header->NumMeshes);
 		uint8_t* indices = vertices + vertexBufferSize;

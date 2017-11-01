@@ -3,6 +3,8 @@
 
 #include "NativeContext.h"
 
+#include "MemoryAllocator.h"
+
 #include <Windows.h>
 #include <d3d11_1.h>
 
@@ -144,11 +146,15 @@ namespace
 	struct VertexShader
 	{
 		ID3D11VertexShader*			shader;
+		void*						data;
+		size_t						size;
 	};
 
 	struct PixelShader
 	{
 		ID3D11PixelShader*			shader;
+		void*						data;
+		size_t						size;
 	};
 
 	struct PipelineState
@@ -156,8 +162,10 @@ namespace
 		ID3D11RasterizerState*		rasterizerState;
 		ID3D11DepthStencilState*	depthStencilState;
 		ID3D11BlendState*			blendState;
+		ID3D11InputLayout*			inputLayout;
 		tofu::VertexShaderHandle	vertexShader;
 		tofu::PixelShaderHandle		pixelShader;
+		D3D11_VIEWPORT				viewport;
 	};
 }
 
@@ -165,8 +173,6 @@ namespace tofu
 {
 	namespace dx11
 	{
-
-
 
 		class RendererDX11 : public Renderer
 		{
@@ -188,13 +194,17 @@ namespace tofu
 					return result;
 				}
 
+				if (TF_OK != (result = InitPipelineStates()))
+				{
+					return result;
+				}
+
 				return TF_OK;
 			}
 
 			virtual int32_t Release() override
 			{
 				assert(false && "TODO: release resources");
-
 
 				swapChain->Release();
 				context->Release();
@@ -367,71 +377,79 @@ namespace tofu
 			{
 				HRESULT hr = S_OK;
 
+
+				ID3D11Texture2D* backbufferTex = nullptr;
+				if (S_OK != (hr = swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backbufferTex)))
 				{
-					ID3D11Texture2D* backbufferTex = nullptr;
-					if (S_OK != (hr = swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backbufferTex)))
-					{
-						return TF_UNKNOWN_ERR;
-					}
-
-					D3D11_TEXTURE2D_DESC desc = {};
-					backbufferTex->GetDesc(&desc);
-
-					Texture& rt = textures[MAX_TEXTURES + 1];
-
-					//rt.Reset(TextureType::TEXTURE_2D, PixelFormatFromDXGI(desc.Format), BINDING_RENDER_TARGET, width, height);
-					rt = {};
-					rt.width = winWidth;
-					rt.height = winHeight;
-					rt.arraySize = 1;
-
-					if (S_OK != (hr = device->CreateRenderTargetView(backbufferTex, nullptr, &(rt.rtv))))
-					{
-						return -1;
-					}
-					rt.tex = backbufferTex;
+					return TF_UNKNOWN_ERR;
 				}
 
+				D3D11_TEXTURE2D_DESC desc = {};
+				backbufferTex->GetDesc(&desc);
+
+				Texture& rt = textures[MAX_TEXTURES + 1];
+
+				//rt.Reset(TextureType::TEXTURE_2D, PixelFormatFromDXGI(desc.Format), BINDING_RENDER_TARGET, width, height);
+				rt = {};
+				rt.width = winWidth;
+				rt.height = winHeight;
+				rt.arraySize = 1;
+
+				if (S_OK != (hr = device->CreateRenderTargetView(backbufferTex, nullptr, &(rt.rtv))))
 				{
-					Texture& ds = textures[MAX_TEXTURES];
-
-					//ds.Reset(TextureType::TEXTURE_2D, PixelFormat::FORMAT_D24_UNORM_S8_UINT, width, height);
-					ds = {};
-					ds.width = winWidth;
-					ds.height = winHeight;
-					ds.arraySize = 1;
-
-					ID3D11Texture2D* depthStencilTex = nullptr;
-					D3D11_TEXTURE2D_DESC depthDesc{ 0 };
-					depthDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-					depthDesc.Width = winWidth;
-					depthDesc.Height = winHeight;
-					depthDesc.ArraySize = 1;
-					depthDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-					depthDesc.MipLevels = 1;
-					depthDesc.SampleDesc.Count = 1;
-					depthDesc.SampleDesc.Quality = 0;
-					if (S_OK != (hr = device->CreateTexture2D(&depthDesc, nullptr, &depthStencilTex)))
-					{
-						return -1;
-					}
-
-					if (S_OK != (hr = device->CreateDepthStencilView(depthStencilTex, nullptr, &(ds.dsv))))
-					{
-						return -1;
-					}
-					ds.tex = depthStencilTex;
+					return -1;
 				}
+				rt.tex = backbufferTex;
+
+
+
+				Texture& ds = textures[MAX_TEXTURES];
+
+				//ds.Reset(TextureType::TEXTURE_2D, PixelFormat::FORMAT_D24_UNORM_S8_UINT, width, height);
+				ds = {};
+				ds.width = winWidth;
+				ds.height = winHeight;
+				ds.arraySize = 1;
+
+				ID3D11Texture2D* depthStencilTex = nullptr;
+				D3D11_TEXTURE2D_DESC depthDesc{ 0 };
+				depthDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+				depthDesc.Width = winWidth;
+				depthDesc.Height = winHeight;
+				depthDesc.ArraySize = 1;
+				depthDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+				depthDesc.MipLevels = 1;
+				depthDesc.SampleDesc.Count = 1;
+				depthDesc.SampleDesc.Quality = 0;
+				if (S_OK != (hr = device->CreateTexture2D(&depthDesc, nullptr, &depthStencilTex)))
+				{
+					return -1;
+				}
+
+				if (S_OK != (hr = device->CreateDepthStencilView(depthStencilTex, nullptr, &(ds.dsv))))
+				{
+					return -1;
+				}
+				ds.tex = depthStencilTex;
+
+
+				context->OMSetRenderTargets(1, &(rt.rtv), ds.dsv);
 
 				return 0;
 			}
-			
+
+			int32_t InitPipelineStates()
+			{
+				context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+				return TF_OK;
+			}
+
 			int32_t Nop(void*) { return TF_OK; }
 
 			int32_t CreateBuffer(void* _params)
 			{
 				CreateBufferParams* params = reinterpret_cast<CreateBufferParams*>(_params);
-				
+
 				assert(true == params->handle);
 				uint32_t id = params->handle.id;
 
@@ -447,19 +465,19 @@ namespace tofu
 				buffers[id] = {};
 
 				CD3D11_BUFFER_DESC bufDesc(
-					params->size, 
+					params->size,
 					(params->bindingFlags & 0x7u),
 					(params->dynamic == 1 ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT),
 					(params->dynamic == 1 ? D3D11_CPU_ACCESS_WRITE : 0U),
 					(isShaderResource ? D3D11_RESOURCE_MISC_BUFFER_STRUCTURED : 0U),
 					params->stride
-					);
+				);
 
 				D3D11_SUBRESOURCE_DATA subResData = {};
 				subResData.pSysMem = params->data;
 
 				if (S_OK != device->CreateBuffer(
-					&bufDesc, 
+					&bufDesc,
 					(nullptr == params->data ? nullptr : &subResData),
 					&(buffers[id].buf)))
 				{
@@ -473,8 +491,8 @@ namespace tofu
 					srvDesc.Buffer.NumElements = params->size / params->stride;
 					srvDesc.Format = PixelFormatTable[params->format];
 					HRESULT ret = device->CreateShaderResourceView(
-						buffers[id].buf, 
-						&srvDesc, 
+						buffers[id].buf,
+						&srvDesc,
 						&(buffers[id].srv)
 					);
 					assert(S_OK == ret);
@@ -498,7 +516,7 @@ namespace tofu
 
 				assert(nullptr != buffers[id].buf);
 				assert(params->size > 0 && params->offset + params->size < buffers[id].size);
-				
+
 				bool updateWholeBuffer = (params->offset == 0 && params->size == buffers[id].size);
 
 				if (buffers[id].dynamic)
@@ -530,10 +548,10 @@ namespace tofu
 					box.right = params->offset + params->size;
 
 					context->UpdateSubresource(
-						buffers[id].buf, 0, 
-						(updateWholeBuffer ? nullptr : &box), 
-						params->data, 
-						0, 
+						buffers[id].buf, 0,
+						(updateWholeBuffer ? nullptr : &box),
+						params->data,
+						0,
 						0);
 				}
 
@@ -543,7 +561,7 @@ namespace tofu
 			int32_t DestroyBuffer(void* params)
 			{
 				BufferHandle* handle = reinterpret_cast<BufferHandle*>(params);
-				
+
 				assert(true == *handle);
 				uint32_t id = handle->id;
 
@@ -590,8 +608,8 @@ namespace tofu
 				subResData.SysMemPitch = params->pitch;
 
 				if (S_OK != device->CreateTexture2D(
-					&texDesc, 
-					(nullptr == params->data ? nullptr : &subResData), 
+					&texDesc,
+					(nullptr == params->data ? nullptr : &subResData),
 					&(textures[id].tex)))
 				{
 					return TF_UNKNOWN_ERR;
@@ -702,7 +720,7 @@ namespace tofu
 				assert(nullptr == samplers[id].samp);
 
 				CD3D11_SAMPLER_DESC samplerDesc(D3D11_DEFAULT);
-				
+
 				if (S_OK != device->CreateSamplerState(&samplerDesc, &(samplers[id].samp)))
 				{
 					return TF_UNKNOWN_ERR;
@@ -738,10 +756,14 @@ namespace tofu
 
 				assert(nullptr == vertexShaders[id].shader);
 
-				if (S_OK != device->CreateVertexShader(params->data, params->size, nullptr, &(vertexShaders[id].shader)))
-				{
-					return TF_UNKNOWN_ERR;
-				}
+				void* ptr = MemoryAllocator::Allocators[ALLOC_LEVEL_BASED_MEM].Allocate(params->size, 4);
+				assert(nullptr != ptr);
+				memcpy(ptr, params->data, params->size);
+
+				assert(S_OK == device->CreateVertexShader(ptr, params->size, nullptr, &(vertexShaders[id].shader)));
+
+				vertexShaders[id].data = ptr;
+				vertexShaders[id].size = params->size;
 
 				return TF_OK;
 			}
@@ -773,10 +795,14 @@ namespace tofu
 
 				assert(nullptr == pixelShaders[id].shader);
 
-				if (S_OK != device->CreatePixelShader(params->data, params->size, nullptr, &(pixelShaders[id].shader)))
-				{
-					return TF_UNKNOWN_ERR;
-				}
+				void* ptr = MemoryAllocator::Allocators[ALLOC_LEVEL_BASED_MEM].Allocate(params->size, 4);
+				assert(nullptr != ptr);
+				memcpy(ptr, params->data, params->size);
+
+				assert(S_OK == device->CreatePixelShader(params->data, params->size, nullptr, &(pixelShaders[id].shader)));
+
+				pixelShaders[id].data = ptr;
+				pixelShaders[id].size = params->size;
 
 				return TF_OK;
 			}
@@ -820,6 +846,26 @@ namespace tofu
 				assert(true == params->vertexShader && nullptr != vertexShaders[id].shader);
 				assert(true == params->pixelShader && nullptr != pixelShaders[id].shader);
 
+				D3D11_INPUT_ELEMENT_DESC inputElemDesc[] =
+				{
+					{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+					{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+					{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+					{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+				};
+
+				assert(S_OK == device->CreateInputLayout(
+					inputElemDesc,
+					sizeof(inputElemDesc) / sizeof(D3D11_INPUT_ELEMENT_DESC),
+					vertexShaders[id].data,
+					vertexShaders[id].size,
+					&(pipelineStates[id].inputLayout)
+				));
+
+				pipelineStates[id].viewport = {
+					0.0f, 0.0f, (FLOAT)winWidth, (FLOAT)winHeight, 0.0f, 1.0f
+				};
+
 				pipelineStates[id].vertexShader = params->vertexShader;
 				pipelineStates[id].pixelShader = params->pixelShader;
 
@@ -839,6 +885,7 @@ namespace tofu
 				pipelineStates[id].depthStencilState->Release();
 				pipelineStates[id].rasterizerState->Release();
 				pipelineStates[id].blendState->Release();
+				pipelineStates[id].inputLayout->Release();
 
 				pipelineStates[id] = {};
 
@@ -855,9 +902,11 @@ namespace tofu
 				{
 					PipelineState& pso = pipelineStates[params->pipelineState.id];
 
+					context->IASetInputLayout(pso.inputLayout);
 					context->VSSetShader(vertexShaders[pso.vertexShader.id].shader, nullptr, 0);
 					context->PSSetShader(pixelShaders[pso.pixelShader.id].shader, nullptr, 0);
 					context->RSSetState(pso.rasterizerState);
+					context->RSSetViewports(1, &(pso.viewport));
 					context->OMSetDepthStencilState(pso.depthStencilState, 0u);
 					context->OMSetBlendState(pso.blendState, nullptr, 0xffffffffu);
 
@@ -892,7 +941,7 @@ namespace tofu
 						}
 					}
 					context->VSSetShaderResources(0, MAX_TEXTURE_BINDINGS, srvs);
-					
+
 					ID3D11SamplerState* samps[MAX_SAMPLER_BINDINGS] = {};
 					for (uint32_t i = 0; i < MAX_SAMPLER_BINDINGS; i++)
 					{
@@ -900,13 +949,13 @@ namespace tofu
 						{
 							Sampler& samp = samplers[params->vsSamplers[i].id];
 							assert(nullptr != samp.samp);
-							
+
 							samps[i] = samp.samp;
 						}
 					}
 					context->VSSetSamplers(0, MAX_SAMPLER_BINDINGS, samps);
 				}
-				
+
 				{
 					ID3D11Buffer* cbs[MAX_CONSTANT_BUFFER_BINDINGS] = {};
 					for (uint32_t i = 0; i < MAX_CONSTANT_BUFFER_BINDINGS; i++)
@@ -949,12 +998,9 @@ namespace tofu
 					}
 					context->PSSetSamplers(0, MAX_SAMPLER_BINDINGS, samps);
 				}
-				
+
 
 				{
-					context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-					context->IASetInputLayout(nullptr); // TODO
-
 					assert(true == params->vertexBuffer);
 					Buffer& vb = buffers[params->vertexBuffer.id];
 					assert(vb.bindingFlags & BINDING_VERTEX_BUFFER);

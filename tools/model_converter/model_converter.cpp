@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
 	if (nullptr == file)
 	{
 		printf("failed to create output file.\n");
-		return -1;
+		return -2;
 	}
 
 	tofu::model::ModelHeader header = {};
@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
 	if (1 != fwrite(&header, sizeof(header), 1, file))
 	{
 		printf("failed to write header data.\n");
-		return -1;
+		return -3;
 	}
 
 	// writing mesh data
@@ -100,7 +100,7 @@ int main(int argc, char* argv[])
 		if (1 != fwrite(&meshInfo, sizeof(meshInfo), 1, file))
 		{
 			printf("failed to write mesh data.\n");
-			return -1;
+			return -4;
 		}
 	}
 
@@ -117,14 +117,14 @@ int main(int argc, char* argv[])
 	if (nullptr == buffer)
 	{
 		printf("failed to allocate buffer.\n");
-		return -3;
+		return -5;
 	}
 
 	// populate vertices data
 	if (bStructureOfArray)
 	{
 		printf("not implemented yet.\n");
-		return -2;
+		return -6;
 	}
 	else
 	{
@@ -174,7 +174,7 @@ int main(int argc, char* argv[])
 	// populate indices data
 	{
 		uint16_t* indices = reinterpret_cast<uint16_t*>(
-			reinterpret_cast<uint8_t*>(buffer) + vertexSize
+			reinterpret_cast<uint8_t*>(buffer) + verticesDataSize
 			);
 
 		for (uint32_t i = 0; i < header.NumMeshes; ++i)
@@ -190,7 +190,7 @@ int main(int argc, char* argv[])
 				if (a > UINT16_MAX || b > UINT16_MAX || c > UINT16_MAX)
 				{
 					printf("index larger overflow 16 bits.\n");
-					return -4;
+					return -7;
 				}
 
 				*indices = a;
@@ -207,7 +207,7 @@ int main(int argc, char* argv[])
 	if (1 != fwrite(buffer, bufferSize, 1, file))
 	{
 		printf("failed to write buffer to file.\n");
-		return -1;
+		return -8;
 	}
 	free(buffer);
 
