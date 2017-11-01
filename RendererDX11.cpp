@@ -204,7 +204,37 @@ namespace tofu
 
 			virtual int32_t Release() override
 			{
-				assert(false && "TODO: release resources");
+#define ReleaseResources(RES_ARRAY, MAX_COUNT, MEMBER_TO_CHECK, DESTROY_FUNC) \
+				for (uint32_t i = 0; i < MAX_COUNT; i++) \
+				{ \
+					if (nullptr != RES_ARRAY[i].MEMBER_TO_CHECK) \
+					{ \
+						DESTROY_FUNC(&i); \
+					} \
+				} 
+
+				ReleaseResources(buffers, MAX_BUFFERS, buf, DestroyBuffer);
+				ReleaseResources(textures, MAX_TEXTURES, tex, DestroyTexture);
+				ReleaseResources(samplers, MAX_SAMPLERS, samp, DestroySampler);
+				ReleaseResources(vertexShaders, MAX_VERTEX_SHADERS, shader, DestroyVertexShader);
+				ReleaseResources(pixelShaders, MAX_PIXEL_SHADERS, shader, DestroyPixelShader);
+				ReleaseResources(pipelineStates, MAX_PIPELINE_STATES, depthStencilState, DestroyPipelineState);
+
+#undef ReleaseResources
+
+				{
+					Texture& rt = textures[MAX_TEXTURES + 1];
+					RELEASE(rt.srv);
+					RELEASE(rt.rtv);
+					RELEASE(rt.dsv);
+					RELEASE(rt.tex);
+
+					Texture& ds = textures[MAX_TEXTURES];
+					RELEASE(ds.srv);
+					RELEASE(ds.rtv);
+					RELEASE(ds.dsv);
+					RELEASE(ds.tex);
+				}
 
 				swapChain->Release();
 				context->Release();
@@ -278,6 +308,7 @@ namespace tofu
 				&RendererDX11::DestroyPixelShader,
 				&RendererDX11::CreatePipelineState,
 				&RendererDX11::DestroyPipelineState,
+				&RendererDX11::ClearRenderTargets,
 				&RendererDX11::Draw
 			};
 
@@ -888,6 +919,38 @@ namespace tofu
 				pipelineStates[id].inputLayout->Release();
 
 				pipelineStates[id] = {};
+
+				return TF_OK;
+			}
+
+			int32_t ClearRenderTargets(void* _params)
+			{
+				ClearParams* params = reinterpret_cast<ClearParams*>(_params);
+
+				for (uint32_t i = 0; i < MAX_RENDER_TARGET_BINDINGS; ++i)
+				{
+					if (!params->renderTargets[i])
+					{
+						break;
+					}
+
+					uint32_t id = params->renderTargets[i].id;
+					assert(nullptr != textures[id].rtv);
+
+					context->ClearRenderTargetView(textures[id].rtv, params->clearColor);
+				}
+
+				if (params->depthRenderTarget)
+				{
+					uint32_t id = params->depthRenderTarget.id;
+					assert(nullptr != textures[id].dsv);
+
+					context->ClearDepthStencilView(
+						textures[id].dsv,
+						D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
+						params->clearDepth,
+						params->clearStencil);
+				}
 
 				return TF_OK;
 			}

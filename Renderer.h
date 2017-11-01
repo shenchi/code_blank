@@ -30,6 +30,7 @@ namespace tofu
 			DestroyPixelShader,
 			CreatePipelineState,
 			DestroyPipelineState,
+			ClearRenderTargets,
 			Draw,
 			MaxRendererCommands
 		};
@@ -152,6 +153,34 @@ namespace tofu
 		VertexShaderHandle	vertexShader;
 		PixelShaderHandle	pixelShader;
 		// TODO
+	};
+
+	struct ClearParams
+	{
+		TextureHandle		renderTargets[MAX_RENDER_TARGET_BINDINGS];
+		float				clearColor[4];
+		TextureHandle		depthRenderTarget;
+		float				clearDepth;
+		uint8_t				clearStencil;
+
+		inline ClearParams()
+			:
+			renderTargets(),
+			clearColor(),
+			depthRenderTarget(MAX_TEXTURES),
+			clearDepth(1.0f),
+			clearStencil(0u)
+		{
+			renderTargets[0] = TextureHandle(MAX_TEXTURES + 1);
+		}
+
+		inline void SetClearColor(float r, float g, float b, float a)
+		{
+			clearColor[0] = r;
+			clearColor[1] = g;
+			clearColor[2] = b;
+			clearColor[3] = a;
+		}
 	};
 
 	struct DrawParams

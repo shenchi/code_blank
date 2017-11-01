@@ -145,6 +145,13 @@ namespace tofu
 
 	int32_t RenderingSystem::Update()
 	{
+		{	// clear
+			ClearParams* params = MemoryAllocator::Allocate<ClearParams>(allocNo);
+			params->SetClearColor(0.7f, 0.7f, 0.7f, 1.0f);
+
+			cmdBuf->Add(RendererCommand::ClearRenderTargets, params);
+		}
+
 		RenderingComponentData* comps = RenderingComponent::GetAllComponents();
 		uint32_t count = RenderingComponent::GetNumComponents();
 		

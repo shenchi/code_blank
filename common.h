@@ -52,5 +52,6 @@ namespace tofu
 	constexpr uint32_t MAX_CONSTANT_BUFFER_BINDINGS = 14;
 	constexpr uint32_t MAX_TEXTURE_BINDINGS = 16;
 	constexpr uint32_t MAX_SAMPLER_BINDINGS = 16;
+	constexpr uint32_t MAX_RENDER_TARGET_BINDINGS = 8;
 	
 }

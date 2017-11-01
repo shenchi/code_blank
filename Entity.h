@@ -33,7 +33,7 @@ namespace tofu
 		}
 
 		template<class T>
-		Component<typename T::component_data_t> GetComponent()
+		Component<typename T::component_data_t> GetComponent() const
 		{
 			//static_assert(std::is_base_of<Component<T>, T>::value, "This is not a component type");
 			return Component<typename T::component_data_t>(*this);

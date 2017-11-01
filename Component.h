@@ -87,7 +87,7 @@ namespace tofu
 			back_pointers[loc] = e;
 			pointers[e.id].idx = loc;
 
-			new (&components[loc]) T();
+			new (&components[loc]) T(e);
 
 			return Component<T>(e);
 		}

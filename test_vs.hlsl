@@ -8,5 +8,7 @@ struct VS_INPUT
 
 float4 main(VS_INPUT input) : SV_POSITION
 {
-	return input.position;
+	float4 pos = input.position;
+	pos.z = 0.5;
+	return pos;
 }
