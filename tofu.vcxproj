@@ -196,6 +196,7 @@
     <ClCompile Include="Script.cpp" />
     <ClCompile Include="ScriptingSystem.cpp" />
     <ClCompile Include="TestGame.cpp" />
+    <ClCompile Include="Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3rd_party\DirectXTex\DDSTextureLoader.h" />
@@ -250,6 +251,8 @@
     <ClInclude Include="Script.h" />
     <ClInclude Include="ScriptingSystem.h" />
     <ClInclude Include="TestGame.h" />
+    <ClInclude Include="TofuMath.h" />
+    <ClInclude Include="Transform.h" />
     <ClInclude Include="TransformComponent.h" />
   </ItemGroup>
   <ItemGroup>

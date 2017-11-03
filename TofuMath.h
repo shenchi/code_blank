@@ -346,21 +346,72 @@ namespace tofu
 
 		// quaternion
 
-		inline float4 quat(float theta, const float3& axis)
+		struct quat
 		{
-			float s = std::sinf(theta * 0.5f);
-			float c = std::cosf(theta * 0.5f);
-			return float4{ s * axis.x, s * axis.y, s * axis.z, c };
-		}
+			float x, y, z, w;
 
-		inline float4 quat(float pitch, float yaw, float roll)
-		{
-			float sp = std::sinf(pitch);
-			float sy = std::sinf(yaw);
-			float cp = std::cosf(pitch);
-			float cy = std::cosf(yaw);
-			return quat(roll, float3{cp * sy, sp, cp * cy});
-		}
+			inline quat()
+				:
+				x(0.0f), y(0.0f), z(0.0f), w(1.0f)
+			{ }
+
+			inline quat(const float4& v)
+				:
+				x(v.x), y(v.y), z(v.z), w(v.w)
+			{ }
+
+			inline quat(float theta, const float3& axis)
+			{
+				float s = std::sinf(theta * 0.5f);
+				float c = std::cosf(theta * 0.5f);
+				x = s * axis.x;
+				y = s * axis.y;
+				z = s * axis.z;
+				w = c;
+			}
+
+			inline quat(float pitch, float yaw, float roll)
+			{
+				float sp = std::sinf(pitch);
+				float sy = std::sinf(yaw);
+				float cp = std::cosf(pitch);
+				float cy = std::cosf(yaw);
+				quat(roll, float3{ cp * sy, sp, cp * cy });
+			}
+
+			inline operator float4() const
+			{
+				return float4{ x, y, z, w };
+			}
+
+			inline quat operator * (const quat& b) const
+			{
+				//x * b.x	
+				
+				return quat();
+			}
+
+			inline float3 to_eular() const
+			{
+				return float3();
+			}
+		};
+
+		//inline float4 quat(float theta, const float3& axis)
+		//{
+		//	float s = std::sinf(theta * 0.5f);
+		//	float c = std::cosf(theta * 0.5f);
+		//	return float4{ s * axis.x, s * axis.y, s * axis.z, c };
+		//}
+
+		//inline float4 quat(float pitch, float yaw, float roll)
+		//{
+		//	float sp = std::sinf(pitch);
+		//	float sy = std::sinf(yaw);
+		//	float cp = std::cosf(pitch);
+		//	float cy = std::cosf(yaw);
+		//	return quat(roll, float3{cp * sy, sp, cp * cy});
+		//}
 
 		// float4x4
 
