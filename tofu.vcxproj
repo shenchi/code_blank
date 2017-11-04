@@ -197,6 +197,7 @@
     <ClCompile Include="ScriptingSystem.cpp" />
     <ClCompile Include="TestGame.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="TransformComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3rd_party\DirectXTex\DDSTextureLoader.h" />

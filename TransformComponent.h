@@ -2,6 +2,7 @@
 
 #include "Component.h"
 #include "Transform.h"
+#include <vector>
 
 namespace tofu
 {
@@ -21,7 +22,7 @@ namespace tofu
 			dirty(1)
 		{}
 
-		inline void					SetParent(TransformComponent parent) { this->parent = parent; dirty = true; }
+		inline void					SetParent(TransformComponent parent);
 
 		inline TransformComponent	GetParent() const { return parent; }
 
@@ -36,11 +37,13 @@ namespace tofu
 		// TODO
 
 	private:
-		Entity				entity;
-		TransformComponent	parent;
-		Transform			localTransform;
-		Transform			worldTransform;
-		uint32_t			dirty : 1;
+		Entity							entity;
+		TransformComponent				parent;
+		std::vector<TransformComponent>	children;
+
+		Transform						localTransform;
+		Transform						worldTransform;
+		uint32_t						dirty : 1;
 	};
 
 }
