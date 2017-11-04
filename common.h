@@ -4,11 +4,19 @@
 
 #include "Error.h"
 
+#ifndef TF_INLINE
+#ifdef _MSC_VER
+#define TF_INLINE __forceinline
+#else
+#define TF_INLINE inline
+#endif
+#endif
+
 #define SINGLETON_DECL(CLASS_NAME) \
 	private:\
 		static CLASS_NAME* _instance;\
 	public:\
-		inline static CLASS_NAME* instance() { return _instance; }
+		TF_INLINE static CLASS_NAME* instance() { return _instance; }
 
 #define SINGLETON_IMPL(CLASS_NAME) \
 	CLASS_NAME* CLASS_NAME::_instance = nullptr;
@@ -18,9 +26,10 @@
 	struct CLASS_NAME##Handle \
 	{ \
 		uint32_t id; \
-		explicit CLASS_NAME##Handle(uint32_t _id = UINT32_MAX) : id (_id) {} \
-		operator bool() const { return id != UINT32_MAX; } \
+		TF_INLINE explicit CLASS_NAME##Handle(uint32_t _id = UINT32_MAX) : id (_id) {} \
+		TF_INLINE operator bool() const { return id != UINT32_MAX; } \
 	};
+
 
 namespace tofu
 {

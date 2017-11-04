@@ -8,12 +8,16 @@ namespace tofu
 	{
 		Transform t;
 		
+		t.rotation = other.rotation * rotation;
+		t.scale = scale * other.scale;
+		t.translation = other.rotation.rotate(other.scale * translation) + other.translation;
+
 		return t;
 	}
 
 	float4x4 Transform::GetMatrix() const
 	{
-		return math::float4x4();
+		return matrix::transform(translation, rotation, scale);
 	}
 }
 
