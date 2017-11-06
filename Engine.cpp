@@ -9,6 +9,8 @@
 
 #include "RenderingSystem.h"
 
+#include "InputSystem.h"
+
 namespace tofu
 {
 	float Time::TotalTime = 0.0f;
@@ -21,6 +23,7 @@ namespace tofu
 		nativeContext(nullptr),
 		renderingSystem(nullptr),
 		scriptingSystem(nullptr),
+		inputSystem(nullptr),
 		userModules(),
 		numUserModules(0),
 		timeCounterFreq(0),
@@ -77,6 +80,11 @@ namespace tofu
 		if (TF_OK != err) 
 			return err;
 
+		inputSystem = new InputSystem();
+		err = inputSystem->Init();
+		if (TF_OK != err)
+			return err;
+
 		return err;
 	}
 
@@ -100,6 +108,8 @@ namespace tofu
 
 			renderingSystem->BeginFrame();
 
+			inputSystem->Update();
+
 			scriptingSystem->Update();
 
 			for (uint32_t i = 0; i < numUserModules; i++)
@@ -118,6 +128,11 @@ namespace tofu
 		return err;
 	}
 
+	int32_t Engine::Quit()
+	{
+		return nativeContext->QuitApplication();
+	}
+
 	int32_t Engine::Shutdown()
 	{
 		for (uint32_t i = 0; i < numUserModules; i++)
@@ -126,14 +141,17 @@ namespace tofu
 			delete userModules[i];
 		}
 
-		assert(TF_OK == nativeContext->Shutdown());
-		delete nativeContext;
+		assert(TF_OK == inputSystem->Shutdown());
+		delete inputSystem;
 
 		assert(TF_OK == scriptingSystem->Shutdown());
 		delete scriptingSystem;
 
 		assert(TF_OK == renderingSystem->Shutdown());
 		delete renderingSystem;
+
+		assert(TF_OK == nativeContext->Shutdown());
+		delete nativeContext;
 
 		return TF_OK;
 	}

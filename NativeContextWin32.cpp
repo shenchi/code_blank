@@ -1,8 +1,10 @@
 #include "NativeContext.h"
 
 #include "Script.h"
+#include "InputStates.h"
 
 #include <Windows.h>
+#include <GamePad.h>
 #include <Keyboard.h>
 #include <Mouse.h>
 
@@ -55,9 +57,13 @@ namespace tofu
 	class NativeContextWin32 : public NativeContext
 	{
 	private:
-		HWND		hWnd;
-		HINSTANCE	hInstance;
+		HWND					hWnd;
+		HINSTANCE				hInstance;
 
+		DirectX::Keyboard*		keyboard;
+		DirectX::Mouse*			mouse;
+		DirectX::GamePad*		gamepad;
+		
 	public:
 		int32_t Init(Script* config) override
 		{
@@ -111,11 +117,21 @@ namespace tofu
 
 			ShowWindow(hWnd, SW_SHOW);
 
+			keyboard = new DirectX::Keyboard();
+			mouse = new DirectX::Mouse();
+			mouse->SetWindow(hWnd);
+			mouse->SetMode(DirectX::Mouse::Mode::MODE_RELATIVE);
+			gamepad = new DirectX::GamePad();
+
 			return TF_OK;
 		}
 
 		int32_t Shutdown() override
 		{
+			delete gamepad;
+			delete mouse;
+			delete keyboard;
+
 			UnregisterClass(g_WindowClassName, hInstance);
 			return TF_OK;
 		}
@@ -135,6 +151,11 @@ namespace tofu
 			return true;
 		}
 
+		int32_t QuitApplication() override
+		{
+			PostQuitMessage(0);
+			return TF_OK;
+		}
 
 		intptr_t GetContextHandle() override
 		{
@@ -153,6 +174,37 @@ namespace tofu
 			int64_t freq;
 			QueryPerformanceFrequency(reinterpret_cast<LARGE_INTEGER*>(&freq));
 			return freq;
+		}
+
+		void UpdateInputStates(InputStates* states) override
+		{
+			auto kb = keyboard->GetState();
+			memcpy(states, &kb, sizeof(kb));
+
+			auto m = mouse->GetState();
+			states->mouseDeltaX = static_cast<float>(m.x);
+			states->mouseDeltaY = static_cast<float>(m.y);
+
+			if (m.leftButton)
+			{
+				states->kb_mouse[0] |= (1u << TF_MOUSE_LButton);
+			}
+
+			if (m.rightButton)
+			{
+				states->kb_mouse[0] |= (1u << TF_MOUSE_RButton);
+			}
+
+			if (m.middleButton)
+			{
+				states->kb_mouse[0] |= (1u << TF_MOUSE_MButton);
+			}
+		
+			auto pad = gamepad->GetState(0);
+			if (pad.IsConnected())
+			{
+
+			}
 		}
 	};
 

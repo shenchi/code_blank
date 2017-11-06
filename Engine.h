@@ -8,6 +8,7 @@ namespace tofu
 	class Module;
 	class RenderingSystem;
 	class ScriptingSystem;
+	class InputSystem;
 
 	class Time
 	{
@@ -29,6 +30,8 @@ namespace tofu
 
 		int32_t Run();
 
+		int32_t Quit();
+
 	private:
 
 		int32_t Shutdown();
@@ -38,6 +41,7 @@ namespace tofu
 
 		RenderingSystem*	renderingSystem;
 		ScriptingSystem*	scriptingSystem;
+		InputSystem*		inputSystem;
 
 		Module*				userModules[MAX_USER_MODULES];
 		uint32_t			numUserModules;

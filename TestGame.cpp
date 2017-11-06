@@ -2,6 +2,7 @@
 #include "TestGame.h"
 
 #include "RenderingSystem.h"
+#include "InputSystem.h"
 
 using namespace tofu;
 
@@ -42,8 +43,12 @@ int32_t TestGame::Shutdown()
 
 int32_t TestGame::Update()
 {
-	static float time = 0.0f;
-	time += Time::DeltaTime;
-	t1->SetLocalPosition(math::float3{ sinf(time), 0, 0 });
+	t1->SetLocalPosition(math::float3{ sinf(Time::TotalTime), 0, 0 });
+
+	if (InputSystem::instance()->IsButtonDown(ButtonId::TF_KEY_Escape))
+	{
+		Engine::instance()->Quit();
+	}
+
 	return TF_OK;
 }

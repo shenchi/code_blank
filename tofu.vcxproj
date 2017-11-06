@@ -148,6 +148,7 @@
   <ItemGroup>
     <ClCompile Include="3rd_party\DirectXTex\DDSTextureLoader.cpp" />
     <ClCompile Include="3rd_party\DirectXTex\WICTextureLoader.cpp" />
+    <ClCompile Include="3rd_party\DirectXTK\Src\GamePad.cpp" />
     <ClCompile Include="3rd_party\DirectXTK\Src\Keyboard.cpp" />
     <ClCompile Include="3rd_party\DirectXTK\Src\Mouse.cpp" />
     <ClCompile Include="3rd_party\lua-5.3.4\src\lapi.c" />
@@ -187,9 +188,10 @@
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="FileIO.cpp" />
+    <ClCompile Include="InputSystem.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MemoryAllocator.cpp" />
-    <ClCompile Include="NativeContext.cpp" />
+    <ClCompile Include="NativeContextWin32.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RendererDX11.cpp" />
     <ClCompile Include="RenderingSystem.cpp" />
@@ -202,6 +204,7 @@
   <ItemGroup>
     <ClInclude Include="3rd_party\DirectXTex\DDSTextureLoader.h" />
     <ClInclude Include="3rd_party\DirectXTex\WICTextureLoader.h" />
+    <ClInclude Include="3rd_party\DirectXTK\Inc\GamePad.h" />
     <ClInclude Include="3rd_party\DirectXTK\Inc\Keyboard.h" />
     <ClInclude Include="3rd_party\DirectXTK\Inc\Mouse.h" />
     <ClInclude Include="3rd_party\DirectXTK\Src\pch.h" />
@@ -240,6 +243,8 @@
     <ClInclude Include="Error.h" />
     <ClInclude Include="FileIO.h" />
     <ClInclude Include="HandleAllocator.h" />
+    <ClInclude Include="InputStates.h" />
+    <ClInclude Include="InputSystem.h" />
     <ClInclude Include="MemoryAllocator.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="ModelFormat.h" />
