@@ -19,6 +19,10 @@ namespace tofu
 
 		virtual intptr_t GetContextHandle() = 0;
 
+		virtual int64_t GetTimeCounter() = 0;
+
+		virtual int64_t GetTimeCounterFrequency() = 0;
+
 	public:
 		static NativeContext* Create();
 	};

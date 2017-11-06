@@ -9,6 +9,7 @@
 
 #include "ModelFormat.h"
 
+#include "TransformComponent.h"
 #include "CameraComponent.h"
 #include "RenderingComponent.h"
 
@@ -51,7 +52,7 @@ namespace tofu
 	{
 		// Initialize Memory Management for Rendering
 		assert(TF_OK == MemoryAllocator::Allocators[ALLOC_LEVEL_BASED_MEM].Init(
-			LEVEL_BASED_MEM_SIZE, 
+			LEVEL_BASED_MEM_SIZE,
 			LEVEL_BASED_MEM_ALIGN)
 		);
 
@@ -60,7 +61,7 @@ namespace tofu
 			++i)
 		{
 			assert(TF_OK == MemoryAllocator::Allocators[i].Init(
-				FRAME_BASED_MEM_SIZE, 
+				FRAME_BASED_MEM_SIZE,
 				FRAME_BASED_MEM_ALIGN)
 			);
 		}
@@ -80,21 +81,23 @@ namespace tofu
 
 			{
 				CreateVertexShaderParams* params = MemoryAllocator::Allocate<CreateVertexShaderParams>(allocNo);
+				assert(nullptr != params);
 				params->handle = defaultVertexShader;
 
 				assert(TF_OK == FileIO::ReadFile(
-					"assets/test_vs.shader", 
-					&(params->data), 
-					&(params->size), 
-					4, 
+					"assets/test_vs.shader",
+					&(params->data),
+					&(params->size),
+					4,
 					allocNo)
-					);
+				);
 
 				cmdBuf->Add(RendererCommand::CreateVertexShader, params);
 			}
 
 			{
 				CreatePixelShaderParams* params = MemoryAllocator::Allocate<CreatePixelShaderParams>(allocNo);
+				assert(nullptr != params);
 				params->handle = defaultPixelShader;
 
 				assert(TF_OK == FileIO::ReadFile(
@@ -106,6 +109,41 @@ namespace tofu
 				);
 
 				cmdBuf->Add(RendererCommand::CreatePixelShader, params);
+			}
+		}
+
+		// constant buffers
+		{
+			transformBuffer = bufferHandleAlloc.Allocate();
+			assert(transformBuffer);
+
+			transformBufferSize = sizeof(math::float4x4) * MAX_ENTITIES;
+
+			{
+				CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
+				assert(nullptr != params);
+				params->handle = transformBuffer;
+				params->bindingFlags = BINDING_CONSTANT_BUFFER;
+				params->dynamic = 1;
+				params->size = transformBufferSize;
+
+				cmdBuf->Add(RendererCommand::CreateBuffer, params);
+			}
+
+			frameConstantBuffer = bufferHandleAlloc.Allocate();
+			assert(frameConstantBuffer);
+
+			frameConstantSize = sizeof(math::float4x4) * 2;
+
+			{
+				CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
+				assert(nullptr != params);
+				params->handle = frameConstantBuffer;
+				params->bindingFlags = BINDING_CONSTANT_BUFFER;
+				params->dynamic = 1;
+				params->size = frameConstantSize;
+
+				cmdBuf->Add(RendererCommand::CreateBuffer, params);
 			}
 		}
 
@@ -150,19 +188,78 @@ namespace tofu
 		assert(CameraComponent::GetNumComponents() > 0);
 		CameraComponentData& camera = CameraComponent::GetAllComponents()[0];
 
+		{
+			math::float4x4* data = reinterpret_cast<math::float4x4*>(MemoryAllocator::Allocators[allocNo].Allocate(sizeof(math::float4x4) * 2, 4));
+			assert(nullptr != data);
+			*data = camera.CalcViewMatrix();
+			*(data + 1) = camera.CalcProjectionMatrix();
+
+			UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
+			assert(nullptr != params);
+			params->handle = frameConstantBuffer;
+			params->data = data;
+			params->size = frameConstantSize;
+
+			cmdBuf->Add(RendererCommand::UpdateBuffer, params);
+		}
+
 		{	// clear
 			ClearParams* params = MemoryAllocator::Allocate<ClearParams>(allocNo);
-			params->SetClearColor(0.7f, 0.7f, 0.7f, 1.0f);
+
+			const math::float4& clearColor = camera.GetClearColor();
+
+			params->clearColor[0] = clearColor.x;
+			params->clearColor[1] = clearColor.y;
+			params->clearColor[2] = clearColor.z;
+			params->clearColor[3] = clearColor.w;
 
 			cmdBuf->Add(RendererCommand::ClearRenderTargets, params);
 		}
 
+		// get all renderables in system
 		RenderingComponentData* comps = RenderingComponent::GetAllComponents();
 		uint32_t count = RenderingComponent::GetNumComponents();
-		
+
+		// buffer for transform matrices
+		math::float4x4* transformArray = reinterpret_cast<math::float4x4*>(
+			MemoryAllocator::Allocators[allocNo].Allocate(transformBufferSize, 4)
+			);
+
+		// list of active renderables (used for culling)
+		uint32_t* activeRenderables = reinterpret_cast<uint32_t*>(
+			MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * MAX_ENTITIES, 4)
+			);
+
+		assert(nullptr != transformArray && nullptr != activeRenderables); 
+
+		uint32_t numActiveRenderables = 0;
+
 		for (uint32_t i = 0; i < count; ++i)
 		{
 			RenderingComponentData& comp = comps[i];
+			TransformComponent transform = comp.entity.GetComponent<TransformComponent>();
+			assert(transform);
+
+			// TODO culling
+
+			uint32_t idx = numActiveRenderables++;
+			activeRenderables[idx] = i;
+			transformArray[idx] = transform->GetWorldTransform().GetMatrix();
+		}
+
+		{
+			UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
+			assert(nullptr != params);
+			params->handle = transformBuffer;
+			params->data = transformArray;
+			params->size = sizeof(math::float4x4) * numActiveRenderables;
+
+			cmdBuf->Add(RendererCommand::UpdateBuffer, params);
+		}
+
+		for (uint32_t i = 0; i < numActiveRenderables; ++i)
+		{
+			RenderingComponentData& comp = comps[activeRenderables[i]];
 
 			assert(comp.model && comp.material);
 
@@ -181,6 +278,8 @@ namespace tofu
 				params->startIndex = mesh.StartIndex;
 				params->startVertex = mesh.StartVertex;
 				params->indexCount = mesh.NumIndices;
+				params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 4), 4 };
+				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
 
 				cmdBuf->Add(RendererCommand::Draw, params);
 			}
@@ -236,7 +335,7 @@ namespace tofu
 		}
 
 		model::ModelMesh* meshInfos = reinterpret_cast<model::ModelMesh*>(header + 1);
-		
+
 		uint32_t verticesCount = 0;
 		uint32_t indicesCount = 0;
 
@@ -312,7 +411,7 @@ namespace tofu
 			params->handle = psHandle;
 			params->vertexShader = defaultVertexShader;
 			params->pixelShader = defaultPixelShader;
-			
+
 			cmdBuf->Add(RendererCommand::CreatePipelineState, params);
 		}
 

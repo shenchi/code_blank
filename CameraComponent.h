@@ -17,14 +17,15 @@ namespace tofu
 	public:
 		CameraComponentData() : CameraComponentData(Entity()) {}
 
-		CameraComponentData(Entity e) 
+		CameraComponentData(Entity e)
 			:
 			entity(e),
 			projType(ProjectionType::Perspective),
 			fov(90.0f),
 			aspect(1.0f),
 			zNear(0.01f),
-			zFar(100.0f)
+			zFar(100.0f),
+			clearColor{ 0.0f, 0.0f, 0.0f, 1.0f }
 		{}
 
 		void LookAt(const math::float3& target);
@@ -68,6 +69,11 @@ namespace tofu
 		inline float GetZFar() const { return zFar; }
 
 
+		inline void SetClearColor(const math::float4& color) { clearColor = color; }
+
+		inline const math::float4& GetClearColor() const { return clearColor; }
+
+
 		math::float4x4 CalcViewMatrix() const;
 
 		math::float4x4 CalcProjectionMatrix() const;
@@ -79,6 +85,8 @@ namespace tofu
 		float					aspect;
 		float					zNear;
 		float					zFar;
+
+		math::float4			clearColor;
 	};
 
 	typedef Component<CameraComponentData> CameraComponent;

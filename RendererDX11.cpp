@@ -546,7 +546,7 @@ namespace tofu
 				uint32_t id = params->handle.id;
 
 				assert(nullptr != buffers[id].buf);
-				assert(params->size > 0 && params->offset + params->size < buffers[id].size);
+				assert(params->size > 0 && params->offset + params->size <= buffers[id].size);
 
 				bool updateWholeBuffer = (params->offset == 0 && params->size == buffers[id].size);
 
@@ -562,7 +562,7 @@ namespace tofu
 					else
 					{
 						D3D11_MAPPED_SUBRESOURCE res = {};
-						context->Map(buffers[id].buf, 0, D3D11_MAP_WRITE, 0, &res);
+						context->Map(buffers[id].buf, 0, D3D11_MAP_WRITE_DISCARD, 0, &res);
 						uint8_t* ptr = reinterpret_cast<uint8_t*>(res.pData);
 						memcpy(ptr + params->offset, params->data, params->size);
 						context->Unmap(buffers[id].buf, 0);
@@ -978,18 +978,27 @@ namespace tofu
 
 				{
 					ID3D11Buffer* cbs[MAX_CONSTANT_BUFFER_BINDINGS] = {};
+					UINT offsets[MAX_CONSTANT_BUFFER_BINDINGS] = {};
+					UINT sizes[MAX_CONSTANT_BUFFER_BINDINGS] = {};
+
 					for (uint32_t i = 0; i < MAX_CONSTANT_BUFFER_BINDINGS; i++)
 					{
-						if (params->vsConstantBuffers[i])
+						if (params->vsConstantBuffers[i].bufferHandle)
 						{
-							Buffer& buf = buffers[params->vsConstantBuffers[i].id];
+							Buffer& buf = buffers[params->vsConstantBuffers[i].bufferHandle.id];
 							assert(nullptr != buf.buf);
 							assert(buf.bindingFlags & BINDING_CONSTANT_BUFFER);
 
 							cbs[i] = buf.buf;
+							offsets[i] = params->vsConstantBuffers[i].offsetInVectors * 4;
+							sizes[i] = params->vsConstantBuffers[i].sizeInVectors * 4;
+							if (0u == sizes[i])
+							{
+								sizes[i] = buf.size / 4;
+							}
 						}
 					}
-					context->VSSetConstantBuffers(0, MAX_CONSTANT_BUFFER_BINDINGS, cbs);
+					context->VSSetConstantBuffers1(0, MAX_CONSTANT_BUFFER_BINDINGS, cbs, offsets, sizes);
 
 					ID3D11ShaderResourceView* srvs[MAX_TEXTURE_BINDINGS] = {};
 					for (uint32_t i = 0; i < MAX_TEXTURE_BINDINGS; i++)
@@ -1021,18 +1030,27 @@ namespace tofu
 
 				{
 					ID3D11Buffer* cbs[MAX_CONSTANT_BUFFER_BINDINGS] = {};
+					UINT offsets[MAX_CONSTANT_BUFFER_BINDINGS] = {};
+					UINT sizes[MAX_CONSTANT_BUFFER_BINDINGS] = {};
+
 					for (uint32_t i = 0; i < MAX_CONSTANT_BUFFER_BINDINGS; i++)
 					{
-						if (params->psConstantBuffers[i])
+						if (params->psConstantBuffers[i].bufferHandle)
 						{
-							Buffer& buf = buffers[params->psConstantBuffers[i].id];
+							Buffer& buf = buffers[params->psConstantBuffers[i].bufferHandle.id];
 							assert(nullptr != buf.buf);
 							assert(buf.bindingFlags & BINDING_CONSTANT_BUFFER);
 
 							cbs[i] = buf.buf;
+							offsets[i] = params->psConstantBuffers[i].offsetInVectors * 4;
+							sizes[i] = params->psConstantBuffers[i].sizeInVectors * 4;
+							if (0u == sizes[i])
+							{
+								sizes[i] = buf.size / 4;
+							}
 						}
 					}
-					context->PSSetConstantBuffers(0, MAX_CONSTANT_BUFFER_BINDINGS, cbs);
+					context->PSSetConstantBuffers1(0, MAX_CONSTANT_BUFFER_BINDINGS, cbs, offsets, sizes);
 
 					ID3D11ShaderResourceView* srvs[MAX_TEXTURE_BINDINGS] = {};
 					for (uint32_t i = 0; i < MAX_TEXTURE_BINDINGS; i++)

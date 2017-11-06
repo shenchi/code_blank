@@ -183,20 +183,27 @@ namespace tofu
 		}
 	};
 
+	struct ConstantBufferBinding
+	{
+		BufferHandle		bufferHandle;
+		uint16_t			offsetInVectors;
+		uint16_t			sizeInVectors;
+	};
+
 	struct DrawParams
 	{
-		PipelineStateHandle pipelineState;
-		BufferHandle		vertexBuffer;
-		BufferHandle		indexBuffer;
-		uint32_t			startIndex;
-		uint32_t			startVertex;
-		uint32_t			indexCount;
-		BufferHandle		vsConstantBuffers[MAX_CONSTANT_BUFFER_BINDINGS];
-		BufferHandle		psConstantBuffers[MAX_CONSTANT_BUFFER_BINDINGS];
-		TextureHandle		vsTextures[MAX_TEXTURE_BINDINGS];
-		TextureHandle		psTextures[MAX_TEXTURE_BINDINGS];
-		SamplerHandle		vsSamplers[MAX_SAMPLER_BINDINGS];
-		SamplerHandle		psSamplers[MAX_SAMPLER_BINDINGS];
+		PipelineStateHandle		pipelineState;
+		BufferHandle			vertexBuffer;
+		BufferHandle			indexBuffer;
+		uint32_t				startIndex;
+		uint32_t				startVertex;
+		uint32_t				indexCount;
+		ConstantBufferBinding	vsConstantBuffers[MAX_CONSTANT_BUFFER_BINDINGS];
+		ConstantBufferBinding	psConstantBuffers[MAX_CONSTANT_BUFFER_BINDINGS];
+		TextureHandle			vsTextures[MAX_TEXTURE_BINDINGS];
+		TextureHandle			psTextures[MAX_TEXTURE_BINDINGS];
+		SamplerHandle			vsSamplers[MAX_SAMPLER_BINDINGS];
+		SamplerHandle			psSamplers[MAX_SAMPLER_BINDINGS];
 	};
 
 	class Renderer

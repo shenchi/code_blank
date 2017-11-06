@@ -13,6 +13,7 @@ namespace tofu
 		entityAlloc.Free(*this);
 
 		// TODO remove all components;
+		assert(false && "not implemented yet");
 
 		return TF_OK;
 	}

@@ -629,9 +629,9 @@ namespace tofu
 				float3 x = normalize(cross(normalize(up), z));
 				float3 y = cross(z, x);
 				return float4x4{
-					float4{ x.x, x.y, x.z, position.x },
-					float4{ y.x, y.y, y.z, position.y },
-					float4{ z.x, z.y, z.z, position.z },
+					float4{ x.x, x.y, x.z, -position.x },
+					float4{ y.x, y.y, y.z, -position.y },
+					float4{ z.x, z.y, z.z, -position.z },
 					float4{ 0.0f, 0.0f, 0.0f, 1.0f }
 				};
 			}

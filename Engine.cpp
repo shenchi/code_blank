@@ -11,6 +11,9 @@
 
 namespace tofu
 {
+	float Time::TotalTime = 0.0f;
+	float Time::DeltaTime = 0.0f;
+
 	SINGLETON_IMPL(Engine);
 
 	Engine::Engine()
@@ -19,7 +22,11 @@ namespace tofu
 		renderingSystem(nullptr),
 		scriptingSystem(nullptr),
 		userModules(),
-		numUserModules(0)
+		numUserModules(0),
+		timeCounterFreq(0),
+		startTimeCounter(0),
+		lastTimeCounter(0),
+		currentTimeCounter(0)
 	{
 		assert(nullptr == _instance);
 		_instance = this;
@@ -77,9 +84,19 @@ namespace tofu
 	{
 		int32_t err = TF_OK;
 
+		timeCounterFreq = nativeContext->GetTimeCounterFrequency();
+		startTimeCounter = nativeContext->GetTimeCounter();
+		currentTimeCounter = startTimeCounter;
+
 		while(nativeContext->ProcessEvent())
 		{
-			// TODO timing
+			lastTimeCounter = currentTimeCounter;
+			currentTimeCounter = nativeContext->GetTimeCounter();
+
+			int64_t deltaTimeCounter = (currentTimeCounter - lastTimeCounter) * 1000000;
+
+			Time::DeltaTime = (deltaTimeCounter / timeCounterFreq) / 1000000.0f;
+			Time::TotalTime += Time::DeltaTime;
 
 			renderingSystem->BeginFrame();
 

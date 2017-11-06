@@ -140,6 +140,20 @@ namespace tofu
 		{
 			return reinterpret_cast<intptr_t>(hWnd);
 		}
+
+		int64_t GetTimeCounter() override
+		{
+			int64_t counter;
+			QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&counter));
+			return counter;
+		}
+
+		int64_t GetTimeCounterFrequency() override
+		{
+			int64_t freq;
+			QueryPerformanceFrequency(reinterpret_cast<LARGE_INTEGER*>(&freq));
+			return freq;
+		}
 	};
 
 	SINGLETON_IMPL(NativeContext);

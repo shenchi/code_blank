@@ -87,6 +87,12 @@ namespace tofu
 		VertexShaderHandle		defaultVertexShader;
 		PixelShaderHandle		defaultPixelShader;
 
+		BufferHandle			transformBuffer;
+		uint32_t				transformBufferSize;
+
+		BufferHandle			frameConstantBuffer;
+		uint32_t				frameConstantSize;
+
 		Mesh		meshes[MAX_MESHES];
 		Model		models[MAX_MODELS];
 		Material	materials[MAX_MATERIALS];

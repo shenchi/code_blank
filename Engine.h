@@ -9,6 +9,13 @@ namespace tofu
 	class RenderingSystem;
 	class ScriptingSystem;
 
+	class Time
+	{
+	public:
+		static float TotalTime;
+		static float DeltaTime;
+	};
+
 	class Engine
 	{
 		SINGLETON_DECL(Engine)
@@ -34,5 +41,11 @@ namespace tofu
 
 		Module*				userModules[MAX_USER_MODULES];
 		uint32_t			numUserModules;
+
+	private:
+		int64_t				timeCounterFreq;
+		int64_t				startTimeCounter;
+		int64_t				lastTimeCounter;
+		int64_t				currentTimeCounter;
 	};
 }

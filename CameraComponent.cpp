@@ -33,6 +33,7 @@ namespace tofu
 
 	float4x4 CameraComponentData::CalcProjectionMatrix() const
 	{
+		assert(projType == ProjectionType::Perspective && "Othro is not implemented yet.");
 		return matrix::perspective(fov * PI / 180.0f, aspect, zNear, zFar);
 	}
 
