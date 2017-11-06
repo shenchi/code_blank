@@ -42,9 +42,20 @@ namespace tofu
 
 	public:
 
+		// a * b  - apply transform a and then transform b
 		Transform operator * (const Transform&) const;
 
 		math::float4x4				GetMatrix() const;
+
+	public:
+
+		math::float3				TransformVector(const math::float3& v) const;
+
+		math::float4				TransformVector(const math::float4& v) const;
+
+		math::float3				TransformPosition(const math::float3& v) const;
+
+		math::float4				TransformPosition(const math::float4& v) const;
 
 	private:
 		math::quat					rotation;

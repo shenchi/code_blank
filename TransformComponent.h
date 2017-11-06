@@ -22,19 +22,43 @@ namespace tofu
 			dirty(1)
 		{}
 
-		inline void					SetParent(TransformComponent parent);
+		TF_INLINE void					SetParent(TransformComponent parent)
+		{
+			// TODO
+			UpdateTransfromInHierachy();
+		}
 
-		inline TransformComponent	GetParent() const { return parent; }
+		TF_INLINE TransformComponent	GetParent() const { return parent; }
 
-		const Transform&			GetLocalTransform();
+		TF_INLINE const Transform&		GetLocalTransform() const { return localTransform; }
 
-		const Transform&			GetWorldTransform();
+		const Transform&				GetWorldTransform() const { return worldTransform; }
 
 	public:
 
 		// auxiliary functions
 
-		// TODO
+		TF_INLINE void					SetLocalPosition(const math::float3& pos)
+		{
+			localTransform.SetTranslation(pos);
+			UpdateTransfromInHierachy();
+		}
+
+		// get position coordinates in world space
+		TF_INLINE math::float3			GetWorldPosition() const
+		{
+			return GetWorldTransform().TransformPosition(math::float3());
+		}
+
+		// get forward vector in world space
+		TF_INLINE math::float3			GetForwardVector() const
+		{
+			return GetWorldTransform().TransformVector(math::float3{ 0, 0, 1 });
+		}
+
+	private:
+
+		void							UpdateTransfromInHierachy();
 
 	private:
 		Entity							entity;

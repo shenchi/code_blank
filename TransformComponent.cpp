@@ -2,16 +2,23 @@
 
 namespace tofu
 {
-	inline void TransformComponentData::SetParent(TransformComponent parent)
+
+	void TransformComponentData::UpdateTransfromInHierachy()
 	{
+		if (parent)
+		{
+			worldTransform = localTransform * parent->GetWorldTransform();
+		}
+		else
+		{
+			worldTransform = localTransform;
+		}
+
+		for (auto i = children.begin(); i != children.end(); ++i)
+		{
+			(*i)->UpdateTransfromInHierachy();
+		}
 	}
-	const Transform & TransformComponentData::GetLocalTransform()
-	{
-		// TODO: insert return statement here
-	}
-	const Transform & TransformComponentData::GetWorldTransform()
-	{
-		// TODO: insert return statement here
-	}
+
 }
 

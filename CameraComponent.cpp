@@ -16,19 +16,24 @@ namespace tofu
 	{
 		TransformComponent t = entity.GetComponent<TransformComponent>();
 		assert(true == t);
+		// TODO
 	}
 
-	math::float4x4 CameraComponentData::CalcViewMatrix() const
+	float4x4 CameraComponentData::CalcViewMatrix() const
 	{
 		TransformComponent t = entity.GetComponent<TransformComponent>();
 		assert(true == t);
 
-		return math::float4x4();
+		float3 forward = t->GetForwardVector();
+
+		float3 pos = t->GetWorldPosition();
+
+		return matrix::lookTo(pos, forward, float3{ 0, 1, 0 });
 	}
 
-	math::float4x4 CameraComponentData::CalcProjectionMatrix() const
+	float4x4 CameraComponentData::CalcProjectionMatrix() const
 	{
-		return math::float4x4();
+		return matrix::perspective(fov * PI / 180.0f, aspect, zNear, zFar);
 	}
 
 

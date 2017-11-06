@@ -8,6 +8,8 @@
 #include "FileIO.h"
 
 #include "ModelFormat.h"
+
+#include "CameraComponent.h"
 #include "RenderingComponent.h"
 
 namespace tofu
@@ -145,6 +147,9 @@ namespace tofu
 
 	int32_t RenderingSystem::Update()
 	{
+		assert(CameraComponent::GetNumComponents() > 0);
+		CameraComponentData& camera = CameraComponent::GetAllComponents()[0];
+
 		{	// clear
 			ClearParams* params = MemoryAllocator::Allocate<ClearParams>(allocNo);
 			params->SetClearColor(0.7f, 0.7f, 0.7f, 1.0f);

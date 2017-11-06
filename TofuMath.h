@@ -15,6 +15,8 @@ namespace tofu
 {
 	namespace math
 	{
+		constexpr float PI = 3.141592653589f;
+
 		template<typename T>
 		struct vec2
 		{
