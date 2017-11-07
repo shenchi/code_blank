@@ -130,7 +130,8 @@ namespace
 		ID3D11DepthStencilView*		dsv;
 		uint32_t					dynamic : 1;
 		uint32_t					cubeMap : 1;
-		uint32_t					format : 14;
+		uint32_t					_padding : 6;
+		uint32_t					format : 8;
 		uint32_t					arraySize : 8;
 		uint32_t					bindingFlags : 8;
 		uint32_t					width;
@@ -619,56 +620,88 @@ namespace tofu
 				uint32_t id = params->handle.id;
 
 				assert(nullptr == textures[id].tex);
-				CD3D11_TEXTURE2D_DESC texDesc(
-					PixelFormatTable[params->format],
-					params->width,
-					params->height,
-					params->arraySize,
-					0U,
-					D3D11_BIND_CONSTANT_BUFFER,
-					(params->dynamic == 1 ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT),
-					(params->dynamic == 1 ? D3D11_CPU_ACCESS_WRITE : 0U),
-					1U,
-					0U,
-					(params->cubeMap == 1 ? D3D11_RESOURCE_MISC_TEXTURECUBE : 0U)
 
-				);
+				uint32_t bindingFlags = params->bindingFlags & (BINDING_SHADER_RESOURCE | BINDING_RENDER_TARGET | BINDING_DEPTH_STENCIL);
 
-				D3D11_SUBRESOURCE_DATA subResData = {};
-				subResData.pSysMem = params->data;
-				subResData.SysMemPitch = params->pitch;
-
-				if (S_OK != device->CreateTexture2D(
-					&texDesc,
-					(nullptr == params->data ? nullptr : &subResData),
-					&(textures[id].tex)))
+				if (params->isFile)
 				{
-					return TF_UNKNOWN_ERR;
+					assert(bindingFlags & BINDING_SHADER_RESOURCE);
+
+					ID3D11Resource* res = nullptr;
+					assert(S_OK == DirectX::CreateDDSTextureFromMemoryEx(
+						device,
+						reinterpret_cast<uint8_t*>(params->data),
+						static_cast<size_t>(params->width),
+						0u,
+						(params->dynamic == 1 ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT),
+						bindingFlags,
+						(params->dynamic == 1 ? D3D11_CPU_ACCESS_WRITE : 0U),
+						0u,
+						false,
+						&(res),
+						&(textures[id].srv)
+					));
+
+					assert(S_OK == res->QueryInterface<ID3D11Texture2D>(&(textures[id].tex)));
+				}
+				else
+				{
+					CD3D11_TEXTURE2D_DESC texDesc(
+						PixelFormatTable[params->format],
+						params->width,
+						params->height,
+						params->arraySize,
+						0U,
+						bindingFlags,
+						(params->dynamic == 1 ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT),
+						(params->dynamic == 1 ? D3D11_CPU_ACCESS_WRITE : 0U),
+						1U,
+						0U,
+						(params->cubeMap == 1 ? D3D11_RESOURCE_MISC_TEXTURECUBE : 0U)
+
+					);
+
+					D3D11_SUBRESOURCE_DATA subResData = {};
+					subResData.pSysMem = params->data;
+					subResData.SysMemPitch = params->pitch;
+
+					if (S_OK != device->CreateTexture2D(
+						&texDesc,
+						(nullptr == params->data ? nullptr : &subResData),
+						&(textures[id].tex)))
+					{
+						return TF_UNKNOWN_ERR;
+					}
+
+					if (params->bindingFlags & BINDING_SHADER_RESOURCE)
+					{
+						HRESULT ret = device->CreateShaderResourceView(textures[id].tex, nullptr, &(textures[id].srv));
+						assert(S_OK == ret);
+					}
 				}
 
-				if (params->bindingFlags & BINDING_SHADER_RESOURCE)
-				{
-					HRESULT ret = device->CreateShaderResourceView(textures[id].tex, nullptr, &(textures[id].srv));
-					assert(S_OK == ret);
-				}
 				if (params->bindingFlags & BINDING_RENDER_TARGET)
 				{
 					HRESULT ret = device->CreateRenderTargetView(textures[id].tex, nullptr, &(textures[id].rtv));
 					assert(S_OK == ret);
 				}
+
 				if (params->bindingFlags & BINDING_DEPTH_STENCIL)
 				{
 					HRESULT ret = device->CreateDepthStencilView(textures[id].tex, nullptr, &(textures[id].dsv));
 					assert(S_OK == ret);
 				}
 
+				D3D11_TEXTURE2D_DESC desc = {};
+				textures[id].tex->GetDesc(&desc);
+
 				textures[id].dynamic = params->dynamic;
-				textures[id].cubeMap = params->cubeMap;
-				textures[id].format = params->format;
-				textures[id].arraySize = params->arraySize;
-				textures[id].bindingFlags = params->bindingFlags;
-				textures[id].width = params->width;
-				textures[id].height = params->height;
+				textures[id].cubeMap = ((desc.MiscFlags & D3D11_RESOURCE_MISC_TEXTURECUBE) != 0 ? 1 : params->cubeMap);
+				textures[id].format = params->isFile ? FORMAT_AUTO : params->format;
+				textures[id].arraySize = desc.ArraySize;
+				textures[id].bindingFlags = bindingFlags;
+				textures[id].width = desc.Width;
+				textures[id].height = desc.Height;
 				textures[id].pitch = params->pitch;
 
 				return TF_OK;

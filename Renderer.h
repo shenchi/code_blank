@@ -111,7 +111,9 @@ namespace tofu
 		TextureHandle		handle;
 		uint32_t			dynamic : 1;
 		uint32_t			cubeMap : 1;
-		uint32_t			format : 14;
+		uint32_t			isFile : 1;
+		uint32_t			_reserved : 5;
+		uint32_t			format : 8;
 		uint32_t			arraySize : 8;
 		uint32_t			bindingFlags : 8;
 		uint32_t			width;

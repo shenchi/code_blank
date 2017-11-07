@@ -2,6 +2,7 @@
 
 #include "Common.h"
 #include "Module.h"
+#include "Material.h"
 
 #include "Renderer.h"
 
@@ -15,13 +16,6 @@ namespace tofu
 	HANDLE_DECL(Mesh);
 	HANDLE_DECL(Model);
 	HANDLE_DECL(Material);
-
-	enum class MaterialType
-	{
-		TestMaterial,
-		OpaqueMaterial,
-		MaxMaterialTypes
-	};
 
 	struct Mesh
 	{
@@ -41,7 +35,7 @@ namespace tofu
 
 	struct Material
 	{
-		PipelineStateHandle		pipelineState;
+		
 	};
 
 	class RenderingSystem : public Module
@@ -65,6 +59,8 @@ namespace tofu
 
 		ModelHandle CreateModel(const char* filename);
 
+		TextureHandle CreateTexture(const char* filename);
+
 		MaterialHandle CreateMaterial(MaterialType type);
 
 	private:
@@ -77,12 +73,13 @@ namespace tofu
 		std::unordered_map<std::string, ModelHandle>		modelTable;
 
 		HandleAllocator<BufferHandle, MAX_BUFFERS>					bufferHandleAlloc;
+		HandleAllocator<TextureHandle, MAX_TEXTURES>				textureHandleAlloc;
 		HandleAllocator<VertexShaderHandle, MAX_VERTEX_SHADERS>		vertexShaderHandleAlloc;
 		HandleAllocator<PixelShaderHandle, MAX_PIXEL_SHADERS>		pixelShaderHandleAlloc;
 		HandleAllocator<PipelineStateHandle, MAX_PIPELINE_STATES>	pipelineStateHandleAlloc;
 
-		size_t		frameNo;
-		uint32_t	allocNo;
+		size_t					frameNo;
+		uint32_t				allocNo;
 
 		VertexShaderHandle		defaultVertexShader;
 		PixelShaderHandle		defaultPixelShader;
@@ -93,11 +90,11 @@ namespace tofu
 		BufferHandle			frameConstantBuffer;
 		uint32_t				frameConstantSize;
 
-		Mesh		meshes[MAX_MESHES];
-		Model		models[MAX_MODELS];
-		Material	materials[MAX_MATERIALS];
+		Mesh					meshes[MAX_MESHES];
+		Model					models[MAX_MODELS];
+		Material				materials[MAX_MATERIALS];
 
-		RendererCommandBuffer* cmdBuf;
+		RendererCommandBuffer*	cmdBuf;
 	};
 
 }

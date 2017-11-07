@@ -398,6 +398,33 @@ namespace tofu
 		return modelHandle;
 	}
 
+	TextureHandle RenderingSystem::CreateTexture(const char* filename)
+	{
+		void* data = nullptr;
+		size_t size = 0;
+		int32_t err = FileIO::ReadFile(filename, &data, &size, 4, allocNo);
+
+		if (TF_OK != err)
+		{
+			return TextureHandle();
+		}
+
+		TextureHandle handle = textureHandleAlloc.Allocate();
+		assert(handle);
+
+		CreateTextureParams* params = MemoryAllocator::Allocate<CreateTextureParams>(allocNo);
+
+		params->handle = handle;
+		params->bindingFlags = BINDING_SHADER_RESOURCE;
+		params->isFile = 1;
+		params->data = data;
+		params->width = static_cast<uint32_t>(size);
+		
+		cmdBuf->Add(RendererCommand::CreateTexture, params);
+
+		return handle;
+	}
+
 	MaterialHandle RenderingSystem::CreateMaterial(MaterialType type)
 	{
 		MaterialHandle handle = materialHandleAlloc.Allocate();

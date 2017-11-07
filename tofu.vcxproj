@@ -245,6 +245,7 @@
     <ClInclude Include="HandleAllocator.h" />
     <ClInclude Include="InputStates.h" />
     <ClInclude Include="InputSystem.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="MemoryAllocator.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="ModelFormat.h" />
