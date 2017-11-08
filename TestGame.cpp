@@ -11,7 +11,8 @@ int32_t TestGame::Init()
 	{
 		Entity e = Entity::Create();
 
-		t1 = e.AddComponent<TransformComponent>();
+		tCube = e.AddComponent<TransformComponent>();
+		//tCube->SetLocalPosition(math::float3{ 1, 0, 0 });
 
 		RenderingComponent r = e.AddComponent<RenderingComponent>();
 
@@ -31,12 +32,13 @@ int32_t TestGame::Init()
 	{
 		Entity e = Entity::Create();
 
-		TransformComponent t = e.AddComponent<TransformComponent>();
+		tCamera = e.AddComponent<TransformComponent>();
 
 		CameraComponent camera = e.AddComponent<CameraComponent>();
 		
+		camera->SetFOV(60.0f);
 		camera->SetAspect(800.0f / 600.0f);
-		t->SetLocalPosition(math::float3{ 0, 0, -2 });
+		tCamera->SetLocalPosition(math::float3{ 0, 0, -2 });
 
 		Material* skyboxMat = RenderingSystem::instance()->CreateMaterial(MaterialType::SkyboxMaterial);
 		TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/craterlake.dds");
@@ -44,6 +46,9 @@ int32_t TestGame::Init()
 
 		camera->SetSkybox(skyboxMat);
 	}
+
+	pitch = 0.0f;
+	yaw = 0.0f;
 
 	return TF_OK;
 }
@@ -55,11 +60,34 @@ int32_t TestGame::Shutdown()
 
 int32_t TestGame::Update()
 {
-	t1->SetLocalPosition(math::float3{ sinf(Time::TotalTime), 0, 0 });
-
-	if (InputSystem::instance()->IsButtonDown(ButtonId::TF_KEY_Escape))
+	InputSystem* input = InputSystem::instance();
+	if (input->IsButtonDown(ButtonId::TF_KEY_Escape))
 	{
 		Engine::instance()->Quit();
+	}
+
+	constexpr float sensitive = 0.01f;
+
+	pitch += sensitive * input->GetMouseDeltaY();
+	yaw += sensitive * input->GetMouseDeltaX();
+	tCamera->SetLocalRotation(math::quat(pitch, yaw, 0.0f));
+
+	if (input->IsButtonDown(TF_KEY_W))
+	{
+		tCamera->Translate(tCamera->GetForwardVector() * Time::DeltaTime);
+	}
+	else if (input->IsButtonDown(TF_KEY_S))
+	{
+		tCamera->Translate(-tCamera->GetForwardVector() * Time::DeltaTime);
+	}
+
+	if (input->IsButtonDown(TF_KEY_D))
+	{
+		tCamera->Translate(tCamera->GetRightVector() * Time::DeltaTime);
+	}
+	else if (input->IsButtonDown(TF_KEY_A))
+	{
+		tCamera->Translate(-tCamera->GetRightVector() * Time::DeltaTime);
 	}
 
 	return TF_OK;

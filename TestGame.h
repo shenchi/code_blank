@@ -17,5 +17,8 @@ public:
 	virtual int32_t Update() override;
 
 private:
-	tofu::TransformComponent	t1;
+	tofu::TransformComponent	tCube;
+	tofu::TransformComponent	tCamera;
+	float pitch;
+	float yaw;
 };

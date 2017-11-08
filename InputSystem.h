@@ -26,6 +26,16 @@ namespace tofu
 			return states.IsButtonDown(button); 
 		}
 
+		TF_INLINE float GetMouseDeltaX() const
+		{
+			return states.mouseDeltaX;
+		}
+
+		TF_INLINE float GetMouseDeltaY() const
+		{
+			return states.mouseDeltaY;
+		}
+
 	private:
 		InputStates	states;
 	};

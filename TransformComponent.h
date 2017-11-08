@@ -44,10 +44,34 @@ namespace tofu
 			UpdateTransfromInHierachy();
 		}
 
+		TF_INLINE void					Translate(const math::float3& t)
+		{
+			localTransform.SetTranslation(localTransform.GetTranslation() + t);
+			UpdateTransfromInHierachy();
+		}
+
+		TF_INLINE void					SetLocalRotation(const math::quat& quat)
+		{
+			localTransform.SetRotation(quat);
+			UpdateTransfromInHierachy();
+		}
+
 		// get position coordinates in world space
 		TF_INLINE math::float3			GetWorldPosition() const
 		{
 			return GetWorldTransform().TransformPosition(math::float3());
+		}
+
+		// get right vector in world space
+		TF_INLINE math::float3			GetRightVector() const
+		{
+			return GetWorldTransform().TransformVector(math::float3{ 1, 0, 0 });
+		}
+
+		// get up vector in world space
+		TF_INLINE math::float3			GetUpVector() const
+		{
+			return GetWorldTransform().TransformVector(math::float3{ 0, 1, 0 });
 		}
 
 		// get forward vector in world space
@@ -55,6 +79,7 @@ namespace tofu
 		{
 			return GetWorldTransform().TransformVector(math::float3{ 0, 0, 1 });
 		}
+
 
 	private:
 

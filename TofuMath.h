@@ -108,6 +108,11 @@ namespace tofu
 			return float2{ a.x - b.x, a.y - b.y };
 		}
 
+		TF_INLINE float2 operator - (const float2& a)
+		{
+			return float2{ -a.x, -a.y };
+		}
+
 		TF_INLINE float2 operator * (const float2& a, const float2& b)
 		{
 			return float2{ a.x * b.x, a.y * b.y };
@@ -200,6 +205,11 @@ namespace tofu
 		TF_INLINE float3 operator - (const float3& a, const float3& b)
 		{
 			return float3{ a.x - b.x, a.y - b.y, a.z - b.z };
+		}
+
+		TF_INLINE float3 operator - (const float3& a)
+		{
+			return float3{ -a.x, -a.y, -a.z };
 		}
 
 		TF_INLINE float3 operator * (const float3& a, const float3& b)
@@ -303,6 +313,11 @@ namespace tofu
 		TF_INLINE float4 operator - (const float4& a, const float4& b)
 		{
 			return float4{ a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w };
+		}
+
+		TF_INLINE float4 operator - (const float4& a)
+		{
+			return float4{ -a.x, -a.y, -a.z, -a.w };
 		}
 
 		TF_INLINE float4 operator * (const float4& a, const float4& b)
@@ -416,13 +431,19 @@ namespace tofu
 				w = c;
 			}
 
+			// order : roll, pitch, yaw
 			TF_INLINE quat(float pitch, float yaw, float roll)
 			{
-				float sp = std::sinf(pitch);
-				float sy = std::sinf(yaw);
-				float cp = std::cosf(pitch);
-				float cy = std::cosf(yaw);
-				quat(roll, float3{ cp * sy, sp, cp * cy });
+				float cp = std::cosf(pitch * 0.5f);
+				float sp = std::sinf(pitch * 0.5f);
+				float cy = std::cosf(yaw * 0.5f);
+				float sy = std::sinf(yaw * 0.5f);
+				float cr = std::cosf(roll * 0.5f);
+				float sr = std::sinf(roll * 0.5f);
+				x = sy * cp * sr + cy * sp * cr;
+				y = sy * cp * cr - cy * sp * sr;
+				z = cy * cp * sr - sy * sp * cr;
+				w =	sy * sp * sr + cy * cp * cr;
 			}
 
 			TF_INLINE operator float4() const
@@ -629,9 +650,9 @@ namespace tofu
 				float3 x = normalize(cross(normalize(up), z));
 				float3 y = cross(z, x);
 				return float4x4{
-					float4{ x.x, x.y, x.z, -position.x },
-					float4{ y.x, y.y, y.z, -position.y },
-					float4{ z.x, z.y, z.z, -position.z },
+					float4{ x.x, x.y, x.z, -dot(x, position) },
+					float4{ y.x, y.y, y.z, -dot(y, position) },
+					float4{ z.x, z.y, z.z, -dot(z, position) },
 					float4{ 0.0f, 0.0f, 0.0f, 1.0f }
 				};
 			}
