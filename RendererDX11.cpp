@@ -911,8 +911,8 @@ namespace tofu
 				CD3D11_BLEND_DESC blendState(D3D11_DEFAULT);
 				assert(S_OK == device->CreateBlendState(&blendState, &(pipelineStates[id].blendState)));
 
-				assert(true == params->vertexShader && nullptr != vertexShaders[id].shader);
-				assert(true == params->pixelShader && nullptr != pixelShaders[id].shader);
+				assert(true == params->vertexShader && nullptr != vertexShaders[params->vertexShader.id].shader);
+				assert(true == params->pixelShader && nullptr != pixelShaders[params->vertexShader.id].shader);
 
 				D3D11_INPUT_ELEMENT_DESC inputElemDesc[] =
 				{
