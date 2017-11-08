@@ -1,17 +1,41 @@
 #pragma once
 
+#include "Common.h"
+
 namespace tofu
 {
-	enum class MaterialType
+	HANDLE_DECL(Material);
+
+	enum MaterialType
 	{
 		TestMaterial,
+		SkyboxMaterial,
 		OpaqueMaterial,
 		MaxMaterialTypes
 	};
 
 	class Material
 	{
-	private:
+		friend class RenderingSystem;
+	public:
 
+		void SetTexture(TextureHandle t) { mainTex = t; }
+
+		void SetNormalMap(TextureHandle t) { normalMap = t; }
+
+	private:
+		Material(MaterialType type = MaterialType::TestMaterial) 
+			: 
+			type(type),
+			handle(),
+			mainTex(),
+			normalMap()
+		{}
+
+	private:
+		MaterialType	type;
+		MaterialHandle	handle;
+		TextureHandle	mainTex;
+		TextureHandle	normalMap;
 	};
 }

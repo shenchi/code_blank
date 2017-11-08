@@ -643,6 +643,7 @@ namespace tofu
 					));
 
 					assert(S_OK == res->QueryInterface<ID3D11Texture2D>(&(textures[id].tex)));
+					res->Release();
 				}
 				else
 				{
@@ -899,9 +900,13 @@ namespace tofu
 				assert(nullptr == pipelineStates[id].depthStencilState);
 
 				CD3D11_DEPTH_STENCIL_DESC dsState(D3D11_DEFAULT);
+				dsState.DepthEnable = params->DepthEnable;
+				dsState.DepthWriteMask = (D3D11_DEPTH_WRITE_MASK)params->DepthWrite;// ? D3D11_DEPTH_WRITE_MASK_ALL : D3D11_DEPTH_WRITE_MASK_ZERO;
+				dsState.DepthFunc = (D3D11_COMPARISON_FUNC)(params->DepthFunc + 1);
 				assert(S_OK == device->CreateDepthStencilState(&dsState, &(pipelineStates[id].depthStencilState)));
 
 				CD3D11_RASTERIZER_DESC rsState(D3D11_DEFAULT);
+				rsState.CullMode = (D3D11_CULL_MODE)(params->CullMode + 1u);
 				assert(S_OK == device->CreateRasterizerState(&rsState, &(pipelineStates[id].rasterizerState)));
 
 				CD3D11_BLEND_DESC blendState(D3D11_DEFAULT);
@@ -994,7 +999,7 @@ namespace tofu
 
 				assert(true == params->pipelineState);
 
-				if (params->pipelineState != currentPipelineState)
+				if (params->pipelineState.id != currentPipelineState.id)
 				{
 					PipelineState& pso = pipelineStates[params->pipelineState.id];
 

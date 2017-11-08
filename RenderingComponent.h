@@ -21,14 +21,14 @@ namespace tofu
 
 		void SetModel(ModelHandle handle) { model = handle; }
 
-		void SetMaterial(MaterialHandle handle) { material = handle; }
+		void SetMaterial(Material* mat) { material = mat; }
 
 	private:
 		friend class RenderingSystem;
 
 		Entity				entity;
 		ModelHandle			model;
-		MaterialHandle		material;
+		Material*			material;
 	};
 
 	typedef Component<RenderingComponentData> RenderingComponent;

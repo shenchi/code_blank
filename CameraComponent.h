@@ -6,6 +6,8 @@
 
 namespace tofu
 {
+	class Material;
+
 	enum class ProjectionType : uint32_t
 	{
 		Perspective,
@@ -14,6 +16,7 @@ namespace tofu
 
 	class CameraComponentData
 	{
+		friend class RenderingSystem;
 	public:
 		CameraComponentData() : CameraComponentData(Entity()) {}
 
@@ -25,7 +28,8 @@ namespace tofu
 			aspect(1.0f),
 			zNear(0.01f),
 			zFar(100.0f),
-			clearColor{ 0.0f, 0.0f, 0.0f, 1.0f }
+			clearColor{ 0.0f, 0.0f, 0.0f, 1.0f },
+			skybox(nullptr)
 		{}
 
 		void LookAt(const math::float3& target);
@@ -74,6 +78,11 @@ namespace tofu
 		inline const math::float4& GetClearColor() const { return clearColor; }
 
 
+		inline void SetSkybox(Material* mat) { skybox = mat; }
+
+		inline Material* GetSkybox() const { return skybox; }
+
+
 		math::float4x4 CalcViewMatrix() const;
 
 		math::float4x4 CalcProjectionMatrix() const;
@@ -87,6 +96,7 @@ namespace tofu
 		float					zFar;
 
 		math::float4			clearColor;
+		Material*				skybox;
 	};
 
 	typedef Component<CameraComponentData> CameraComponent;

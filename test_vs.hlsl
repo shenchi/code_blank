@@ -7,6 +7,7 @@ cbuffer FrameConstants : register (b1)
 {
 	matrix		matView;
 	matrix		matProj;
+	float4		cameraPos;
 };
 
 struct VS_INPUT
@@ -17,7 +18,13 @@ struct VS_INPUT
 	float2		texcoord	: TEXCOORD0;
 };
 
-float4 main(VS_INPUT input) : SV_POSITION
+struct VS_OUTPUT
+{
+	float4		position	: SV_POSITION;
+	float2		texcoord	: TEXCOORD0;
+};
+
+VS_OUTPUT main(VS_INPUT input)
 {
 	//float4 pos = mul(mul(mul(input.position, matModel), matView), matProj);
 	//float4 pos = mul(mul(input.position, matView), matProj);
@@ -26,5 +33,9 @@ float4 main(VS_INPUT input) : SV_POSITION
 	pos = mul(pos, matView);
 	pos = mul(pos, matProj);
 
-	return pos;
+	VS_OUTPUT output;
+	output.position = pos;
+	output.texcoord = input.texcoord;
+
+	return output;
 }

@@ -13,6 +13,17 @@
 #include "CameraComponent.h"
 #include "RenderingComponent.h"
 
+namespace
+{
+	struct FrameConstants
+	{
+		tofu::math::float4x4	matView;
+		tofu::math::float4x4	matProj;
+		tofu::math::float3		cameraPos;
+		float					padding[13];
+	};
+}
+
 namespace tofu
 {
 	SINGLETON_IMPL(RenderingSystem);
@@ -25,16 +36,24 @@ namespace tofu
 		materialHandleAlloc(),
 		modelTable(),
 		bufferHandleAlloc(),
+		textureHandleAlloc(),
+		samplerHandleAlloc(),
 		vertexShaderHandleAlloc(),
 		pixelShaderHandleAlloc(),
 		pipelineStateHandleAlloc(),
 		frameNo(0),
 		allocNo(0),
-		defaultVertexShader(),
-		defaultPixelShader(),
+		transformBuffer(),
+		transformBufferSize(0),
+		frameConstantBuffer(),
 		meshes(),
 		models(),
 		materials(),
+		materialPSOs(),
+		materialVSs(),
+		materialPSs(),
+		defaultSampler(),
+		builtinCube(),
 		cmdBuf(nullptr)
 	{
 		assert(nullptr == _instance);
@@ -74,43 +93,20 @@ namespace tofu
 		BeginFrame();
 
 		// Create Built-in Shaders
-		{
-			defaultVertexShader = vertexShaderHandleAlloc.Allocate();
-			defaultPixelShader = pixelShaderHandleAlloc.Allocate();
-			assert(defaultVertexShader && defaultPixelShader);
+		assert(TF_OK == InitBuiltinShader(TestMaterial,
+			"assets/test_vs.shader",
+			"assets/test_ps.shader"
+		));
 
-			{
-				CreateVertexShaderParams* params = MemoryAllocator::Allocate<CreateVertexShaderParams>(allocNo);
-				assert(nullptr != params);
-				params->handle = defaultVertexShader;
+		assert(TF_OK == InitBuiltinShader(SkyboxMaterial,
+			"assets/skybox_vs.shader",
+			"assets/skybox_ps.shader"
+		));
 
-				assert(TF_OK == FileIO::ReadFile(
-					"assets/test_vs.shader",
-					&(params->data),
-					&(params->size),
-					4,
-					allocNo)
-				);
-
-				cmdBuf->Add(RendererCommand::CreateVertexShader, params);
-			}
-
-			{
-				CreatePixelShaderParams* params = MemoryAllocator::Allocate<CreatePixelShaderParams>(allocNo);
-				assert(nullptr != params);
-				params->handle = defaultPixelShader;
-
-				assert(TF_OK == FileIO::ReadFile(
-					"assets/test_ps.shader",
-					&(params->data),
-					&(params->size),
-					4,
-					allocNo)
-				);
-
-				cmdBuf->Add(RendererCommand::CreatePixelShader, params);
-			}
-		}
+		assert(TF_OK == InitBuiltinShader(OpaqueMaterial,
+			"assets/opaque_vs.shader",
+			"assets/opaque_ps.shader"
+		));
 
 		// constant buffers
 		{
@@ -133,19 +129,72 @@ namespace tofu
 			frameConstantBuffer = bufferHandleAlloc.Allocate();
 			assert(frameConstantBuffer);
 
-			frameConstantSize = sizeof(math::float4x4) * 2;
-
 			{
 				CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
 				assert(nullptr != params);
 				params->handle = frameConstantBuffer;
 				params->bindingFlags = BINDING_CONSTANT_BUFFER;
 				params->dynamic = 1;
-				params->size = frameConstantSize;
+				params->size = sizeof(FrameConstants);
 
 				cmdBuf->Add(RendererCommand::CreateBuffer, params);
 			}
 		}
+
+		// create built-in pipeline states
+		{
+			materialPSOs[TestMaterial] = pipelineStateHandleAlloc.Allocate();
+			assert(materialPSOs[TestMaterial]);
+
+			{
+				CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
+				params->handle = materialPSOs[TestMaterial];
+				params->vertexShader = materialVSs[TestMaterial];
+				params->pixelShader = materialPSs[TestMaterial];
+
+				cmdBuf->Add(RendererCommand::CreatePipelineState, params);
+			}
+
+			materialPSOs[SkyboxMaterial] = pipelineStateHandleAlloc.Allocate();
+			assert(materialPSOs[SkyboxMaterial]);
+
+			{
+				CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
+				params->handle = materialPSOs[SkyboxMaterial];
+				params->vertexShader = materialVSs[SkyboxMaterial];
+				params->pixelShader = materialPSs[SkyboxMaterial];
+				params->CullMode = CULL_FRONT;
+				params->DepthFunc = COMPARISON_ALWAYS;
+				cmdBuf->Add(RendererCommand::CreatePipelineState, params);
+			}
+
+			materialPSOs[OpaqueMaterial] = pipelineStateHandleAlloc.Allocate();
+			assert(materialPSOs[OpaqueMaterial]);
+
+			{
+				CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
+				params->handle = materialPSOs[OpaqueMaterial];
+				params->vertexShader = materialVSs[OpaqueMaterial];
+				params->pixelShader = materialPSs[OpaqueMaterial];
+
+				cmdBuf->Add(RendererCommand::CreatePipelineState, params);
+			}
+		}
+
+		// create default sampler
+		{
+			defaultSampler = samplerHandleAlloc.Allocate();
+			assert(defaultSampler);
+
+			{
+				CreateSamplerParams* params = MemoryAllocator::Allocate<CreateSamplerParams>(allocNo);
+				params->handle = defaultSampler;
+
+				cmdBuf->Add(RendererCommand::CreateSampler, params);
+			}
+		}
+
+		builtinCube = CreateModel("assets/cube.model");
 
 		return TF_OK;
 	}
@@ -189,21 +238,31 @@ namespace tofu
 		CameraComponentData& camera = CameraComponent::GetAllComponents()[0];
 
 		{
-			math::float4x4* data = reinterpret_cast<math::float4x4*>(MemoryAllocator::Allocators[allocNo].Allocate(sizeof(math::float4x4) * 2, 4));
+			FrameConstants* data = reinterpret_cast<FrameConstants*>(
+				MemoryAllocator::Allocators[allocNo].Allocate(sizeof(FrameConstants), 4)
+				);
 			assert(nullptr != data);
-			*data = camera.CalcViewMatrix();
-			*(data + 1) = camera.CalcProjectionMatrix();
+			data->matView = camera.CalcViewMatrix();
+			data->matProj = camera.CalcProjectionMatrix();
+
+			TransformComponent t = camera.entity.GetComponent<TransformComponent>();
+			data->cameraPos = t->GetWorldPosition();
 
 			UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
 			assert(nullptr != params);
 			params->handle = frameConstantBuffer;
 			params->data = data;
-			params->size = frameConstantSize;
+			params->size = sizeof(FrameConstants);
 
 			cmdBuf->Add(RendererCommand::UpdateBuffer, params);
 		}
 
-		{	// clear
+		// clear
+
+		TextureHandle skyboxTex = TextureHandle();
+
+		if (nullptr == camera.skybox)
+		{
 			ClearParams* params = MemoryAllocator::Allocate<ClearParams>(allocNo);
 
 			const math::float4& clearColor = camera.GetClearColor();
@@ -214,6 +273,27 @@ namespace tofu
 			params->clearColor[3] = clearColor.w;
 
 			cmdBuf->Add(RendererCommand::ClearRenderTargets, params);
+		}
+		else
+		{
+			assert(camera.skybox->type == SkyboxMaterial);
+			skyboxTex = camera.skybox->mainTex;
+
+			Mesh& mesh = meshes[models[builtinCube.id].Meshes[0].id];
+
+			DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
+			params->pipelineState = materialPSOs[SkyboxMaterial];
+			params->vertexBuffer = mesh.VertexBuffer;
+			params->indexBuffer = mesh.IndexBuffer;
+			params->startIndex = mesh.StartIndex;
+			params->startVertex = mesh.StartVertex;
+			params->indexCount = mesh.NumIndices;
+			params->vsConstantBuffers[0] = { frameConstantBuffer, 0, 8 };
+
+			params->psTextures[0] = skyboxTex;
+			params->psSamplers[0] = defaultSampler;
+
+			cmdBuf->Add(RendererCommand::Draw, params);
 		}
 
 		// get all renderables in system
@@ -230,7 +310,7 @@ namespace tofu
 			MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * MAX_ENTITIES, 4)
 			);
 
-		assert(nullptr != transformArray && nullptr != activeRenderables); 
+		assert(nullptr != transformArray && nullptr != activeRenderables);
 
 		uint32_t numActiveRenderables = 0;
 
@@ -264,7 +344,7 @@ namespace tofu
 			assert(comp.model && comp.material);
 
 			Model& model = models[comp.model.id];
-			Material& mat = materials[comp.material.id];
+			Material* mat = comp.material;
 
 			for (uint32_t iMesh = 0; iMesh < model.NumMeshes; ++iMesh)
 			{
@@ -272,14 +352,34 @@ namespace tofu
 				Mesh& mesh = meshes[model.Meshes[iMesh].id];
 
 				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
-				params->pipelineState = mat.pipelineState;
+				params->pipelineState = materialPSOs[mat->type];
 				params->vertexBuffer = mesh.VertexBuffer;
 				params->indexBuffer = mesh.IndexBuffer;
 				params->startIndex = mesh.StartIndex;
 				params->startVertex = mesh.StartVertex;
 				params->indexCount = mesh.NumIndices;
-				params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 4), 4 };
-				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
+
+				switch (mat->type)
+				{
+				case TestMaterial:
+					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 4), 4 };
+					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 8 };
+					params->psTextures[0] = mat->mainTex;
+					params->psSamplers[0] = defaultSampler;
+					break;
+				case OpaqueMaterial:
+					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 4), 4 };
+					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 8 };
+					params->psConstantBuffers[0] = { frameConstantBuffer, 8, 4 };
+					params->psTextures[0] = skyboxTex;
+					params->psTextures[1] = mat->mainTex;
+					params->psTextures[2] = mat->normalMap;
+					params->psSamplers[0] = defaultSampler;
+					break;
+				default:
+					assert(false && "this material type is not applicable for entities");
+					break;
+				}
 
 				cmdBuf->Add(RendererCommand::Draw, params);
 			}
@@ -419,33 +519,65 @@ namespace tofu
 		params->isFile = 1;
 		params->data = data;
 		params->width = static_cast<uint32_t>(size);
-		
+
 		cmdBuf->Add(RendererCommand::CreateTexture, params);
 
 		return handle;
 	}
 
-	MaterialHandle RenderingSystem::CreateMaterial(MaterialType type)
+	Material* RenderingSystem::CreateMaterial(MaterialType type)
 	{
 		MaterialHandle handle = materialHandleAlloc.Allocate();
 		assert(handle);
 
-		PipelineStateHandle psHandle = pipelineStateHandleAlloc.Allocate();
-		assert(psHandle);
+		Material* mat = &(materials[handle.id]);
+		new (mat) Material(type);
+		mat->handle = handle;
+
+		return mat;
+	}
+
+	int32_t RenderingSystem::InitBuiltinShader(MaterialType matType, const char * vsFile, const char * psFile)
+	{
+		if (materialVSs[matType] || materialPSs[matType])
+			return TF_UNKNOWN_ERR;
+		
+		materialVSs[matType] = vertexShaderHandleAlloc.Allocate();
+		materialPSs[matType] = pixelShaderHandleAlloc.Allocate();
+		assert(materialVSs[matType] && materialPSs[matType]);
 
 		{
-			CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
-			params->handle = psHandle;
-			params->vertexShader = defaultVertexShader;
-			params->pixelShader = defaultPixelShader;
+			CreateVertexShaderParams* params = MemoryAllocator::Allocate<CreateVertexShaderParams>(allocNo);
+			assert(nullptr != params);
+			params->handle = materialVSs[matType];
 
-			cmdBuf->Add(RendererCommand::CreatePipelineState, params);
+			assert(TF_OK == FileIO::ReadFile(
+				vsFile,
+				&(params->data),
+				&(params->size),
+				4,
+				allocNo)
+			);
+
+			cmdBuf->Add(RendererCommand::CreateVertexShader, params);
 		}
 
-		Material& mat = materials[handle.id];
-		mat.pipelineState = psHandle;
+		{
+			CreatePixelShaderParams* params = MemoryAllocator::Allocate<CreatePixelShaderParams>(allocNo);
+			assert(nullptr != params);
+			params->handle = materialPSs[matType];
 
-		return handle;
+			assert(TF_OK == FileIO::ReadFile(
+				psFile,
+				&(params->data),
+				&(params->size),
+				4,
+				allocNo)
+			);
+
+			cmdBuf->Add(RendererCommand::CreatePixelShader, params);
+		}
+		return TF_OK;
 	}
 
 }

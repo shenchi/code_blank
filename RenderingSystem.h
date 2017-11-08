@@ -15,7 +15,6 @@ namespace tofu
 {
 	HANDLE_DECL(Mesh);
 	HANDLE_DECL(Model);
-	HANDLE_DECL(Material);
 
 	struct Mesh
 	{
@@ -31,11 +30,6 @@ namespace tofu
 	{
 		MeshHandle		Meshes[MAX_MESHES_PER_MODEL];
 		uint32_t		NumMeshes;
-	};
-
-	struct Material
-	{
-		
 	};
 
 	class RenderingSystem : public Module
@@ -61,7 +55,11 @@ namespace tofu
 
 		TextureHandle CreateTexture(const char* filename);
 
-		MaterialHandle CreateMaterial(MaterialType type);
+		Material* CreateMaterial(MaterialType type);
+
+	private:
+
+		int32_t InitBuiltinShader(MaterialType matType, const char* vsFile, const char* psFile);
 
 	private:
 		Renderer*	renderer;
@@ -74,6 +72,7 @@ namespace tofu
 
 		HandleAllocator<BufferHandle, MAX_BUFFERS>					bufferHandleAlloc;
 		HandleAllocator<TextureHandle, MAX_TEXTURES>				textureHandleAlloc;
+		HandleAllocator<SamplerHandle, MAX_SAMPLERS>				samplerHandleAlloc;
 		HandleAllocator<VertexShaderHandle, MAX_VERTEX_SHADERS>		vertexShaderHandleAlloc;
 		HandleAllocator<PixelShaderHandle, MAX_PIXEL_SHADERS>		pixelShaderHandleAlloc;
 		HandleAllocator<PipelineStateHandle, MAX_PIPELINE_STATES>	pipelineStateHandleAlloc;
@@ -81,18 +80,21 @@ namespace tofu
 		size_t					frameNo;
 		uint32_t				allocNo;
 
-		VertexShaderHandle		defaultVertexShader;
-		PixelShaderHandle		defaultPixelShader;
-
 		BufferHandle			transformBuffer;
 		uint32_t				transformBufferSize;
 
 		BufferHandle			frameConstantBuffer;
-		uint32_t				frameConstantSize;
 
 		Mesh					meshes[MAX_MESHES];
 		Model					models[MAX_MODELS];
 		Material				materials[MAX_MATERIALS];
+
+		PipelineStateHandle		materialPSOs[MaxMaterialTypes];
+		VertexShaderHandle		materialVSs[MaxMaterialTypes];
+		PixelShaderHandle		materialPSs[MaxMaterialTypes];
+		SamplerHandle			defaultSampler;
+
+		ModelHandle				builtinCube;
 
 		RendererCommandBuffer*	cmdBuf;
 	};

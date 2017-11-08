@@ -95,16 +95,21 @@ namespace tofu
 		timeCounterFreq = nativeContext->GetTimeCounterFrequency();
 		startTimeCounter = nativeContext->GetTimeCounter();
 		currentTimeCounter = startTimeCounter;
+		lastTimeCounter = currentTimeCounter;
 
 		while(nativeContext->ProcessEvent())
 		{
-			lastTimeCounter = currentTimeCounter;
 			currentTimeCounter = nativeContext->GetTimeCounter();
 
 			int64_t deltaTimeCounter = (currentTimeCounter - lastTimeCounter) * 1000000;
+			float deltaTime = (deltaTimeCounter / timeCounterFreq) / 1000000.0f;
 
-			Time::DeltaTime = (deltaTimeCounter / timeCounterFreq) / 1000000.0f;
+			if (deltaTime < 0.016f) continue;
+
+			Time::DeltaTime = deltaTime;
 			Time::TotalTime += Time::DeltaTime;
+
+			lastTimeCounter = currentTimeCounter;
 
 			renderingSystem->BeginFrame();
 

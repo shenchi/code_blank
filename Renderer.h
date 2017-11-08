@@ -4,13 +4,6 @@
 
 namespace tofu
 {
-	HANDLE_DECL(Buffer);
-	HANDLE_DECL(Texture);
-	HANDLE_DECL(Sampler);
-	HANDLE_DECL(VertexShader);
-	HANDLE_DECL(PixelShader);
-	HANDLE_DECL(PipelineState);
-
 	struct RendererCommand
 	{
 		enum
@@ -50,6 +43,13 @@ namespace tofu
 		FORMAT_R32_UINT,
 		FORMAT_D24_UNORM_S8_UINT,
 		NUM_PIXEL_FORMAT
+	};
+
+	enum CullMode
+	{
+		CULL_NONE,
+		CULL_FRONT,
+		CULL_BACK
 	};
 
 	enum ComparisonFunc
@@ -154,7 +154,38 @@ namespace tofu
 		PipelineStateHandle	handle;
 		VertexShaderHandle	vertexShader;
 		PixelShaderHandle	pixelShader;
-		// TODO
+		union
+		{
+			struct
+			{
+				uint32_t			CullMode : 2;
+				uint32_t			_Reserved : 30;
+			};
+			uint32_t				RasterizerState;
+		};
+
+		union
+		{
+			struct
+			{
+				uint32_t			DepthEnable : 1;
+				uint32_t			DepthWrite : 1;
+				uint32_t			DepthFunc : 3;
+				uint32_t			_Reserved : 27;
+			};
+			uint32_t				DepthStencilState;
+		};
+
+		CreatePipelineStateParams()
+			:
+			handle(),
+			vertexShader(),
+			pixelShader(),
+			CullMode(CULL_BACK),
+			DepthEnable(1),
+			DepthWrite(1),
+			DepthFunc(COMPARISON_LESS)
+		{}
 	};
 
 	struct ClearParams

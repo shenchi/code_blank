@@ -16,7 +16,13 @@ int32_t TestGame::Init()
 		RenderingComponent r = e.AddComponent<RenderingComponent>();
 
 		ModelHandle model = RenderingSystem::instance()->CreateModel("assets/cube.model");
-		MaterialHandle material = RenderingSystem::instance()->CreateMaterial(MaterialType::TestMaterial);
+
+		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::OpaqueMaterial);
+		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.DDS");
+		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/stone_wall_normalmap.DDS");
+
+		material->SetTexture(diffuse);
+		material->SetNormalMap(normalMap);
 
 		r->SetMaterial(material);
 		r->SetModel(model);
@@ -31,6 +37,12 @@ int32_t TestGame::Init()
 		
 		camera->SetAspect(800.0f / 600.0f);
 		t->SetLocalPosition(math::float3{ 0, 0, -2 });
+
+		Material* skyboxMat = RenderingSystem::instance()->CreateMaterial(MaterialType::SkyboxMaterial);
+		TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/craterlake.dds");
+		skyboxMat->SetTexture(tex);
+
+		camera->SetSkybox(skyboxMat);
 	}
 
 	return TF_OK;

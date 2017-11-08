@@ -33,6 +33,13 @@
 
 namespace tofu
 {
+	HANDLE_DECL(Buffer);
+	HANDLE_DECL(Texture);
+	HANDLE_DECL(Sampler);
+	HANDLE_DECL(VertexShader);
+	HANDLE_DECL(PixelShader);
+	HANDLE_DECL(PipelineState);
+
 	constexpr uint32_t FRAME_BUFFER_COUNT = 2;
 
 	constexpr uint32_t LEVEL_BASED_MEM_SIZE = 128 * 1024 * 1024;
