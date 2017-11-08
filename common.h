@@ -2,6 +2,10 @@
 
 #include <cstdint>
 
+#ifndef _MSC_VER
+#include <_types.h>
+#endif
+
 #include "Error.h"
 
 #ifndef TF_INLINE

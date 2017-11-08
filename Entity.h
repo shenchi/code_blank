@@ -2,7 +2,6 @@
 
 #include "common.h"
 #include "HandleAllocator.h"
-#include "Component.h"
 
 namespace tofu
 {

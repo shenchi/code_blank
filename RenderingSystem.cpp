@@ -444,7 +444,7 @@ namespace tofu
 		assert(modelHandle);
 		Model& model = models[modelHandle.id];
 
-		model = {};
+		model = Model();
 		model.NumMeshes = header->NumMeshes;
 
 		BufferHandle vbHandle = bufferHandleAlloc.Allocate();
@@ -456,7 +456,7 @@ namespace tofu
 			model.Meshes[i] = meshHandleAlloc.Allocate();
 			assert(model.Meshes[i]);
 			uint32_t id = model.Meshes[i].id;
-			meshes[id] = {};
+			meshes[id] = Mesh();
 			meshes[id].VertexBuffer = vbHandle;
 			meshes[id].IndexBuffer = ibHandle;
 			meshes[id].StartVertex = verticesCount;

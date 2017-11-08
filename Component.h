@@ -3,12 +3,11 @@
 #include "Common.h"
 #include "Entity.h"
 
+#include <utility>
 #include <cassert>
 
 namespace tofu
 {
-	class Entity;
-
 	struct ComponentIndex
 	{
 		uint32_t	idx;
@@ -54,10 +53,10 @@ namespace tofu
 
 			if (numComponents > 1)
 			{
-				uint32_t latsElemIdx = numComponents - 1;
-				uint32_t lastElemEntity = back_pointers[latsElemIdx];
+				uint32_t lastElemIdx = numComponents - 1;
+				Entity lastElemEntity = back_pointers[lastElemIdx];
 
-				components[*compIdx] = std::move(components[latsElemIdx]);
+				components[*compIdx] = std::move(components[lastElemIdx]);
 
 				back_pointers[lastElemIdx] = Entity();
 				back_pointers[*compIdx] = lastElemEntity;

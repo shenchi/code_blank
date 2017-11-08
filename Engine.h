@@ -40,7 +40,6 @@ namespace tofu
 		NativeContext*		nativeContext;
 
 		RenderingSystem*	renderingSystem;
-		ScriptingSystem*	scriptingSystem;
 		InputSystem*		inputSystem;
 
 		Module*				userModules[MAX_USER_MODULES];

@@ -12,5 +12,7 @@ namespace tofu
 		virtual int32_t Shutdown() = 0;
 
 		virtual int32_t Update() = 0;
+
+		virtual ~Module() {}
 	};
 }

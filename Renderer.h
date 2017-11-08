@@ -159,7 +159,7 @@ namespace tofu
 			struct
 			{
 				uint32_t			CullMode : 2;
-				uint32_t			_Reserved : 30;
+				uint32_t			_Reserved1 : 30;
 			};
 			uint32_t				RasterizerState;
 		};
@@ -171,7 +171,7 @@ namespace tofu
 				uint32_t			DepthEnable : 1;
 				uint32_t			DepthWrite : 1;
 				uint32_t			DepthFunc : 3;
-				uint32_t			_Reserved : 27;
+				uint32_t			_Reserved2 : 27;
 			};
 			uint32_t				DepthStencilState;
 		};
@@ -242,6 +242,8 @@ namespace tofu
 	class Renderer
 	{
 	public:
+		virtual ~Renderer() {}
+
 		virtual int32_t Init() = 0;
 
 		virtual int32_t Release() = 0;

@@ -30,7 +30,7 @@ namespace tofu
 	
 	float4 Transform::TransformVector(const float4 & v) const
 	{
-		float3& ret = TransformVector(float3{ v.x, v.y, v.z });
+		float3 ret = TransformVector(float3{ v.x, v.y, v.z });
 		return float4{ ret.x, ret.y, ret.z, v.w };
 	}
 	
@@ -41,7 +41,7 @@ namespace tofu
 
 	float4 Transform::TransformPosition(const float4 & v) const
 	{
-		float3& ret = TransformPosition(float3{ v.x, v.y, v.z });
+		float3 ret = TransformPosition(float3{ v.x, v.y, v.z });
 		return float4{ ret.x, ret.y, ret.z, v.w };
 	}
 }

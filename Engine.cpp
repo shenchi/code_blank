@@ -4,9 +4,6 @@
 
 #include "NativeContext.h"
 
-#include "ScriptingSystem.h"
-#include "Script.h"
-
 #include "RenderingSystem.h"
 
 #include "InputSystem.h"
@@ -22,7 +19,6 @@ namespace tofu
 		:
 		nativeContext(nullptr),
 		renderingSystem(nullptr),
-		scriptingSystem(nullptr),
 		inputSystem(nullptr),
 		userModules(),
 		numUserModules(0),
@@ -50,19 +46,13 @@ namespace tofu
 	{
 		int32_t err = TF_OK;
 
-		// read config
-
-		Script s(filename);
-		if (!s) 
-			return TF_CONFIG_LOADING_FAILED;
-
 		// initialize native context
 
 		nativeContext = NativeContext::Create();
 		if (nullptr == nativeContext)
 			return TF_UNKNOWN_ERR;
 
-		err = nativeContext->Init(&s);
+		err = nativeContext->Init();
 		if (TF_OK != err)
 			return err;
 
@@ -71,13 +61,6 @@ namespace tofu
 		renderingSystem = new RenderingSystem();
 		err = renderingSystem->Init();
 		if (TF_OK != err)
-			return err;
-
-		// initialize scripting system
-
-		scriptingSystem = new ScriptingSystem();
-		err = scriptingSystem->Init();
-		if (TF_OK != err) 
 			return err;
 
 		inputSystem = new InputSystem();
@@ -115,8 +98,6 @@ namespace tofu
 
 			inputSystem->Update();
 
-			scriptingSystem->Update();
-
 			for (uint32_t i = 0; i < numUserModules; i++)
 			{
 				err = userModules[i]->Update();
@@ -148,9 +129,6 @@ namespace tofu
 
 		assert(TF_OK == inputSystem->Shutdown());
 		delete inputSystem;
-
-		assert(TF_OK == scriptingSystem->Shutdown());
-		delete scriptingSystem;
 
 		assert(TF_OK == renderingSystem->Shutdown());
 		delete renderingSystem;

@@ -1,6 +1,5 @@
 #include "NativeContext.h"
 
-#include "Script.h"
 #include "InputStates.h"
 
 #include <Windows.h>
@@ -65,13 +64,13 @@ namespace tofu
 		DirectX::GamePad*		gamepad;
 		
 	public:
-		int32_t Init(Script* config) override
+		int32_t Init() override
 		{
 			hInstance = GetModuleHandle(nullptr);
 
-			int32_t w = config->GetInt32("display.width", 800);
-			int32_t h = config->GetInt32("display.height", 600);
-			std::string title = config->GetString("game.title");
+			int32_t w = 800;// config->GetInt32("display.width", 800);
+			int32_t h = 600;// config->GetInt32("display.height", 600);
+			std::string title = "tofu";// config->GetString("game.title");
 			std::wstring wtitle(title.begin(), title.end());
 
 			WNDCLASSEX cls{ 0 };

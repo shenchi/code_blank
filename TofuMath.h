@@ -7,7 +7,7 @@
 #ifdef _MSC_VER
 #define TF_INLINE __forceinline
 #else
-#define TF_INLINE TF_INLINE
+#define TF_INLINE inline
 #endif
 #endif
 

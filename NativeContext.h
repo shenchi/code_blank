@@ -4,8 +4,6 @@
 
 namespace tofu
 {
-	class Script;
-
 	struct InputStates;
 
 	class NativeContext
@@ -13,7 +11,9 @@ namespace tofu
 		SINGLETON_DECL(NativeContext)
 
 	public:
-		virtual int32_t Init(Script* config) = 0;
+		virtual ~NativeContext() {}
+
+		virtual int32_t Init() = 0;
 
 		virtual int32_t Shutdown() = 0;
 
