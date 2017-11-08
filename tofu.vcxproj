@@ -252,7 +252,6 @@
     <ClInclude Include="Module.h" />
     <ClInclude Include="NativeContext.h" />
     <ClInclude Include="Renderer.h" />
-    <ClInclude Include="RendererDX11.h" />
     <ClInclude Include="RenderingComponent.h" />
     <ClInclude Include="RenderingSystem.h" />
     <ClInclude Include="Script.h" />

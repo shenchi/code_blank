@@ -1,25 +1,11 @@
 #include "Renderer.h"
 
-#ifdef _MSC_VER
-#include "RendererDX11.h"
-#endif
-
 #include "MemoryAllocator.h"
 
 #include <assert.h>
 
 namespace tofu
 {
-
-	Renderer* Renderer::CreateRenderer()
-	{
-#ifdef _MSC_VER
-		return dx11::CreateRendererDX11();
-#else
-		return nullptr;
-#endif
-	}
-
 	RendererCommandBuffer * RendererCommandBuffer::Create(uint32_t capacity, uint32_t allocNo)
 	{
 		MemoryAllocator& alloc = MemoryAllocator::Allocators[allocNo];

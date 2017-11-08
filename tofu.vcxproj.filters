@@ -341,9 +341,6 @@
     <ClInclude Include="FileIO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RendererDX11.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HandleAllocator.h">
       <Filter>Header Files</Filter>
     </ClInclude>

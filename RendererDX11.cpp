@@ -1,5 +1,4 @@
 #include "Renderer.h"
-#include "RendererDX11.h"
 
 #include "NativeContext.h"
 
@@ -1145,12 +1144,10 @@ namespace tofu
 
 		};
 
+	}
 
-
-		Renderer * CreateRendererDX11()
-		{
-			return new RendererDX11();
-		}
-
+	Renderer* Renderer::CreateRenderer()
+	{
+		return new dx11::RendererDX11();
 	}
 }
