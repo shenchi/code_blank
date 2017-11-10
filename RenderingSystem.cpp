@@ -120,7 +120,6 @@ namespace tofu
 				assert(nullptr != params);
 				params->handle = transformBuffer;
 				params->bindingFlags = BINDING_CONSTANT_BUFFER;
-				params->dynamic = 1;
 				params->size = transformBufferSize;
 
 				cmdBuf->Add(RendererCommand::CreateBuffer, params);
@@ -134,7 +133,6 @@ namespace tofu
 				assert(nullptr != params);
 				params->handle = frameConstantBuffer;
 				params->bindingFlags = BINDING_CONSTANT_BUFFER;
-				params->dynamic = 1;
 				params->size = sizeof(FrameConstants);
 
 				cmdBuf->Add(RendererCommand::CreateBuffer, params);
@@ -195,6 +193,7 @@ namespace tofu
 		}
 
 		builtinCube = CreateModel("assets/cube.model");
+		assert(builtinCube);
 
 		return TF_OK;
 	}
