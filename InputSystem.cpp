@@ -16,6 +16,7 @@ namespace tofu
 
 	int32_t InputSystem::Init()
 	{
+		states = {};
 		return TF_OK;
 	}
 

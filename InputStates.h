@@ -137,6 +137,7 @@ namespace tofu
 		TF_KEY_MAX_ID = 0xff,
 
 		TF_GAMEPAD_START_ID = 0x100,
+
 		TF_GAMEPAD_FACE_DOWN = 0x100,
 		TF_GAMEPAD_FACE_RIGHT = 0x101,
 		TF_GAMEPAD_FACE_LEFT = 0x102,
@@ -169,6 +170,20 @@ namespace tofu
 		float			rightStickY;
 		float			leftTrigger;
 		float			rightTrigger;
+		bool			isConnected;
+
+		inline void SetButtonState(uint32_t id, uint32_t isDown)
+		{
+			isDown &= 0x1u;
+
+			state |= (isDown << (id - static_cast<uint32_t>(TF_GAMEPAD_START_ID)));
+			state &= ~((~isDown) << (id - static_cast<uint32_t>(TF_GAMEPAD_START_ID)));
+		}
+
+		inline bool IsButtonDown(uint32_t id) const
+		{
+			return (state & (1u << (id - static_cast<uint32_t>(TF_GAMEPAD_START_ID)))) != 0;
+		}
 	};
 
 	struct InputStates

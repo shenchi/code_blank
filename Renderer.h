@@ -252,6 +252,8 @@ namespace tofu
 
 		virtual int32_t Present() = 0;
 
+		virtual int32_t GetFrameBufferSize(int32_t& width, int32_t& height) = 0;
+
 		static Renderer* CreateRenderer();
 	};
 

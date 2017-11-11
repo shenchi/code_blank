@@ -23,7 +23,11 @@ namespace tofu
 
 		TF_INLINE bool IsButtonDown(ButtonId button) const 
 		{ 
-			return states.IsButtonDown(button); 
+			if (button > ButtonId::TF_KEY_MAX_ID)
+			{
+				return states.gamepad.IsButtonDown(button);
+			} 
+			return states.IsButtonDown(button);
 		}
 
 		TF_INLINE float GetMouseDeltaX() const
@@ -34,6 +38,41 @@ namespace tofu
 		TF_INLINE float GetMouseDeltaY() const
 		{
 			return states.mouseDeltaY;
+		}
+
+		TF_INLINE bool IsGamepadConnected() const
+		{
+			return states.gamepad.isConnected;
+		}
+
+		TF_INLINE float GetLeftStickX() const
+		{
+			return states.gamepad.leftStickX;
+		}
+
+		TF_INLINE float GetLeftStickY() const
+		{
+			return states.gamepad.leftStickY;
+		}
+
+		TF_INLINE float GetRightStickX() const
+		{
+			return states.gamepad.rightStickX;
+		}
+
+		TF_INLINE float GetRightStickY() const
+		{
+			return states.gamepad.rightStickY;
+		}
+
+		TF_INLINE float GetLeftTrigger() const
+		{
+			return states.gamepad.leftTrigger;
+		}
+
+		TF_INLINE float GetRightTrigger() const
+		{
+			return states.gamepad.rightTrigger;
 		}
 
 	private:

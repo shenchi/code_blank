@@ -121,6 +121,7 @@ namespace tofu
 				params->handle = transformBuffer;
 				params->bindingFlags = BINDING_CONSTANT_BUFFER;
 				params->size = transformBufferSize;
+				params->dynamic = 1;
 
 				cmdBuf->Add(RendererCommand::CreateBuffer, params);
 			}
@@ -134,6 +135,7 @@ namespace tofu
 				params->handle = frameConstantBuffer;
 				params->bindingFlags = BINDING_CONSTANT_BUFFER;
 				params->size = sizeof(FrameConstants);
+				params->dynamic = 1;
 
 				cmdBuf->Add(RendererCommand::CreateBuffer, params);
 			}
@@ -236,6 +238,13 @@ namespace tofu
 		assert(CameraComponent::GetNumComponents() > 0);
 		CameraComponentData& camera = CameraComponent::GetAllComponents()[0];
 
+		// update aspect
+		{
+			int32_t w, h;
+			renderer->GetFrameBufferSize(w, h);
+			camera.SetAspect(h == 0 ? 1.0f : float(w) / h);
+		}
+
 		{
 			FrameConstants* data = reinterpret_cast<FrameConstants*>(
 				MemoryAllocator::Allocators[allocNo].Allocate(sizeof(FrameConstants), 4)
@@ -326,6 +335,7 @@ namespace tofu
 			transformArray[idx] = transform->GetWorldTransform().GetMatrix();
 		}
 
+		if (numActiveRenderables > 0)
 		{
 			UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
 			assert(nullptr != params);

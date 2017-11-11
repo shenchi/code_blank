@@ -269,6 +269,12 @@ namespace tofu
 				return TF_OK;
 			}
 
+			virtual int32_t GetFrameBufferSize(int32_t& width, int32_t& height) override
+			{
+				width = winWidth;
+				height = winHeight;
+				return TF_OK;
+			}
 
 		private:
 			int							winWidth;
