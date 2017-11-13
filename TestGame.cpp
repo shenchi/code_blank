@@ -14,9 +14,9 @@ int32_t TestGame::Init()
 		tCube = e.AddComponent<TransformComponent>();
 		//tCube->SetLocalPosition(math::float3{ 1, 0, 0 });
 
-		RenderingComponent r = e.AddComponent<RenderingComponent>();
+		StaticMeshComponent r = e.AddComponent<StaticMeshComponent>();
 
-		ModelHandle model = RenderingSystem::instance()->CreateModel("assets/cube.model");
+		Model* model = RenderingSystem::instance()->CreateModel("assets/cube.model");
 
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::OpaqueMaterial);
 		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");

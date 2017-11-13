@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include "TofuMath.h"
 
 namespace tofu
 {
@@ -32,6 +33,10 @@ namespace tofu
 			uint32_t			NumMeshes;
 			uint32_t			NumBones;
 			uint32_t			NumAnimations;
+			uint32_t			NumAnimChannels;
+			uint32_t			NumTotalTranslationFrames;
+			uint32_t			NumTotalRotationFrames;
+			uint32_t			NumTotalScaleFrames;
 
 			inline uint32_t CalculateVertexSize() const
 			{
@@ -78,13 +83,57 @@ namespace tofu
 		//     index size is 16 bit for now,
 		//     index base is 0 for each mesh
 
-		// ... followed by an array of bone matrix (the 4th row is omitted)
+		// ... followed by an array of ModelBone struct
 
 		// ... followed by an array of ModelAnimation
 
+		// ... followed by an array of all ModelAnimChannel
+
+		// ... followed by an array of all translation frames (ModelFloat3Frame)
+
+		// ... followed by an array of all rotation frames (ModelQuatFrame)
+
+		// ... followed by an array of all scale frames (ModelFloat3Frame)
+
+		struct ModelBone
+		{
+			uint32_t		id;
+			uint32_t		parent;
+			uint32_t		firstChild;
+			uint32_t		nextSibling;
+			math::float4x4	transform;
+			math::float4x4	offsetMatrix;
+		};
+
 		struct ModelAnimation
 		{
-			// TODO
+			float			duration;
+			float			frameRate;
+			uint32_t		numChannels;
+			uint32_t		startChannelId;
+		};
+
+		struct ModelAnimChannel
+		{
+			uint32_t		boneId;
+			uint32_t		startTranslationFrame;
+			uint32_t		numTranslationFrame;
+			uint32_t		startRotationFrame;
+			uint32_t		numRotaFrame;
+			uint32_t		startScaleFrame;
+			uint32_t		numScaleFrame;
+		};
+
+		struct ModelFloat3Frame
+		{
+			float			time;
+			math::float3	value;
+		};
+
+		struct ModelQuatFrame
+		{
+			float			time;
+			math::quat		value;
 		};
 	}
 }

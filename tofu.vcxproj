@@ -187,11 +187,12 @@
     <ClInclude Include="Material.h" />
     <ClInclude Include="MemoryAllocator.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Model.h" />
     <ClInclude Include="ModelFormat.h" />
     <ClInclude Include="Module.h" />
     <ClInclude Include="NativeContext.h" />
     <ClInclude Include="Renderer.h" />
-    <ClInclude Include="RenderingComponent.h" />
+    <ClInclude Include="StaticMeshComponent.h" />
     <ClInclude Include="RenderingSystem.h" />
     <ClInclude Include="TestGame.h" />
     <ClInclude Include="TofuMath.h" />

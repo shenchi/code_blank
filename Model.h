@@ -1,0 +1,33 @@
+#pragma once
+
+#include "Common.h"
+#include "ModelFormat.h"
+
+namespace tofu
+{
+	class RenderingSystem;
+
+	HANDLE_DECL(Mesh);
+	HANDLE_DECL(Model);
+
+	class Model
+	{
+		friend class RenderingSystem;
+	public:
+
+	private:
+		ModelHandle					handle;
+		MeshHandle					meshes[MAX_MESHES_PER_MODEL];
+		uint32_t					numMeshes;
+		uint32_t					vertexSize;
+		model::ModelHeader*			header;
+		model::ModelBone*			bones;
+		model::ModelAnimation*		animations;
+		model::ModelAnimChannel*	channels;
+		model::ModelFloat3Frame*	translationFrames;
+		model::ModelQuatFrame*		rotationFrames;
+		model::ModelFloat3Frame*	scaleFrames;
+		void*						rawData;
+		size_t						rawDataSize;
+	};
+}

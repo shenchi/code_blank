@@ -7,19 +7,19 @@ namespace tofu
 {
 	class RenderingSystem;
 
-	class RenderingComponentData
+	class StaticMeshComponentData
 	{
 	public:
-		RenderingComponentData() : RenderingComponentData(Entity()) {}
+		StaticMeshComponentData() : StaticMeshComponentData(Entity()) {}
 
-		RenderingComponentData(Entity e) 
+		StaticMeshComponentData(Entity e) 
 			: 
 			entity(e),
 			model(),
 			material()
 		{}
 
-		void SetModel(ModelHandle handle) { model = handle; }
+		void SetModel(Model* m) { model = m; }
 
 		void SetMaterial(Material* mat) { material = mat; }
 
@@ -27,9 +27,9 @@ namespace tofu
 		friend class RenderingSystem;
 
 		Entity				entity;
-		ModelHandle			model;
+		Model*				model;
 		Material*			material;
 	};
 
-	typedef Component<RenderingComponentData> RenderingComponent;
+	typedef Component<StaticMeshComponentData> StaticMeshComponent;
 }

@@ -20,18 +20,62 @@ using tofu::math::quat;
 using tofu::math::float4x4;
 using tofu::math::int4;
 
-struct Bone
-{
-	uint32_t id;
-	uint32_t parent;
-	uint32_t firstChild;
-	uint32_t nextSibling;
-	float4x4 transform;
-	float4x4 offsetMatrix;
-};
+typedef tofu::model::ModelBone Bone;
+typedef tofu::model::ModelAnimation Animation;
+typedef tofu::model::ModelAnimChannel Channel;
+typedef tofu::model::ModelFloat3Frame VFrame;
+typedef tofu::model::ModelQuatFrame QFrame;
 
 typedef std::vector<Bone> BoneTree;
 typedef std::unordered_map<std::string, uint32_t> BoneTable;
+
+void Basename(char* buf, size_t bufSize, const char* path)
+{
+	size_t start = 0;
+	size_t end = SIZE_MAX;
+	size_t i = 0;
+	while (path[i])
+	{
+		if (path[i] == '\\' || path[i] == '/')
+		{
+			start = i + 1;
+		}
+		if (path[i] == '.')
+		{
+			end = i;
+		}
+		i++;
+	}
+
+	if (end == SIZE_MAX || end < start)
+	{
+		end = i;
+	}
+	
+	strncpy_s(buf, bufSize, path + start, end - start);
+}
+
+void Directory(char* buf, size_t bufSize, const char* path)
+{
+	size_t start = 0;
+	size_t end = 0;
+	size_t i = 0;
+	while (path[i])
+	{
+		if (path[i] == '\\' || path[i] == '/')
+		{
+			end = i;
+		}
+		i++;
+	}
+
+	if (end == start)
+	{
+		strncpy_s(buf, bufSize, "./", 3);
+	}
+
+	strncpy_s(buf, bufSize, path + start, end - start + 1);
+}
 
 inline void CopyMatrix(float4x4& dstMatrix, const aiMatrix4x4& srcMatrix)
 {
@@ -103,7 +147,7 @@ int main(int argc, char* argv[])
 {
 	if (argc != 3)
 	{
-		printf("model_converter input_file output_file");
+		printf("model_converter input_file output_file\n");
 		return 0;
 	}
 
@@ -145,19 +189,7 @@ int main(int argc, char* argv[])
 	header.NumBones = 0;
 	header.NumAnimations = 0;
 
-	BoneTree bones;
-	BoneTable boneTable;
-
-	if (scene->mNumAnimations > 0 && scene->mRootNode->mNumChildren > 0)
-	{
-		// load bone hierarchy
-		loadBoneHierarchy(scene->mRootNode, bones, boneTable);
-		
-		header.NumBones = static_cast<uint32_t>(bones.size());
-		header.NumAnimations = scene->mNumAnimations;
-		header.HasAnimation = 1;
-	}
-
+	// gathering vertices information
 	uint32_t vertexSize = 0;
 	uint32_t numVertices = 0, numIndices = 0;
 
@@ -176,6 +208,115 @@ int main(int argc, char* argv[])
 	{
 		header.NumTexcoordChannels = tofu::model::MODEL_FILE_MAX_TEXCOORD_CHANNELS;
 	}
+
+	// gathering bone information
+	BoneTree bones;
+	BoneTable boneTable;
+
+	if (scene->mNumAnimations > 0 && scene->mRootNode->mNumChildren > 0)
+	{
+		// load bone hierarchy
+		loadBoneHierarchy(scene->mRootNode, bones, boneTable);
+
+		header.NumBones = static_cast<uint32_t>(bones.size());
+		header.NumAnimations = scene->mNumAnimations;
+		header.HasAnimation = 1;
+	}
+
+	// gathering animation information
+	std::vector<Animation> anims;
+	std::vector<Channel> channels;
+	std::vector<VFrame> tFrames;
+	std::vector<QFrame> rFrames;
+	std::vector<VFrame> sFrames;
+
+	for (uint32_t iAnim = 0; iAnim < header.NumAnimations; iAnim++)
+	{
+		aiAnimation* anim = scene->mAnimations[iAnim];
+
+		anims.push_back(Animation
+		{
+			static_cast<float>(anim->mDuration),
+			static_cast<float>(anim->mTicksPerSecond),
+			anim->mNumChannels,
+			static_cast<uint32_t>(channels.size())
+		});
+
+		for (uint32_t iChan = 0; iChan < anim->mNumChannels; iChan++)
+		{
+			aiNodeAnim* chan = anim->mChannels[iChan];
+			std::string boneName(chan->mNodeName.C_Str());
+			auto iter = boneTable.find(boneName);
+			if (iter == boneTable.end())
+			{
+				printf("unable to find bone %s\n", boneName.c_str());
+				return __LINE__;
+			}
+
+			uint32_t boneId = iter->second;
+			uint32_t numT = chan->mNumPositionKeys;
+			uint32_t numR = chan->mNumRotationKeys;
+			uint32_t numS = chan->mNumScalingKeys;
+			uint32_t startT = (0 == numT) ? UINT32_MAX : static_cast<uint32_t>(tFrames.size());
+			uint32_t startR = (0 == numR) ? UINT32_MAX : static_cast<uint32_t>(rFrames.size());
+			uint32_t startS = (0 == numS) ? UINT32_MAX : static_cast<uint32_t>(sFrames.size());
+
+			channels.push_back(Channel
+			{
+				boneId,
+				startT,
+				numT,
+				startR,
+				numR,
+				startS,
+				numS
+			});
+
+			// translation keys
+			for (uint32_t iFrame = 0; iFrame < numT; iFrame++)
+			{
+				aiVectorKey& key = chan->mPositionKeys[iFrame];
+				VFrame frame;
+				frame.time = static_cast<float>(key.mTime);
+				frame.value.x = key.mValue.x;
+				frame.value.y = key.mValue.y;
+				frame.value.z = key.mValue.z;
+
+				tFrames.push_back(frame);
+			}
+
+			// rotation keys
+			for (uint32_t iFrame = 0; iFrame < numT; iFrame++)
+			{
+				aiQuatKey& key = chan->mRotationKeys[iFrame];
+				QFrame frame;
+				frame.time = static_cast<float>(key.mTime);
+				frame.value.x = key.mValue.x;
+				frame.value.y = key.mValue.y;
+				frame.value.z = key.mValue.z;
+				frame.value.w = key.mValue.w;
+
+				rFrames.push_back(frame);
+			}
+
+			// scale keys
+			for (uint32_t iFrame = 0; iFrame < numT; iFrame++)
+			{
+				aiVectorKey& key = chan->mScalingKeys[iFrame];
+				VFrame frame;
+				frame.time = static_cast<float>(key.mTime);
+				frame.value.x = key.mValue.x;
+				frame.value.y = key.mValue.y;
+				frame.value.z = key.mValue.z;
+
+				sFrames.push_back(frame);
+			}
+		}
+	}
+	header.NumAnimChannels = static_cast<uint32_t>(channels.size());
+	header.NumTotalTranslationFrames = static_cast<uint32_t>(tFrames.size());
+	header.NumTotalRotationFrames = static_cast<uint32_t>(rFrames.size());
+	header.NumTotalScaleFrames = static_cast<uint32_t>(sFrames.size());
 
 	// writing header
 	if (1 != fwrite(&header, sizeof(header), 1, file))
@@ -205,6 +346,12 @@ int main(int argc, char* argv[])
 	// calculate vertex size;
 	{
 		vertexSize = header.CalculateVertexSize();
+	}
+
+	// align index data size to dword
+	if (numIndices % 2 != 0)
+	{
+		numIndices += 1;
 	}
 
 	// allocate buffer for vertices and indices
@@ -338,7 +485,7 @@ int main(int argc, char* argv[])
 					}
 					else
 					{
-						printf("mesh %d vertex %d has more than 4 bones bound.", i, vertexId);
+						printf("mesh %d vertex %d has more than 4 bones bound.\n", i, vertexId);
 						return __LINE__;
 					}
 				}
@@ -382,17 +529,88 @@ int main(int argc, char* argv[])
 	// write buffer to file
 	if (1 != fwrite(buffer, bufferSize, 1, file))
 	{
-		printf("failed to write buffer to file.\n");
+		printf("failed to write buffer to the file.\n");
 		return __LINE__;
 	}
 	free(buffer);
 
-	// TODO bone data
+	// bone data
+	if (header.NumBones > 0)
+	{
+		if (1 != fwrite(&(bones[0]), sizeof(Bone) * header.NumBones, 1, file))
+		{
+			printf("failed to write bone list to the file.\n");
+			return __LINE__;
+		}
+	}
 	 
-	// TODO animation data
+	// animation data
+	if (header.HasAnimation)
+	{
+		if (1 != fwrite(&(anims[0]), sizeof(Animation) * header.NumAnimations, 1, file))
+		{
+			printf("failed to write animation list to the file.\n");
+			return __LINE__;
+		}
+
+		if (1 != fwrite(&(channels[0]), sizeof(Channel) * header.NumAnimChannels, 1, file))
+		{
+			printf("failed to write channel list to the file.\n");
+			return __LINE__;
+		}
+
+		if (1 != fwrite(&(tFrames[0]), sizeof(VFrame) * header.NumTotalTranslationFrames, 1, file))
+		{
+			printf("failed to write translation frame list to the file.\n");
+			return __LINE__;
+		}
+
+		if (1 != fwrite(&(rFrames[0]), sizeof(QFrame) * header.NumTotalRotationFrames, 1, file))
+		{
+			printf("failed to write rotation frame list to the file.\n");
+			return __LINE__;
+		}
+
+		if (1 != fwrite(&(sFrames[0]), sizeof(VFrame) * header.NumTotalScaleFrames, 1, file))
+		{
+			printf("failed to write scale frame list to the file.\n");
+			return __LINE__;
+		}
+	}
+
+	fclose(file);
+
+	if (scene->HasTextures())
+	{
+		char directory[1024] = {};
+		char basename[1024] = {};
+		char path[1024] = {};
+
+		Directory(directory, 1024, argv[2]);
+		Basename(basename, 1024, argv[2]);
+
+		for (uint32_t i = 0; i < scene->mNumTextures; i++)
+		{
+			aiTexture* tex = scene->mTextures[i];
+			if (tex->CheckFormat("png"))
+			{
+				sprintf_s(path, 1024, "%s%s_%u.png", directory, basename, i);
+				FILE* f = fopen(path, "wb");
+				if (1 != fwrite(tex->pcData, tex->mWidth, 1, f))
+				{
+					printf("failed to write texture to the file.\n");
+					return __LINE__;
+				}
+			}
+			else
+			{
+				printf("unsupported texture format.\n");
+				return __LINE__;
+			}
+		}
+	}
 
 	importer.FreeScene();
-	fclose(file);
 
 	return 0;
 }

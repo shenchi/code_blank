@@ -2,6 +2,7 @@
 
 #include "Common.h"
 #include "Module.h"
+#include "Model.h"
 #include "Material.h"
 
 #include "Renderer.h"
@@ -13,8 +14,6 @@
 
 namespace tofu
 {
-	HANDLE_DECL(Mesh);
-	HANDLE_DECL(Model);
 
 	struct Mesh
 	{
@@ -24,12 +23,6 @@ namespace tofu
 		uint32_t		StartVertex;
 		uint32_t		NumIndices;
 		uint32_t		NumVertices;
-	};
-
-	struct Model
-	{
-		MeshHandle		Meshes[MAX_MESHES_PER_MODEL];
-		uint32_t		NumMeshes;
 	};
 
 	class RenderingSystem : public Module
@@ -51,7 +44,7 @@ namespace tofu
 
 		int32_t EndFrame();
 
-		ModelHandle CreateModel(const char* filename);
+		Model* CreateModel(const char* filename);
 
 		TextureHandle CreateTexture(const char* filename);
 
@@ -94,7 +87,7 @@ namespace tofu
 		PixelShaderHandle		materialPSs[MaxMaterialTypes];
 		SamplerHandle			defaultSampler;
 
-		ModelHandle				builtinCube;
+		Model*					builtinCube;
 
 		RendererCommandBuffer*	cmdBuf;
 	};

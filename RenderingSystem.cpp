@@ -11,7 +11,7 @@
 
 #include "TransformComponent.h"
 #include "CameraComponent.h"
-#include "RenderingComponent.h"
+#include "StaticMeshComponent.h"
 
 namespace
 {
@@ -195,7 +195,7 @@ namespace tofu
 		}
 
 		builtinCube = CreateModel("assets/cube.model");
-		assert(builtinCube);
+		assert(nullptr != builtinCube);
 
 		return TF_OK;
 	}
@@ -287,7 +287,7 @@ namespace tofu
 			assert(camera.skybox->type == SkyboxMaterial);
 			skyboxTex = camera.skybox->mainTex;
 
-			Mesh& mesh = meshes[models[builtinCube.id].Meshes[0].id];
+			Mesh& mesh = meshes[builtinCube->meshes[0].id];
 
 			DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
 			params->pipelineState = materialPSOs[SkyboxMaterial];
@@ -305,8 +305,8 @@ namespace tofu
 		}
 
 		// get all renderables in system
-		RenderingComponentData* comps = RenderingComponent::GetAllComponents();
-		uint32_t count = RenderingComponent::GetNumComponents();
+		StaticMeshComponentData* comps = StaticMeshComponent::GetAllComponents();
+		uint32_t count = StaticMeshComponent::GetNumComponents();
 
 		// buffer for transform matrices
 		math::float4x4* transformArray = reinterpret_cast<math::float4x4*>(
@@ -324,7 +324,7 @@ namespace tofu
 
 		for (uint32_t i = 0; i < count; ++i)
 		{
-			RenderingComponentData& comp = comps[i];
+			StaticMeshComponentData& comp = comps[i];
 			TransformComponent transform = comp.entity.GetComponent<TransformComponent>();
 			assert(transform);
 
@@ -348,17 +348,17 @@ namespace tofu
 
 		for (uint32_t i = 0; i < numActiveRenderables; ++i)
 		{
-			RenderingComponentData& comp = comps[activeRenderables[i]];
+			StaticMeshComponentData& comp = comps[activeRenderables[i]];
 
-			assert(comp.model && comp.material);
+			assert(nullptr != comp.model && nullptr != comp.material);
 
-			Model& model = models[comp.model.id];
+			Model& model = *comp.model;
 			Material* mat = comp.material;
 
-			for (uint32_t iMesh = 0; iMesh < model.NumMeshes; ++iMesh)
+			for (uint32_t iMesh = 0; iMesh < model.numMeshes; ++iMesh)
 			{
-				assert(model.Meshes[iMesh]);
-				Mesh& mesh = meshes[model.Meshes[iMesh].id];
+				assert(model.meshes[iMesh]);
+				Mesh& mesh = meshes[model.meshes[iMesh].id];
 
 				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
 				params->pipelineState = materialPSOs[mat->type];
@@ -410,7 +410,7 @@ namespace tofu
 		return TF_OK;
 	}
 
-	ModelHandle RenderingSystem::CreateModel(const char* filename)
+	Model* RenderingSystem::CreateModel(const char* filename)
 	{
 		std::string strFilename(filename);
 
@@ -418,7 +418,7 @@ namespace tofu
 			auto iter = modelTable.find(strFilename);
 			if (iter != modelTable.end())
 			{
-				return iter->second;
+				return &models[iter->second];
 			}
 		}
 
@@ -427,7 +427,7 @@ namespace tofu
 		int32_t err = FileIO::ReadFile(filename, reinterpret_cast<void**>(&data), &size, 4, ALLOC_FRAME_BASED_MEM);
 		if (TF_OK != err)
 		{
-			return ModelHandle();
+			return nullptr;
 		}
 
 		model::ModelHeader* header = reinterpret_cast<model::ModelHeader*>(data);
@@ -440,7 +440,7 @@ namespace tofu
 
 		if (header->NumMeshes == 0)
 		{
-			return ModelHandle();
+			return nullptr;
 		}
 
 		model::ModelMesh* meshInfos = reinterpret_cast<model::ModelMesh*>(header + 1);
@@ -454,7 +454,12 @@ namespace tofu
 		Model& model = models[modelHandle.id];
 
 		model = Model();
-		model.NumMeshes = header->NumMeshes;
+		model.handle = modelHandle;
+		model.numMeshes = header->NumMeshes;
+		model.vertexSize = header->CalculateVertexSize();
+		model.rawData = data;
+		model.rawDataSize = size;
+		model.header = header;
 
 		BufferHandle vbHandle = bufferHandleAlloc.Allocate();
 		BufferHandle ibHandle = bufferHandleAlloc.Allocate();
@@ -462,9 +467,9 @@ namespace tofu
 
 		for (uint32_t i = 0; i < header->NumMeshes; ++i)
 		{
-			model.Meshes[i] = meshHandleAlloc.Allocate();
-			assert(model.Meshes[i]);
-			uint32_t id = model.Meshes[i].id;
+			model.meshes[i] = meshHandleAlloc.Allocate();
+			assert(model.meshes[i]);
+			uint32_t id = model.meshes[i].id;
 			meshes[id] = Mesh();
 			meshes[id].VertexBuffer = vbHandle;
 			meshes[id].IndexBuffer = ibHandle;
@@ -477,11 +482,43 @@ namespace tofu
 			indicesCount += meshInfos[i].NumIndices;
 		}
 
+		if (indicesCount % 2 != 0)
+		{
+			indicesCount += 1;
+		}
+
 		uint32_t vertexBufferSize = verticesCount * header->CalculateVertexSize();
 		uint32_t indexBufferSize = indicesCount * sizeof(uint16_t);
 
 		uint8_t* vertices = reinterpret_cast<uint8_t*>(meshInfos + header->NumMeshes);
 		uint8_t* indices = vertices + vertexBufferSize;
+
+		if (header->NumBones > 0)
+		{
+			model.bones = reinterpret_cast<model::ModelBone*>(indices + indexBufferSize);
+			if (header->HasAnimation)
+			{
+				model.animations = reinterpret_cast<model::ModelAnimation*>(
+					model.bones + header->NumBones
+					);
+
+				model.channels = reinterpret_cast<model::ModelAnimChannel*>(
+					model.animations + header->NumAnimations
+					);
+
+				model.translationFrames = reinterpret_cast<model::ModelFloat3Frame*>(
+					model.channels + header->NumAnimChannels
+					);
+
+				model.rotationFrames = reinterpret_cast<model::ModelQuatFrame*>(
+					model.translationFrames + header->NumTotalTranslationFrames
+					);
+
+				model.scaleFrames = reinterpret_cast<model::ModelFloat3Frame*>(
+					model.rotationFrames + header->NumTotalRotationFrames
+					);
+			}
+		}
 
 		{
 			CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(ALLOC_FRAME_BASED_MEM);
@@ -504,7 +541,7 @@ namespace tofu
 			cmdBuf->Add(RendererCommand::CreateBuffer, params);
 		}
 
-		return modelHandle;
+		return &model;
 	}
 
 	TextureHandle RenderingSystem::CreateTexture(const char* filename)
