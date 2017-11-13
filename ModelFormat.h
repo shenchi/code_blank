@@ -107,8 +107,8 @@ namespace tofu
 
 		struct ModelAnimation
 		{
-			float			duration;
-			float			frameRate;
+			float			durationInTicks;
+			float			ticksPerSecond;
 			uint32_t		numChannels;
 			uint32_t		startChannelId;
 		};
