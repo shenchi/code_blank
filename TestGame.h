@@ -5,7 +5,7 @@
 #include "Entity.h"
 #include "TransformComponent.h"
 #include "CameraComponent.h"
-#include "StaticMeshComponent.h"
+#include "RenderingComponent.h"
 
 class TestGame : public tofu::Module
 {

@@ -11,11 +11,11 @@
 
 #include "TransformComponent.h"
 #include "CameraComponent.h"
-#include "StaticMeshComponent.h"
+#include "RenderingComponent.h"
 
 namespace
 {
-	struct FrameConstants
+	struct FrameConstants							// 32 shader constants in total
 	{
 		tofu::math::float4x4	matView;			// 4 shader constants
 		tofu::math::float4x4	matProj;			// 4 shader constants
@@ -307,8 +307,8 @@ namespace tofu
 		}
 
 		// get all renderables in system
-		StaticMeshComponentData* comps = StaticMeshComponent::GetAllComponents();
-		uint32_t count = StaticMeshComponent::GetNumComponents();
+		RenderingComponentData* comps = RenderingComponent::GetAllComponents();
+		uint32_t count = RenderingComponent::GetNumComponents();
 
 		// buffer for transform matrices
 		math::float4x4* transformArray = reinterpret_cast<math::float4x4*>(
@@ -326,7 +326,7 @@ namespace tofu
 
 		for (uint32_t i = 0; i < count; ++i)
 		{
-			StaticMeshComponentData& comp = comps[i];
+			RenderingComponentData& comp = comps[i];
 			TransformComponent transform = comp.entity.GetComponent<TransformComponent>();
 			assert(transform);
 
@@ -350,7 +350,7 @@ namespace tofu
 
 		for (uint32_t i = 0; i < numActiveRenderables; ++i)
 		{
-			StaticMeshComponentData& comp = comps[activeRenderables[i]];
+			RenderingComponentData& comp = comps[activeRenderables[i]];
 
 			assert(nullptr != comp.model && nullptr != comp.material);
 
@@ -585,6 +585,32 @@ namespace tofu
 		return mat;
 	}
 
+	AnimationState* RenderingSystem::CreateAnimationState(Model* model)
+	{
+		if (nullptr == model || nullptr == model->header || !model->HasAnimation())
+		{
+			return nullptr;
+		}
+
+		AnimationStateHandle handle = animStateHandleAlloc.Allocate();
+		BufferHandle bufferHandle = bufferHandleAlloc.Allocate();
+		if (!handle || !bufferHandle)
+		{
+			return nullptr;
+		}
+
+		AnimationState& state = animStates[handle.id];
+		state = {};
+		state.handle = handle;
+		state.model = model;
+		state.boneMatricesBuffer = bufferHandle;
+		state.boneMatricesBufferSize = static_cast<uint32_t>(sizeof(math::float4x4)) * model->header->NumBones;
+
+		
+
+		return &state;
+	}
+
 	int32_t RenderingSystem::InitBuiltinShader(MaterialType matType, const char * vsFile, const char * psFile)
 	{
 		if (materialVSs[matType] || materialPSs[matType])
@@ -627,5 +653,6 @@ namespace tofu
 		}
 		return TF_OK;
 	}
+
 
 }

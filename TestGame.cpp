@@ -14,7 +14,7 @@ int32_t TestGame::Init()
 		tCube = e.AddComponent<TransformComponent>();
 		//tCube->SetLocalPosition(math::float3{ 1, 0, 0 });
 
-		StaticMeshComponent r = e.AddComponent<StaticMeshComponent>();
+		RenderingComponent r = e.AddComponent<RenderingComponent>();
 
 		Model* model = RenderingSystem::instance()->CreateModel("assets/cube.model");
 

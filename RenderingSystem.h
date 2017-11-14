@@ -25,6 +25,20 @@ namespace tofu
 		uint32_t		NumVertices;
 	};
 
+	HANDLE_DECL(AnimationState);
+	struct AnimationState
+	{
+		AnimationStateHandle	handle;
+		Model*					model;
+		BufferHandle			boneMatricesBuffer;
+		uint32_t				boneMatricesBufferSize;
+
+		uint32_t				currentAnimation;
+
+
+
+	};
+
 	class RenderingSystem : public Module
 	{
 		SINGLETON_DECL(RenderingSystem)
@@ -50,6 +64,8 @@ namespace tofu
 
 		Material* CreateMaterial(MaterialType type);
 
+		AnimationState* CreateAnimationState(Model* model);
+
 	private:
 
 		int32_t InitBuiltinShader(MaterialType matType, const char* vsFile, const char* psFile);
@@ -60,6 +76,7 @@ namespace tofu
 		HandleAllocator<ModelHandle, MAX_MODELS>			modelHandleAlloc;
 		HandleAllocator<MeshHandle, MAX_MESHES>				meshHandleAlloc;
 		HandleAllocator<MaterialHandle, MAX_MATERIALS>		materialHandleAlloc;
+		HandleAllocator<AnimationStateHandle, MAX_ENTITIES> animStateHandleAlloc;
 
 		std::unordered_map<std::string, ModelHandle>		modelTable;
 
@@ -81,6 +98,7 @@ namespace tofu
 		Mesh					meshes[MAX_MESHES];
 		Model					models[MAX_MODELS];
 		Material				materials[MAX_MATERIALS];
+		AnimationState			animStates[MAX_ENTITIES];
 
 		PipelineStateHandle		materialPSOs[MaxMaterialTypes];
 		VertexShaderHandle		materialVSs[MaxMaterialTypes];

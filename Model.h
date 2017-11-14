@@ -15,6 +15,8 @@ namespace tofu
 		friend class RenderingSystem;
 	public:
 
+		inline bool HasAnimation() const { return header->HasAnimation; }
+
 	private:
 		ModelHandle					handle;
 		MeshHandle					meshes[MAX_MESHES_PER_MODEL];

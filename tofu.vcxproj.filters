@@ -84,9 +84,6 @@
     <ClCompile Include="FileIOWin32.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SkinnedMeshComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -179,10 +176,7 @@
     <ClInclude Include="Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="StaticMeshComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SkinnedMeshComponent.h">
+    <ClInclude Include="RenderingComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

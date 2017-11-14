@@ -162,7 +162,6 @@
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RendererDX11.cpp" />
     <ClCompile Include="RenderingSystem.cpp" />
-    <ClCompile Include="SkinnedMeshComponent.cpp" />
     <ClCompile Include="TestGame.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="TransformComponent.cpp" />
@@ -193,8 +192,7 @@
     <ClInclude Include="Module.h" />
     <ClInclude Include="NativeContext.h" />
     <ClInclude Include="Renderer.h" />
-    <ClInclude Include="SkinnedMeshComponent.h" />
-    <ClInclude Include="StaticMeshComponent.h" />
+    <ClInclude Include="RenderingComponent.h" />
     <ClInclude Include="RenderingSystem.h" />
     <ClInclude Include="TestGame.h" />
     <ClInclude Include="TofuMath.h" />
