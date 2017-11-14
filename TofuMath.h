@@ -61,6 +61,11 @@ namespace tofu
 		typedef vec3<uint32_t>	uint3;
 		typedef vec4<uint32_t>	uint4;
 
+		TF_INLINE float lerp(float a, float b, float t)
+		{
+			return a * (1.0f - t) + b * t;
+		}
+
 		// float2
 
 		TF_INLINE float2& operator += (float2& a, const float2 b)
@@ -154,6 +159,10 @@ namespace tofu
 			return a / l;
 		}
 
+		TF_INLINE float2 lerp(const float2& a, const float2& b, float t)
+		{
+			return a * (1.0f - t) + b * t;
+		}
 
 		// float3
 
@@ -257,6 +266,10 @@ namespace tofu
 			return a / l;
 		}
 
+		TF_INLINE float3 lerp(const float3& a, const float3& b, float t)
+		{
+			return a * (1.0f - t) + b * t;
+		}
 
 		// float4
 
@@ -364,6 +377,11 @@ namespace tofu
 		{
 			float l = length(a);
 			return a / l;
+		}
+
+		TF_INLINE float4 lerp(const float4& a, const float4& b, float t)
+		{
+			return a * (1.0f - t) + b * t;
 		}
 
 		// quaternion

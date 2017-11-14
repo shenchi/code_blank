@@ -29,7 +29,11 @@ namespace tofu
 
 	private:
 		int32_t FillInBoneMatrices(void* buffer, uint32_t bufferSize, uint32_t animId, float time);
+
+		math::float3 SampleFrame(model::ModelFloat3Frame* frames, uint32_t startFrame, uint32_t numFrames, float ticks);
+
+		math::quat SampleFrame(model::ModelQuatFrame* frames, uint32_t startFrame, uint32_t numFrames, float ticks);
 	};
 
-	typedef 
+	typedef Component<AnimationComponentData> AnimationComponent;
 }

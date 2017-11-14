@@ -13,9 +13,10 @@ namespace tofu
 	class Model
 	{
 		friend class RenderingSystem;
+		friend class AnimationComponentData;
 	public:
 
-		inline bool HasAnimation() const { return header->HasAnimation; }
+		TF_INLINE bool HasAnimation() const { return header->HasAnimation; }
 
 	private:
 		ModelHandle					handle;

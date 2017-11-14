@@ -119,7 +119,7 @@ namespace tofu
 			uint32_t		startTranslationFrame;
 			uint32_t		numTranslationFrame;
 			uint32_t		startRotationFrame;
-			uint32_t		numRotaFrame;
+			uint32_t		numRotationFrame;
 			uint32_t		startScaleFrame;
 			uint32_t		numScaleFrame;
 		};
