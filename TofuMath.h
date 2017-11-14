@@ -340,10 +340,9 @@ namespace tofu
 			return float4{ a.x / b, a.y / b, a.z / b, a.w / b };
 		}
 
-		// w is ignored
 		TF_INLINE float dot(const float4& a, const float4& b)
 		{
-			return a.x * b.x + a.y * b.y + a.z * b.z;
+			return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 		}
 
 		// w is ignored
@@ -356,13 +355,11 @@ namespace tofu
 			};
 		}
 
-		// w is ignored
 		TF_INLINE float length(const float4& a)
 		{
-			return std::sqrtf(a.x * a.x + a.y * a.y + a.z * a.z);
+			return std::sqrtf(a.x * a.x + a.y * a.y + a.z * a.z + a.w * a.w);
 		}
 
-		// w is ignored
 		TF_INLINE float4 normalize(const float4& a)
 		{
 			float l = length(a);
@@ -378,26 +375,6 @@ namespace tofu
 				-a.x * b.z + a.y * b.w + a.z * b.x + a.w * b.y,
 				 a.x * b.y - a.y * b.x + a.z * b.w + a.w * b.z,
 				-a.x * b.x - a.y * b.y - a.z * b.z + a.w * b.w
-			};
-		}
-
-		TF_INLINE float3 hamilton(const float4& a, const float3& b)
-		{
-			return float3{
-				/*a.x * b.w +*/ a.y * b.z - a.z * b.y + a.w * b.x,
-				-a.x * b.z /*+ a.y * b.w*/ + a.z * b.x + a.w * b.y,
-				a.x * b.y - a.y * b.x /*+ a.z * b.w*/ + a.w * b.z,
-				//-a.x * b.x - a.y * b.y - a.z * b.z + a.w * b.w
-			};
-		}
-
-		TF_INLINE float3 hamilton(const float3& a, const float4& b)
-		{
-			return float3{
-				a.x * b.w + a.y * b.z - a.z * b.y, // +a.w * b.x,
-				-a.x * b.z + a.y * b.w + a.z * b.x, // +a.w * b.y,
-				a.x * b.y - a.y * b.x + a.z * b.w, // +a.w * b.z,
-				//-a.x * b.x - a.y * b.y - a.z * b.z + a.w * b.w
 			};
 		}
 
@@ -440,6 +417,7 @@ namespace tofu
 				float sy = std::sinf(yaw * 0.5f);
 				float cr = std::cosf(roll * 0.5f);
 				float sr = std::sinf(roll * 0.5f);
+
 				x = sy * cp * sr + cy * sp * cr;
 				y = sy * cp * cr - cy * sp * sr;
 				z = cy * cp * sr - sy * sp * cr;
@@ -467,16 +445,11 @@ namespace tofu
 				return hamilton(*this, b);
 			}
 
-			TF_INLINE float4 rotate(const float4& v) const
-			{
-				float3 v3{ v.x, v.y, v.z };
-				v3 = rotate(v3);
-				return float4{ v3.x, v3.y, v3.z, v.w };
-			}
-
 			TF_INLINE float3 rotate(const float3& v) const
 			{
-				return hamilton(hamilton(*this, v), conjugation());
+				float4 v4{ v.x, v.y, v.z, 0.0f };
+				v4 = hamilton(hamilton(*this, v4), conjugation());
+				return float3{ v4.x, v4.y, v4.z };
 			}
 
 			TF_INLINE float3 to_eular() const
@@ -506,7 +479,7 @@ namespace tofu
 			return float4{
 				a.x.x * b.x + a.x.y * b.y + a.x.z * b.z + a.x.w * b.w,
 				a.y.x * b.x + a.y.y * b.y + a.y.z * b.z + a.y.w * b.w,
-				a.z.x * b.x + a.x.y * b.y + a.z.z * b.z + a.z.w * b.w,
+				a.z.x * b.x + a.z.y * b.y + a.z.z * b.z + a.z.w * b.w,
 				a.w.x * b.x + a.w.y * b.y + a.w.z * b.z + a.w.w * b.w
 			};
 		}
