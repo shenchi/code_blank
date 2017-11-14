@@ -458,6 +458,28 @@ namespace tofu
 			}
 		};
 
+		TF_INLINE quat lerp(const quat& a, const quat& b, float t)
+		{
+			return a * (1.0f - t) + b * t;
+		}
+
+		TF_INLINE quat slerp(const quat& a, const quat& b, float t)
+		{
+			quat c = b;
+
+			float cosAB = dot(a, b);
+
+			if (cosAB < 0)
+			{
+				cosAB = -cosAB;
+				c = -b;
+			}
+
+			float omega = std::acosf(cosAB);
+
+			return (std::sinf((1.0f - t) * omega) * a + std::sinf(t * omega) * c) / std::sinf(omega);
+		}
+
 		// float4x4
 
 		// row vector

@@ -164,6 +164,7 @@ int test_math()
 	{
 		std::uniform_real_distribution<float> dist(-1000.0f, 1000.0f);
 		std::uniform_real_distribution<float> dist1(-1.0f, 1.0f);
+		std::uniform_real_distribution<float> dist01(0.0f, 1.0f);
 		
 		for (int i = 0; i < 100; i++)
 		{
@@ -244,6 +245,37 @@ int test_math()
 				return -5;
 			}
 
+		}
+
+		for (uint32_t i = 0; i < 100; i++)
+		{
+			float pitch1 = dist(gen);
+			float yaw1 = dist(gen);
+			float roll1 = dist(gen);
+
+			float pitch2 = dist(gen);
+			float yaw2 = dist(gen);
+			float roll2 = dist(gen);
+
+			float t = dist01(gen);
+
+			glm::quat a1 = glm::quat(glm::vec3(0.0f, yaw1, 0.0f))
+				* glm::quat(glm::vec3(pitch1, 0.0f, 0.0f))
+				* glm::quat(glm::vec3(0.0f, 0.0f, roll1));
+			glm::quat b1 = glm::quat(glm::vec3(0.0f, yaw2, 0.0f))
+				* glm::quat(glm::vec3(pitch2, 0.0f, 0.0f))
+				* glm::quat(glm::vec3(0.0f, 0.0f, roll2));
+
+			tofu::math::quat a2(pitch1, yaw1, roll1);
+			tofu::math::quat b2(pitch2, yaw2, roll2);
+
+			glm::quat c1 = glm::slerp(a1, b1, t);
+			tofu::math::quat c2 = tofu::math::slerp(a2, b2, t);
+			
+			if (!check_vec_equality(c1, c2))
+			{
+				return -6;
+			}
 		}
 	}
 
