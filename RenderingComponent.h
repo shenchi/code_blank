@@ -7,7 +7,6 @@ namespace tofu
 	class RenderingSystem;
 	class Model;
 	class Material;
-	class AnimationState;
 
 	class RenderingComponentData
 	{
@@ -20,19 +19,21 @@ namespace tofu
 			: 
 			entity(e),
 			model(nullptr),
-			material(nullptr),
-			animState(nullptr)
+			material(nullptr)
 		{}
 
 		void SetModel(Model* model) { this->model = model; }
 
 		void SetMaterial(Material* material) { this->material = material; }
 
+		Model* GetModel() const { return model; }
+
+		Material* GetMaterial() const { return material; }
+
 	private:
 		Entity				entity;
 		Model*				model;
 		Material*			material;
-		AnimationState*		animState;
 
 	};
 

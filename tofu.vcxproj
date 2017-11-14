@@ -151,6 +151,7 @@
     <ClCompile Include="3rd_party\DirectXTK\Src\GamePad.cpp" />
     <ClCompile Include="3rd_party\DirectXTK\Src\Keyboard.cpp" />
     <ClCompile Include="3rd_party\DirectXTK\Src\Mouse.cpp" />
+    <ClCompile Include="AnimationComponent.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Entity.cpp" />
@@ -174,6 +175,7 @@
     <ClInclude Include="3rd_party\DirectXTK\Inc\Mouse.h" />
     <ClInclude Include="3rd_party\DirectXTK\Src\pch.h" />
     <ClInclude Include="3rd_party\DirectXTK\Src\PlatformHelpers.h" />
+    <ClInclude Include="AnimationComponent.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Component.h" />
