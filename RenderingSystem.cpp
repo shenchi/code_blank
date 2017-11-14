@@ -17,10 +17,12 @@ namespace
 {
 	struct FrameConstants
 	{
-		tofu::math::float4x4	matView;
-		tofu::math::float4x4	matProj;
-		tofu::math::float3		cameraPos;
-		float					padding[13];
+		tofu::math::float4x4	matView;			// 4 shader constants
+		tofu::math::float4x4	matProj;			// 4 shader constants
+		float					padding1[32];		// 8 shader constants
+		tofu::math::float3		cameraPos;			// 1 shader constants
+		float					padding2;
+		float					padding3[4 * 15];	// 15 shader constants
 	};
 }
 
@@ -113,7 +115,7 @@ namespace tofu
 			transformBuffer = bufferHandleAlloc.Allocate();
 			assert(transformBuffer);
 
-			transformBufferSize = sizeof(math::float4x4) * MAX_ENTITIES;
+			transformBufferSize = sizeof(math::float4x4) * 4 * MAX_ENTITIES;
 
 			{
 				CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
@@ -296,7 +298,7 @@ namespace tofu
 			params->startIndex = mesh.StartIndex;
 			params->startVertex = mesh.StartVertex;
 			params->indexCount = mesh.NumIndices;
-			params->vsConstantBuffers[0] = { frameConstantBuffer, 0, 8 };
+			params->vsConstantBuffers[0] = { frameConstantBuffer, 0, 16 };
 
 			params->psTextures[0] = skyboxTex;
 			params->psSamplers[0] = defaultSampler;
@@ -332,7 +334,7 @@ namespace tofu
 
 			uint32_t idx = numActiveRenderables++;
 			activeRenderables[idx] = i;
-			transformArray[idx] = transform->GetWorldTransform().GetMatrix();
+			transformArray[idx * 4] = transform->GetWorldTransform().GetMatrix();
 		}
 
 		if (numActiveRenderables > 0)
@@ -341,7 +343,7 @@ namespace tofu
 			assert(nullptr != params);
 			params->handle = transformBuffer;
 			params->data = transformArray;
-			params->size = sizeof(math::float4x4) * numActiveRenderables;
+			params->size = sizeof(math::float4x4) * 4 * numActiveRenderables;
 
 			cmdBuf->Add(RendererCommand::UpdateBuffer, params);
 		}
@@ -371,15 +373,15 @@ namespace tofu
 				switch (mat->type)
 				{
 				case TestMaterial:
-					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 4), 4 };
-					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 8 };
+					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
+					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
 					params->psTextures[0] = mat->mainTex;
 					params->psSamplers[0] = defaultSampler;
 					break;
 				case OpaqueMaterial:
-					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 4), 4 };
-					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 8 };
-					params->psConstantBuffers[0] = { frameConstantBuffer, 8, 4 };
+					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
+					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
+					params->psConstantBuffers[0] = { frameConstantBuffer, 16, 16 };
 					params->psTextures[0] = skyboxTex;
 					params->psTextures[1] = mat->mainTex;
 					params->psTextures[2] = mat->normalMap;

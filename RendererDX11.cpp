@@ -1033,11 +1033,11 @@ namespace tofu
 							assert(buf.bindingFlags & BINDING_CONSTANT_BUFFER);
 
 							cbs[i] = buf.buf;
-							offsets[i] = params->vsConstantBuffers[i].offsetInVectors * 4;
-							sizes[i] = params->vsConstantBuffers[i].sizeInVectors * 4;
+							offsets[i] = params->vsConstantBuffers[i].offsetInVectors;
+							sizes[i] = params->vsConstantBuffers[i].sizeInVectors;
 							if (0u == sizes[i])
 							{
-								sizes[i] = buf.size / 4;
+								sizes[i] = buf.size / 16;
 							}
 						}
 					}
@@ -1085,11 +1085,11 @@ namespace tofu
 							assert(buf.bindingFlags & BINDING_CONSTANT_BUFFER);
 
 							cbs[i] = buf.buf;
-							offsets[i] = params->psConstantBuffers[i].offsetInVectors * 4;
-							sizes[i] = params->psConstantBuffers[i].sizeInVectors * 4;
+							offsets[i] = params->psConstantBuffers[i].offsetInVectors;
+							sizes[i] = params->psConstantBuffers[i].sizeInVectors;
 							if (0u == sizes[i])
 							{
-								sizes[i] = buf.size / 4;
+								sizes[i] = buf.size / 16;
 							}
 						}
 					}

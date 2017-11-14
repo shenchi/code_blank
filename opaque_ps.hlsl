@@ -1,6 +1,7 @@
 cbuffer LightingConstants : register (b0)
 {
 	float4	cameraPos;
+	float4  _reserv1[3];
 }
 
 struct V2F
