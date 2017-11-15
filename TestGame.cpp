@@ -13,6 +13,8 @@ namespace
 	constexpr float MinPitch = 0.0f;
 	constexpr float InitPitch = math::PI * 0.125f;
 
+	constexpr float Accelerate = 6.67f;
+	constexpr float Deaccelerate = 10.0f;
 	constexpr float WalkSpeed = 2.0f;
 }
 
@@ -149,19 +151,29 @@ int32_t TestGame::Update()
 	tCamera->SetLocalPosition(camPos);
 	tCamera->SetLocalRotation(camRot);
 
+	float maxSpeed = WalkSpeed;
+
 	if (math::length(inputDir) > 0.25f)
 	{
 		math::float3 moveDir = camRot.rotate(inputDir);
 		moveDir.y = 0.0f;
 		moveDir = math::normalize(moveDir);
 		tPlayer->FaceTo(moveDir);
-		tPlayer->Translate(moveDir * Time::DeltaTime * WalkSpeed);
+
+		speed += Time::DeltaTime * Accelerate;
+		if (speed > maxSpeed)
+			speed = maxSpeed;
+
+		tPlayer->Translate(moveDir * Time::DeltaTime * speed);
 
 		//anim->Play(1);
 		anim->CrossFade(1, 0.3f);
 	}
 	else
 	{
+		speed -= Time::DeltaTime * Deaccelerate;
+		if (speed < 0.0f) speed = 0.0f;
+		tPlayer->Translate(tPlayer->GetForwardVector() * Time::DeltaTime * speed);
 		//anim->Play(0);
 		anim->CrossFade(0, 0.2f);
 	}

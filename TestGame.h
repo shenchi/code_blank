@@ -25,4 +25,5 @@ private:
 	tofu::CameraComponent		cam;
 	float pitch;
 	float yaw;
+	float speed;
 };
