@@ -540,6 +540,17 @@ namespace tofu
 			};
 		}
 
+		TF_INLINE float4x4 lerp(const float4x4& a, const float4x4& b, float t)
+		{
+			return float4x4
+			{
+				lerp(a.x, b.x, t),
+				lerp(a.y, b.y, t),
+				lerp(a.z, b.z, t),
+				lerp(a.w, b.w, t)
+			};
+		}
+
 		namespace matrix
 		{
 			TF_INLINE float4x4 transpose(const float4x4& a)

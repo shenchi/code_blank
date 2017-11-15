@@ -2,8 +2,6 @@
 
 #include <cassert>
 
-#include "Engine.h"
-
 #include "Renderer.h"
 
 #include "MemoryAllocator.h"
@@ -392,11 +390,10 @@ namespace tofu
 				}
 			}
 
-			anim.currentTime += Time::DeltaTime * anim.playbackSpeed;
-
 			void* boneMatrices = MemoryAllocator::Allocators[allocNo].Allocate(anim.boneMatricesBufferSize, 4);
 
-			anim.FillInBoneMatrices(boneMatrices, anim.boneMatricesBufferSize, anim.currentAnimation, anim.currentTime);
+			anim.UpdateTiming();
+			anim.FillInBoneMatrices(boneMatrices, anim.boneMatricesBufferSize);
 
 			UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
 			assert(nullptr != params);

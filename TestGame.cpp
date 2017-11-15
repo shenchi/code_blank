@@ -151,16 +151,19 @@ int32_t TestGame::Update()
 
 	if (math::length(inputDir) > 0.25f)
 	{
-		anim->Play(1);
 		math::float3 moveDir = camRot.rotate(inputDir);
 		moveDir.y = 0.0f;
 		moveDir = math::normalize(moveDir);
 		tPlayer->FaceTo(moveDir);
 		tPlayer->Translate(moveDir * Time::DeltaTime * WalkSpeed);
+
+		//anim->Play(1);
+		anim->CrossFade(1, 0.3f);
 	}
 	else
 	{
-		anim->Play(0);
+		//anim->Play(0);
+		anim->CrossFade(0, 0.2f);
 	}
 
 	return TF_OK;

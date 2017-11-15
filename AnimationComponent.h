@@ -19,20 +19,17 @@ namespace tofu
 			boneMatricesBufferSize(),
 			currentAnimation(0),
 			currentTime(0.0f),
-			playbackSpeed(1.0f)
+			playbackSpeed(1.0f),
+			crossFadeFactor(0.0f),
+			crossFadeSpeed(0.0f),
+			lastAnimation(0)
 		{}
 
-		int32_t Play(uint32_t animId) 
-		{ 
-			if (animId != currentAnimation)
-			{
-				currentAnimation = animId;
-				currentTime = 0.0f;
-			}
-			return TF_OK; 
-		}
+		int32_t Play(uint32_t animId);
 
-		uint32_t GetCurrentAnimationId() const { return currentAnimation; }
+		int32_t CrossFade(uint32_t animId, float duration);
+
+		TF_INLINE uint32_t GetCurrentAnimationId() const { return currentAnimation; }
 
 	private:
 		Entity					entity;
@@ -44,8 +41,15 @@ namespace tofu
 		float					currentTime;
 		float					playbackSpeed;
 
+		float					crossFadeFactor;
+		float					crossFadeSpeed;
+		uint32_t				lastAnimation;
+		float					lastAnimationTime;
+
 	private:
-		int32_t FillInBoneMatrices(void* buffer, uint32_t bufferSize, uint32_t animId, float time);
+		void UpdateTiming();
+
+		int32_t FillInBoneMatrices(void* buffer, uint32_t bufferSize);
 
 		math::float3 SampleFrame(model::ModelFloat3Frame* frames, uint32_t startFrame, uint32_t numFrames, float ticks);
 
