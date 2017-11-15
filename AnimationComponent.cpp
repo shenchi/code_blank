@@ -52,8 +52,6 @@ namespace tofu
 	{
 		math::float4x4* matrices = reinterpret_cast<math::float4x4*>(buffer);
 
-		RenderingComponent renderable = entity.GetComponent<RenderingComponent>();
-
 		if (nullptr == model)
 		{
 			return TF_UNKNOWN_ERR;

@@ -14,6 +14,7 @@
 
 namespace tofu
 {
+	class AnimationComponentData;
 
 	struct Mesh
 	{

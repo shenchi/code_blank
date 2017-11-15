@@ -256,7 +256,10 @@ namespace tofu
 
 	int32_t RenderingSystem::Update()
 	{
-		assert(CameraComponent::GetNumComponents() > 0);
+		if (CameraComponent::GetNumComponents() == 0)
+		{
+			return TF_OK;
+		}
 		CameraComponentData& camera = CameraComponent::GetAllComponents()[0];
 
 		// update aspect
