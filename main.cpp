@@ -10,6 +10,8 @@
 
 #include "TestGame.h"
 
+using tofu::TF_OK;
+
 int CALLBACK WinMain(
 	_In_ HINSTANCE hInstance,
 	_In_ HINSTANCE hPrevInstance,
@@ -22,7 +24,7 @@ int CALLBACK WinMain(
 #endif
 
 	tofu::Engine engine;
-	assert(tofu::TF_OK == engine.Init("config.lua"));
-	assert(tofu::TF_OK == engine.AddModule(new TestGame()));
+	CHECKED(engine.Init("config.lua"));
+	CHECKED(engine.AddModule(new TestGame()));
 	return engine.Run();
 }

@@ -44,37 +44,26 @@ namespace tofu
 
 	int32_t Engine::Init(const char* filename)
 	{
-		int32_t err = TF_OK;
-
 		// initialize native context
-
 		nativeContext = NativeContext::Create();
 		if (nullptr == nativeContext)
 			return TF_UNKNOWN_ERR;
-
-		err = nativeContext->Init();
-		if (TF_OK != err)
-			return err;
+		int32_t err = nativeContext->Init();
+		CHECKED(err);
 
 		// initialize rendering system
 
 		renderingSystem = new RenderingSystem();
-		err = renderingSystem->Init();
-		if (TF_OK != err)
-			return err;
+		CHECKED(renderingSystem->Init());
 
 		inputSystem = new InputSystem();
-		err = inputSystem->Init();
-		if (TF_OK != err)
-			return err;
+		CHECKED(inputSystem->Init());
 
-		return err;
+		return TF_OK;
 	}
 
 	int32_t Engine::Run()
 	{
-		int32_t err = TF_OK;
-
 		timeCounterFreq = nativeContext->GetTimeCounterFrequency();
 		startTimeCounter = nativeContext->GetTimeCounter();
 		currentTimeCounter = startTimeCounter;
@@ -100,9 +89,7 @@ namespace tofu
 
 			for (uint32_t i = 0; i < numUserModules; i++)
 			{
-				err = userModules[i]->Update();
-				if (TF_OK != err)
-					return err;
+				CHECKED(userModules[i]->Update());
 			}
 
 			renderingSystem->Update();
@@ -110,8 +97,8 @@ namespace tofu
 			renderingSystem->EndFrame();
 		}
 
-		err = Shutdown();
-		return err;
+		CHECKED(Shutdown());
+		return TF_OK;
 	}
 
 	int32_t Engine::Quit()
@@ -123,17 +110,17 @@ namespace tofu
 	{
 		for (uint32_t i = 0; i < numUserModules; i++)
 		{
-			assert(TF_OK == userModules[i]->Shutdown());
+			CHECKED(userModules[i]->Shutdown());
 			delete userModules[i];
 		}
 
-		assert(TF_OK == inputSystem->Shutdown());
+		CHECKED(inputSystem->Shutdown());
 		delete inputSystem;
 
-		assert(TF_OK == renderingSystem->Shutdown());
+		CHECKED(renderingSystem->Shutdown());
 		delete renderingSystem;
 
-		assert(TF_OK == nativeContext->Shutdown());
+		CHECKED(nativeContext->Shutdown());
 		delete nativeContext;
 
 		return TF_OK;

@@ -73,45 +73,43 @@ namespace tofu
 	int32_t RenderingSystem::Init()
 	{
 		// Initialize Memory Management for Rendering
-		assert(TF_OK == MemoryAllocator::Allocators[ALLOC_LEVEL_BASED_MEM].Init(
+		CHECKED(MemoryAllocator::Allocators[ALLOC_LEVEL_BASED_MEM].Init(
 			LEVEL_BASED_MEM_SIZE,
-			LEVEL_BASED_MEM_ALIGN)
-		);
+			LEVEL_BASED_MEM_ALIGN));
 
 		for (uint32_t i = ALLOC_FRAME_BASED_MEM;
 			i <= ALLOC_FRAME_BASED_MEM_END;
 			++i)
 		{
-			assert(TF_OK == MemoryAllocator::Allocators[i].Init(
+			CHECKED(MemoryAllocator::Allocators[i].Init(
 				FRAME_BASED_MEM_SIZE,
-				FRAME_BASED_MEM_ALIGN)
-			);
+				FRAME_BASED_MEM_ALIGN));
 		}
 
 		// Initialize Renderer Backend
-		assert(TF_OK == renderer->Init());
+		CHECKED(renderer->Init());
 
 		//
 		frameNo = 0;
 		BeginFrame();
 
 		// Create Built-in Shaders
-		assert(TF_OK == InitBuiltinShader(TestMaterial,
+		CHECKED(InitBuiltinShader(TestMaterial,
 			"assets/test_vs.shader",
 			"assets/test_ps.shader"
 		));
 
-		assert(TF_OK == InitBuiltinShader(SkyboxMaterial,
+		CHECKED(InitBuiltinShader(SkyboxMaterial,
 			"assets/skybox_vs.shader",
 			"assets/skybox_ps.shader"
 		));
 
-		assert(TF_OK == InitBuiltinShader(OpaqueMaterial,
+		CHECKED(InitBuiltinShader(OpaqueMaterial,
 			"assets/opaque_vs.shader",
 			"assets/opaque_ps.shader"
 		));
 
-		assert(TF_OK == InitBuiltinShader(OpaqueSkinnedMaterial,
+		CHECKED(InitBuiltinShader(OpaqueSkinnedMaterial,
 			"assets/opaque_skinned_vs.shader",
 			"assets/opaque_ps.shader"
 		));
@@ -229,10 +227,10 @@ namespace tofu
 			i <= ALLOC_FRAME_BASED_MEM_END;
 			++i)
 		{
-			assert(TF_OK == MemoryAllocator::Allocators[i].Shutdown());
+			CHECKED(MemoryAllocator::Allocators[i].Shutdown());
 		}
 
-		assert(TF_OK == MemoryAllocator::Allocators[ALLOC_LEVEL_BASED_MEM].Shutdown());
+		CHECKED(MemoryAllocator::Allocators[ALLOC_LEVEL_BASED_MEM].Shutdown());
 		return TF_OK;
 	}
 
@@ -471,7 +469,7 @@ namespace tofu
 
 	int32_t RenderingSystem::EndFrame()
 	{
-		assert(TF_OK == renderer->Submit(cmdBuf));
+		CHECKED(renderer->Submit(cmdBuf));
 
 		renderer->Present();
 
@@ -628,7 +626,10 @@ namespace tofu
 		}
 
 		TextureHandle handle = textureHandleAlloc.Allocate();
-		assert(handle);
+		if (!handle)
+		{
+			return TextureHandle();
+		}
 
 		CreateTextureParams* params = MemoryAllocator::Allocate<CreateTextureParams>(allocNo);
 
@@ -646,7 +647,10 @@ namespace tofu
 	Material* RenderingSystem::CreateMaterial(MaterialType type)
 	{
 		MaterialHandle handle = materialHandleAlloc.Allocate();
-		assert(handle);
+		if (!handle)
+		{
+			return nullptr;
+		}
 
 		Material* mat = &(materials[handle.id]);
 		new (mat) Material(type);
@@ -662,20 +666,27 @@ namespace tofu
 		
 		materialVSs[matType] = vertexShaderHandleAlloc.Allocate();
 		materialPSs[matType] = pixelShaderHandleAlloc.Allocate();
-		assert(materialVSs[matType] && materialPSs[matType]);
+		if (!materialVSs[matType] || !materialPSs[matType])
+		{
+			return TF_UNKNOWN_ERR;
+		}
 
 		{
 			CreateVertexShaderParams* params = MemoryAllocator::Allocate<CreateVertexShaderParams>(allocNo);
 			assert(nullptr != params);
 			params->handle = materialVSs[matType];
 
-			assert(TF_OK == FileIO::ReadFile(
+			int32_t err = FileIO::ReadFile(
 				vsFile,
 				&(params->data),
 				&(params->size),
 				4,
-				allocNo)
-			);
+				allocNo);
+
+			if (TF_OK != err)
+			{
+				return err;
+			}
 
 			cmdBuf->Add(RendererCommand::CreateVertexShader, params);
 		}
@@ -685,13 +696,17 @@ namespace tofu
 			assert(nullptr != params);
 			params->handle = materialPSs[matType];
 
-			assert(TF_OK == FileIO::ReadFile(
+			int32_t err = FileIO::ReadFile(
 				psFile,
 				&(params->data),
 				&(params->size),
 				4,
-				allocNo)
-			);
+				allocNo);
+
+			if (TF_OK != err)
+			{
+				return err;
+			}
 
 			cmdBuf->Add(RendererCommand::CreatePixelShader, params);
 		}

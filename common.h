@@ -16,6 +16,8 @@
 #endif
 #endif
 
+#define CHECKED(x) { int32_t err = TF_OK; if (TF_OK != (err = (x))) return err; }
+
 #define SINGLETON_DECL(CLASS_NAME) \
 	private:\
 		static CLASS_NAME* _instance;\
