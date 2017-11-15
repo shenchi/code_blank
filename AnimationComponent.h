@@ -24,10 +24,15 @@ namespace tofu
 
 		int32_t Play(uint32_t animId) 
 		{ 
-			currentAnimation = animId; 
-			currentTime = 0.0f; 
+			if (animId != currentAnimation)
+			{
+				currentAnimation = animId;
+				currentTime = 0.0f;
+			}
 			return TF_OK; 
 		}
+
+		uint32_t GetCurrentAnimationId() const { return currentAnimation; }
 
 	private:
 		Entity					entity;

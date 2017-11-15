@@ -62,6 +62,11 @@ namespace tofu
 			UpdateTransfromInHierachy();
 		}
 
+		TF_INLINE math::float3			GetLocalPosition() const
+		{
+			return localTransform.GetTranslation();
+		}
+
 		// get position coordinates in world space
 		TF_INLINE math::float3			GetWorldPosition() const
 		{
@@ -86,6 +91,28 @@ namespace tofu
 			return GetWorldTransform().TransformVector(math::float3{ 0, 0, 1 });
 		}
 
+		// local space
+		TF_INLINE void					FaceTo(const math::float3& target)
+		{
+			if (math::length(target) <= 0.0f)
+				return;
+
+			math::float3 fwd{ 0, 0, 1 };
+			math::float3 newDir = math::normalize(target);
+
+			float cosTheta = math::dot(fwd, newDir);
+			math::float3 axis = math::normalize(math::cross(fwd, newDir));
+
+			if (std::fabsf(cosTheta) >= 1.0 - FLT_EPSILON)
+			{
+				axis = math::float3{ 0, 1, 0 };
+			}
+
+			float theta = std::acosf(cosTheta);
+			math::quat q(theta, axis);
+			assert(math::length(q) > 0.9995f);
+			SetLocalRotation(q);
+		}
 
 	private:
 

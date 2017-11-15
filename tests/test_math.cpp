@@ -180,7 +180,7 @@ int test_math()
 			if (!check_vec_equality(glm::cross(*reinterpret_cast<glm::vec3*>(a), *reinterpret_cast<glm::vec3*>(b)),
 				tofu::math::cross(*reinterpret_cast<tofu::math::float3*>(a), *reinterpret_cast<tofu::math::float3*>(b))))
 			{
-				return -1;
+				return __LINE__;
 			}
 		}
 
@@ -210,7 +210,7 @@ int test_math()
 			
 			if (!check_vec_equality(q1, q2))
 			{
-				return -2;
+				return __LINE__;
 			}
 
 			glm::vec3 r1 = q1 * *reinterpret_cast<glm::vec3*>(vec);
@@ -218,7 +218,7 @@ int test_math()
 			
 			if (!check_vec_equality(r1, r2, 0.001f))
 			{ 
-				return -3;
+				return __LINE__;
 			}
 
 			glm::mat4 m1 = glm::transpose(glm::translate(glm::mat4(1.0f), glm::vec3(tx, ty, tz))
@@ -232,7 +232,7 @@ int test_math()
 
 			if (!check_vec_equality(m1, m2))
 			{
-				return -4;
+				return __LINE__;
 			}
 
 			r1 = *reinterpret_cast<glm::vec4*>(vec) * m1;
@@ -242,9 +242,60 @@ int test_math()
 
 			if (!check_vec_equality(r1, r2, 0.001f))
 			{
-				return -5;
+				return __LINE__;
 			}
 
+		}
+
+		for (uint32_t i = 0; i < 100; i++)
+		{
+			float axii[3] = { dist1(gen), dist1(gen), dist1(gen) };
+			float theta = dist(gen);
+
+			glm::quat q1 = glm::angleAxis(
+				theta, 
+				glm::normalize(*reinterpret_cast<glm::vec3*>(axii))
+			);
+
+			tofu::math::quat q2(
+				theta,
+				tofu::math::normalize(*reinterpret_cast<tofu::math::float3*>(axii))
+			);
+
+			if (!check_vec_equality(q1, q2))
+			{
+				return __LINE__;
+			}
+
+			q1 = glm::angleAxis(
+				tofu::math::PI,
+				glm::normalize(*reinterpret_cast<glm::vec3*>(axii))
+			);
+
+			q2 = tofu::math::quat(
+				tofu::math::PI,
+				tofu::math::normalize(*reinterpret_cast<tofu::math::float3*>(axii))
+			);
+
+			if (!check_vec_equality(q1, q2))
+			{
+				return __LINE__;
+			}
+
+			q1 = glm::angleAxis(
+				0.0f,
+				glm::normalize(*reinterpret_cast<glm::vec3*>(axii))
+			);
+
+			q2 = tofu::math::quat(
+				0.0f,
+				tofu::math::normalize(*reinterpret_cast<tofu::math::float3*>(axii))
+			);
+
+			if (!check_vec_equality(q1, q2))
+			{
+				return __LINE__;
+			}
 		}
 
 		for (uint32_t i = 0; i < 100; i++)
@@ -274,7 +325,7 @@ int test_math()
 			
 			if (!check_vec_equality(c1, c2))
 			{
-				return -6;
+				return __LINE__;
 			}
 
 			c1 = glm::slerp(a1, a1, 0.5f);
@@ -282,7 +333,7 @@ int test_math()
 
 			if (!check_vec_equality(c1, c2))
 			{
-				return -7;
+				return __LINE__;
 			}
 		}
 	}

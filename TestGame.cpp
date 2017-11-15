@@ -7,20 +7,49 @@
 
 using namespace tofu;
 
+namespace
+{
+	constexpr float MaxPitch = math::PI * 0.25f;
+	constexpr float MinPitch = 0.0f;
+	constexpr float InitPitch = math::PI * 0.125f;
+
+	constexpr float WalkSpeed = 2.0f;
+}
+
 int32_t TestGame::Init()
 {
 	{
 		Entity e = Entity::Create();
 
-		tCube = e.AddComponent<TransformComponent>();
-		tCube->SetLocalScale(math::float3{ 0.01f, 0.01f, 0.01f });
+		tGround = e.AddComponent<TransformComponent>();
+		//tGround->SetLocalScale(math::float3{ 0.01f, 0.01f, 0.01f });
+
+		RenderingComponent r = e.AddComponent<RenderingComponent>();
+
+		Model* model = RenderingSystem::instance()->CreateModel("assets/ground.model");
+
+		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::OpaqueMaterial);
+		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
+		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/stone_wall_normalmap.texture");
+
+		material->SetTexture(diffuse);
+		material->SetNormalMap(normalMap);
+
+		r->SetMaterial(material);
+		r->SetModel(model);
+	}
+
+	{
+		Entity e = Entity::Create();
+
+		tPlayer = e.AddComponent<TransformComponent>();
+		tPlayer->SetLocalScale(math::float3{ 0.01f, 0.01f, 0.01f });
 
 		RenderingComponent r = e.AddComponent<RenderingComponent>();
 
 		Model* model = RenderingSystem::instance()->CreateModel("assets/archer.model");
 
 		anim = e.AddComponent<AnimationComponent>();
-		anim->Play(1);
 
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::OpaqueSkinnedMaterial);
 		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");
@@ -38,19 +67,19 @@ int32_t TestGame::Init()
 
 		tCamera = e.AddComponent<TransformComponent>();
 
-		CameraComponent camera = e.AddComponent<CameraComponent>();
+		cam = e.AddComponent<CameraComponent>();
 		
-		camera->SetFOV(60.0f);
+		cam->SetFOV(60.0f);
 		tCamera->SetLocalPosition(math::float3{ 0, 0, -2 });
 
 		Material* skyboxMat = RenderingSystem::instance()->CreateMaterial(MaterialType::SkyboxMaterial);
 		TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/craterlake.texture");
 		skyboxMat->SetTexture(tex);
 
-		camera->SetSkybox(skyboxMat);
+		cam->SetSkybox(skyboxMat);
 	}
 
-	pitch = 0.0f;
+	pitch = InitPitch;
 	yaw = 0.0f;
 
 	return TF_OK;
@@ -71,6 +100,9 @@ int32_t TestGame::Update()
 
 	constexpr float sensitive = 0.01f;
 
+
+	math::float3 inputDir = math::float3();
+
 	if (input->IsGamepadConnected())
 	{
 		if (input->IsButtonDown(ButtonId::TF_GAMEPAD_FACE_RIGHT))
@@ -78,16 +110,8 @@ int32_t TestGame::Update()
 			Engine::instance()->Quit();
 		}
 
-		float lt = input->GetLeftTrigger();
-		float rt = input->GetRightTrigger();
-
-		float up = rt - lt;
-		
-		tCamera->Translate(Time::DeltaTime * (
-			tCamera->GetForwardVector() * -input->GetLeftStickY()
-			+ tCamera->GetRightVector() * input->GetLeftStickX()
-			+ tCamera->GetUpVector() * up
-			));
+		inputDir.z = -input->GetLeftStickY();
+		inputDir.x = input->GetLeftStickX();
 
 		pitch += sensitive * input->GetRightStickY();
 		yaw += sensitive * input->GetRightStickX();
@@ -96,33 +120,47 @@ int32_t TestGame::Update()
 	pitch += sensitive * input->GetMouseDeltaY();
 	yaw += sensitive * input->GetMouseDeltaX();
 
-	tCamera->SetLocalRotation(math::quat(pitch, yaw, 0.0f));
+	if (pitch < MinPitch) pitch = MinPitch;
+	if (pitch > MaxPitch) pitch = MaxPitch;
+
 
 	if (input->IsButtonDown(TF_KEY_W))
 	{
-		tCamera->Translate(tCamera->GetForwardVector() * Time::DeltaTime);
+		inputDir.z = 1.0f;
 	}
 	else if (input->IsButtonDown(TF_KEY_S))
 	{
-		tCamera->Translate(-tCamera->GetForwardVector() * Time::DeltaTime);
+		inputDir.z = -1.0f;
 	}
 
 	if (input->IsButtonDown(TF_KEY_D))
 	{
-		tCamera->Translate(tCamera->GetRightVector() * Time::DeltaTime);
+		inputDir.x = 1.0f;
 	}
 	else if (input->IsButtonDown(TF_KEY_A))
 	{
-		tCamera->Translate(-tCamera->GetRightVector() * Time::DeltaTime);
+		inputDir.x = -1.0f;
 	}
 
-	if (input->IsButtonDown(TF_KEY_Space))
+	math::quat camRot(pitch, yaw, 0.0f);
+	math::float3 camTgt = tPlayer->GetLocalPosition() + math::float3{ 0.0f, 2.0f, 0.0f };
+	math::float3 camPos = camTgt + camRot.rotate(math::float3{ 0.0f, 0.0f, -5.0f });
+	
+	tCamera->SetLocalPosition(camPos);
+	tCamera->SetLocalRotation(camRot);
+
+	if (math::length(inputDir) > 0.25f)
 	{
-		tCamera->Translate(tCamera->GetUpVector() * Time::DeltaTime);
+		anim->Play(1);
+		math::float3 moveDir = camRot.rotate(inputDir);
+		moveDir.y = 0.0f;
+		moveDir = math::normalize(moveDir);
+		tPlayer->FaceTo(moveDir);
+		tPlayer->Translate(moveDir * Time::DeltaTime * WalkSpeed);
 	}
-	else if (input->IsButtonDown(TF_KEY_LeftShift))
+	else
 	{
-		tCamera->Translate(-tCamera->GetUpVector() * Time::DeltaTime);
+		anim->Play(0);
 	}
 
 	return TF_OK;
