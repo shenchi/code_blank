@@ -109,6 +109,26 @@ namespace
 		DXGI_FORMAT_D24_UNORM_S8_UINT,
 	};
 
+	D3D11_INPUT_ELEMENT_DESC InputElemDescNormal[] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	};
+
+	D3D11_INPUT_ELEMENT_DESC InputElemDescSkinned[] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "BLENDINDICES", 0, DXGI_FORMAT_R32G32B32A32_SINT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	};
+
+	D3D11_INPUT_ELEMENT_DESC* InputElemDescTable[] = { InputElemDescNormal, InputElemDescSkinned };
+	UINT InputElemDescSizeTable[] = { 4u, 6u };
 
 	struct Buffer
 	{
@@ -500,6 +520,11 @@ namespace tofu
 
 				assert(nullptr == buffers[id].buf);
 				buffers[id] = {};
+
+				if (params->bindingFlags & BINDING_CONSTANT_BUFFER)
+				{
+					params->size = ((params->size + 0xffu) & (~0xffu));
+				}
 
 				CD3D11_BUFFER_DESC bufDesc(
 					params->size,
@@ -920,17 +945,9 @@ namespace tofu
 				assert(true == params->vertexShader && nullptr != vertexShaders[params->vertexShader.id].shader);
 				assert(true == params->pixelShader && nullptr != pixelShaders[params->vertexShader.id].shader);
 
-				D3D11_INPUT_ELEMENT_DESC inputElemDesc[] =
-				{
-					{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-					{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-					{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-					{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-				};
-
 				assert(S_OK == device->CreateInputLayout(
-					inputElemDesc,
-					sizeof(inputElemDesc) / sizeof(D3D11_INPUT_ELEMENT_DESC),
+					InputElemDescTable[params->vertexFormat],
+					InputElemDescSizeTable[params->vertexFormat],
 					vertexShaders[id].data,
 					vertexShaders[id].size,
 					&(pipelineStates[id].inputLayout)

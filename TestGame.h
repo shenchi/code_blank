@@ -6,6 +6,7 @@
 #include "TransformComponent.h"
 #include "CameraComponent.h"
 #include "RenderingComponent.h"
+#include "AnimationComponent.h"
 
 class TestGame : public tofu::Module
 {
@@ -19,6 +20,7 @@ public:
 private:
 	tofu::TransformComponent	tCube;
 	tofu::TransformComponent	tCamera;
+	tofu::AnimationComponent	anim;
 	float pitch;
 	float yaw;
 };

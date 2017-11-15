@@ -2,6 +2,7 @@
 #include "TestGame.h"
 
 #include "RenderingSystem.h"
+#include "AnimationComponent.h"
 #include "InputSystem.h"
 
 using namespace tofu;
@@ -12,15 +13,18 @@ int32_t TestGame::Init()
 		Entity e = Entity::Create();
 
 		tCube = e.AddComponent<TransformComponent>();
-		//tCube->SetLocalPosition(math::float3{ 1, 0, 0 });
+		tCube->SetLocalScale(math::float3{ 0.01f, 0.01f, 0.01f });
 
 		RenderingComponent r = e.AddComponent<RenderingComponent>();
 
-		Model* model = RenderingSystem::instance()->CreateModel("assets/cube.model");
+		Model* model = RenderingSystem::instance()->CreateModel("assets/archer.model");
 
-		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::OpaqueMaterial);
-		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
-		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/stone_wall_normalmap.texture");
+		anim = e.AddComponent<AnimationComponent>();
+		anim->Play(1);
+
+		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::OpaqueSkinnedMaterial);
+		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");
+		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/archer_1.texture");
 
 		material->SetTexture(diffuse);
 		material->SetNormalMap(normalMap);

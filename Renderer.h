@@ -74,6 +74,12 @@ namespace tofu
 		BINDING_DEPTH_STENCIL = 1 << 6,
 	};
 
+	enum VertexFormat
+	{
+		VERTEX_FORMAT_NORMAL,
+		VERTEX_FORMAT_SKINNED
+	};
+
 	struct RendererCommandBuffer
 	{
 		uint32_t*			cmds;
@@ -152,6 +158,7 @@ namespace tofu
 	struct CreatePipelineStateParams
 	{
 		PipelineStateHandle	handle;
+		VertexFormat		vertexFormat;
 		VertexShaderHandle	vertexShader;
 		PixelShaderHandle	pixelShader;
 		union
@@ -179,6 +186,7 @@ namespace tofu
 		CreatePipelineStateParams()
 			:
 			handle(),
+			vertexFormat(VERTEX_FORMAT_NORMAL),
 			vertexShader(),
 			pixelShader(),
 			CullMode(CULL_BACK),

@@ -56,6 +56,12 @@ namespace tofu
 			UpdateTransfromInHierachy();
 		}
 
+		TF_INLINE void					SetLocalScale(const math::float3& scale)
+		{
+			localTransform.SetScale(scale);
+			UpdateTransfromInHierachy();
+		}
+
 		// get position coordinates in world space
 		TF_INLINE math::float3			GetWorldPosition() const
 		{

@@ -11,6 +11,7 @@ namespace tofu
 		TestMaterial,
 		SkyboxMaterial,
 		OpaqueMaterial,
+		OpaqueSkinnedMaterial,
 		MaxMaterialTypes
 	};
 

@@ -2,6 +2,8 @@
 
 #include <cassert>
 
+#include "Engine.h"
+
 #include "Renderer.h"
 
 #include "MemoryAllocator.h"
@@ -12,6 +14,7 @@
 #include "TransformComponent.h"
 #include "CameraComponent.h"
 #include "RenderingComponent.h"
+#include "AnimationComponent.h"
 
 namespace
 {
@@ -110,6 +113,11 @@ namespace tofu
 			"assets/opaque_ps.shader"
 		));
 
+		assert(TF_OK == InitBuiltinShader(OpaqueSkinnedMaterial,
+			"assets/opaque_skinned_vs.shader",
+			"assets/opaque_ps.shader"
+		));
+
 		// constant buffers
 		{
 			transformBuffer = bufferHandleAlloc.Allocate();
@@ -178,6 +186,19 @@ namespace tofu
 				params->handle = materialPSOs[OpaqueMaterial];
 				params->vertexShader = materialVSs[OpaqueMaterial];
 				params->pixelShader = materialPSs[OpaqueMaterial];
+
+				cmdBuf->Add(RendererCommand::CreatePipelineState, params);
+			}
+
+			materialPSOs[OpaqueSkinnedMaterial] = pipelineStateHandleAlloc.Allocate();
+			assert(materialPSOs[OpaqueSkinnedMaterial]);
+
+			{
+				CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
+				params->handle = materialPSOs[OpaqueSkinnedMaterial];
+				params->vertexShader = materialVSs[OpaqueSkinnedMaterial];
+				params->pixelShader = materialPSs[OpaqueSkinnedMaterial];
+				params->vertexFormat = VERTEX_FORMAT_SKINNED;
 
 				cmdBuf->Add(RendererCommand::CreatePipelineState, params);
 			}
@@ -307,8 +328,8 @@ namespace tofu
 		}
 
 		// get all renderables in system
-		RenderingComponentData* comps = RenderingComponent::GetAllComponents();
-		uint32_t count = RenderingComponent::GetNumComponents();
+		RenderingComponentData* renderables = RenderingComponent::GetAllComponents();
+		uint32_t renderableCount = RenderingComponent::GetNumComponents();
 
 		// buffer for transform matrices
 		math::float4x4* transformArray = reinterpret_cast<math::float4x4*>(
@@ -324,9 +345,9 @@ namespace tofu
 
 		uint32_t numActiveRenderables = 0;
 
-		for (uint32_t i = 0; i < count; ++i)
+		for (uint32_t i = 0; i < renderableCount; ++i)
 		{
-			RenderingComponentData& comp = comps[i];
+			RenderingComponentData& comp = renderables[i];
 			TransformComponent transform = comp.entity.GetComponent<TransformComponent>();
 			assert(transform);
 
@@ -348,9 +369,47 @@ namespace tofu
 			cmdBuf->Add(RendererCommand::UpdateBuffer, params);
 		}
 
+		AnimationComponentData* animComps = AnimationComponent::GetAllComponents();
+		uint32_t animCompCount = AnimationComponent::GetNumComponents();
+
+		for (uint32_t i = 0; i < animCompCount; i++)
+		{
+			AnimationComponentData& anim = animComps[i];
+			RenderingComponent r = anim.entity.GetComponent<RenderingComponent>();
+
+			if (!r || nullptr == r->model || !r->model->HasAnimation())
+			{
+				return TF_UNKNOWN_ERR;
+			}
+
+			if (anim.model != r->model)
+			{
+				anim.model = r->model;
+				int32_t err = ReallocAnimationResources(anim);
+				if (TF_OK != err)
+				{
+					return err;
+				}
+			}
+
+			anim.currentTime += Time::DeltaTime * anim.playbackSpeed;
+
+			void* boneMatrices = MemoryAllocator::Allocators[allocNo].Allocate(anim.boneMatricesBufferSize, 4);
+
+			anim.FillInBoneMatrices(boneMatrices, anim.boneMatricesBufferSize, anim.currentAnimation, anim.currentTime);
+
+			UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
+			assert(nullptr != params);
+			params->handle = anim.boneMatricesBuffer;
+			params->data = boneMatrices;
+			params->size = anim.boneMatricesBufferSize;
+
+			cmdBuf->Add(RendererCommand::UpdateBuffer, params);
+		}
+
 		for (uint32_t i = 0; i < numActiveRenderables; ++i)
 		{
-			RenderingComponentData& comp = comps[activeRenderables[i]];
+			RenderingComponentData& comp = renderables[activeRenderables[i]];
 
 			assert(nullptr != comp.model && nullptr != comp.material);
 
@@ -378,6 +437,17 @@ namespace tofu
 					params->psTextures[0] = mat->mainTex;
 					params->psSamplers[0] = defaultSampler;
 					break;
+				case OpaqueSkinnedMaterial:
+					(void*)0;
+					{
+						AnimationComponent anim = comp.entity.GetComponent<AnimationComponent>();
+						if (!anim || !anim->boneMatricesBuffer)
+						{
+							return TF_UNKNOWN_ERR;
+						}
+						params->vsConstantBuffers[2] = { anim->boneMatricesBuffer, 0, 0 };
+					}
+					// fall through
 				case OpaqueMaterial:
 					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
 					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
@@ -585,32 +655,6 @@ namespace tofu
 		return mat;
 	}
 
-	AnimationState* RenderingSystem::CreateAnimationState(Model* model)
-	{
-		if (nullptr == model || nullptr == model->header || !model->HasAnimation())
-		{
-			return nullptr;
-		}
-
-		AnimationStateHandle handle = animStateHandleAlloc.Allocate();
-		BufferHandle bufferHandle = bufferHandleAlloc.Allocate();
-		if (!handle || !bufferHandle)
-		{
-			return nullptr;
-		}
-
-		AnimationState& state = animStates[handle.id];
-		state = {};
-		state.handle = handle;
-		state.model = model;
-		state.boneMatricesBuffer = bufferHandle;
-		state.boneMatricesBufferSize = static_cast<uint32_t>(sizeof(math::float4x4)) * model->header->NumBones;
-
-		
-
-		return &state;
-	}
-
 	int32_t RenderingSystem::InitBuiltinShader(MaterialType matType, const char * vsFile, const char * psFile)
 	{
 		if (materialVSs[matType] || materialPSs[matType])
@@ -651,6 +695,40 @@ namespace tofu
 
 			cmdBuf->Add(RendererCommand::CreatePixelShader, params);
 		}
+		return TF_OK;
+	}
+
+	int32_t RenderingSystem::ReallocAnimationResources(AnimationComponentData & c)
+	{
+		if (c.boneMatricesBuffer)
+		{
+			// TODO dealloc
+		}
+
+		Model* model = c.model;
+		if (nullptr == model || nullptr == model->header || !model->HasAnimation() || 0 == model->header->NumBones)
+		{
+			return TF_UNKNOWN_ERR;
+		}
+
+		BufferHandle bufferHandle = bufferHandleAlloc.Allocate();
+		if (!bufferHandle)
+		{
+			return TF_UNKNOWN_ERR;
+		}
+
+		c.boneMatricesBuffer = bufferHandle;
+		c.boneMatricesBufferSize = static_cast<uint32_t>(sizeof(math::float4x4)) * model->header->NumBones;
+
+		CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
+		assert(nullptr != params);
+		params->handle = bufferHandle;
+		params->bindingFlags = BINDING_CONSTANT_BUFFER;
+		params->size = c.boneMatricesBufferSize;
+		params->dynamic = 1;
+
+		cmdBuf->Add(RendererCommand::CreateBuffer, params);
+
 		return TF_OK;
 	}
 

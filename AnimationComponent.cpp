@@ -4,8 +4,10 @@
 #include "Transform.h"
 #include "RenderingComponent.h"
 
+#include <cassert>
+
 namespace tofu
-{
+{	
 
 	int32_t AnimationComponentData::FillInBoneMatrices(void* buffer, uint32_t bufferSize, uint32_t animId, float time)
 	{
@@ -13,12 +15,7 @@ namespace tofu
 
 		RenderingComponent renderable = entity.GetComponent<RenderingComponent>();
 		
-		if (model != renderable->GetModel())
-		{
-			model = renderable->GetModel();
-		}
-
-		if (nullptr == model || !model->HasAnimation())
+		if (nullptr == model)
 		{
 			return TF_UNKNOWN_ERR;
 		}
@@ -34,8 +31,14 @@ namespace tofu
 		float ticks = time * anim.ticksPerSecond; 
 		ticks = std::fmodf(ticks, anim.durationInTicks);
 
+		for (uint32_t i = 0; i < model->header->NumBones; i++)
 		{
-			model::ModelAnimChannel& chan = model->channels[0];
+			matrices[i] = model->bones[i].transform;
+		}
+
+		for (uint32_t i = 0; i < anim.numChannels; i++)
+		{
+			model::ModelAnimChannel& chan = model->channels[anim.startChannelId + i];
 
 			uint32_t boneId = chan.boneId;
 			
@@ -47,6 +50,20 @@ namespace tofu
 			matrices[boneId] = t.GetMatrix();
 		}
 
+		for (uint32_t i = 0; i < model->header->NumBones; i++)
+		{
+			uint32_t p = model->bones[i].parent;
+			if (UINT32_MAX != p)
+			{
+				matrices[i] = matrices[p] * matrices[i];
+			}
+		}
+
+		for (uint32_t i = 0; i < model->header->NumBones; i++)
+		{
+			matrices[i] = matrices[i] * model->bones[i].offsetMatrix;
+		}
+
 		return TF_OK;
 	}
 
@@ -56,17 +73,19 @@ namespace tofu
 		{
 			if (numFrames < 2)
 				return frames[startFrame].value;
-
-			for (uint32_t i = 0; i < numFrames - 1; i++)
+			
+			for (uint32_t i = 1, last = 0; i < numFrames; i++)
 			{
-				model::ModelFloat3Frame& fa = frames[startFrame + i];
+				model::ModelFloat3Frame& fb = frames[startFrame + i];
 
-				if (fa.time <= ticks)
+				if (fb.time > ticks)
 				{
-					model::ModelFloat3Frame& fb = frames[startFrame + i + 1];
+					model::ModelFloat3Frame& fa = frames[startFrame + last];
 					float t = (ticks - fa.time) / (fb.time - fa.time);
+					assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
 					return math::lerp(fa.value, fb.value, t);
 				}
+				last = i;
 			}
 		}
 		return math::float3();
@@ -79,16 +98,18 @@ namespace tofu
 			if (numFrames < 2)
 				return frames[startFrame].value;
 
-			for (uint32_t i = 0; i < numFrames - 1; i++)
+			for (uint32_t i = 1, last = 0; i < numFrames; i++)
 			{
-				model::ModelQuatFrame& fa = frames[startFrame + i];
+				model::ModelQuatFrame& fb = frames[startFrame + i];
 
-				if (fa.time <= ticks)
+				if (fb.time > ticks)
 				{
-					model::ModelQuatFrame& fb = frames[startFrame + i + 1];
+					model::ModelQuatFrame& fa = frames[startFrame + last];
 					float t = (ticks - fa.time) / (fb.time - fa.time);
+					assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
 					return math::slerp(fa.value, fb.value, t);
 				}
+				last = i;
 			}
 		}
 		return math::quat();

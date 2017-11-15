@@ -276,6 +276,14 @@ int test_math()
 			{
 				return -6;
 			}
+
+			c1 = glm::slerp(a1, a1, 0.5f);
+			c2 = tofu::math::slerp(a2, a2, 0.5f);
+
+			if (!check_vec_equality(c1, c2))
+			{
+				return -7;
+			}
 		}
 	}
 

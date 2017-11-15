@@ -10,14 +10,24 @@ namespace tofu
 		friend class RenderingSystem;
 	public:
 
-		AnimationComponentData() : AnimationComponentData(Entity()) {}
-		AnimationComponentData(Entity e)
+		TF_INLINE AnimationComponentData() : AnimationComponentData(Entity()) {}
+		TF_INLINE AnimationComponentData(Entity e)
 			:
 			entity(e),
 			model(nullptr),
 			boneMatricesBuffer(),
-			boneMatricesBufferSize()
+			boneMatricesBufferSize(),
+			currentAnimation(0),
+			currentTime(0.0f),
+			playbackSpeed(1.0f)
 		{}
+
+		int32_t Play(uint32_t animId) 
+		{ 
+			currentAnimation = animId; 
+			currentTime = 0.0f; 
+			return TF_OK; 
+		}
 
 	private:
 		Entity					entity;
@@ -26,6 +36,8 @@ namespace tofu
 		uint32_t				boneMatricesBufferSize;
 
 		uint32_t				currentAnimation;
+		float					currentTime;
+		float					playbackSpeed;
 
 	private:
 		int32_t FillInBoneMatrices(void* buffer, uint32_t bufferSize, uint32_t animId, float time);

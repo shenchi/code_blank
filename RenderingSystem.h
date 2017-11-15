@@ -54,6 +54,8 @@ namespace tofu
 
 		int32_t InitBuiltinShader(MaterialType matType, const char* vsFile, const char* psFile);
 
+		int32_t ReallocAnimationResources(AnimationComponentData& c);
+
 	private:
 		Renderer*	renderer;
 

@@ -11,7 +11,8 @@ namespace tofu
 		constexpr uint32_t MODEL_FILE_MAGIC = 0x004C444D;
 		constexpr uint32_t MODEL_FILE_VERSION = 0x00000001;
 
-		constexpr uint32_t MODEL_FILE_MAX_TEXCOORD_CHANNELS = 4;
+		//constexpr uint32_t MODEL_FILE_MAX_TEXCOORD_CHANNELS = 4;
+		constexpr uint32_t MODEL_FILE_MAX_TEXCOORD_CHANNELS = 1;
 
 		struct ModelHeader
 		{

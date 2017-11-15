@@ -487,10 +487,15 @@ namespace tofu
 
 			float cosAB = dot(a, b);
 
-			if (cosAB < 0)
+			if (cosAB < 0.0f)
 			{
 				cosAB = -cosAB;
 				c = -b;
+			}
+
+			if (cosAB > 0.9995f)
+			{
+				return lerp(a, b, t);
 			}
 
 			float omega = std::acosf(cosAB);

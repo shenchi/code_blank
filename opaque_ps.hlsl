@@ -34,7 +34,7 @@ float4 main(V2F input) : SV_TARGET
 	float3 refl = reflect(-viewDir, normal);
 
 	float3 color = diffuseTex.Sample(samp, input.uv).rgb;
-	color = color * 0.7 + cubeMap.Sample(samp, refl).rgb * 0.3;
+	color = color * 0.8 + cubeMap.Sample(samp, refl).rgb * 0.2;
 
 	return float4(color, 1);
 }
