@@ -16,6 +16,7 @@ namespace tofu
 			return TF_UNKNOWN_ERR;
 		}
 
+		// file size
 		if (0 != fseek(fp, 0, SEEK_END))
 		{
 			fclose(fp);
@@ -35,6 +36,7 @@ namespace tofu
 			return TF_UNKNOWN_ERR;
 		}
 
+		// allocate memory for content
 		void* ptr = alloc.Allocate(fileSize, alignment);
 		if (nullptr == ptr)
 		{

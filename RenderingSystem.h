@@ -39,10 +39,12 @@ namespace tofu
 
 		int32_t Shutdown() override;
 
+		// prepare for one frame, this function should be call before other module's update()
 		int32_t BeginFrame();
 
 		int32_t Update() override;
 
+		// submit all render commands to backend
 		int32_t EndFrame();
 
 		Model* CreateModel(const char* filename);

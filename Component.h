@@ -15,6 +15,8 @@ namespace tofu
 		explicit ComponentIndex() : idx(UINT32_MAX) {}
 	};
 
+	// Component is actually like a handle or pointer, 
+	// the actuall component T is in Component<T>::components[]
 	template<class T>
 	class Component
 	{
@@ -86,6 +88,8 @@ namespace tofu
 			back_pointers[loc] = e;
 			pointers[e.id].idx = loc;
 
+			// clear this component in case it was used
+			// and prevent resources leaking
 			components[loc].~T();
 			new (&components[loc]) T(e);
 
@@ -96,9 +100,13 @@ namespace tofu
 		static uint32_t GetNumComponents() { return numComponents; }
 
 	protected:
+		// mapping from entity id to component index(location)
 		static ComponentIndex pointers[MAX_ENTITIES];
 
+		// mapping from component index(location) to entity id
 		static Entity back_pointers[MAX_ENTITIES];
+
+		// array of actual components
 		static T components[MAX_ENTITIES];
 		static uint32_t numComponents;
 	};

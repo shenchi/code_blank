@@ -5,6 +5,8 @@
 
 namespace tofu
 {
+	// Id allocator, allocate and deallocate at O(1), spatial O(n)
+	// idea is from https://github.com/bkaradzic/bgfx
 	template<class Handle, uint32_t Count>
 	class HandleAllocator
 	{

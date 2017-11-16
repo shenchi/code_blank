@@ -52,10 +52,10 @@ namespace tofu
 		CHECKED(err);
 
 		// initialize rendering system
-
 		renderingSystem = new RenderingSystem();
 		CHECKED(renderingSystem->Init());
 
+		// initialize input system
 		inputSystem = new InputSystem();
 		CHECKED(inputSystem->Init());
 
@@ -64,24 +64,30 @@ namespace tofu
 
 	int32_t Engine::Run()
 	{
+		// keep performance counter on start
 		timeCounterFreq = nativeContext->GetTimeCounterFrequency();
 		startTimeCounter = nativeContext->GetTimeCounter();
 		currentTimeCounter = startTimeCounter;
 		lastTimeCounter = currentTimeCounter;
 
+		// process native event and see if we need to quit
 		while(nativeContext->ProcessEvent())
 		{
+			// update timing data
 			currentTimeCounter = nativeContext->GetTimeCounter();
 
 			int64_t deltaTimeCounter = (currentTimeCounter - lastTimeCounter) * 1000000;
 			float deltaTime = (deltaTimeCounter / timeCounterFreq) / 1000000.0f;
 
+			// lock to 60 fps
 			if (deltaTime < 0.016f) continue;
 
 			Time::DeltaTime = deltaTime;
 			Time::TotalTime += Time::DeltaTime;
 
 			lastTimeCounter = currentTimeCounter;
+
+			// a new frame start
 
 			renderingSystem->BeginFrame();
 
@@ -95,6 +101,8 @@ namespace tofu
 			renderingSystem->Update();
 
 			renderingSystem->EndFrame();
+
+			// frame ends
 		}
 
 		CHECKED(Shutdown());

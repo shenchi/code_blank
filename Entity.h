@@ -8,6 +8,8 @@ namespace tofu
 	template<class T>
 	class Component;
 
+	// Entity just contans an id
+	// and we can find its component directly by this id
 	class Entity
 	{
 	public:
@@ -15,6 +17,7 @@ namespace tofu
 
 		Entity(uint32_t _id = MAX_ENTITIES) : id(_id) {}
 
+		// if this eneity is valid
 		inline operator bool() const { return entityAlloc.IsValid(id); }
 
 		template<class T>
@@ -40,9 +43,11 @@ namespace tofu
 
 		int32_t Destroy();
 
+		// create a new entity
 		static Entity Create();
 
 	private:
+		// entity id allocator
 		static HandleAllocator<Entity, MAX_ENTITIES> entityAlloc;
 	};
 }

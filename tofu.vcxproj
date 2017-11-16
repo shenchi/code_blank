@@ -188,7 +188,6 @@
     <ClInclude Include="InputSystem.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="MemoryAllocator.h" />
-    <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelFormat.h" />
     <ClInclude Include="Module.h" />

@@ -4,6 +4,7 @@
 
 namespace tofu
 {
+	// sets of allocator for different scenario
 	enum AllocatorType
 	{
 		ALLOC_DEFAULT,
@@ -16,20 +17,24 @@ namespace tofu
 		MAX_MEMORY_ALLOCATOR,
 	};
 
-	//constexpr uint32_t MAX_MEMORY_ALLOCATOR = 16;
-
+	// interface for native memory allocation API wraping
 	struct NativeAllocator
 	{
 		virtual void* Allocate(size_t size, size_t alignment) = 0;
 		virtual int32_t Deallocate(void* addr, size_t size) = 0;
 	};
 
+	// global memory allocator set
+	// (standard library containters still using system malloc/free)
 	class MemoryAllocator
 	{
 	public:
 		static MemoryAllocator Allocators[MAX_MEMORY_ALLOCATOR];
+
+		// default native allocation API
 		static NativeAllocator* DefaultNativeAllocator;
 
+		// allocate and new
 		template<typename T>
 		static T* Allocate(uint32_t allocNo, size_t alignment = 4)
 		{

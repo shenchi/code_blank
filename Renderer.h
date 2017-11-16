@@ -88,8 +88,10 @@ namespace tofu
 		uint32_t			capacity;
 		uint32_t			size;
 
+		// create a new command buffer from allocator[allocNo]
 		static RendererCommandBuffer* Create(uint32_t capacity, uint32_t allocNo);
 
+		// append a command into the command buffer
 		void Add(uint32_t cmd, void* param);
 	};
 
@@ -117,6 +119,7 @@ namespace tofu
 		TextureHandle		handle;
 		uint32_t			dynamic : 1;
 		uint32_t			cubeMap : 1;
+		// if set, data: file's content; width: file's size, other fields are ignored
 		uint32_t			isFile : 1;
 		uint32_t			_reserved : 5;
 		uint32_t			format : 8;

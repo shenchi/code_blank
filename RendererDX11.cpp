@@ -21,79 +21,6 @@
 
 namespace
 {
-	DXGI_FORMAT InputSlotTypeTable[][4] =
-	{
-		// TYPE_FLOAT
-		{ DXGI_FORMAT_R32_FLOAT, DXGI_FORMAT_R32G32_FLOAT, DXGI_FORMAT_R32G32B32_FLOAT, DXGI_FORMAT_R32G32B32A32_FLOAT },
-		// TYPE_INT8
-		{ DXGI_FORMAT_R8_SINT, DXGI_FORMAT_R8G8_SINT, DXGI_FORMAT_UNKNOWN, DXGI_FORMAT_R8G8B8A8_SINT },
-		// TYPE_UINT8
-		{ DXGI_FORMAT_R8_UINT, DXGI_FORMAT_R8G8_UINT, DXGI_FORMAT_UNKNOWN, DXGI_FORMAT_R8G8B8A8_UINT },
-		// TYPE_INT16
-		{ DXGI_FORMAT_R16_SINT, DXGI_FORMAT_R16G16_SINT, DXGI_FORMAT_UNKNOWN, DXGI_FORMAT_R16G16B16A16_SINT },
-		// TYPE_UINT16
-		{ DXGI_FORMAT_R16_UINT, DXGI_FORMAT_R16G16_UINT, DXGI_FORMAT_UNKNOWN, DXGI_FORMAT_R16G16B16A16_UINT },
-		// TYPE_INT32
-		{ DXGI_FORMAT_R32_SINT, DXGI_FORMAT_R32G32_SINT, DXGI_FORMAT_R32G32B32_SINT, DXGI_FORMAT_R32G32B32A32_SINT },
-		// TYPE_UINT32
-		{ DXGI_FORMAT_R32_UINT, DXGI_FORMAT_R32G32_UINT, DXGI_FORMAT_R32G32B32_UINT, DXGI_FORMAT_R32G32B32A32_UINT },
-	};
-
-	size_t InputSlotSizeTable[] =
-	{
-		4, // TYPE_FLOAT
-		1, // TYPE_INT8
-		1, // TYPE_UINT8
-		2, // TYPE_INT16
-		2, // TYPE_UINT16
-		4, // TYPE_INT32
-		4, // TYPE_UINT32
-	};
-
-	DXGI_FORMAT IndexTypeTable[] =
-	{
-		DXGI_FORMAT_UNKNOWN, // TYPE_FLOAT
-		DXGI_FORMAT_UNKNOWN, // TYPE_INT8
-		DXGI_FORMAT_UNKNOWN, // TYPE_UINT8
-		DXGI_FORMAT_UNKNOWN, // TYPE_INT16
-		DXGI_FORMAT_R16_UINT, // TYPE_UINT16
-		DXGI_FORMAT_UNKNOWN, // TYPE_INT32
-		DXGI_FORMAT_R32_UINT, // TYPE_UINT32
-	};
-
-	LPSTR InputSemanticsTable[] =
-	{
-		"POSITION",
-		"COLOR",
-		"NORMAL",
-		"TANGENT",
-		"BINORMAL",
-		"TEXCOORD",
-		"TEXCOORD",
-		"TEXCOORD",
-		"TEXCOORD",
-	};
-
-	UINT InputSemanticsIndex[] =
-	{
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		1,
-		2,
-		3,
-	};
-
-	D3D11_PRIMITIVE_TOPOLOGY PrimitiveTypeTable[] =
-	{
-		D3D11_PRIMITIVE_TOPOLOGY_POINTLIST,
-		D3D11_PRIMITIVE_TOPOLOGY_LINELIST,
-		D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
-	};
-
 	DXGI_FORMAT PixelFormatTable[tofu::NUM_PIXEL_FORMAT] =
 	{
 		DXGI_FORMAT_UNKNOWN, // AUTO
@@ -166,7 +93,7 @@ namespace
 	struct VertexShader
 	{
 		ID3D11VertexShader*			shader;
-		void*						data;
+		void*						data; // binary code data (for input layout creation)
 		size_t						size;
 	};
 
@@ -307,6 +234,7 @@ namespace tofu
 			ID3D11DeviceContext1*		context;
 
 			Buffer						buffers[MAX_BUFFERS];
+			// textures[MAX_TEXTURES] is default depth buffer, and textures[MAX_TEXTURES + 1] is the default back buffer (d3d11 swap them automatically)
 			Texture						textures[MAX_TEXTURES + 2];
 			Sampler						samplers[MAX_SAMPLERS];
 			VertexShader				vertexShaders[MAX_VERTEX_SHADERS];
@@ -357,11 +285,13 @@ namespace tofu
 					ID3D11Device* device = nullptr;
 					ID3D11DeviceContext* context = nullptr;
 
+					// create a hardware d3d device and context
 					if (S_OK != D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, creationFlags, featureLevels, 2, D3D11_SDK_VERSION, &device, nullptr, &context))
 					{
 						return -1;
 					}
 
+					// try obtain the 11.1 feature level interfaces
 					if (S_OK != device->QueryInterface(__uuidof(ID3D11Device1), (void**)&(this->device)))
 					{
 						device->Release();
@@ -379,6 +309,7 @@ namespace tofu
 					context->Release();
 				}
 
+				// try get the dxgi 1.2 interface
 				IDXGIFactory2* factory = nullptr;
 				{
 					IDXGIDevice* dxgiDevice = nullptr;
@@ -400,12 +331,13 @@ namespace tofu
 					}
 				}
 
-
+				// get actual client area size from window size
 				RECT rect = {};
 				GetClientRect(hWnd, &rect);
 				winWidth = rect.right - rect.left;
 				winHeight = rect.bottom - rect.top;
 
+				// create swap chain
 				DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
 
 				swapChainDesc.Width = winWidth;
@@ -434,7 +366,8 @@ namespace tofu
 			{
 				HRESULT hr = S_OK;
 
-
+				// obtain back buffer from swap chain, and wrap as a texture
+				//
 				ID3D11Texture2D* backbufferTex = nullptr;
 				if (S_OK != (hr = swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backbufferTex)))
 				{
@@ -446,7 +379,6 @@ namespace tofu
 
 				Texture& rt = textures[MAX_TEXTURES + 1];
 
-				//rt.Reset(TextureType::TEXTURE_2D, PixelFormatFromDXGI(desc.Format), BINDING_RENDER_TARGET, width, height);
 				rt = {};
 				rt.width = winWidth;
 				rt.height = winHeight;
@@ -459,10 +391,10 @@ namespace tofu
 				rt.tex = backbufferTex;
 
 
-
+				// create the default depth buffer
+				//
 				Texture& ds = textures[MAX_TEXTURES];
 
-				//ds.Reset(TextureType::TEXTURE_2D, PixelFormat::FORMAT_D24_UNORM_S8_UINT, width, height);
 				ds = {};
 				ds.width = winWidth;
 				ds.height = winHeight;
@@ -489,7 +421,7 @@ namespace tofu
 				}
 				ds.tex = depthStencilTex;
 
-
+				// set render targets, they are fixed for now
 				context->OMSetRenderTargets(1, &(rt.rtv), ds.dsv);
 
 				return 0;
@@ -521,6 +453,7 @@ namespace tofu
 				assert(nullptr == buffers[id].buf);
 				buffers[id] = {};
 
+				// align size to 256 bytes if it is a constant buffer
 				if (params->bindingFlags & BINDING_CONSTANT_BUFFER)
 				{
 					params->size = ((params->size + 0xffu) & (~0xffu));
@@ -546,6 +479,7 @@ namespace tofu
 					return TF_UNKNOWN_ERR;
 				}
 
+				// create a shader resource view if it need to be bound to texture slot (t#)
 				if (isShaderResource)
 				{
 					D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
@@ -653,7 +587,7 @@ namespace tofu
 
 				uint32_t bindingFlags = params->bindingFlags & (BINDING_SHADER_RESOURCE | BINDING_RENDER_TARGET | BINDING_DEPTH_STENCIL);
 
-				if (params->isFile)
+				if (params->isFile) // load the texture from file
 				{
 					assert(bindingFlags & BINDING_SHADER_RESOURCE);
 
@@ -675,7 +609,7 @@ namespace tofu
 					DXCHECKED(res->QueryInterface<ID3D11Texture2D>(&(textures[id].tex)));
 					res->Release();
 				}
-				else
+				else // load the texture from raw data
 				{
 					CD3D11_TEXTURE2D_DESC texDesc(
 						PixelFormatTable[params->format],
@@ -845,6 +779,7 @@ namespace tofu
 
 				assert(nullptr == vertexShaders[id].shader);
 
+				// store binary code for further use (input layout)
 				void* ptr = MemoryAllocator::Allocators[ALLOC_LEVEL_BASED_MEM].Allocate(params->size, 4);
 				assert(nullptr != ptr);
 				memcpy(ptr, params->data, params->size);
@@ -884,6 +819,7 @@ namespace tofu
 
 				assert(nullptr == pixelShaders[id].shader);
 
+				// store binary code for further use
 				void* ptr = MemoryAllocator::Allocators[ALLOC_LEVEL_BASED_MEM].Allocate(params->size, 4);
 				assert(nullptr != ptr);
 				memcpy(ptr, params->data, params->size);
@@ -925,7 +861,7 @@ namespace tofu
 
 				CD3D11_DEPTH_STENCIL_DESC dsState(D3D11_DEFAULT);
 				dsState.DepthEnable = params->DepthEnable;
-				dsState.DepthWriteMask = (D3D11_DEPTH_WRITE_MASK)params->DepthWrite;// ? D3D11_DEPTH_WRITE_MASK_ALL : D3D11_DEPTH_WRITE_MASK_ZERO;
+				dsState.DepthWriteMask = (D3D11_DEPTH_WRITE_MASK)params->DepthWrite;
 				dsState.DepthFunc = (D3D11_COMPARISON_FUNC)(params->DepthFunc + 1);
 				DXCHECKED(device->CreateDepthStencilState(&dsState, &(pipelineStates[id].depthStencilState)));
 
@@ -1014,7 +950,8 @@ namespace tofu
 				DrawParams* params = reinterpret_cast<DrawParams*>(_params);
 
 				assert(true == params->pipelineState);
-
+				
+				// change pipeline states if necessary
 				if (params->pipelineState.id != currentPipelineState.id)
 				{
 					PipelineState& pso = pipelineStates[params->pipelineState.id];
@@ -1030,7 +967,9 @@ namespace tofu
 					currentPipelineState = params->pipelineState;
 				}
 
+				// vertex shader resource binding
 				{
+					// constant buffer bidnings
 					ID3D11Buffer* cbs[MAX_CONSTANT_BUFFER_BINDINGS] = {};
 					UINT offsets[MAX_CONSTANT_BUFFER_BINDINGS] = {};
 					UINT sizes[MAX_CONSTANT_BUFFER_BINDINGS] = {};
@@ -1057,6 +996,7 @@ namespace tofu
 					}
 					context->VSSetConstantBuffers1(0, MAX_CONSTANT_BUFFER_BINDINGS, cbs, offsets, sizes);
 
+					// textures bindings
 					ID3D11ShaderResourceView* srvs[MAX_TEXTURE_BINDINGS] = {};
 					for (uint32_t i = 0; i < MAX_TEXTURE_BINDINGS; i++)
 					{
@@ -1074,6 +1014,7 @@ namespace tofu
 					}
 					context->VSSetShaderResources(0, MAX_TEXTURE_BINDINGS, srvs);
 
+					// samplers bidnings
 					ID3D11SamplerState* samps[MAX_SAMPLER_BINDINGS] = {};
 					for (uint32_t i = 0; i < MAX_SAMPLER_BINDINGS; i++)
 					{
@@ -1088,7 +1029,9 @@ namespace tofu
 					context->VSSetSamplers(0, MAX_SAMPLER_BINDINGS, samps);
 				}
 
+				// pixel shader resource binding
 				{
+					// constant buffer bindings
 					ID3D11Buffer* cbs[MAX_CONSTANT_BUFFER_BINDINGS] = {};
 					UINT offsets[MAX_CONSTANT_BUFFER_BINDINGS] = {};
 					UINT sizes[MAX_CONSTANT_BUFFER_BINDINGS] = {};
@@ -1115,6 +1058,7 @@ namespace tofu
 					}
 					context->PSSetConstantBuffers1(0, MAX_CONSTANT_BUFFER_BINDINGS, cbs, offsets, sizes);
 
+					// texture bindings
 					ID3D11ShaderResourceView* srvs[MAX_TEXTURE_BINDINGS] = {};
 					for (uint32_t i = 0; i < MAX_TEXTURE_BINDINGS; i++)
 					{
@@ -1132,6 +1076,7 @@ namespace tofu
 					}
 					context->PSSetShaderResources(0, MAX_TEXTURE_BINDINGS, srvs);
 
+					// sampler bindings
 					ID3D11SamplerState* samps[MAX_SAMPLER_BINDINGS] = {};
 					for (uint32_t i = 0; i < MAX_SAMPLER_BINDINGS; i++)
 					{
@@ -1146,8 +1091,9 @@ namespace tofu
 					context->PSSetSamplers(0, MAX_SAMPLER_BINDINGS, samps);
 				}
 
-
+				// draw call
 				{
+					// set vertex buffer
 					assert(true == params->vertexBuffer);
 					Buffer& vb = buffers[params->vertexBuffer.id];
 					if (!(vb.bindingFlags & BINDING_VERTEX_BUFFER))
@@ -1163,6 +1109,7 @@ namespace tofu
 						context->IASetVertexBuffers(0, 1, buffers, strides, offsets);
 					}
 
+					// set index buffer
 					assert(true == params->indexBuffer);
 					Buffer& ib = buffers[params->indexBuffer.id];
 					if (!(ib.bindingFlags & BINDING_INDEX_BUFFER))
@@ -1172,6 +1119,7 @@ namespace tofu
 					assert(nullptr != ib.buf);
 					context->IASetIndexBuffer(ib.buf, DXGI_FORMAT_R16_UINT, 0);
 
+					// draw it!
 					context->DrawIndexed(params->indexCount, params->startIndex, params->startVertex);
 				}
 

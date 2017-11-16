@@ -344,6 +344,7 @@ namespace tofu
 
 		uint32_t numActiveRenderables = 0;
 
+		// fill in transform matrix for active renderables
 		for (uint32_t i = 0; i < renderableCount; ++i)
 		{
 			RenderingComponentData& comp = renderables[i];
@@ -357,6 +358,7 @@ namespace tofu
 			transformArray[idx * 4] = transform->GetWorldTransform().GetMatrix();
 		}
 
+		// upload transform matrices
 		if (numActiveRenderables > 0)
 		{
 			UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
@@ -368,6 +370,7 @@ namespace tofu
 			cmdBuf->Add(RendererCommand::UpdateBuffer, params);
 		}
 
+		// update skinned mesh animation bone matrices
 		AnimationComponentData* animComps = AnimationComponent::GetAllComponents();
 		uint32_t animCompCount = AnimationComponent::GetNumComponents();
 
@@ -381,6 +384,7 @@ namespace tofu
 				return TF_UNKNOWN_ERR;
 			}
 
+			// re-alloc constant buffer if model changed (or firstly set)
 			if (anim.model != r->model)
 			{
 				anim.model = r->model;
@@ -391,11 +395,13 @@ namespace tofu
 				}
 			}
 
+			// update and fill in bone matrices
 			void* boneMatrices = MemoryAllocator::Allocators[allocNo].Allocate(anim.boneMatricesBufferSize, 4);
 
 			anim.UpdateTiming();
 			anim.FillInBoneMatrices(boneMatrices, anim.boneMatricesBufferSize);
 
+			// upload bone matrices
 			UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
 			assert(nullptr != params);
 			params->handle = anim.boneMatricesBuffer;
@@ -405,6 +411,7 @@ namespace tofu
 			cmdBuf->Add(RendererCommand::UpdateBuffer, params);
 		}
 
+		// generate draw call for active renderables in command buffer
 		for (uint32_t i = 0; i < numActiveRenderables; ++i)
 		{
 			RenderingComponentData& comp = renderables[activeRenderables[i]];
@@ -469,8 +476,10 @@ namespace tofu
 
 	int32_t RenderingSystem::EndFrame()
 	{
+		// submit command buffer
 		CHECKED(renderer->Submit(cmdBuf));
 
+		// back buffer swap
 		renderer->Present();
 
 		frameNo++;
@@ -500,6 +509,7 @@ namespace tofu
 			return nullptr;
 		}
 
+		// read header
 		model::ModelHeader* header = reinterpret_cast<model::ModelHeader*>(data);
 
 		assert(header->Magic == model::MODEL_FILE_MAGIC);
@@ -513,6 +523,7 @@ namespace tofu
 			return nullptr;
 		}
 
+		// get mesh info list
 		model::ModelMesh* meshInfos = reinterpret_cast<model::ModelMesh*>(header + 1);
 
 		uint32_t verticesCount = 0;
@@ -531,10 +542,12 @@ namespace tofu
 		model.rawDataSize = size;
 		model.header = header;
 
+		// allocate vertex buffer and index buffer
 		BufferHandle vbHandle = bufferHandleAlloc.Allocate();
 		BufferHandle ibHandle = bufferHandleAlloc.Allocate();
 		assert(vbHandle && ibHandle);
 
+		// store mesh infos
 		for (uint32_t i = 0; i < header->NumMeshes; ++i)
 		{
 			model.meshes[i] = meshHandleAlloc.Allocate();
@@ -552,17 +565,20 @@ namespace tofu
 			indicesCount += meshInfos[i].NumIndices;
 		}
 
+		// aligned to dword
 		if (indicesCount % 2 != 0)
 		{
 			indicesCount += 1;
 		}
 
+		// 
 		uint32_t vertexBufferSize = verticesCount * header->CalculateVertexSize();
 		uint32_t indexBufferSize = indicesCount * sizeof(uint16_t);
 
 		uint8_t* vertices = reinterpret_cast<uint8_t*>(meshInfos + header->NumMeshes);
 		uint8_t* indices = vertices + vertexBufferSize;
 
+		// keep pointers to bone and animation structures
 		if (header->NumBones > 0)
 		{
 			model.bones = reinterpret_cast<model::ModelBone*>(indices + indexBufferSize);
@@ -590,6 +606,7 @@ namespace tofu
 			}
 		}
 
+		// upload vertices and indices to vertex buffer and index buffer
 		{
 			CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(ALLOC_FRAME_BASED_MEM);
 			params->handle = vbHandle;
