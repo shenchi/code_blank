@@ -8,6 +8,16 @@
 #include "RenderingComponent.h"
 #include "AnimationComponent.h"
 
+class btDefaultCollisionConfiguration;
+class btCollisionDispatcher;
+class btBroadphaseInterface;
+class btSequentialImpulseConstraintSolver;
+class btDiscreteDynamicsWorld;
+class btRigidBody;
+
+class btStaticPlaneShape;
+class btBoxShape;
+
 class TestGame : public tofu::Module
 {
 public:
@@ -19,6 +29,7 @@ public:
 
 private:
 	tofu::TransformComponent	tGround;
+	tofu::TransformComponent	tBox;
 	tofu::TransformComponent	tPlayer;
 	tofu::TransformComponent	tCamera;
 	tofu::AnimationComponent	anim;
@@ -26,4 +37,17 @@ private:
 	float pitch;
 	float yaw;
 	float speed;
+
+private:
+	btDefaultCollisionConfiguration*		config;
+	btCollisionDispatcher*					dispatcher;
+	btBroadphaseInterface*					pairCache;
+	btSequentialImpulseConstraintSolver*	solver;
+	btDiscreteDynamicsWorld*				world;
+
+	btRigidBody*				groundRb;
+	btRigidBody*				boxRb;
+	btStaticPlaneShape*			planeShape;
+	btBoxShape*					boxShape;
+	
 };
