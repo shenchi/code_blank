@@ -168,6 +168,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MemoryAllocator.cpp" />
     <ClCompile Include="NativeContextWin32.cpp" />
+    <ClCompile Include="PhysicsSystem.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RendererDX11.cpp" />
     <ClCompile Include="RenderingSystem.cpp" />
@@ -200,6 +201,8 @@
     <ClInclude Include="ModelFormat.h" />
     <ClInclude Include="Module.h" />
     <ClInclude Include="NativeContext.h" />
+    <ClInclude Include="PhysicsComponent.h" />
+    <ClInclude Include="PhysicsSystem.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderingComponent.h" />
     <ClInclude Include="RenderingSystem.h" />

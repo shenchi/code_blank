@@ -8,6 +8,7 @@ namespace tofu
 	class Module;
 	class RenderingSystem;
 	class ScriptingSystem;
+	class PhysicsSystem;
 	class InputSystem;
 
 	class Time
@@ -40,6 +41,7 @@ namespace tofu
 		NativeContext*		nativeContext;
 
 		RenderingSystem*	renderingSystem;
+		PhysicsSystem*		physicsSystem;
 		InputSystem*		inputSystem;
 
 		Module*				userModules[MAX_USER_MODULES];

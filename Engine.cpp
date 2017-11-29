@@ -5,7 +5,7 @@
 #include "NativeContext.h"
 
 #include "RenderingSystem.h"
-
+#include "PhysicsSystem.h"
 #include "InputSystem.h"
 
 namespace tofu
@@ -55,6 +55,10 @@ namespace tofu
 		renderingSystem = new RenderingSystem();
 		CHECKED(renderingSystem->Init());
 
+		// initialize physics system
+		physicsSystem = new PhysicsSystem();
+		CHECKED(physicsSystem->Init());
+
 		// initialize input system
 		inputSystem = new InputSystem();
 		CHECKED(inputSystem->Init());
@@ -89,18 +93,20 @@ namespace tofu
 
 			// a new frame start
 
-			renderingSystem->BeginFrame();
+			CHECKED(renderingSystem->BeginFrame());
 
-			inputSystem->Update();
+			CHECKED(inputSystem->Update());
 
 			for (uint32_t i = 0; i < numUserModules; i++)
 			{
 				CHECKED(userModules[i]->Update());
 			}
 
-			renderingSystem->Update();
+			CHECKED(physicsSystem->Update());
 
-			renderingSystem->EndFrame();
+			CHECKED(renderingSystem->Update());
+
+			CHECKED(renderingSystem->EndFrame());
 
 			// frame ends
 		}
@@ -124,6 +130,9 @@ namespace tofu
 
 		CHECKED(inputSystem->Shutdown());
 		delete inputSystem;
+
+		CHECKED(physicsSystem->Shutdown());
+		delete physicsSystem;
 
 		CHECKED(renderingSystem->Shutdown());
 		delete renderingSystem;
