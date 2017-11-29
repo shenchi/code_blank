@@ -43,14 +43,47 @@ namespace tofu
 
 	int32_t PhysicsSystem::Update()
 	{
-
 		PhysicsComponentData* comps = PhysicsComponent::GetAllComponents();
 		uint32_t count = PhysicsComponent::GetNumComponents();
 
 		for (uint32_t i = 0; i < count; i++)
 		{
-			//TransformComponent t = comps[i].entity.GetComponent<TransformComponent>();
-			//if (nullptr )
+			PhysicsComponentData& comp = comps[i];
+			if (comp.dirty)
+			{
+				if (nullptr != comp.rigidbody)
+				{
+					if (comp.rigidbody->getMotionState())
+					{
+						delete comp.rigidbody->getMotionState();
+					}
+					world->removeRigidBody(comp.rigidbody);
+					delete comp.rigidbody;
+					comp.rigidbody = nullptr;
+				}
+				if (nullptr != comp.collider)
+				{
+					delete comp.collider;
+					comp.collider = nullptr;
+				}
+
+				{
+					btTransform btTrans;
+					btTrans.setIdentity();
+					btTrans.setOrigin(btVector3(0, 10, 10));
+
+					btVector3 inertia(0, 0, 0);
+
+					boxShape = new btBoxShape(btVector3(0.5f, 0.5f, 0.5f));
+					boxShape->calculateLocalInertia(mass, inertia);
+
+					btDefaultMotionState* motionState = new btDefaultMotionState(btTrans);
+					btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, boxShape, inertia);
+					boxRb = new btRigidBody(rbInfo);
+				}
+
+				comp.dirty = false;
+			}
 		}
 
 		world->stepSimulation(Time::DeltaTime);
