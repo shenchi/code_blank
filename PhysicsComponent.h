@@ -18,7 +18,7 @@ namespace tofu
 		Cylinder
 	};
 
-	struct Collider
+	struct ColliderDesc
 	{
 		ColliderType	type;
 		union
@@ -62,6 +62,8 @@ namespace tofu
 			entity(e),
 			rigidbody(nullptr),
 			collider(nullptr),
+			colliderDesc(),
+			mass(1.0f),
 			dirty(true)
 		{}
 
@@ -71,6 +73,8 @@ namespace tofu
 		Entity				entity;
 		btRigidBody*		rigidbody;
 		btCollisionShape*	collider;
+		ColliderDesc		colliderDesc;
+		float				mass;
 		bool				dirty;
 	};
 

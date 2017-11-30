@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Module.h"
+#include "TofuMath.h"
 
 class btDefaultCollisionConfiguration;
 class btCollisionDispatcher;
@@ -30,6 +31,8 @@ namespace tofu
 		int32_t Shutdown() override;
 
 		int32_t Update() override;
+
+		void SetGravity(const math::float3& g);
 
 	private:
 		btDefaultCollisionConfiguration*		config;

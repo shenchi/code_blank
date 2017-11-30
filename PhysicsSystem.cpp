@@ -70,11 +70,22 @@ namespace tofu
 				{
 					btTransform btTrans;
 					btTrans.setIdentity();
-					btTrans.setOrigin(btVector3(0, 10, 10));
+
+					switch (comp.colliderDesc.type)
+					{
+					case ColliderType::Box:
+						btTrans.setOrigin(btVector3(0, 10, 10));
+						comp.collider = new btBoxShape(btVector3(0.5f, 0.5f, 0.5f));
+						break;
+					case ColliderType::Sphere:
+						break;
+					case ColliderType::Capsule:
+						break;
+					case ColliderType::Cylinder:
+						break;
+					}
 
 					btVector3 inertia(0, 0, 0);
-
-					boxShape = new btBoxShape(btVector3(0.5f, 0.5f, 0.5f));
 					boxShape->calculateLocalInertia(mass, inertia);
 
 					btDefaultMotionState* motionState = new btDefaultMotionState(btTrans);
@@ -91,6 +102,11 @@ namespace tofu
 
 		// TODO
 		return TF_OK;
+	}
+
+	void PhysicsSystem::SetGravity(const math::float3 & g)
+	{
+		world->setGravity(btVector3(g.x, g.y, g.z));
 	}
 
 }
