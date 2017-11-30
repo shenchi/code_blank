@@ -21,32 +21,15 @@ namespace tofu
 	struct ColliderDesc
 	{
 		ColliderType	type;
+		math::float3	origin;
 		union
 		{
+			math::float3	halfExtends;
 			struct
 			{
-				math::float3	origin;
-				math::float3	halfExtends;
-			} Box;
-
-			struct
-			{
-				math::float3	origin;
-				float			radius;
-			} Sphere;
-
-			struct
-			{
-				math::float3	origin;
-				float			radius;
-				float			height;
-			} Capsule;
-
-			struct
-			{
-				math::float3	origin;
-				math::float3	halfExtends;
-			} Cylinder;
+				float		radius;
+				float		height;
+			};
 		};
 	};
 
@@ -63,6 +46,8 @@ namespace tofu
 			rigidbody(nullptr),
 			collider(nullptr),
 			colliderDesc(),
+			isStatic(false),
+			isKinematic(false),
 			mass(1.0f),
 			dirty(true)
 		{}
@@ -74,6 +59,8 @@ namespace tofu
 		btRigidBody*		rigidbody;
 		btCollisionShape*	collider;
 		ColliderDesc		colliderDesc;
+		bool				isStatic;
+		bool				isKinematic;
 		float				mass;
 		bool				dirty;
 	};

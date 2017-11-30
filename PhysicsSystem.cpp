@@ -6,6 +6,14 @@
 
 #include <btBulletDynamicsCommon.h>
 
+namespace
+{
+	TF_INLINE btVector3 btVec3(const tofu::math::float3& v)
+	{
+		return btVector3(v.x, v.y, v.z);
+	}
+}
+
 namespace tofu
 {
 	SINGLETON_IMPL(PhysicsSystem);
@@ -71,26 +79,50 @@ namespace tofu
 					btTransform btTrans;
 					btTrans.setIdentity();
 
+					TransformComponent t = comp.entity.GetComponent<TransformComponent>();
+
+					math::float3 pos = t->GetWorldPosition() + comp.colliderDesc.origin;
+					btTrans.setOrigin(btVec3(pos));
+
 					switch (comp.colliderDesc.type)
 					{
 					case ColliderType::Box:
-						btTrans.setOrigin(btVector3(0, 10, 10));
-						comp.collider = new btBoxShape(btVector3(0.5f, 0.5f, 0.5f));
+						comp.collider = new btBoxShape(btVec3(comp.colliderDesc.halfExtends));
 						break;
 					case ColliderType::Sphere:
+						comp.collider = new btSphereShape(comp.colliderDesc.radius);
 						break;
 					case ColliderType::Capsule:
+						comp.collider = new btCapsuleShape(
+							comp.colliderDesc.radius,
+							comp.colliderDesc.height);
 						break;
 					case ColliderType::Cylinder:
+						comp.collider = new btCylinderShape(btVec3(comp.colliderDesc.halfExtends));
 						break;
 					}
 
 					btVector3 inertia(0, 0, 0);
-					boxShape->calculateLocalInertia(mass, inertia);
+					float mass = 0.0f;
+					if (!comp.isStatic && !comp.isKinematic)
+					{
+						mass = (comp.mass <= 0.0f ? 1.0f : comp.mass);
+						comp.collider->calculateLocalInertia(mass, inertia);
+					}
 
 					btDefaultMotionState* motionState = new btDefaultMotionState(btTrans);
-					btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, boxShape, inertia);
-					boxRb = new btRigidBody(rbInfo);
+					btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, comp.collider, inertia);
+					comp.rigidbody = new btRigidBody(rbInfo);
+					
+					if (comp.isKinematic)
+					{
+						comp.rigidbody->setCollisionFlags(
+							comp.rigidbody->getCollisionFlags() |
+							btCollisionObject::CF_KINEMATIC_OBJECT
+						);
+
+						comp.rigidbody->setActivationState(DISABLE_DEACTIVATION);
+					}
 				}
 
 				comp.dirty = false;
