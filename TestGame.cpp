@@ -2,18 +2,7 @@
 #include "TestGame.h"
 
 #include "RenderingSystem.h"
-#include "AnimationComponent.h"
 #include "InputSystem.h"
-
-#include <btBulletDynamicsCommon.h>
-#pragma comment(lib, "LinearMath_vs2010_x64_debug.lib")
-#pragma comment(lib, "Bullet3Common_vs2010_x64_debug.lib")
-#pragma comment(lib, "Bullet3Collision_vs2010_x64_debug.lib")
-#pragma comment(lib, "Bullet3Dynamics_vs2010_x64_debug.lib")
-#pragma comment(lib, "Bullet3Geometry_vs2010_x64_debug.lib")
-#pragma comment(lib, "BulletCollision_vs2010_x64_debug.lib")
-#pragma comment(lib, "BulletDynamics_vs2010_x64_debug.lib")
-
 
 using namespace tofu;
 
@@ -30,17 +19,6 @@ namespace
 
 int32_t TestGame::Init()
 {
-	{
-		config = new btDefaultCollisionConfiguration();
-		dispatcher = new btCollisionDispatcher(config);
-		pairCache = new btDbvtBroadphase();
-		solver = new btSequentialImpulseConstraintSolver();
-		world = new btDiscreteDynamicsWorld(dispatcher, 
-			pairCache, solver, config);
-
-		world->setGravity(btVector3(0, -10, 0));
-	}
-
 	{
 		Entity e = Entity::Create();
 
@@ -60,12 +38,10 @@ int32_t TestGame::Init()
 		r->SetMaterial(material);
 		r->SetModel(model);
 
-		planeShape = new btStaticPlaneShape(btVector3(0, 1, 0), 0);
-		btDefaultMotionState* motionState = new btDefaultMotionState();
-		btRigidBody::btRigidBodyConstructionInfo rbInfo(0, motionState, planeShape);
-		groundRb = new btRigidBody(rbInfo);
-
-		world->addRigidBody(groundRb);
+		PhysicsComponent ph = e.AddComponent<PhysicsComponent>();
+		ph->SetStatic(true);
+		ph->SetBoxCollider(math::float3{ 25.0f, 0.5f, 25.0f });
+		ph->SetColliderOrigin(math::float3{ 0.0f, -0.5f, 0.0f });
 	}
 
 	{
@@ -88,28 +64,14 @@ int32_t TestGame::Init()
 		r->SetMaterial(material);
 		r->SetModel(model);
 
-		float mass = 1.0f;
-
-		btTransform btTrans;
-		btTrans.setIdentity();
-		btTrans.setOrigin(btVector3(0, 10, 10));
-
-		btVector3 inertia(0, 0, 0);
-
-		boxShape = new btBoxShape(btVector3(0.5f, 0.5f, 0.5f));
-		boxShape->calculateLocalInertia(mass, inertia);
-
-		btDefaultMotionState* motionState = new btDefaultMotionState(btTrans);
-		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, boxShape, inertia);
-		boxRb = new btRigidBody(rbInfo);
-
-		world->addRigidBody(boxRb);
+		PhysicsComponent ph = e.AddComponent<PhysicsComponent>();
 	}
 
 	{
 		Entity e = Entity::Create();
 
 		tPlayer = e.AddComponent<TransformComponent>();
+		tPlayer->SetLocalPosition(math::float3{ 0.0f, 1.0f, 0.0f });
 		tPlayer->SetLocalScale(math::float3{ 0.01f, 0.01f, 0.01f });
 
 		RenderingComponent r = e.AddComponent<RenderingComponent>();
@@ -127,6 +89,12 @@ int32_t TestGame::Init()
 
 		r->SetMaterial(material);
 		r->SetModel(model);
+
+		pPlayer = e.AddComponent<PhysicsComponent>();
+
+		pPlayer->LockRotation(true, false, true);
+		pPlayer->SetCapsuleCollider(0.5f, 1.0f);
+		pPlayer->SetColliderOrigin(math::float3{ 0.0f, 1.0f, 0.0f });
 	}
 
 	{
@@ -149,38 +117,20 @@ int32_t TestGame::Init()
 	pitch = InitPitch;
 	yaw = 0.0f;
 
+	inAir = true;
+
 	return TF_OK;
 }
 
 int32_t TestGame::Shutdown()
 {
-	if (groundRb->getMotionState())
-	{
-		delete groundRb->getMotionState();
-	}
-	world->removeRigidBody(groundRb);
-	delete groundRb;
-
-	if (boxRb->getMotionState())
-	{
-		delete boxRb->getMotionState();
-	}
-	world->removeRigidBody(boxRb);
-	delete boxRb;
-
-	delete planeShape;
-	delete boxShape;
-
-	delete world;
-	delete solver;
-	delete pairCache;
-	delete dispatcher;
-	delete config;
 	return TF_OK;
 }
 
 int32_t TestGame::Update()
 {
+	inAir = !pPlayer->IsCollided();
+
 	InputSystem* input = InputSystem::instance();
 	if (input->IsButtonDown(ButtonId::TF_KEY_Escape))
 	{
@@ -231,6 +181,9 @@ int32_t TestGame::Update()
 		inputDir.x = -1.0f;
 	}
 
+	bool jump = input->IsButtonDown(ButtonId::TF_KEY_Space) 
+		|| input->IsButtonDown(ButtonId::TF_GAMEPAD_FACE_DOWN);
+
 	math::quat camRot(pitch, yaw, 0.0f);
 	math::float3 camTgt = tPlayer->GetLocalPosition() + math::float3{ 0.0f, 2.0f, 0.0f };
 	math::float3 camPos = camTgt + camRot.rotate(math::float3{ 0.0f, 0.0f, -5.0f });
@@ -253,7 +206,6 @@ int32_t TestGame::Update()
 
 		tPlayer->Translate(moveDir * Time::DeltaTime * speed);
 
-		//anim->Play(1);
 		anim->CrossFade(1, 0.3f);
 	}
 	else
@@ -261,19 +213,13 @@ int32_t TestGame::Update()
 		speed -= Time::DeltaTime * Deaccelerate;
 		if (speed < 0.0f) speed = 0.0f;
 		tPlayer->Translate(tPlayer->GetForwardVector() * Time::DeltaTime * speed);
-		//anim->Play(0);
+
 		anim->CrossFade(0, 0.2f);
 	}
 
+	if (jump && !inAir)
 	{
-		world->stepSimulation(Time::DeltaTime);
-		btTransform btTrans;
-		boxRb->getMotionState()->getWorldTransform(btTrans);
-		btVector3 pos = btTrans.getOrigin();
-		btQuaternion rot = btTrans.getRotation();
-		
-		tBox->SetLocalPosition(math::float3{ float(pos.x()), float(pos.y()), float(pos.z()) });
-		tBox->SetLocalRotation(math::quat(float(rot.x()), float(rot.y()), float(rot.z()), float(rot.w())));
+		pPlayer->ApplyImpulse(math::float3{ 0.0f, 2.0f, 0.0f });
 	}
 
 	return TF_OK;

@@ -91,6 +91,11 @@ namespace tofu
 			return GetWorldTransform().TransformVector(math::float3{ 0, 0, 1 });
 		}
 
+		TF_INLINE math::quat			GetWorldRotation() const
+		{
+			return GetWorldTransform().GetRotation();
+		}
+
 		// local space
 		TF_INLINE void					FaceTo(const math::float3& target)
 		{

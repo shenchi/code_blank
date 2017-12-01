@@ -97,12 +97,12 @@ namespace tofu
 
 			CHECKED(inputSystem->Update());
 
+			CHECKED(physicsSystem->Update());
+
 			for (uint32_t i = 0; i < numUserModules; i++)
 			{
 				CHECKED(userModules[i]->Update());
 			}
-
-			CHECKED(physicsSystem->Update());
 
 			CHECKED(renderingSystem->Update());
 
