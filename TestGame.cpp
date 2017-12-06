@@ -6,6 +6,7 @@
 
 using namespace tofu;
 
+
 namespace
 {
 	constexpr float MaxPitch = math::PI * 0.25f;
