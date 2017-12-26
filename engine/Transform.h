@@ -28,9 +28,9 @@ namespace tofu
 
 		TF_INLINE void					SetRotation(const math::quat& q) { rotation = q; }
 
-		TF_INLINE void					SetRotation(float theta, const math::float3& axis) { rotation = math::quat(theta, axis); }
+		TF_INLINE void					SetRotation(float theta, const math::float3& axis) { rotation = math::angleAxis(theta, axis); }
 
-		TF_INLINE void					SetRotation(float pitch, float yaw, float roll) { rotation = math::quat(pitch, yaw, roll); }
+		TF_INLINE void					SetRotation(float pitch, float yaw, float roll) { rotation = math::euler(pitch, yaw, roll); }
 
 
 		TF_INLINE void					SetScale(const math::float3& s) { scale = s; }

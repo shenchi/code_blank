@@ -118,7 +118,7 @@ namespace tofu
 				{
 					math::quat rot = t->GetWorldRotation();
 					math::float3 pos = t->GetWorldPosition() + 
-						rot.rotate(comp.colliderDesc.origin);
+						rot * (comp.colliderDesc.origin);
 					
 					btTransform btTrans(btQuat(rot), btVec3(pos));
 					
@@ -190,7 +190,7 @@ namespace tofu
 			{
 				math::quat rot = t->GetWorldRotation();
 				math::float3 pos = t->GetWorldPosition() +
-					rot.rotate(comp.colliderDesc.origin);
+					rot * (comp.colliderDesc.origin);
 
 				btTransform btTrans(btQuat(rot), btVec3(pos));
 				comp.rigidbody->getMotionState()->setWorldTransform(btTrans);
@@ -212,7 +212,7 @@ namespace tofu
 					comp.rigidbody->activate();
 
 					math::float3 pos = entityPos +
-						entityRot.rotate(comp.colliderDesc.origin);
+						entityRot * (comp.colliderDesc.origin);
 
 					btTransform btTrans(btQuat(entityRot), btVec3(pos));
 					comp.rigidbody->setWorldTransform(btTrans);
@@ -250,7 +250,7 @@ namespace tofu
 
 			math::float3 pos{ float(btPos.x()), float(btPos.y()), float(btPos.z()) };
 			math::quat rot(float(btRot.x()), float(btRot.y()), float(btRot.z()), float(btRot.w()));
-			pos -= rot.rotate(comp.colliderDesc.origin);
+			pos -= rot * (comp.colliderDesc.origin);
 
 			// TODO world position & rotation actually
 			t->SetLocalPosition(pos);

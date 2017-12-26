@@ -1,4 +1,4 @@
-#include "../TofuMath.h"
+#include "../engine/TofuMath.h"
 
 #define GLM_FORCE_RADIANS 1
 #include <glm/glm.hpp>
@@ -206,7 +206,7 @@ int test_math()
 				* glm::quat(glm::vec3(0.0f, 0.0f, roll))
 				;
 
-			tofu::math::quat q2 = tofu::math::quat(pitch, yaw, roll);
+			tofu::math::quat q2 = tofu::math::euler(pitch, yaw, roll);
 			
 			if (!check_vec_equality(q1, q2))
 			{
@@ -214,7 +214,7 @@ int test_math()
 			}
 
 			glm::vec3 r1 = q1 * *reinterpret_cast<glm::vec3*>(vec);
-			tofu::math::float3 r2 = q2.rotate(*reinterpret_cast<tofu::math::float3*>(vec));
+			tofu::math::float3 r2 = q2 * (*reinterpret_cast<tofu::math::float3*>(vec));
 			
 			if (!check_vec_equality(r1, r2, 0.001f))
 			{ 
@@ -224,7 +224,7 @@ int test_math()
 			glm::mat4 m1 = glm::transpose(glm::translate(glm::mat4(1.0f), glm::vec3(tx, ty, tz))
 				* glm::toMat4(q1) * glm::scale(glm::mat4(1.0f), glm::vec3(sx, sy, sz)));
 			
-			tofu::math::float4x4 m2 = tofu::math::matrix::transform(
+			tofu::math::float4x4 m2 = tofu::math::transform(
 				tofu::math::float3{ tx, ty, tz },
 				q2,
 				tofu::math::float3{ sx, sy, sz }
@@ -257,7 +257,7 @@ int test_math()
 				glm::normalize(*reinterpret_cast<glm::vec3*>(axii))
 			);
 
-			tofu::math::quat q2(
+			tofu::math::quat q2 = tofu::math::angleAxis(
 				theta,
 				tofu::math::normalize(*reinterpret_cast<tofu::math::float3*>(axii))
 			);
@@ -272,7 +272,7 @@ int test_math()
 				glm::normalize(*reinterpret_cast<glm::vec3*>(axii))
 			);
 
-			q2 = tofu::math::quat(
+			q2 = tofu::math::angleAxis(
 				tofu::math::PI,
 				tofu::math::normalize(*reinterpret_cast<tofu::math::float3*>(axii))
 			);
@@ -287,7 +287,7 @@ int test_math()
 				glm::normalize(*reinterpret_cast<glm::vec3*>(axii))
 			);
 
-			q2 = tofu::math::quat(
+			q2 = tofu::math::angleAxis(
 				0.0f,
 				tofu::math::normalize(*reinterpret_cast<tofu::math::float3*>(axii))
 			);
@@ -317,8 +317,8 @@ int test_math()
 				* glm::quat(glm::vec3(pitch2, 0.0f, 0.0f))
 				* glm::quat(glm::vec3(0.0f, 0.0f, roll2));
 
-			tofu::math::quat a2(pitch1, yaw1, roll1);
-			tofu::math::quat b2(pitch2, yaw2, roll2);
+			tofu::math::quat a2 = tofu::math::euler(pitch1, yaw1, roll1);
+			tofu::math::quat b2 = tofu::math::euler(pitch2, yaw2, roll2);
 
 			glm::quat c1 = glm::slerp(a1, b1, t);
 			tofu::math::quat c2 = tofu::math::slerp(a2, b2, t);

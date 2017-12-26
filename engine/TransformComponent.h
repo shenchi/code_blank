@@ -114,7 +114,7 @@ namespace tofu
 			}
 
 			float theta = std::acosf(cosTheta);
-			math::quat q(theta, axis);
+			math::quat q = math::angleAxis(theta, axis);
 			assert(math::length(q) > 0.9995f);
 			SetLocalRotation(q);
 		}

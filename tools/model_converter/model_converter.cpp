@@ -10,8 +10,10 @@
 
 #pragma comment (lib, "assimp-vc140-mt.lib")
 
-#include "../../ModelFormat.h"
-#include "../../TofuMath.h"
+#define TOFU_FORCE_NOT_GLM
+
+#include "../../engine/ModelFormat.h"
+#include "../../engine/TofuMath.h"
 
 using tofu::math::float2;
 using tofu::math::float3;
@@ -126,7 +128,7 @@ uint32_t loadBoneHierarchy(aiNode* node, BoneTree& bones, BoneTable& table, uint
 	}
 
 	CopyMatrix(bone.transform, node->mTransformation);
-	bone.offsetMatrix = tofu::math::matrix::identity();
+	bone.offsetMatrix = tofu::math::identity();
 
 	uint32_t firstChild = UINT32_MAX;
 	uint32_t lastChild = UINT32_MAX;
@@ -552,8 +554,8 @@ struct ModelFile
 
 	int Write(const char* filename)
 	{
-		FILE* file = fopen(filename, "wb");
-		if (nullptr == file)
+		FILE* file = nullptr;
+		if (0 != fopen_s(&file, filename, "wb") || nullptr == file)
 		{
 			printf("failed to create output file.\n");
 			return __LINE__;
@@ -656,7 +658,12 @@ struct ModelFile
 				if (tex->CheckFormat("png"))
 				{
 					sprintf_s(path, 1024, "%s_%u.png", basepath, i);
-					FILE* f = fopen(path, "wb");
+					FILE* f = nullptr;
+					if (0 != fopen_s(&f, path, "wb") || nullptr == f)
+					{
+						return __LINE__;
+					}
+
 					if (1 != fwrite(tex->pcData, tex->mWidth, 1, f))
 					{
 						printf("failed to write texture to the file.\n");

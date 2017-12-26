@@ -11,19 +11,19 @@ namespace tofu
 
 		t.rotation = other.rotation * rotation;
 		t.scale = scale * other.scale;
-		t.translation = other.rotation.rotate(other.scale * translation) + other.translation;
+		t.translation = other.rotation * (other.scale * translation) + other.translation;
 
 		return t;
 	}
 
 	float4x4 Transform::GetMatrix() const
 	{
-		return matrix::transform(translation, rotation, scale);
+		return transform(translation, rotation, scale);
 	}
 
 	float3 Transform::TransformVector(const float3 & v) const
 	{
-		float3 ret = rotation.rotate(v * scale);
+		float3 ret = rotation * (v * scale);
 
 		return normalize(ret);
 	}
@@ -36,7 +36,7 @@ namespace tofu
 	
 	float3 Transform::TransformPosition(const float3 & v) const
 	{
-		return rotation.rotate(v * scale) + translation;
+		return rotation * (v * scale) + translation;
 	}
 
 	float4 Transform::TransformPosition(const float4 & v) const

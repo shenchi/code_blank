@@ -185,9 +185,9 @@ int32_t TestGame::Update()
 	bool jump = input->IsButtonDown(ButtonId::TF_KEY_Space) 
 		|| input->IsButtonDown(ButtonId::TF_GAMEPAD_FACE_DOWN);
 
-	math::quat camRot(pitch, yaw, 0.0f);
+	math::quat camRot = math::euler(pitch, yaw, 0.0f);
 	math::float3 camTgt = tPlayer->GetLocalPosition() + math::float3{ 0.0f, 2.0f, 0.0f };
-	math::float3 camPos = camTgt + camRot.rotate(math::float3{ 0.0f, 0.0f, -5.0f });
+	math::float3 camPos = camTgt + camRot * (math::float3{ 0.0f, 0.0f, -5.0f });
 	
 	tCamera->SetLocalPosition(camPos);
 	tCamera->SetLocalRotation(camRot);
@@ -196,7 +196,7 @@ int32_t TestGame::Update()
 
 	if (math::length(inputDir) > 0.25f)
 	{
-		math::float3 moveDir = camRot.rotate(inputDir);
+		math::float3 moveDir = camRot * inputDir;
 		moveDir.y = 0.0f;
 		moveDir = math::normalize(moveDir);
 		tPlayer->FaceTo(moveDir);

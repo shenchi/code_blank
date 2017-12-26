@@ -119,7 +119,7 @@ namespace tofu
 				t.SetScale(SampleFrame(model->scaleFrames, chan.startScaleFrame, chan.numScaleFrame, lastAnimTicks));
 				
 				math::float4x4 m = t.GetMatrix();
-				matrices[boneId] = math::lerp(matrices[boneId], m, crossFadeFactor);
+				matrices[boneId] = math::mix(matrices[boneId], m, crossFadeFactor);
 			}
 		}
 
@@ -161,7 +161,7 @@ namespace tofu
 					model::ModelFloat3Frame& fa = frames[startFrame + last];
 					float t = (ticks - fa.time) / (fb.time - fa.time);
 					assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
-					return math::lerp(fa.value, fb.value, t);
+					return math::mix(fa.value, fb.value, t);
 				}
 				last = i;
 			}

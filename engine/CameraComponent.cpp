@@ -28,13 +28,13 @@ namespace tofu
 
 		float3 pos = t->GetWorldPosition();
 
-		return matrix::lookTo(pos, forward, float3{ 0, 1, 0 });
+		return lookTo(pos, forward, float3{ 0, 1, 0 });
 	}
 
 	float4x4 CameraComponentData::CalcProjectionMatrix() const
 	{
 		assert(projType == ProjectionType::Perspective && "Othro is not implemented yet.");
-		return matrix::perspective(fov * PI / 180.0f, aspect, zNear, zFar);
+		return perspective(fov * PI / 180.0f, aspect, zNear, zFar);
 	}
 
 
