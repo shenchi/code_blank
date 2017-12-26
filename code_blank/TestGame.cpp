@@ -6,7 +6,6 @@
 
 using namespace tofu;
 
-
 namespace
 {
 	constexpr float MaxPitch = math::PI * 0.25f;
@@ -29,7 +28,7 @@ int32_t TestGame::Init()
 
 		Model* model = RenderingSystem::instance()->CreateModel("assets/ground.model");
 
-		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::OpaqueMaterial);
+		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
 		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
 		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/stone_wall_normalmap.texture");
 
@@ -55,7 +54,7 @@ int32_t TestGame::Init()
 
 		Model* model = RenderingSystem::instance()->CreateModel("assets/cube.model");
 
-		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::OpaqueMaterial);
+		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
 		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
 		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/stone_wall_normalmap.texture");
 
@@ -81,7 +80,7 @@ int32_t TestGame::Init()
 
 		anim = e.AddComponent<AnimationComponent>();
 
-		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::OpaqueSkinnedMaterial);
+		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaqueSkinned);
 		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");
 		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/archer_1.texture");
 
@@ -108,7 +107,7 @@ int32_t TestGame::Init()
 		cam->SetFOV(60.0f);
 		tCamera->SetLocalPosition(math::float3{ 0, 0, -2 });
 
-		Material* skyboxMat = RenderingSystem::instance()->CreateMaterial(MaterialType::SkyboxMaterial);
+		Material* skyboxMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeSkybox);
 		TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/craterlake.texture");
 		skyboxMat->SetTexture(tex);
 
@@ -120,12 +119,12 @@ int32_t TestGame::Init()
 
 	inAir = true;
 
-	return TF_OK;
+	return kOK;
 }
 
 int32_t TestGame::Shutdown()
 {
-	return TF_OK;
+	return kOK;
 }
 
 int32_t TestGame::Update()
@@ -133,7 +132,7 @@ int32_t TestGame::Update()
 	inAir = !pPlayer->IsCollided();
 
 	InputSystem* input = InputSystem::instance();
-	if (input->IsButtonDown(ButtonId::TF_KEY_Escape))
+	if (input->IsButtonDown(ButtonId::kKeyEscape))
 	{
 		Engine::instance()->Quit();
 	}
@@ -145,7 +144,7 @@ int32_t TestGame::Update()
 
 	if (input->IsGamepadConnected())
 	{
-		if (input->IsButtonDown(ButtonId::TF_GAMEPAD_FACE_RIGHT))
+		if (input->IsButtonDown(ButtonId::kGamepadFaceRight))
 		{
 			Engine::instance()->Quit();
 		}
@@ -164,26 +163,26 @@ int32_t TestGame::Update()
 	if (pitch > MaxPitch) pitch = MaxPitch;
 
 
-	if (input->IsButtonDown(TF_KEY_W))
+	if (input->IsButtonDown(kKeyW))
 	{
 		inputDir.z = 1.0f;
 	}
-	else if (input->IsButtonDown(TF_KEY_S))
+	else if (input->IsButtonDown(kKeyS))
 	{
 		inputDir.z = -1.0f;
 	}
 
-	if (input->IsButtonDown(TF_KEY_D))
+	if (input->IsButtonDown(kKeyD))
 	{
 		inputDir.x = 1.0f;
 	}
-	else if (input->IsButtonDown(TF_KEY_A))
+	else if (input->IsButtonDown(kKeyA))
 	{
 		inputDir.x = -1.0f;
 	}
 
-	bool jump = input->IsButtonDown(ButtonId::TF_KEY_Space) 
-		|| input->IsButtonDown(ButtonId::TF_GAMEPAD_FACE_DOWN);
+	bool jump = input->IsButtonDown(ButtonId::kKeySpace) 
+		|| input->IsButtonDown(ButtonId::kGamepadFaceDown);
 
 	math::quat camRot = math::euler(pitch, yaw, 0.0f);
 	math::float3 camTgt = tPlayer->GetLocalPosition() + math::float3{ 0.0f, 2.0f, 0.0f };
@@ -223,5 +222,5 @@ int32_t TestGame::Update()
 		pPlayer->ApplyImpulse(math::float3{ 0.0f, 2.0f, 0.0f });
 	}
 
-	return TF_OK;
+	return kOK;
 }

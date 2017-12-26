@@ -20,7 +20,7 @@ namespace tofu
 
 	private:
 		ModelHandle					handle;
-		MeshHandle					meshes[MAX_MESHES_PER_MODEL];
+		MeshHandle					meshes[kMaxMeshesPerModel];
 		uint32_t					numMeshes;
 		uint32_t					vertexSize;
 		model::ModelHeader*			header;

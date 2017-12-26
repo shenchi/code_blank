@@ -33,8 +33,8 @@ namespace tofu
 
 	int32_t Engine::AddModule(Module * module)
 	{
-		if (numUserModules >= MAX_USER_MODULES)
-			return TF_UNKNOWN_ERR;
+		if (numUserModules >= kMaxUserModules)
+			return kErrUnknown;
 
 		userModules[numUserModules] = module;
 		numUserModules++;
@@ -47,7 +47,7 @@ namespace tofu
 		// initialize native context
 		nativeContext = NativeContext::Create();
 		if (nullptr == nativeContext)
-			return TF_UNKNOWN_ERR;
+			return kErrUnknown;
 		int32_t err = nativeContext->Init();
 		CHECKED(err);
 
@@ -63,7 +63,7 @@ namespace tofu
 		inputSystem = new InputSystem();
 		CHECKED(inputSystem->Init());
 
-		return TF_OK;
+		return kOK;
 	}
 
 	int32_t Engine::Run()
@@ -112,7 +112,7 @@ namespace tofu
 		}
 
 		CHECKED(Shutdown());
-		return TF_OK;
+		return kOK;
 	}
 
 	int32_t Engine::Quit()
@@ -140,7 +140,7 @@ namespace tofu
 		CHECKED(nativeContext->Shutdown());
 		delete nativeContext;
 
-		return TF_OK;
+		return kOK;
 	}
 
 }

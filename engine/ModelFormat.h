@@ -8,11 +8,11 @@ namespace tofu
 	namespace model
 	{
 
-		constexpr uint32_t MODEL_FILE_MAGIC = 0x004C444D;
-		constexpr uint32_t MODEL_FILE_VERSION = 0x00000001;
+		constexpr uint32_t kModelFileMagic = 0x004C444D;
+		constexpr uint32_t kModelFileVersion = 0x00000001;
 
-		//constexpr uint32_t MODEL_FILE_MAX_TEXCOORD_CHANNELS = 4;
-		constexpr uint32_t MODEL_FILE_MAX_TEXCOORD_CHANNELS = 1;
+		//constexpr uint32_t kModelFileMaxTexcoordChannels = 4;
+		constexpr uint32_t kModelFileMaxTexcoordChannels = 1;
 
 		struct ModelHeader
 		{

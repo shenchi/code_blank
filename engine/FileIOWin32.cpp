@@ -13,27 +13,27 @@ namespace tofu
 		FILE* fp = nullptr;
 		if (0 != fopen_s(&fp, file, "rb") || nullptr == fp)
 		{
-			return TF_UNKNOWN_ERR;
+			return kErrUnknown;
 		}
 
 		// file size
 		if (0 != fseek(fp, 0, SEEK_END))
 		{
 			fclose(fp);
-			return TF_UNKNOWN_ERR;
+			return kErrUnknown;
 		}
 
 		long fileSize = ftell(fp);
 		if (fileSize < 0)
 		{
 			fclose(fp);
-			return TF_UNKNOWN_ERR;
+			return kErrUnknown;
 		}
 
 		if (0 != fseek(fp, 0, SEEK_SET))
 		{
 			fclose(fp);
-			return TF_UNKNOWN_ERR;
+			return kErrUnknown;
 		}
 
 		// allocate memory for content
@@ -41,14 +41,14 @@ namespace tofu
 		if (nullptr == ptr)
 		{
 			fclose(fp);
-			return TF_UNKNOWN_ERR;
+			return kErrUnknown;
 		}
 
 		if (1 != fread(ptr, fileSize, 1, fp))
 		{
 			// TODO we cannot deallocate here :(
 			fclose(fp);
-			return TF_UNKNOWN_ERR;
+			return kErrUnknown;
 		}
 
 		fclose(fp);
@@ -56,6 +56,6 @@ namespace tofu
 		*data = ptr;
 		*size = fileSize;
 
-		return TF_OK;
+		return kOK;
 	}
 }

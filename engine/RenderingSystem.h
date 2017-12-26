@@ -62,18 +62,18 @@ namespace tofu
 	private:
 		Renderer*	renderer;
 
-		HandleAllocator<ModelHandle, MAX_MODELS>			modelHandleAlloc;
-		HandleAllocator<MeshHandle, MAX_MESHES>				meshHandleAlloc;
-		HandleAllocator<MaterialHandle, MAX_MATERIALS>		materialHandleAlloc;
+		HandleAllocator<ModelHandle, kMaxModels>			modelHandleAlloc;
+		HandleAllocator<MeshHandle, kMaxMeshes>				meshHandleAlloc;
+		HandleAllocator<MaterialHandle, kMaxMaterials>		materialHandleAlloc;
 
 		std::unordered_map<std::string, ModelHandle>		modelTable;
 
-		HandleAllocator<BufferHandle, MAX_BUFFERS>					bufferHandleAlloc;
-		HandleAllocator<TextureHandle, MAX_TEXTURES>				textureHandleAlloc;
-		HandleAllocator<SamplerHandle, MAX_SAMPLERS>				samplerHandleAlloc;
-		HandleAllocator<VertexShaderHandle, MAX_VERTEX_SHADERS>		vertexShaderHandleAlloc;
-		HandleAllocator<PixelShaderHandle, MAX_PIXEL_SHADERS>		pixelShaderHandleAlloc;
-		HandleAllocator<PipelineStateHandle, MAX_PIPELINE_STATES>	pipelineStateHandleAlloc;
+		HandleAllocator<BufferHandle, kMaxBuffers>					bufferHandleAlloc;
+		HandleAllocator<TextureHandle, kMaxTextures>				textureHandleAlloc;
+		HandleAllocator<SamplerHandle, kMaxSamplers>				samplerHandleAlloc;
+		HandleAllocator<VertexShaderHandle, kMaxVertexShaders>		vertexShaderHandleAlloc;
+		HandleAllocator<PixelShaderHandle, kMaxPixelShaders>		pixelShaderHandleAlloc;
+		HandleAllocator<PipelineStateHandle, kMaxPipelineStates>	pipelineStateHandleAlloc;
 
 		size_t					frameNo;
 		uint32_t				allocNo;
@@ -83,13 +83,13 @@ namespace tofu
 
 		BufferHandle			frameConstantBuffer;
 
-		Mesh					meshes[MAX_MESHES];
-		Model					models[MAX_MODELS];
-		Material				materials[MAX_MATERIALS];
+		Mesh					meshes[kMaxMeshes];
+		Model					models[kMaxModels];
+		Material				materials[kMaxMaterials];
 
-		PipelineStateHandle		materialPSOs[MaxMaterialTypes];
-		VertexShaderHandle		materialVSs[MaxMaterialTypes];
-		PixelShaderHandle		materialPSs[MaxMaterialTypes];
+		PipelineStateHandle		materialPSOs[kMaxMaterialTypes];
+		VertexShaderHandle		materialVSs[kMaxMaterialTypes];
+		PixelShaderHandle		materialPSs[kMaxMaterialTypes];
 		SamplerHandle			defaultSampler;
 
 		Model*					builtinCube;

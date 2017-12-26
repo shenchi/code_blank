@@ -19,14 +19,14 @@ namespace tofu
 			currentAnimation = animId;
 			currentTime = 0.0f;
 		}
-		return TF_OK;
+		return kOK;
 	}
 
 	int32_t AnimationComponentData::CrossFade(uint32_t animId, float duration)
 	{
 		// test if we are cross fading or trying to switch to the same animation
 		if (crossFadeFactor > 0.0f || animId == currentAnimation)
-			return TF_OK;
+			return kOK;
 
 		// record old animation and set new animation
 		lastAnimation = currentAnimation;
@@ -39,7 +39,7 @@ namespace tofu
 		crossFadeFactor = 1.0f;
 		crossFadeSpeed = 1.0f / duration;
 
-		return TF_OK;
+		return kOK;
 	}
 
 	void AnimationComponentData::UpdateTiming()
@@ -61,13 +61,13 @@ namespace tofu
 
 		if (nullptr == model)
 		{
-			return TF_UNKNOWN_ERR;
+			return kErrUnknown;
 		}
 
 		if (currentAnimation >= model->header->NumAnimations ||
 			static_cast<uint32_t>(sizeof(math::float4x4)) * model->header->NumBones > bufferSize)
 		{
-			return TF_UNKNOWN_ERR;
+			return kErrUnknown;
 		}
 
 		model::ModelAnimation& anim = model->animations[currentAnimation];
@@ -139,7 +139,7 @@ namespace tofu
 			matrices[i] = matrices[i] * model->bones[i].offsetMatrix;
 		}
 
-		return TF_OK;
+		return kOK;
 	}
 
 	math::float3 AnimationComponentData::SampleFrame(model::ModelFloat3Frame* frames, uint32_t startFrame, uint32_t numFrames, float ticks)

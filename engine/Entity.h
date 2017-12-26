@@ -15,7 +15,7 @@ namespace tofu
 	public:
 		uint32_t	id;
 
-		Entity(uint32_t _id = MAX_ENTITIES) : id(_id) {}
+		Entity(uint32_t _id = kMaxEntities) : id(_id) {}
 
 		// if this eneity is valid
 		inline operator bool() const { return entityAlloc.IsValid(id); }
@@ -48,6 +48,6 @@ namespace tofu
 
 	private:
 		// entity id allocator
-		static HandleAllocator<Entity, MAX_ENTITIES> entityAlloc;
+		static HandleAllocator<Entity, kMaxEntities> entityAlloc;
 	};
 }

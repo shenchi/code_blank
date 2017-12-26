@@ -17,11 +17,11 @@
 
 #define RELEASE(x) if (nullptr != (x)) { (x)->Release(); (x) = nullptr; }
 #define C(x, ret) if ((x) != S_OK) { return (ret); }
-#define DXCHECKED(x) C(x, TF_UNKNOWN_ERR)
+#define DXCHECKED(x) C(x, kErrUnknown)
 
 namespace
 {
-	DXGI_FORMAT PixelFormatTable[tofu::NUM_PIXEL_FORMAT] =
+	DXGI_FORMAT PixelFormatTable[tofu::kMaxPixelFormats] =
 	{
 		DXGI_FORMAT_UNKNOWN, // AUTO
 		DXGI_FORMAT_R8G8B8A8_UNORM,
@@ -131,22 +131,22 @@ namespace tofu
 
 				int32_t result = 0;
 
-				if (TF_OK != (result = CreateDevice()))
+				if (kOK != (result = CreateDevice()))
 				{
 					return result;
 				}
 
-				if (TF_OK != (result = InitRenderTargets()))
+				if (kOK != (result = InitRenderTargets()))
 				{
 					return result;
 				}
 
-				if (TF_OK != (result = InitPipelineStates()))
+				if (kOK != (result = InitPipelineStates()))
 				{
 					return result;
 				}
 
-				return TF_OK;
+				return kOK;
 			}
 
 			virtual int32_t Release() override
@@ -160,23 +160,23 @@ namespace tofu
 					} \
 				} 
 
-				ReleaseResources(buffers, MAX_BUFFERS, buf, DestroyBuffer);
-				ReleaseResources(textures, MAX_TEXTURES, tex, DestroyTexture);
-				ReleaseResources(samplers, MAX_SAMPLERS, samp, DestroySampler);
-				ReleaseResources(vertexShaders, MAX_VERTEX_SHADERS, shader, DestroyVertexShader);
-				ReleaseResources(pixelShaders, MAX_PIXEL_SHADERS, shader, DestroyPixelShader);
-				ReleaseResources(pipelineStates, MAX_PIPELINE_STATES, depthStencilState, DestroyPipelineState);
+				ReleaseResources(buffers, kMaxBuffers, buf, DestroyBuffer);
+				ReleaseResources(textures, kMaxTextures, tex, DestroyTexture);
+				ReleaseResources(samplers, kMaxSamplers, samp, DestroySampler);
+				ReleaseResources(vertexShaders, kMaxVertexShaders, shader, DestroyVertexShader);
+				ReleaseResources(pixelShaders, kMaxPixelShaders, shader, DestroyPixelShader);
+				ReleaseResources(pipelineStates, kMaxPipelineStates, depthStencilState, DestroyPipelineState);
 
 #undef ReleaseResources
 
 				{
-					Texture& rt = textures[MAX_TEXTURES + 1];
+					Texture& rt = textures[kMaxTextures + 1];
 					RELEASE(rt.srv);
 					RELEASE(rt.rtv);
 					RELEASE(rt.dsv);
 					RELEASE(rt.tex);
 
-					Texture& ds = textures[MAX_TEXTURES];
+					Texture& ds = textures[kMaxTextures];
 					RELEASE(ds.srv);
 					RELEASE(ds.rtv);
 					RELEASE(ds.dsv);
@@ -187,14 +187,14 @@ namespace tofu
 				context->Release();
 				device->Release();
 
-				return TF_OK;
+				return kOK;
 			}
 
 			virtual int32_t Submit(RendererCommandBuffer* buffer) override
 			{
 				if (nullptr == buffer)
 				{
-					return TF_UNKNOWN_ERR;
+					return kErrUnknown;
 				}
 
 				for (uint32_t i = 0; i < buffer->size; ++i)
@@ -203,24 +203,24 @@ namespace tofu
 					CHECKED((this->*cmd)(buffer->params[i]));
 				}
 
-				return TF_OK;
+				return kOK;
 			}
 
 			virtual int32_t Present() override
 			{
 				if (S_OK != swapChain->Present(0, 0))
 				{
-					return TF_UNKNOWN_ERR;
+					return kErrUnknown;
 				}
 
-				return TF_OK;
+				return kOK;
 			}
 
 			virtual int32_t GetFrameBufferSize(int32_t& width, int32_t& height) override
 			{
 				width = winWidth;
 				height = winHeight;
-				return TF_OK;
+				return kOK;
 			}
 
 		private:
@@ -233,19 +233,19 @@ namespace tofu
 			ID3D11Device1*				device;
 			ID3D11DeviceContext1*		context;
 
-			Buffer						buffers[MAX_BUFFERS];
+			Buffer						buffers[kMaxBuffers];
 			// textures[MAX_TEXTURES] is default depth buffer, and textures[MAX_TEXTURES + 1] is the default back buffer (d3d11 swap them automatically)
-			Texture						textures[MAX_TEXTURES + 2];
-			Sampler						samplers[MAX_SAMPLERS];
-			VertexShader				vertexShaders[MAX_VERTEX_SHADERS];
-			PixelShader					pixelShaders[MAX_PIXEL_SHADERS];
-			PipelineState				pipelineStates[MAX_PIPELINE_STATES];
+			Texture						textures[kMaxTextures + 2];
+			Sampler						samplers[kMaxSamplers];
+			VertexShader				vertexShaders[kMaxVertexShaders];
+			PixelShader					pixelShaders[kMaxPixelShaders];
+			PipelineState				pipelineStates[kMaxPipelineStates];
 
 			PipelineStateHandle			currentPipelineState;
 
 			typedef int32_t(RendererDX11::*cmd_callback_t)(void*);
 
-			cmd_callback_t				commands[RendererCommand::MaxRendererCommands] =
+			cmd_callback_t				commands[RendererCommand::kMaxRendererCommands] =
 			{
 				&RendererDX11::Nop,
 				&RendererDX11::CreateBuffer,
@@ -371,13 +371,13 @@ namespace tofu
 				ID3D11Texture2D* backbufferTex = nullptr;
 				if (S_OK != (hr = swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backbufferTex)))
 				{
-					return TF_UNKNOWN_ERR;
+					return kErrUnknown;
 				}
 
 				D3D11_TEXTURE2D_DESC desc = {};
 				backbufferTex->GetDesc(&desc);
 
-				Texture& rt = textures[MAX_TEXTURES + 1];
+				Texture& rt = textures[kMaxTextures + 1];
 
 				rt = {};
 				rt.width = winWidth;
@@ -393,7 +393,7 @@ namespace tofu
 
 				// create the default depth buffer
 				//
-				Texture& ds = textures[MAX_TEXTURES];
+				Texture& ds = textures[kMaxTextures];
 
 				ds = {};
 				ds.width = winWidth;
@@ -430,10 +430,10 @@ namespace tofu
 			int32_t InitPipelineStates()
 			{
 				context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-				return TF_OK;
+				return kOK;
 			}
 
-			int32_t Nop(void*) { return TF_OK; }
+			int32_t Nop(void*) { return kOK; }
 
 			int32_t CreateBuffer(void* _params)
 			{
@@ -442,7 +442,7 @@ namespace tofu
 				assert(true == params->handle);
 				uint32_t id = params->handle.id;
 
-				bool isShaderResource = ((params->bindingFlags & BINDING_SHADER_RESOURCE) != 0u);
+				bool isShaderResource = ((params->bindingFlags & kBindingShaderResource) != 0u);
 
 				assert(
 					!isShaderResource ||
@@ -454,7 +454,7 @@ namespace tofu
 				buffers[id] = {};
 
 				// align size to 256 bytes if it is a constant buffer
-				if (params->bindingFlags & BINDING_CONSTANT_BUFFER)
+				if (params->bindingFlags & kBindingConstantBuffer)
 				{
 					params->size = ((params->size + 0xffu) & (~0xffu));
 				}
@@ -476,7 +476,7 @@ namespace tofu
 					(nullptr == params->data ? nullptr : &subResData),
 					&(buffers[id].buf)))
 				{
-					return TF_UNKNOWN_ERR;
+					return kErrUnknown;
 				}
 
 				// create a shader resource view if it need to be bound to texture slot (t#)
@@ -500,7 +500,7 @@ namespace tofu
 				buffers[id].size = params->size;
 				buffers[id].stride = params->stride;
 
-				return TF_OK;
+				return kOK;
 			}
 
 			int32_t UpdateBuffer(void* _params)
@@ -536,7 +536,7 @@ namespace tofu
 				else
 				{
 					assert(
-						((buffers[id].bindingFlags & BINDING_CONSTANT_BUFFER) == 0) ||
+						((buffers[id].bindingFlags & kBindingConstantBuffer) == 0) ||
 						(params->offset == 0)
 					);
 					D3D11_BOX box = {};
@@ -551,7 +551,7 @@ namespace tofu
 						0);
 				}
 
-				return TF_OK;
+				return kOK;
 			}
 
 			int32_t DestroyBuffer(void* params)
@@ -572,24 +572,24 @@ namespace tofu
 
 				buffers[id] = {};
 
-				return TF_OK;
+				return kOK;
 			}
 
 			int32_t CreateTexture(void* _params)
 			{
 				CreateTextureParams* params = reinterpret_cast<CreateTextureParams*>(_params);
 
-				assert(true == params->handle && params->handle.id < MAX_TEXTURES);
+				assert(true == params->handle && params->handle.id < kMaxTextures);
 
 				uint32_t id = params->handle.id;
 
 				assert(nullptr == textures[id].tex);
 
-				uint32_t bindingFlags = params->bindingFlags & (BINDING_SHADER_RESOURCE | BINDING_RENDER_TARGET | BINDING_DEPTH_STENCIL);
+				uint32_t bindingFlags = params->bindingFlags & (kBindingShaderResource | kBindingRenderTarget | kBindingDepthStencil);
 
 				if (params->isFile) // load the texture from file
 				{
-					assert(bindingFlags & BINDING_SHADER_RESOURCE);
+					assert(bindingFlags & kBindingShaderResource);
 
 					ID3D11Resource* res = nullptr;
 					DXCHECKED(DirectX::CreateDDSTextureFromMemoryEx(
@@ -635,18 +635,18 @@ namespace tofu
 						(nullptr == params->data ? nullptr : &subResData),
 						&(textures[id].tex)));
 
-					if (params->bindingFlags & BINDING_SHADER_RESOURCE)
+					if (params->bindingFlags & kBindingShaderResource)
 					{
 						DXCHECKED(device->CreateShaderResourceView(textures[id].tex, nullptr, &(textures[id].srv)));
 					}
 				}
 
-				if (params->bindingFlags & BINDING_RENDER_TARGET)
+				if (params->bindingFlags & kBindingRenderTarget)
 				{
 					DXCHECKED(device->CreateRenderTargetView(textures[id].tex, nullptr, &(textures[id].rtv)));
 				}
 
-				if (params->bindingFlags & BINDING_DEPTH_STENCIL)
+				if (params->bindingFlags & kBindingDepthStencil)
 				{
 					DXCHECKED(device->CreateDepthStencilView(textures[id].tex, nullptr, &(textures[id].dsv)));
 				}
@@ -656,21 +656,21 @@ namespace tofu
 
 				textures[id].dynamic = params->dynamic;
 				textures[id].cubeMap = ((desc.MiscFlags & D3D11_RESOURCE_MISC_TEXTURECUBE) != 0 ? 1 : params->cubeMap);
-				textures[id].format = params->isFile ? FORMAT_AUTO : params->format;
+				textures[id].format = params->isFile ? kFormatAuto : params->format;
 				textures[id].arraySize = desc.ArraySize;
 				textures[id].bindingFlags = bindingFlags;
 				textures[id].width = desc.Width;
 				textures[id].height = desc.Height;
 				textures[id].pitch = params->pitch;
 
-				return TF_OK;
+				return kOK;
 			}
 
 			int32_t UpdateTexture(void* _params)
 			{
 				UpdateTextureParams* params = reinterpret_cast<UpdateTextureParams*>(_params);
 
-				assert(true == params->handle && params->handle.id < MAX_TEXTURES);
+				assert(true == params->handle && params->handle.id < kMaxTextures);
 
 				uint32_t id = params->handle.id;
 
@@ -700,14 +700,14 @@ namespace tofu
 					context->UpdateSubresource(textures[id].tex, 0, nullptr, params->data, params->pitch, 0);
 				}
 
-				return TF_OK;
+				return kOK;
 			}
 
 			int32_t DestroyTexture(void* params)
 			{
 				TextureHandle* handle = reinterpret_cast<TextureHandle*>(params);
 
-				assert(true == *handle && handle->id < MAX_TEXTURES);
+				assert(true == *handle && handle->id < kMaxTextures);
 
 				uint32_t id = handle->id;
 
@@ -729,7 +729,7 @@ namespace tofu
 
 				textures[id] = {};
 
-				return TF_OK;
+				return kOK;
 			}
 
 			int32_t CreateSampler(void* _params)
@@ -749,7 +749,7 @@ namespace tofu
 
 				DXCHECKED(device->CreateSamplerState(&samplerDesc, &(samplers[id].samp)));
 
-				return TF_OK;
+				return kOK;
 			}
 
 			int32_t DestroySampler(void* params)
@@ -766,7 +766,7 @@ namespace tofu
 
 				samplers[id] = {};
 
-				return TF_OK;
+				return kOK;
 			}
 
 			int32_t CreateVertexShader(void* _params)
@@ -780,7 +780,7 @@ namespace tofu
 				assert(nullptr == vertexShaders[id].shader);
 
 				// store binary code for further use (input layout)
-				void* ptr = MemoryAllocator::Allocators[ALLOC_LEVEL_BASED_MEM].Allocate(params->size, 4);
+				void* ptr = MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(params->size, 4);
 				assert(nullptr != ptr);
 				memcpy(ptr, params->data, params->size);
 
@@ -789,7 +789,7 @@ namespace tofu
 				vertexShaders[id].data = ptr;
 				vertexShaders[id].size = params->size;
 
-				return TF_OK;
+				return kOK;
 			}
 
 			int32_t DestroyVertexShader(void* params)
@@ -806,7 +806,7 @@ namespace tofu
 
 				vertexShaders[id] = {};
 
-				return TF_OK;
+				return kOK;
 			}
 
 			int32_t CreatePixelShader(void* _params)
@@ -820,7 +820,7 @@ namespace tofu
 				assert(nullptr == pixelShaders[id].shader);
 
 				// store binary code for further use
-				void* ptr = MemoryAllocator::Allocators[ALLOC_LEVEL_BASED_MEM].Allocate(params->size, 4);
+				void* ptr = MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(params->size, 4);
 				assert(nullptr != ptr);
 				memcpy(ptr, params->data, params->size);
 
@@ -829,7 +829,7 @@ namespace tofu
 				pixelShaders[id].data = ptr;
 				pixelShaders[id].size = params->size;
 
-				return TF_OK;
+				return kOK;
 			}
 
 			int32_t DestroyPixelShader(void* params)
@@ -846,7 +846,7 @@ namespace tofu
 
 				pixelShaders[id] = {};
 
-				return TF_OK;
+				return kOK;
 			}
 
 			int32_t CreatePipelineState(void* _params)
@@ -860,13 +860,13 @@ namespace tofu
 				assert(nullptr == pipelineStates[id].depthStencilState);
 
 				CD3D11_DEPTH_STENCIL_DESC dsState(D3D11_DEFAULT);
-				dsState.DepthEnable = params->DepthEnable;
-				dsState.DepthWriteMask = (D3D11_DEPTH_WRITE_MASK)params->DepthWrite;
-				dsState.DepthFunc = (D3D11_COMPARISON_FUNC)(params->DepthFunc + 1);
+				dsState.DepthEnable = params->depthEnable;
+				dsState.DepthWriteMask = (D3D11_DEPTH_WRITE_MASK)params->depthWrite;
+				dsState.DepthFunc = (D3D11_COMPARISON_FUNC)(params->depthFunc + 1);
 				DXCHECKED(device->CreateDepthStencilState(&dsState, &(pipelineStates[id].depthStencilState)));
 
 				CD3D11_RASTERIZER_DESC rsState(D3D11_DEFAULT);
-				rsState.CullMode = (D3D11_CULL_MODE)(params->CullMode + 1u);
+				rsState.CullMode = (D3D11_CULL_MODE)(params->cullMode + 1u);
 				DXCHECKED(device->CreateRasterizerState(&rsState, &(pipelineStates[id].rasterizerState)));
 
 				CD3D11_BLEND_DESC blendState(D3D11_DEFAULT);
@@ -890,7 +890,7 @@ namespace tofu
 				pipelineStates[id].vertexShader = params->vertexShader;
 				pipelineStates[id].pixelShader = params->pixelShader;
 
-				return TF_OK;
+				return kOK;
 			}
 
 			int32_t DestroyPipelineState(void* params)
@@ -910,14 +910,14 @@ namespace tofu
 
 				pipelineStates[id] = {};
 
-				return TF_OK;
+				return kOK;
 			}
 
 			int32_t ClearRenderTargets(void* _params)
 			{
 				ClearParams* params = reinterpret_cast<ClearParams*>(_params);
 
-				for (uint32_t i = 0; i < MAX_RENDER_TARGET_BINDINGS; ++i)
+				for (uint32_t i = 0; i < kMaxRenderTargetBindings; ++i)
 				{
 					if (!params->renderTargets[i])
 					{
@@ -942,7 +942,7 @@ namespace tofu
 						params->clearStencil);
 				}
 
-				return TF_OK;
+				return kOK;
 			}
 
 			int32_t Draw(void* _params)
@@ -970,19 +970,19 @@ namespace tofu
 				// vertex shader resource binding
 				{
 					// constant buffer bidnings
-					ID3D11Buffer* cbs[MAX_CONSTANT_BUFFER_BINDINGS] = {};
-					UINT offsets[MAX_CONSTANT_BUFFER_BINDINGS] = {};
-					UINT sizes[MAX_CONSTANT_BUFFER_BINDINGS] = {};
+					ID3D11Buffer* cbs[kMaxConstantBufferBindings] = {};
+					UINT offsets[kMaxConstantBufferBindings] = {};
+					UINT sizes[kMaxConstantBufferBindings] = {};
 
-					for (uint32_t i = 0; i < MAX_CONSTANT_BUFFER_BINDINGS; i++)
+					for (uint32_t i = 0; i < kMaxConstantBufferBindings; i++)
 					{
 						if (params->vsConstantBuffers[i].bufferHandle)
 						{
 							Buffer& buf = buffers[params->vsConstantBuffers[i].bufferHandle.id];
 							assert(nullptr != buf.buf);
-							if (!(buf.bindingFlags & BINDING_CONSTANT_BUFFER))
+							if (!(buf.bindingFlags & kBindingConstantBuffer))
 							{
-								return TF_UNKNOWN_ERR;
+								return kErrUnknown;
 							}
 
 							cbs[i] = buf.buf;
@@ -994,29 +994,29 @@ namespace tofu
 							}
 						}
 					}
-					context->VSSetConstantBuffers1(0, MAX_CONSTANT_BUFFER_BINDINGS, cbs, offsets, sizes);
+					context->VSSetConstantBuffers1(0, kMaxConstantBufferBindings, cbs, offsets, sizes);
 
 					// textures bindings
-					ID3D11ShaderResourceView* srvs[MAX_TEXTURE_BINDINGS] = {};
-					for (uint32_t i = 0; i < MAX_TEXTURE_BINDINGS; i++)
+					ID3D11ShaderResourceView* srvs[kMaxTextureBindings] = {};
+					for (uint32_t i = 0; i < kMaxTextureBindings; i++)
 					{
 						if (params->vsTextures[i])
 						{
 							Texture& tex = textures[params->vsTextures[i].id];
 							assert(nullptr != tex.srv);
-							if (!(tex.bindingFlags & BINDING_SHADER_RESOURCE))
+							if (!(tex.bindingFlags & kBindingShaderResource))
 							{
-								return TF_UNKNOWN_ERR;
+								return kErrUnknown;
 							}
 
 							srvs[i] = tex.srv;
 						}
 					}
-					context->VSSetShaderResources(0, MAX_TEXTURE_BINDINGS, srvs);
+					context->VSSetShaderResources(0, kMaxTextureBindings, srvs);
 
 					// samplers bidnings
-					ID3D11SamplerState* samps[MAX_SAMPLER_BINDINGS] = {};
-					for (uint32_t i = 0; i < MAX_SAMPLER_BINDINGS; i++)
+					ID3D11SamplerState* samps[kMaxSamplerBindings] = {};
+					for (uint32_t i = 0; i < kMaxSamplerBindings; i++)
 					{
 						if (params->vsSamplers[i])
 						{
@@ -1026,25 +1026,25 @@ namespace tofu
 							samps[i] = samp.samp;
 						}
 					}
-					context->VSSetSamplers(0, MAX_SAMPLER_BINDINGS, samps);
+					context->VSSetSamplers(0, kMaxSamplerBindings, samps);
 				}
 
 				// pixel shader resource binding
 				{
 					// constant buffer bindings
-					ID3D11Buffer* cbs[MAX_CONSTANT_BUFFER_BINDINGS] = {};
-					UINT offsets[MAX_CONSTANT_BUFFER_BINDINGS] = {};
-					UINT sizes[MAX_CONSTANT_BUFFER_BINDINGS] = {};
+					ID3D11Buffer* cbs[kMaxConstantBufferBindings] = {};
+					UINT offsets[kMaxConstantBufferBindings] = {};
+					UINT sizes[kMaxConstantBufferBindings] = {};
 
-					for (uint32_t i = 0; i < MAX_CONSTANT_BUFFER_BINDINGS; i++)
+					for (uint32_t i = 0; i < kMaxConstantBufferBindings; i++)
 					{
 						if (params->psConstantBuffers[i].bufferHandle)
 						{
 							Buffer& buf = buffers[params->psConstantBuffers[i].bufferHandle.id];
 							assert(nullptr != buf.buf);
-							if (!(buf.bindingFlags & BINDING_CONSTANT_BUFFER))
+							if (!(buf.bindingFlags & kBindingConstantBuffer))
 							{
-								return TF_UNKNOWN_ERR;
+								return kErrUnknown;
 							}
 
 							cbs[i] = buf.buf;
@@ -1056,29 +1056,29 @@ namespace tofu
 							}
 						}
 					}
-					context->PSSetConstantBuffers1(0, MAX_CONSTANT_BUFFER_BINDINGS, cbs, offsets, sizes);
+					context->PSSetConstantBuffers1(0, kMaxConstantBufferBindings, cbs, offsets, sizes);
 
 					// texture bindings
-					ID3D11ShaderResourceView* srvs[MAX_TEXTURE_BINDINGS] = {};
-					for (uint32_t i = 0; i < MAX_TEXTURE_BINDINGS; i++)
+					ID3D11ShaderResourceView* srvs[kMaxTextureBindings] = {};
+					for (uint32_t i = 0; i < kMaxTextureBindings; i++)
 					{
 						if (params->psTextures[i])
 						{
 							Texture& tex = textures[params->psTextures[i].id];
 							assert(nullptr != tex.srv);
-							if (!(tex.bindingFlags & BINDING_SHADER_RESOURCE))
+							if (!(tex.bindingFlags & kBindingShaderResource))
 							{
-								return TF_UNKNOWN_ERR;
+								return kErrUnknown;
 							}
 
 							srvs[i] = tex.srv;
 						}
 					}
-					context->PSSetShaderResources(0, MAX_TEXTURE_BINDINGS, srvs);
+					context->PSSetShaderResources(0, kMaxTextureBindings, srvs);
 
 					// sampler bindings
-					ID3D11SamplerState* samps[MAX_SAMPLER_BINDINGS] = {};
-					for (uint32_t i = 0; i < MAX_SAMPLER_BINDINGS; i++)
+					ID3D11SamplerState* samps[kMaxSamplerBindings] = {};
+					for (uint32_t i = 0; i < kMaxSamplerBindings; i++)
 					{
 						if (params->psSamplers[i])
 						{
@@ -1088,7 +1088,7 @@ namespace tofu
 							samps[i] = samp.samp;
 						}
 					}
-					context->PSSetSamplers(0, MAX_SAMPLER_BINDINGS, samps);
+					context->PSSetSamplers(0, kMaxSamplerBindings, samps);
 				}
 
 				// draw call
@@ -1096,9 +1096,9 @@ namespace tofu
 					// set vertex buffer
 					assert(true == params->vertexBuffer);
 					Buffer& vb = buffers[params->vertexBuffer.id];
-					if (!(vb.bindingFlags & BINDING_VERTEX_BUFFER))
+					if (!(vb.bindingFlags & kBindingVertexBuffer))
 					{
-						return TF_UNKNOWN_ERR;
+						return kErrUnknown;
 					}
 
 					assert(nullptr != vb.buf);
@@ -1112,9 +1112,9 @@ namespace tofu
 					// set index buffer
 					assert(true == params->indexBuffer);
 					Buffer& ib = buffers[params->indexBuffer.id];
-					if (!(ib.bindingFlags & BINDING_INDEX_BUFFER))
+					if (!(ib.bindingFlags & kBindingIndexBuffer))
 					{
-						return TF_UNKNOWN_ERR;
+						return kErrUnknown;
 					}
 					assert(nullptr != ib.buf);
 					context->IASetIndexBuffer(ib.buf, DXGI_FORMAT_R16_UINT, 0);
@@ -1123,7 +1123,7 @@ namespace tofu
 					context->DrawIndexed(params->indexCount, params->startIndex, params->startVertex);
 				}
 
-				return TF_OK;
+				return kOK;
 			}
 
 		};

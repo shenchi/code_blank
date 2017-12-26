@@ -10,7 +10,7 @@
 
 #include "TestGame.h"
 
-using tofu::TF_OK;
+using tofu::kOK;
 
 int CALLBACK WinMain(
 	_In_ HINSTANCE hInstance,

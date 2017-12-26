@@ -101,24 +101,24 @@ namespace tofu
 
 	protected:
 		// mapping from entity id to component index(location)
-		static ComponentIndex pointers[MAX_ENTITIES];
+		static ComponentIndex pointers[kMaxEntities];
 
 		// mapping from component index(location) to entity id
-		static Entity back_pointers[MAX_ENTITIES];
+		static Entity back_pointers[kMaxEntities];
 
 		// array of actual components
-		static T components[MAX_ENTITIES];
+		static T components[kMaxEntities];
 		static uint32_t numComponents;
 	};
 
 	template<class T>
-	ComponentIndex Component<T>::pointers[MAX_ENTITIES];
+	ComponentIndex Component<T>::pointers[kMaxEntities];
 
 	template<class T>
-	Entity Component<T>::back_pointers[MAX_ENTITIES];
+	Entity Component<T>::back_pointers[kMaxEntities];
 
 	template<class T>
-	T Component<T>::components[MAX_ENTITIES];
+	T Component<T>::components[kMaxEntities];
 
 	template<class T>
 	uint32_t Component<T>::numComponents = 0;

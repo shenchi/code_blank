@@ -16,7 +16,7 @@ namespace
 namespace tofu
 {
 
-	MemoryAllocator MemoryAllocator::Allocators[MAX_MEMORY_ALLOCATOR];
+	MemoryAllocator MemoryAllocator::Allocators[kMaxMemoryAllocators];
 	NativeAllocator* MemoryAllocator::DefaultNativeAllocator = nullptr;
 
 	int32_t MemoryAllocator::Init(size_t size, size_t alignment, NativeAllocator * nativeAlloc)
@@ -41,7 +41,7 @@ namespace tofu
 
 		if (nullptr == ptr)
 		{
-			return TF_UNKNOWN_ERR;
+			return kErrUnknown;
 		}
 
 		memoryBase = ptr;
@@ -50,12 +50,12 @@ namespace tofu
 
 		this->nativeAlloc = nativeAlloc;
 
-		return TF_OK;
+		return kOK;
 	}
 
 	int32_t MemoryAllocator::Shutdown()
 	{
-		int32_t err = TF_OK;
+		int32_t err = kOK;
 
 		if (nullptr != memoryBase)
 		{
@@ -84,7 +84,7 @@ namespace tofu
 
 		currentSize = 0u;
 
-		return TF_OK;
+		return kOK;
 	}
 
 	void * MemoryAllocator::Allocate(size_t size, size_t alignment)

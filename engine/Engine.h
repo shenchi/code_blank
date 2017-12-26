@@ -44,7 +44,7 @@ namespace tofu
 		PhysicsSystem*		physicsSystem;
 		InputSystem*		inputSystem;
 
-		Module*				userModules[MAX_USER_MODULES];
+		Module*				userModules[kMaxUserModules];
 		uint32_t			numUserModules;
 
 	private:

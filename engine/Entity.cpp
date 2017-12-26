@@ -4,7 +4,7 @@
 
 namespace tofu
 {
-	HandleAllocator<Entity, MAX_ENTITIES> Entity::entityAlloc;
+	HandleAllocator<Entity, kMaxEntities> Entity::entityAlloc;
 
 	int32_t Entity::Destroy()
 	{
@@ -15,7 +15,7 @@ namespace tofu
 		// TODO remove all components;
 		assert(false && "not implemented yet");
 
-		return TF_OK;
+		return kOK;
 	}
 
 	Entity Entity::Create()

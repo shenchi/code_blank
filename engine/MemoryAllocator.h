@@ -7,14 +7,14 @@ namespace tofu
 	// sets of allocator for different scenario
 	enum AllocatorType
 	{
-		ALLOC_DEFAULT,
-		ALLOC_LEVEL_BASED_MEM,
-		ALLOC_FRAME_BASED_MEM,
-		ALLOC_FRAME_BASED_MEM_END = ALLOC_FRAME_BASED_MEM + FRAME_BUFFER_COUNT - 1,
-		ALLOC_LEVEL_BASED_VMEM,
-		ALLOC_FRAME_BASED_VMEM,
-		ALLOC_FRAME_BASED_VMEM_END = ALLOC_FRAME_BASED_VMEM + FRAME_BUFFER_COUNT - 1,
-		MAX_MEMORY_ALLOCATOR,
+		kAllocDefault,
+		kAllocLevelBasedMem,
+		kAllocFrameBasedMem,
+		kAllocFrameBasedMemEnd = kAllocFrameBasedMem + kFrameBufferCount - 1,
+		kAllocLevelBasedVMem,
+		kAllocFrameBasedVMem,
+		kAllocFrameBasedVMemEnd = kAllocFrameBasedVMem + kFrameBufferCount - 1,
+		kMaxMemoryAllocators,
 	};
 
 	// interface for native memory allocation API wraping
@@ -29,7 +29,7 @@ namespace tofu
 	class MemoryAllocator
 	{
 	public:
-		static MemoryAllocator Allocators[MAX_MEMORY_ALLOCATOR];
+		static MemoryAllocator Allocators[kMaxMemoryAllocators];
 
 		// default native allocation API
 		static NativeAllocator* DefaultNativeAllocator;

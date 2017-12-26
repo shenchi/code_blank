@@ -12,10 +12,10 @@ namespace tofu
 
 	enum class ColliderType
 	{
-		Box,
-		Sphere,
-		Capsule,
-		Cylinder
+		kColliderTypeBox,
+		kColliderTypeSphere,
+		kColliderTypeCapsule,
+		kColliderTypeCylinder
 	};
 
 	struct ColliderDesc
@@ -34,7 +34,7 @@ namespace tofu
 
 		ColliderDesc()
 			:
-			type(ColliderType::Box),
+			type(ColliderType::kColliderTypeBox),
 			origin(),
 			halfExtends{ 0.5f, 0.5f, 0.5f }
 		{}
@@ -88,21 +88,21 @@ namespace tofu
 
 		void SetBoxCollider(const math::float3& halfExtends)
 		{
-			colliderDesc.type = ColliderType::Box;
+			colliderDesc.type = ColliderType::kColliderTypeBox;
 			colliderDesc.halfExtends = halfExtends;
 			dirty = true;
 		}
 
 		void SetSphereCollider(float radius)
 		{
-			colliderDesc.type = ColliderType::Sphere;
+			colliderDesc.type = ColliderType::kColliderTypeSphere;
 			colliderDesc.radius = radius;
 			dirty = true;
 		}
 
 		void SetCapsuleCollider(float radius, float height)
 		{
-			colliderDesc.type = ColliderType::Capsule;
+			colliderDesc.type = ColliderType::kColliderTypeCapsule;
 			colliderDesc.radius = radius;
 			colliderDesc.height = height;
 			dirty = true;
@@ -110,7 +110,7 @@ namespace tofu
 
 		void SetCylinderCollider(const math::float3& halfExtends)
 		{
-			colliderDesc.type = ColliderType::Cylinder;
+			colliderDesc.type = ColliderType::kColliderTypeCylinder;
 			colliderDesc.halfExtends = halfExtends;
 			dirty = true;
 		}

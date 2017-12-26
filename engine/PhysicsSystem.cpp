@@ -35,7 +35,7 @@ namespace tofu
 
 		world->setGravity(btVector3(0, -10, 0));
 
-		return TF_OK;
+		return kOK;
 	}
 
 	int32_t PhysicsSystem::Shutdown()
@@ -78,7 +78,7 @@ namespace tofu
 		dispatcher = nullptr;
 		config = nullptr;
 
-		return TF_OK;
+		return kOK;
 	}
 
 	int32_t PhysicsSystem::Update()
@@ -93,7 +93,7 @@ namespace tofu
 			TransformComponent t = comp.entity.GetComponent<TransformComponent>();
 			if (!t)
 			{
-				return TF_UNKNOWN_ERR;
+				return kErrUnknown;
 			}
 
 			// create or re-create collision shape and rigidbody if necessary
@@ -124,18 +124,18 @@ namespace tofu
 					
 					switch (comp.colliderDesc.type)
 					{
-					case ColliderType::Box:
+					case ColliderType::kColliderTypeBox:
 						comp.collider = new btBoxShape(btVec3(comp.colliderDesc.halfExtends));
 						break;
-					case ColliderType::Sphere:
+					case ColliderType::kColliderTypeSphere:
 						comp.collider = new btSphereShape(comp.colliderDesc.radius);
 						break;
-					case ColliderType::Capsule:
+					case ColliderType::kColliderTypeCapsule:
 						comp.collider = new btCapsuleShape(
 							comp.colliderDesc.radius,
 							comp.colliderDesc.height);
 						break;
-					case ColliderType::Cylinder:
+					case ColliderType::kColliderTypeCylinder:
 						comp.collider = new btCylinderShape(btVec3(comp.colliderDesc.halfExtends));
 						break;
 					}
@@ -227,7 +227,7 @@ namespace tofu
 			PhysicsComponentData& comp = comps[i];
 			if (nullptr == comp.rigidbody)
 			{
-				return TF_UNKNOWN_ERR;
+				return kErrUnknown;
 			}
 
 			comp.isCollided = false;
@@ -240,7 +240,7 @@ namespace tofu
 			TransformComponent t = comp.entity.GetComponent<TransformComponent>();
 			if (!t)
 			{
-				return TF_UNKNOWN_ERR;
+				return kErrUnknown;
 			}
 
 			btTransform btTrans;
@@ -275,7 +275,7 @@ namespace tofu
 			}
 		}
 
-		return TF_OK;
+		return kOK;
 	}
 
 	void PhysicsSystem::SetGravity(const math::float3 & g)

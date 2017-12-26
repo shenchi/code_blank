@@ -17,17 +17,17 @@ namespace tofu
 	int32_t InputSystem::Init()
 	{
 		states = {};
-		return TF_OK;
+		return kOK;
 	}
 
 	int32_t InputSystem::Shutdown()
 	{
-		return TF_OK;
+		return kOK;
 	}
 
 	int32_t InputSystem::Update()
 	{
 		NativeContext::instance()->UpdateInputStates(&states);
-		return TF_OK;
+		return kOK;
 	}
 }

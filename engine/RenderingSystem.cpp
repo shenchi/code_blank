@@ -73,17 +73,17 @@ namespace tofu
 	int32_t RenderingSystem::Init()
 	{
 		// Initialize Memory Management for Rendering
-		CHECKED(MemoryAllocator::Allocators[ALLOC_LEVEL_BASED_MEM].Init(
-			LEVEL_BASED_MEM_SIZE,
-			LEVEL_BASED_MEM_ALIGN));
+		CHECKED(MemoryAllocator::Allocators[kAllocLevelBasedMem].Init(
+			kLevelBasedMemSize,
+			kLevelBasedMemAlign));
 
-		for (uint32_t i = ALLOC_FRAME_BASED_MEM;
-			i <= ALLOC_FRAME_BASED_MEM_END;
+		for (uint32_t i = kAllocFrameBasedMem;
+			i <= kAllocFrameBasedMemEnd;
 			++i)
 		{
 			CHECKED(MemoryAllocator::Allocators[i].Init(
-				FRAME_BASED_MEM_SIZE,
-				FRAME_BASED_MEM_ALIGN));
+				kFrameBasedMemSize,
+				kFrameBasedMemAlign));
 		}
 
 		// Initialize Renderer Backend
@@ -94,22 +94,22 @@ namespace tofu
 		BeginFrame();
 
 		// Create Built-in Shaders
-		CHECKED(InitBuiltinShader(TestMaterial,
+		CHECKED(InitBuiltinShader(kMaterialTypeTest,
 			"assets/test_vs.shader",
 			"assets/test_ps.shader"
 		));
 
-		CHECKED(InitBuiltinShader(SkyboxMaterial,
+		CHECKED(InitBuiltinShader(kMaterialTypeSkybox,
 			"assets/skybox_vs.shader",
 			"assets/skybox_ps.shader"
 		));
 
-		CHECKED(InitBuiltinShader(OpaqueMaterial,
+		CHECKED(InitBuiltinShader(kMaterialTypeOpaque,
 			"assets/opaque_vs.shader",
 			"assets/opaque_ps.shader"
 		));
 
-		CHECKED(InitBuiltinShader(OpaqueSkinnedMaterial,
+		CHECKED(InitBuiltinShader(kMaterialTypeOpaqueSkinned,
 			"assets/opaque_skinned_vs.shader",
 			"assets/opaque_ps.shader"
 		));
@@ -119,17 +119,17 @@ namespace tofu
 			transformBuffer = bufferHandleAlloc.Allocate();
 			assert(transformBuffer);
 
-			transformBufferSize = sizeof(math::float4x4) * 4 * MAX_ENTITIES;
+			transformBufferSize = sizeof(math::float4x4) * 4 * kMaxEntities;
 
 			{
 				CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
 				assert(nullptr != params);
 				params->handle = transformBuffer;
-				params->bindingFlags = BINDING_CONSTANT_BUFFER;
+				params->bindingFlags = kBindingConstantBuffer;
 				params->size = transformBufferSize;
 				params->dynamic = 1;
 
-				cmdBuf->Add(RendererCommand::CreateBuffer, params);
+				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
 			}
 
 			frameConstantBuffer = bufferHandleAlloc.Allocate();
@@ -139,64 +139,64 @@ namespace tofu
 				CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
 				assert(nullptr != params);
 				params->handle = frameConstantBuffer;
-				params->bindingFlags = BINDING_CONSTANT_BUFFER;
+				params->bindingFlags = kBindingConstantBuffer;
 				params->size = sizeof(FrameConstants);
 				params->dynamic = 1;
 
-				cmdBuf->Add(RendererCommand::CreateBuffer, params);
+				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
 			}
 		}
 
 		// create built-in pipeline states
 		{
-			materialPSOs[TestMaterial] = pipelineStateHandleAlloc.Allocate();
-			assert(materialPSOs[TestMaterial]);
+			materialPSOs[kMaterialTypeTest] = pipelineStateHandleAlloc.Allocate();
+			assert(materialPSOs[kMaterialTypeTest]);
 
 			{
 				CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
-				params->handle = materialPSOs[TestMaterial];
-				params->vertexShader = materialVSs[TestMaterial];
-				params->pixelShader = materialPSs[TestMaterial];
+				params->handle = materialPSOs[kMaterialTypeTest];
+				params->vertexShader = materialVSs[kMaterialTypeTest];
+				params->pixelShader = materialPSs[kMaterialTypeTest];
 
-				cmdBuf->Add(RendererCommand::CreatePipelineState, params);
+				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 			}
 
-			materialPSOs[SkyboxMaterial] = pipelineStateHandleAlloc.Allocate();
-			assert(materialPSOs[SkyboxMaterial]);
+			materialPSOs[kMaterialTypeSkybox] = pipelineStateHandleAlloc.Allocate();
+			assert(materialPSOs[kMaterialTypeSkybox]);
 
 			{
 				CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
-				params->handle = materialPSOs[SkyboxMaterial];
-				params->vertexShader = materialVSs[SkyboxMaterial];
-				params->pixelShader = materialPSs[SkyboxMaterial];
-				params->CullMode = CULL_FRONT;
-				params->DepthFunc = COMPARISON_ALWAYS;
-				cmdBuf->Add(RendererCommand::CreatePipelineState, params);
+				params->handle = materialPSOs[kMaterialTypeSkybox];
+				params->vertexShader = materialVSs[kMaterialTypeSkybox];
+				params->pixelShader = materialPSs[kMaterialTypeSkybox];
+				params->cullMode = kCullFront;
+				params->depthFunc = kComparisonAlways;
+				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 			}
 
-			materialPSOs[OpaqueMaterial] = pipelineStateHandleAlloc.Allocate();
-			assert(materialPSOs[OpaqueMaterial]);
+			materialPSOs[kMaterialTypeOpaque] = pipelineStateHandleAlloc.Allocate();
+			assert(materialPSOs[kMaterialTypeOpaque]);
 
 			{
 				CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
-				params->handle = materialPSOs[OpaqueMaterial];
-				params->vertexShader = materialVSs[OpaqueMaterial];
-				params->pixelShader = materialPSs[OpaqueMaterial];
+				params->handle = materialPSOs[kMaterialTypeOpaque];
+				params->vertexShader = materialVSs[kMaterialTypeOpaque];
+				params->pixelShader = materialPSs[kMaterialTypeOpaque];
 
-				cmdBuf->Add(RendererCommand::CreatePipelineState, params);
+				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 			}
 
-			materialPSOs[OpaqueSkinnedMaterial] = pipelineStateHandleAlloc.Allocate();
-			assert(materialPSOs[OpaqueSkinnedMaterial]);
+			materialPSOs[kMaterialTypeOpaqueSkinned] = pipelineStateHandleAlloc.Allocate();
+			assert(materialPSOs[kMaterialTypeOpaqueSkinned]);
 
 			{
 				CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
-				params->handle = materialPSOs[OpaqueSkinnedMaterial];
-				params->vertexShader = materialVSs[OpaqueSkinnedMaterial];
-				params->pixelShader = materialPSs[OpaqueSkinnedMaterial];
-				params->vertexFormat = VERTEX_FORMAT_SKINNED;
+				params->handle = materialPSOs[kMaterialTypeOpaqueSkinned];
+				params->vertexShader = materialVSs[kMaterialTypeOpaqueSkinned];
+				params->pixelShader = materialPSs[kMaterialTypeOpaqueSkinned];
+				params->vertexFormat = kVertexFormatSkinned;
 
-				cmdBuf->Add(RendererCommand::CreatePipelineState, params);
+				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 			}
 		}
 
@@ -209,54 +209,54 @@ namespace tofu
 				CreateSamplerParams* params = MemoryAllocator::Allocate<CreateSamplerParams>(allocNo);
 				params->handle = defaultSampler;
 
-				cmdBuf->Add(RendererCommand::CreateSampler, params);
+				cmdBuf->Add(RendererCommand::kCommandCreateSampler, params);
 			}
 		}
 
 		builtinCube = CreateModel("assets/cube.model");
 		assert(nullptr != builtinCube);
 
-		return TF_OK;
+		return kOK;
 	}
 
 	int32_t RenderingSystem::Shutdown()
 	{
 		renderer->Release();
 
-		for (uint32_t i = ALLOC_FRAME_BASED_MEM;
-			i <= ALLOC_FRAME_BASED_MEM_END;
+		for (uint32_t i = kAllocFrameBasedMem;
+			i <= kAllocFrameBasedMemEnd;
 			++i)
 		{
 			CHECKED(MemoryAllocator::Allocators[i].Shutdown());
 		}
 
-		CHECKED(MemoryAllocator::Allocators[ALLOC_LEVEL_BASED_MEM].Shutdown());
-		return TF_OK;
+		CHECKED(MemoryAllocator::Allocators[kAllocLevelBasedMem].Shutdown());
+		return kOK;
 	}
 
 	int32_t RenderingSystem::BeginFrame()
 	{
 		if (nullptr != cmdBuf)
 		{
-			return TF_OK;
+			return kOK;
 		}
 
 		//assert(false && "sync need to be done.");
 
-		allocNo = ALLOC_FRAME_BASED_MEM + frameNo % FRAME_BUFFER_COUNT;
+		allocNo = kAllocFrameBasedMem + frameNo % kFrameBufferCount;
 		MemoryAllocator::Allocators[allocNo].Reset();
 
-		cmdBuf = RendererCommandBuffer::Create(COMMAND_BUFFER_CAPACITY, allocNo);
+		cmdBuf = RendererCommandBuffer::Create(kCommandBufferCapacity, allocNo);
 		assert(nullptr != cmdBuf);
 
-		return TF_OK;
+		return kOK;
 	}
 
 	int32_t RenderingSystem::Update()
 	{
 		if (CameraComponent::GetNumComponents() == 0)
 		{
-			return TF_OK;
+			return kOK;
 		}
 		CameraComponentData& camera = CameraComponent::GetAllComponents()[0];
 
@@ -284,7 +284,7 @@ namespace tofu
 			params->data = data;
 			params->size = sizeof(FrameConstants);
 
-			cmdBuf->Add(RendererCommand::UpdateBuffer, params);
+			cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
 		}
 
 		// clear
@@ -302,17 +302,17 @@ namespace tofu
 			params->clearColor[2] = clearColor.z;
 			params->clearColor[3] = clearColor.w;
 
-			cmdBuf->Add(RendererCommand::ClearRenderTargets, params);
+			cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
 		}
 		else
 		{
-			assert(camera.skybox->type == SkyboxMaterial);
+			assert(camera.skybox->type == kMaterialTypeSkybox);
 			skyboxTex = camera.skybox->mainTex;
 
 			Mesh& mesh = meshes[builtinCube->meshes[0].id];
 
 			DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
-			params->pipelineState = materialPSOs[SkyboxMaterial];
+			params->pipelineState = materialPSOs[kMaterialTypeSkybox];
 			params->vertexBuffer = mesh.VertexBuffer;
 			params->indexBuffer = mesh.IndexBuffer;
 			params->startIndex = mesh.StartIndex;
@@ -323,7 +323,7 @@ namespace tofu
 			params->psTextures[0] = skyboxTex;
 			params->psSamplers[0] = defaultSampler;
 
-			cmdBuf->Add(RendererCommand::Draw, params);
+			cmdBuf->Add(RendererCommand::kCommandDraw, params);
 		}
 
 		// get all renderables in system
@@ -337,7 +337,7 @@ namespace tofu
 
 		// list of active renderables (used for culling)
 		uint32_t* activeRenderables = reinterpret_cast<uint32_t*>(
-			MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * MAX_ENTITIES, 4)
+			MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxEntities, 4)
 			);
 
 		assert(nullptr != transformArray && nullptr != activeRenderables);
@@ -367,7 +367,7 @@ namespace tofu
 			params->data = transformArray;
 			params->size = sizeof(math::float4x4) * 4 * numActiveRenderables;
 
-			cmdBuf->Add(RendererCommand::UpdateBuffer, params);
+			cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
 		}
 
 		// update skinned mesh animation bone matrices
@@ -381,7 +381,7 @@ namespace tofu
 
 			if (!r || nullptr == r->model || !r->model->HasAnimation())
 			{
-				return TF_UNKNOWN_ERR;
+				return kErrUnknown;
 			}
 
 			// re-alloc constant buffer if model changed (or firstly set)
@@ -389,7 +389,7 @@ namespace tofu
 			{
 				anim.model = r->model;
 				int32_t err = ReallocAnimationResources(anim);
-				if (TF_OK != err)
+				if (kOK != err)
 				{
 					return err;
 				}
@@ -408,7 +408,7 @@ namespace tofu
 			params->data = boneMatrices;
 			params->size = anim.boneMatricesBufferSize;
 
-			cmdBuf->Add(RendererCommand::UpdateBuffer, params);
+			cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
 		}
 
 		// generate draw call for active renderables in command buffer
@@ -436,24 +436,24 @@ namespace tofu
 
 				switch (mat->type)
 				{
-				case TestMaterial:
+				case kMaterialTypeTest:
 					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
 					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
 					params->psTextures[0] = mat->mainTex;
 					params->psSamplers[0] = defaultSampler;
 					break;
-				case OpaqueSkinnedMaterial:
+				case kMaterialTypeOpaqueSkinned:
 					(void*)0;
 					{
 						AnimationComponent anim = comp.entity.GetComponent<AnimationComponent>();
 						if (!anim || !anim->boneMatricesBuffer)
 						{
-							return TF_UNKNOWN_ERR;
+							return kErrUnknown;
 						}
 						params->vsConstantBuffers[2] = { anim->boneMatricesBuffer, 0, 0 };
 					}
 					// fall through
-				case OpaqueMaterial:
+				case kMaterialTypeOpaque:
 					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
 					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
 					params->psConstantBuffers[0] = { frameConstantBuffer, 16, 16 };
@@ -467,11 +467,11 @@ namespace tofu
 					break;
 				}
 
-				cmdBuf->Add(RendererCommand::Draw, params);
+				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
 		}
 
-		return TF_OK;
+		return kOK;
 	}
 
 	int32_t RenderingSystem::EndFrame()
@@ -486,7 +486,7 @@ namespace tofu
 
 		cmdBuf = nullptr;
 
-		return TF_OK;
+		return kOK;
 	}
 
 	Model* RenderingSystem::CreateModel(const char* filename)
@@ -503,8 +503,8 @@ namespace tofu
 
 		uint8_t* data = nullptr;
 		size_t size = 0u;
-		int32_t err = FileIO::ReadFile(filename, reinterpret_cast<void**>(&data), &size, 4, ALLOC_FRAME_BASED_MEM);
-		if (TF_OK != err)
+		int32_t err = FileIO::ReadFile(filename, reinterpret_cast<void**>(&data), &size, 4, kAllocFrameBasedMem);
+		if (kOK != err)
 		{
 			return nullptr;
 		}
@@ -512,7 +512,7 @@ namespace tofu
 		// read header
 		model::ModelHeader* header = reinterpret_cast<model::ModelHeader*>(data);
 
-		assert(header->Magic == model::MODEL_FILE_MAGIC);
+		assert(header->Magic == model::kModelFileMagic);
 		assert(header->StructOfArray == 0);
 		assert(header->HasIndices == 1);
 		assert(header->HasTangent == 1);
@@ -529,7 +529,7 @@ namespace tofu
 		uint32_t verticesCount = 0;
 		uint32_t indicesCount = 0;
 
-		assert(header->NumMeshes <= MAX_MESHES_PER_MODEL);
+		assert(header->NumMeshes <= kMaxMeshesPerModel);
 		ModelHandle modelHandle = modelHandleAlloc.Allocate();
 		assert(modelHandle);
 		Model& model = models[modelHandle.id];
@@ -608,24 +608,24 @@ namespace tofu
 
 		// upload vertices and indices to vertex buffer and index buffer
 		{
-			CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(ALLOC_FRAME_BASED_MEM);
+			CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(kAllocFrameBasedMem);
 			params->handle = vbHandle;
-			params->bindingFlags = BINDING_VERTEX_BUFFER;
+			params->bindingFlags = kBindingVertexBuffer;
 			params->data = vertices;
 			params->size = vertexBufferSize;
 			params->stride = header->CalculateVertexSize();
 
-			cmdBuf->Add(RendererCommand::CreateBuffer, params);
+			cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
 		}
 
 		{
-			CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(ALLOC_FRAME_BASED_MEM);
+			CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(kAllocFrameBasedMem);
 			params->handle = ibHandle;
-			params->bindingFlags = BINDING_INDEX_BUFFER;
+			params->bindingFlags = kBindingIndexBuffer;
 			params->data = indices;
 			params->size = indexBufferSize;
 
-			cmdBuf->Add(RendererCommand::CreateBuffer, params);
+			cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
 		}
 
 		return &model;
@@ -637,7 +637,7 @@ namespace tofu
 		size_t size = 0;
 		int32_t err = FileIO::ReadFile(filename, &data, &size, 4, allocNo);
 
-		if (TF_OK != err)
+		if (kOK != err)
 		{
 			return TextureHandle();
 		}
@@ -651,12 +651,12 @@ namespace tofu
 		CreateTextureParams* params = MemoryAllocator::Allocate<CreateTextureParams>(allocNo);
 
 		params->handle = handle;
-		params->bindingFlags = BINDING_SHADER_RESOURCE;
+		params->bindingFlags = kBindingShaderResource;
 		params->isFile = 1;
 		params->data = data;
 		params->width = static_cast<uint32_t>(size);
 
-		cmdBuf->Add(RendererCommand::CreateTexture, params);
+		cmdBuf->Add(RendererCommand::kCommandCreateTexture, params);
 
 		return handle;
 	}
@@ -679,13 +679,13 @@ namespace tofu
 	int32_t RenderingSystem::InitBuiltinShader(MaterialType matType, const char * vsFile, const char * psFile)
 	{
 		if (materialVSs[matType] || materialPSs[matType])
-			return TF_UNKNOWN_ERR;
+			return kErrUnknown;
 		
 		materialVSs[matType] = vertexShaderHandleAlloc.Allocate();
 		materialPSs[matType] = pixelShaderHandleAlloc.Allocate();
 		if (!materialVSs[matType] || !materialPSs[matType])
 		{
-			return TF_UNKNOWN_ERR;
+			return kErrUnknown;
 		}
 
 		{
@@ -700,12 +700,12 @@ namespace tofu
 				4,
 				allocNo);
 
-			if (TF_OK != err)
+			if (kOK != err)
 			{
 				return err;
 			}
 
-			cmdBuf->Add(RendererCommand::CreateVertexShader, params);
+			cmdBuf->Add(RendererCommand::kCommandCreateVertexShader, params);
 		}
 
 		{
@@ -720,14 +720,14 @@ namespace tofu
 				4,
 				allocNo);
 
-			if (TF_OK != err)
+			if (kOK != err)
 			{
 				return err;
 			}
 
-			cmdBuf->Add(RendererCommand::CreatePixelShader, params);
+			cmdBuf->Add(RendererCommand::kCommandCreatePixelShader, params);
 		}
-		return TF_OK;
+		return kOK;
 	}
 
 	int32_t RenderingSystem::ReallocAnimationResources(AnimationComponentData & c)
@@ -740,13 +740,13 @@ namespace tofu
 		Model* model = c.model;
 		if (nullptr == model || nullptr == model->header || !model->HasAnimation() || 0 == model->header->NumBones)
 		{
-			return TF_UNKNOWN_ERR;
+			return kErrUnknown;
 		}
 
 		BufferHandle bufferHandle = bufferHandleAlloc.Allocate();
 		if (!bufferHandle)
 		{
-			return TF_UNKNOWN_ERR;
+			return kErrUnknown;
 		}
 
 		c.boneMatricesBuffer = bufferHandle;
@@ -755,13 +755,13 @@ namespace tofu
 		CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
 		assert(nullptr != params);
 		params->handle = bufferHandle;
-		params->bindingFlags = BINDING_CONSTANT_BUFFER;
+		params->bindingFlags = kBindingConstantBuffer;
 		params->size = c.boneMatricesBufferSize;
 		params->dynamic = 1;
 
-		cmdBuf->Add(RendererCommand::CreateBuffer, params);
+		cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
 
-		return TF_OK;
+		return kOK;
 	}
 
 

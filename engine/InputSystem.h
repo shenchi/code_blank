@@ -23,7 +23,7 @@ namespace tofu
 
 		TF_INLINE bool IsButtonDown(ButtonId button) const 
 		{ 
-			if (button > ButtonId::TF_KEY_MAX_ID)
+			if (button > ButtonId::kKeyMaxId)
 			{
 				return states.gamepad.IsButtonDown(button);
 			} 

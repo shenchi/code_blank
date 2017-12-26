@@ -83,7 +83,7 @@ namespace tofu
 
 			if (!RegisterClassEx(&cls))
 			{
-				return TF_UNKNOWN_ERR;
+				return kErrUnknown;
 			}
 
 			DWORD winStyle = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
@@ -111,7 +111,7 @@ namespace tofu
 			if (!hWnd)
 			{
 				UnregisterClass(g_WindowClassName, hInstance);
-				return TF_UNKNOWN_ERR;
+				return kErrUnknown;
 			}
 
 			ShowWindow(hWnd, SW_SHOW);
@@ -122,7 +122,7 @@ namespace tofu
 			mouse->SetMode(DirectX::Mouse::Mode::MODE_RELATIVE);
 			gamepad = new DirectX::GamePad();
 
-			return TF_OK;
+			return kOK;
 		}
 
 		int32_t Shutdown() override
@@ -132,7 +132,7 @@ namespace tofu
 			delete keyboard;
 
 			UnregisterClass(g_WindowClassName, hInstance);
-			return TF_OK;
+			return kOK;
 		}
 
 		bool ProcessEvent() override
@@ -153,7 +153,7 @@ namespace tofu
 		int32_t QuitApplication() override
 		{
 			PostQuitMessage(0);
-			return TF_OK;
+			return kOK;
 		}
 
 		intptr_t GetContextHandle() override
@@ -186,17 +186,17 @@ namespace tofu
 
 			if (m.leftButton)
 			{
-				states->kb_mouse[0] |= (1u << TF_MOUSE_LButton);
+				states->kb_mouse[0] |= (1u << kMouseLButton);
 			}
 
 			if (m.rightButton)
 			{
-				states->kb_mouse[0] |= (1u << TF_MOUSE_RButton);
+				states->kb_mouse[0] |= (1u << kMouseRButton);
 			}
 
 			if (m.middleButton)
 			{
-				states->kb_mouse[0] |= (1u << TF_MOUSE_MButton);
+				states->kb_mouse[0] |= (1u << kMouseMButton);
 			}
 		
 			auto pad = gamepad->GetState(0);

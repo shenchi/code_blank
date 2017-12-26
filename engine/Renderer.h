@@ -8,76 +8,76 @@ namespace tofu
 	{
 		enum
 		{
-			None,
-			CreateBuffer,
-			UpdateBuffer,
-			DestroyBuffer,
-			CreateTexture,
-			UpdateTexture,
-			DestroyTexture,
-			CreateSampler,
-			DestroySampler,
-			CreateVertexShader,
-			DestroyVertexShader,
-			CreatePixelShader,
-			DestroyPixelShader,
-			CreatePipelineState,
-			DestroyPipelineState,
-			ClearRenderTargets,
-			Draw,
-			MaxRendererCommands
+			kCommandNone,
+			kCommandCreateBuffer,
+			kCommandUpdateBuffer,
+			kCommandDestroyBuffer,
+			kCommandCreateTexture,
+			kCommandUpdateTexture,
+			kCommandDestroyTexture,
+			kCommandCreateSampler,
+			kCommandDestroySampler,
+			kCommandCreateVertexShader,
+			kCommandDestroyVertexShader,
+			kCommandCreatePixelShader,
+			kCommandDestroyPixelShader,
+			kCommandCreatePipelineState,
+			kCommandDestroyPipelineState,
+			kCommandClearRenderTargets,
+			kCommandDraw,
+			kMaxRendererCommands
 		};
 	};
 
 	enum PixelFormat
 	{
-		FORMAT_AUTO,
-		FORMAT_R8G8B8A8_UNORM,
-		FORMAT_R8G8B8A8_SNORM,
-		FORMAT_R16G16B16B16_UNORM,
-		FORMAT_R16G16B16B16_SNORM,
-		FORMAT_R32G32B32A32_FLOAT,
-		FORMAT_R16_SINT,
-		FORMAT_R32_SINT,
-		FORMAT_R16_UINT,
-		FORMAT_R32_UINT,
-		FORMAT_D24_UNORM_S8_UINT,
-		NUM_PIXEL_FORMAT
+		kFormatAuto,
+		kFormatR8g8b8a8Unorm,
+		kFormatR8g8b8a8Snorm,
+		kFormatR16g16b16a16Unorm,
+		kFormatR16g16b16a16Snorm,
+		kFormatR32g32b32a32Float,
+		kFormatR16Sint,
+		kFormatR32Sint,
+		kFormatR16Uint,
+		kFormatR32Uint,
+		kFormatD24UnormS8Uint,
+		kMaxPixelFormats
 	};
 
 	enum CullMode
 	{
-		CULL_NONE,
-		CULL_FRONT,
-		CULL_BACK
+		kCullNone,
+		kCullFront,
+		kCullBack
 	};
 
 	enum ComparisonFunc
 	{
-		COMPARISON_NEVER,
-		COMPARISON_LESS,
-		COMPARISON_EQUAL,
-		COMPARISON_LESS_EQUAL,
-		COMPARISON_GREATER,
-		COMPARISON_NOT_EQUAL,
-		COMPARISON_GREATER_EQUAL,
-		COMPARISON_ALWAYS
+		kComparisonNever,
+		kComparisonLess,
+		kComparisonEqual,
+		kComparisonLEqual,
+		kComparisonGreater,
+		kComparisonNotEqual,
+		kComparisonGEqual,
+		kComparisonAlways
 	};
 
 	enum BindingFlag
 	{
-		BINDING_VERTEX_BUFFER = 1 << 0,
-		BINDING_INDEX_BUFFER = 1 << 1,
-		BINDING_CONSTANT_BUFFER = 1 << 2,
-		BINDING_SHADER_RESOURCE = 1 << 3,
-		BINDING_RENDER_TARGET = 1 << 5,
-		BINDING_DEPTH_STENCIL = 1 << 6,
+		kBindingVertexBuffer = 1 << 0,
+		kBindingIndexBuffer = 1 << 1,
+		kBindingConstantBuffer = 1 << 2,
+		kBindingShaderResource = 1 << 3,
+		kBindingRenderTarget = 1 << 5,
+		kBindingDepthStencil = 1 << 6,
 	};
 
 	enum VertexFormat
 	{
-		VERTEX_FORMAT_NORMAL,
-		VERTEX_FORMAT_SKINNED
+		kVertexFormatNormal,
+		kVertexFormatSkinned
 	};
 
 	struct RendererCommandBuffer
@@ -168,40 +168,40 @@ namespace tofu
 		{
 			struct
 			{
-				uint32_t			CullMode : 2;
-				uint32_t			_Reserved1 : 30;
+				uint32_t			cullMode : 2;
+				uint32_t			_reserved1 : 30;
 			};
-			uint32_t				RasterizerState;
+			uint32_t				rasterizerState;
 		};
 
 		union
 		{
 			struct
 			{
-				uint32_t			DepthEnable : 1;
-				uint32_t			DepthWrite : 1;
-				uint32_t			DepthFunc : 3;
-				uint32_t			_Reserved2 : 27;
+				uint32_t			depthEnable : 1;
+				uint32_t			depthWrite : 1;
+				uint32_t			depthFunc : 3;
+				uint32_t			_reserved2 : 27;
 			};
-			uint32_t				DepthStencilState;
+			uint32_t				depthStencilState;
 		};
 
 		CreatePipelineStateParams()
 			:
 			handle(),
-			vertexFormat(VERTEX_FORMAT_NORMAL),
+			vertexFormat(kVertexFormatNormal),
 			vertexShader(),
 			pixelShader(),
-			CullMode(CULL_BACK),
-			DepthEnable(1),
-			DepthWrite(1),
-			DepthFunc(COMPARISON_LESS)
+			cullMode(kCullBack),
+			depthEnable(1),
+			depthWrite(1),
+			depthFunc(kComparisonLess)
 		{}
 	};
 
 	struct ClearParams
 	{
-		TextureHandle		renderTargets[MAX_RENDER_TARGET_BINDINGS];
+		TextureHandle		renderTargets[kMaxRenderTargetBindings];
 		float				clearColor[4];
 		TextureHandle		depthRenderTarget;
 		float				clearDepth;
@@ -211,11 +211,11 @@ namespace tofu
 			:
 			renderTargets(),
 			clearColor(),
-			depthRenderTarget(MAX_TEXTURES),
+			depthRenderTarget(kMaxTextures),
 			clearDepth(1.0f),
 			clearStencil(0u)
 		{
-			renderTargets[0] = TextureHandle(MAX_TEXTURES + 1);
+			renderTargets[0] = TextureHandle(kMaxTextures + 1);
 		}
 
 		inline void SetClearColor(float r, float g, float b, float a)
@@ -242,12 +242,12 @@ namespace tofu
 		uint32_t				startIndex;
 		uint32_t				startVertex;
 		uint32_t				indexCount;
-		ConstantBufferBinding	vsConstantBuffers[MAX_CONSTANT_BUFFER_BINDINGS];
-		ConstantBufferBinding	psConstantBuffers[MAX_CONSTANT_BUFFER_BINDINGS];
-		TextureHandle			vsTextures[MAX_TEXTURE_BINDINGS];
-		TextureHandle			psTextures[MAX_TEXTURE_BINDINGS];
-		SamplerHandle			vsSamplers[MAX_SAMPLER_BINDINGS];
-		SamplerHandle			psSamplers[MAX_SAMPLER_BINDINGS];
+		ConstantBufferBinding	vsConstantBuffers[kMaxConstantBufferBindings];
+		ConstantBufferBinding	psConstantBuffers[kMaxConstantBufferBindings];
+		TextureHandle			vsTextures[kMaxTextureBindings];
+		TextureHandle			psTextures[kMaxTextureBindings];
+		SamplerHandle			vsSamplers[kMaxSamplerBindings];
+		SamplerHandle			psSamplers[kMaxSamplerBindings];
 	};
 
 	class Renderer

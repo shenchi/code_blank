@@ -16,7 +16,7 @@
 #endif
 #endif
 
-#define CHECKED(x) { int32_t err = TF_OK; if (TF_OK != (err = (x))) return err; }
+#define CHECKED(x) { int32_t err = kOK; if (kOK != (err = (x))) return err; }
 
 #define SINGLETON_DECL(CLASS_NAME) \
 	private:\
@@ -46,34 +46,34 @@ namespace tofu
 	HANDLE_DECL(PixelShader);
 	HANDLE_DECL(PipelineState);
 
-	constexpr uint32_t FRAME_BUFFER_COUNT = 2;
+	constexpr uint32_t kFrameBufferCount = 2;
 
-	constexpr uint32_t LEVEL_BASED_MEM_SIZE = 128 * 1024 * 1024;
-	constexpr uint32_t LEVEL_BASED_MEM_ALIGN = 2 * 1024 * 1024;
+	constexpr uint32_t kLevelBasedMemSize = 128 * 1024 * 1024;
+	constexpr uint32_t kLevelBasedMemAlign = 2 * 1024 * 1024;
 
-	constexpr uint32_t FRAME_BASED_MEM_SIZE = 128 * 1024 * 1024;
-	constexpr uint32_t FRAME_BASED_MEM_ALIGN = 2 * 1024 * 1024;
+	constexpr uint32_t kFrameBasedMemSize = 128 * 1024 * 1024;
+	constexpr uint32_t kFrameBasedMemAlign = 2 * 1024 * 1024;
 
-	constexpr uint32_t MAX_USER_MODULES = 8;
-	constexpr uint32_t MAX_ENTITIES = 4096;
-	constexpr uint32_t MAX_MODELS = 1024;
-	constexpr uint32_t MAX_MESHES = 1024;
-	constexpr uint32_t MAX_MATERIALS = 1024;
+	constexpr uint32_t kMaxUserModules = 8;
+	constexpr uint32_t kMaxEntities = 4096;
+	constexpr uint32_t kMaxModels = 1024;
+	constexpr uint32_t kMaxMeshes = 1024;
+	constexpr uint32_t kMaxMaterials = 1024;
 
-	constexpr uint32_t MAX_MESHES_PER_MODEL = 8;
+	constexpr uint32_t kMaxMeshesPerModel = 8;
 
-	constexpr uint32_t COMMAND_BUFFER_CAPACITY = 64;
+	constexpr uint32_t kCommandBufferCapacity = 64;
 
-	constexpr uint32_t MAX_BUFFERS = 1024;
-	constexpr uint32_t MAX_TEXTURES = 1024;
-	constexpr uint32_t MAX_SAMPLERS = 256;
-	constexpr uint32_t MAX_VERTEX_SHADERS = 256;
-	constexpr uint32_t MAX_PIXEL_SHADERS = 256;
-	constexpr uint32_t MAX_PIPELINE_STATES = 256;
+	constexpr uint32_t kMaxBuffers = 1024;
+	constexpr uint32_t kMaxTextures = 1024;
+	constexpr uint32_t kMaxSamplers = 256;
+	constexpr uint32_t kMaxVertexShaders = 256;
+	constexpr uint32_t kMaxPixelShaders = 256;
+	constexpr uint32_t kMaxPipelineStates = 256;
 
-	constexpr uint32_t MAX_CONSTANT_BUFFER_BINDINGS = 14;
-	constexpr uint32_t MAX_TEXTURE_BINDINGS = 16;
-	constexpr uint32_t MAX_SAMPLER_BINDINGS = 16;
-	constexpr uint32_t MAX_RENDER_TARGET_BINDINGS = 8;
+	constexpr uint32_t kMaxConstantBufferBindings = 14;
+	constexpr uint32_t kMaxTextureBindings = 16;
+	constexpr uint32_t kMaxSamplerBindings = 16;
+	constexpr uint32_t kMaxRenderTargetBindings = 8;
 	
 }

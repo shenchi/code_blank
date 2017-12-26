@@ -8,11 +8,11 @@ namespace tofu
 
 	enum MaterialType
 	{
-		TestMaterial,
-		SkyboxMaterial,
-		OpaqueMaterial,
-		OpaqueSkinnedMaterial,
-		MaxMaterialTypes
+		kMaterialTypeTest,
+		kMaterialTypeSkybox,
+		kMaterialTypeOpaque,
+		kMaterialTypeOpaqueSkinned,
+		kMaxMaterialTypes
 	};
 
 	class Material
@@ -25,7 +25,7 @@ namespace tofu
 		void SetNormalMap(TextureHandle t) { normalMap = t; }
 
 	private:
-		Material(MaterialType type = MaterialType::TestMaterial) 
+		Material(MaterialType type = MaterialType::kMaterialTypeTest) 
 			: 
 			type(type),
 			handle(),

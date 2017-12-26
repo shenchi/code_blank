@@ -10,8 +10,8 @@ namespace tofu
 
 	enum class ProjectionType : uint32_t
 	{
-		Perspective,
-		Orthographic
+		kProjectionTypePerspective,
+		kProjectionTypeOrthographic
 	};
 
 	class CameraComponentData
@@ -23,7 +23,7 @@ namespace tofu
 		CameraComponentData(Entity e)
 			:
 			entity(e),
-			projType(ProjectionType::Perspective),
+			projType(ProjectionType::kProjectionTypePerspective),
 			fov(90.0f),
 			aspect(1.0f),
 			zNear(0.01f),

@@ -187,8 +187,8 @@ struct ModelFile
 		}
 
 		header = {};
-		header.Magic = tofu::model::MODEL_FILE_MAGIC;
-		header.Version = tofu::model::MODEL_FILE_VERSION;
+		header.Magic = tofu::model::kModelFileMagic;
+		header.Version = tofu::model::kModelFileVersion;
 		header.StructOfArray = bStructureOfArray ? 1 : 0;
 		header.HasIndices = 1;
 		header.HasTangent = 1;
@@ -220,9 +220,9 @@ struct ModelFile
 			}
 		}
 
-		if (header.NumTexcoordChannels > tofu::model::MODEL_FILE_MAX_TEXCOORD_CHANNELS)
+		if (header.NumTexcoordChannels > tofu::model::kModelFileMaxTexcoordChannels)
 		{
-			header.NumTexcoordChannels = tofu::model::MODEL_FILE_MAX_TEXCOORD_CHANNELS;
+			header.NumTexcoordChannels = tofu::model::kModelFileMaxTexcoordChannels;
 		}
 
 		// gathering vertices information
