@@ -21,12 +21,6 @@ public:
 
 	virtual int32_t Update() override;
 
-	// These may be temporary or call the needed functions.
-	// Will change int to file name later for JSON use.
-	bool LoadScene(uint32_t);
-	bool LoadOnTop(uint32_t);
-	bool UnloadScene(uint32_t);
-
 private:
 	// Temp variables for testing
 	tofu::TransformComponent tIntro;
@@ -62,8 +56,8 @@ private:
 		credits = 10,
 	};
 
-	uint32_t currentScene;
-	uint32_t lastScene;
+	sceneType currentScene;
+	sceneType lastScene;
 
 
 
@@ -71,4 +65,12 @@ private:
 	float yaw;
 	float speed;
 	bool inAir;
+
+	// Member Functions
+	// These may be temporary or call the needed functions.
+	// Will change int to file name later for JSON use.
+	bool LoadScene(sceneType);
+	bool UnloadScene(sceneType);
+	bool LoadOnTop(sceneType);
+	bool UnloadOffTop(sceneType);
 };

@@ -22,6 +22,8 @@ namespace
 // Intialization of Game components
 int32_t Game::Init()
 {
+	uint32_t ret;
+
 	// Create a camera
 	{
 		Entity e = Entity::Create();
@@ -34,12 +36,16 @@ int32_t Game::Init()
 		tCamera->SetLocalPosition(math::float3{ 0, 0, -2 });
 	}
 
+	// Get the input instance
 	input = InputSystem::instance();
 
+	// Load the initial scene (Defalut is Intro)
+	// Load other scenes here for fast testing
 	currentScene = level;
 
-	// Set up first scene - Introduction
-	LoadScene(currentScene);
+	// Set up scene
+	ret = LoadScene(currentScene);
+	assert(ret == kOK);
 
 	return kOK;
 }
@@ -63,6 +69,7 @@ int32_t Game::Update()
 	}
 
 	// Switch for game state
+	// Only handles fully loaded Scenes
 	// Will be overhauled to use JSON file names and possibley multi-threading
 	switch (currentScene)
 	{
@@ -73,12 +80,12 @@ int32_t Game::Update()
 			// Load next scene
 			currentScene = menu;
 			ret = LoadScene(menu);
-			assert(ret);
+			assert(ret == kOK);
 
 			// Unload last scene
 			lastScene = intro;
 			ret = UnloadScene(intro);
-			assert(ret);
+			assert(ret == kOK);
 		}
 		break;
 	}
@@ -89,12 +96,12 @@ int32_t Game::Update()
 			// Load next scene
 			currentScene = loading;
 			ret = LoadScene(loading);
-			assert(ret);
+			assert(ret == kOK);
 
 			// Unload last scene
 			lastScene = menu;
 			ret = UnloadScene(menu);
-			assert(ret);
+			assert(ret == kOK);
 		}
 		break;
 	}
@@ -105,12 +112,12 @@ int32_t Game::Update()
 			// Load next scene
 			currentScene = tutorial;
 			ret = LoadScene(tutorial);
-			assert(ret);
+			assert(ret == kOK);
 
 			// Unload last scene
 			lastScene = loading;
 			ret = UnloadScene(loading);
-			assert(ret);
+			assert(ret == kOK);
 		}
 		break;
 	}
@@ -121,12 +128,12 @@ int32_t Game::Update()
 			// Load next scene
 			currentScene = level;
 			ret = LoadScene(level);
-			assert(ret);
+			assert(ret == kOK);
 
 			// Unload last scene
 			lastScene = tutorial;
 			ret = UnloadScene(tutorial);
-			assert(ret);
+			assert(ret == kOK);
 		}
 		break;
 	}
@@ -239,6 +246,22 @@ int32_t Game::Update()
 		}
 		break;
 	}
+	case 9: // End of Level
+	{
+		if (input->IsButtonDown(ButtonId::kKeyEnter))
+		{
+			// Load next scene
+			currentScene = levelEnd;
+			ret = LoadScene(credits);
+			assert(ret == kOK);
+
+			// Unload last scene
+			lastScene = levelEnd;
+			ret = UnloadScene(levelEnd);
+			assert(ret == kOK);
+		}
+		break;
+	}
 	case 10: // Credits
 	{
 		if (input->IsButtonDown(ButtonId::kKeyEnter))
@@ -246,209 +269,72 @@ int32_t Game::Update()
 			// Load next scene
 			currentScene = menu;
 			ret = LoadScene(menu);
-			assert(ret);
+			assert(ret == kOK);
 
 			// Unload last scene
 			lastScene = credits;
 			ret = UnloadScene(credits);
-			assert(ret);
+			assert(ret == kOK);
 		}
 		break;
 	}
 	default:
 		assert(true);
+		//return 1; // Not OK
 		break;
 	}
 
 
 	return kOK;
-}
+}// End of Update Loop
 
 // Load a scene
 // Will load from JSON files later
-bool Game::LoadScene(uint32_t num)
+bool Game::LoadScene(sceneType num)
 {
 	// Temp code for testing
 	switch (num)
 	{
 		case 0:
 		{
-			{
-				Entity e = Entity::Create();
-
-				tIntro = e.AddComponent<TransformComponent>();
-
-				RenderingComponent r = e.AddComponent<RenderingComponent>();
-
-				Model* quadModel = RenderingSystem::instance()->CreateModel("assets/cube.model");
-
-				Material* quadMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
-				TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
-
-				quadMat->SetTexture(diffuse);
-
-				r->SetMaterial(quadMat);
-				r->SetModel(quadModel);
-
-				tIntro->SetLocalPosition(math::float3{ 0.0f, 0.0f, 0.0f });
-				cam->SetClearColor(math::float4{ 0.0f, 0.0f, 0.1f, 1.0f });
-			}
+			// TODO
+			// Intro Scene
+			// Fully Loaded
 			break;
 		}
 		case 1:
 		{
-			{
-				Entity e = Entity::Create();
-
-				tCube = e.AddComponent<TransformComponent>();
-
-				RenderingComponent r = e.AddComponent<RenderingComponent>();
-
-				Model* quadModel = RenderingSystem::instance()->CreateModel("assets/cube.model");
-
-				Material* quadMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
-				TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
-
-				quadMat->SetTexture(diffuse);
-
-				r->SetMaterial(quadMat);
-				r->SetModel(quadModel);
-
-				tCube->SetLocalPosition(math::float3{ 0.0f, 0.0f, 0.0f });
-			}
-			{
-				Entity e = Entity::Create();
-
-				tBox = e.AddComponent<TransformComponent>();
-				tBox->SetLocalPosition(math::float3{ 0, 10, 10 });
-
-				RenderingComponent r = e.AddComponent<RenderingComponent>();
-
-				Model* model = RenderingSystem::instance()->CreateModel("assets/cube.model");
-
-				Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
-				TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
-				TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/stone_wall_normalmap.texture");
-
-				material->SetTexture(diffuse);
-				material->SetNormalMap(normalMap);
-
-				r->SetMaterial(material);
-				r->SetModel(model);
-
-				tBox->SetLocalPosition(math::float3{0.0f, 1.0f, 0.0f});
-				//PhysicsComponent ph = e.AddComponent<PhysicsComponent>();
-			}
-			cam->SetClearColor(math::float4{ 0.0f, 0.1f, 0.0f, 1.0f });
+			// TODO
+			// Menu Scene
+			// Fully Loaded
 			break;
 		}
 		case 2:
 		{
+			// TODO
+			// Options Scene
+			// Loaded On Top
 			break;
 		}
 		case 3:
 		{
+			// TODO
+			// Help Scene
+			// Loaded On Top
 			break;
 		}
 		case 4:
 		{
-			{
-				Entity e = Entity::Create();
-
-				tBox2 = e.AddComponent<TransformComponent>();
-
-				RenderingComponent r = e.AddComponent<RenderingComponent>();
-
-				Model* quadModel = RenderingSystem::instance()->CreateModel("assets/cube.model");
-
-				Material* quadMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
-				TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
-
-				quadMat->SetTexture(diffuse);
-
-				r->SetMaterial(quadMat);
-				r->SetModel(quadModel);
-
-				tBox2->SetLocalPosition(math::float3{ -2.0f, 1.0f, 0.0f });
-			}
-			{
-				Entity e = Entity::Create();
-
-				tBox3 = e.AddComponent<TransformComponent>();
-				tBox3->SetLocalPosition(math::float3{ 0, 10, 10 });
-
-				RenderingComponent r = e.AddComponent<RenderingComponent>();
-
-				Model* model = RenderingSystem::instance()->CreateModel("assets/cube.model");
-
-				Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
-				TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
-				TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/stone_wall_normalmap.texture");
-
-				material->SetTexture(diffuse);
-				material->SetNormalMap(normalMap);
-
-				r->SetMaterial(material);
-				r->SetModel(model);
-
-				tBox3->SetLocalPosition(math::float3{ 2.0f, 1.0f, 0.0f });
-				//PhysicsComponent ph = e.AddComponent<PhysicsComponent>();
-			}
-			cam->SetClearColor(math::float4{ 0.1f, 0.0f, 0.1f, 1.0f });
+			// TODO
+			// Loading Scene
+			// Fully Loaded
 			break;
 		}
 		case 5:
 		{
-			{
-				Entity e = Entity::Create();
-
-				tBox4 = e.AddComponent<TransformComponent>();
-
-				RenderingComponent r = e.AddComponent<RenderingComponent>();
-
-				Model* quadModel = RenderingSystem::instance()->CreateModel("assets/cube.model");
-
-				Material* quadMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
-				TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
-
-				quadMat->SetTexture(diffuse);
-
-				r->SetMaterial(quadMat);
-				r->SetModel(quadModel);
-
-				tBox4->SetLocalPosition(math::float3{ -2.0f, 1.0f, 0.0f });
-			}
-			{
-				Entity e = Entity::Create();
-
-				tBox5 = e.AddComponent<TransformComponent>();
-				tBox5->SetLocalPosition(math::float3{ 0, 10, 10 });
-
-				RenderingComponent r = e.AddComponent<RenderingComponent>();
-
-				Model* model = RenderingSystem::instance()->CreateModel("assets/cube.model");
-
-				Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
-				TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
-				TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/stone_wall_normalmap.texture");
-
-				material->SetTexture(diffuse);
-				material->SetNormalMap(normalMap);
-
-				r->SetMaterial(material);
-				r->SetModel(model);
-
-				tBox5->SetLocalPosition(math::float3{ 2.0f, 1.0f, 0.0f });
-				//PhysicsComponent ph = e.AddComponent<PhysicsComponent>();
-			}
-			{
-				Material* skyboxMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeSkybox);
-				TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/craterlake.texture");
-				skyboxMat->SetTexture(tex);
-
-				cam->SetSkybox(skyboxMat);
-				cam->SetClearColor(math::float4{ 0.0f, 0.0f, 0.0f, 1.0f });
-			}
+			// TODO
+			// Tutorial Scene
+			// Fully Loaded
 			break;
 		}
 		case 6:
@@ -561,75 +447,44 @@ bool Game::LoadScene(uint32_t num)
 		}
 		case 7:
 		{
+			// TODO
+			// Pause Scene
+			// Loaded On Top
 			break;
 		}
 		case 8:
 		{
+			// TODO
+			// Death Scene
+			// Fully Loaded
 			break;
 		}
 		case 9:
 		{
+			// TODO
+			// Credits Scene
+			// Fully Loaded
 			break;
 		}
 		case 10:
 		{
-			{
-				Entity e = Entity::Create();
-
-				tBox2 = e.AddComponent<TransformComponent>();
-
-				RenderingComponent r = e.AddComponent<RenderingComponent>();
-
-				Model* quadModel = RenderingSystem::instance()->CreateModel("assets/cube.model");
-
-				Material* quadMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
-				TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
-
-				quadMat->SetTexture(diffuse);
-
-				r->SetMaterial(quadMat);
-				r->SetModel(quadModel);
-
-				tBox2->SetLocalPosition(math::float3{ -2.0f, 1.0f, 0.0f });
-			}
-			{
-				Entity e = Entity::Create();
-
-				tBox3 = e.AddComponent<TransformComponent>();
-				tBox3->SetLocalPosition(math::float3{ 0, 10, 10 });
-
-				RenderingComponent r = e.AddComponent<RenderingComponent>();
-
-				Model* model = RenderingSystem::instance()->CreateModel("assets/cube.model");
-
-				Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
-				TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
-				TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/stone_wall_normalmap.texture");
-
-				material->SetTexture(diffuse);
-				material->SetNormalMap(normalMap);
-
-				r->SetMaterial(material);
-				r->SetModel(model);
-
-				tBox3->SetLocalPosition(math::float3{ 2.0f, 1.0f, 0.0f });
-				//PhysicsComponent ph = e.AddComponent<PhysicsComponent>();
-			}
-			cam->SetClearColor(math::float4{ 0.0f, 1.0f, 0.0f, 0.2f});
+			// TODO
+			// Credits Scene
+			// Fully Loaded
 			break;
 		}
 
 		default:
-			return false;
+			return 1; // Not OK
 			break;
 	}// End of Switch
 
 	//return kOK;
-	return true;
+	return kOK;
 }
 
 // Unload a scene
-bool Game::UnloadScene(uint32_t num)
+bool Game::UnloadScene(sceneType num)
 {
 	// Temp code until JSON is implemented
 	switch (num)
@@ -670,9 +525,85 @@ bool Game::UnloadScene(uint32_t num)
 		break;
 	}
 	default:
-		return false;
+		return 1; // Not OK
 		break;
 	}
 
-	return true;
+	return kOK;
+}
+
+// Load a scene on top of another
+bool Game::LoadOnTop(sceneType num)
+{
+	// Temp code until JSON is implemented
+		switch (num)
+		{
+		case 2:
+		{
+			// TODO
+			// Top Load Options Scene
+			break;
+		}
+		case 3:
+		{
+			// TODO
+			// Top Load Help Scene
+			break;
+		}
+		case 7:
+		{
+			// TODO
+			// Top Load Pause Scene
+			break;
+		}
+		case 8:
+		{
+			// TODO
+			// Top Load Death Scene
+			break;
+		}
+		default:
+			return 1; // Not OK
+			break;
+		}
+
+	return kOK;
+}
+
+// Unload a top loaded scene
+bool Game::UnloadOffTop(sceneType num)
+{
+	// Temp code until JSON is implemented
+	switch (num)
+	{
+	case 2:
+	{
+		// TODO
+		//  Unload Options Scene
+		break;
+	}
+	case 3:
+	{
+		// TODO
+		// Unload Help Scene
+		break;
+	}
+	case 7:
+	{
+		// TODO
+		// Unload Pause Scene
+		break;
+	}
+	case 8:
+	{
+		// TODO
+		// Unload Death Scene
+		break;
+	}
+	default:
+		return 1; // Not OK
+		break;
+	}
+
+	return kOK;
 }
