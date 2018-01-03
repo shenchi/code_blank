@@ -6,8 +6,6 @@
 
 using namespace tofu;
 
-InputSystem* input;
-
 namespace
 {
 	constexpr float MaxPitch = math::PI * 0.25f;
@@ -19,22 +17,20 @@ namespace
 	constexpr float WalkSpeed = 2.0f;
 }
 
+InputSystem* input;
+
+Game::~Game()
+{
+	delete cam;
+}
+
 // Intialization of Game components
 int32_t Game::Init()
 {
 	uint32_t ret;
 
 	// Create a camera
-	{
-		Entity e = Entity::Create();
-
-		tCamera = e.AddComponent<TransformComponent>();
-
-		cam = e.AddComponent<CameraComponent>();
-
-		cam->SetFOV(60.0f);
-		tCamera->SetLocalPosition(math::float3{ 0, 0, -2 });
-	}
+	cam = new Camera();
 
 	// Get the input instance
 	input = InputSystem::instance();
@@ -165,7 +161,7 @@ int32_t Game::Update()
 
 		math::float3 inputDir = math::float3();
 
-		if (input->IsGamepadConnected())
+		/*if (input->IsGamepadConnected())
 		{
 			if (input->IsButtonDown(ButtonId::kGamepadFaceRight))
 			{
@@ -177,7 +173,7 @@ int32_t Game::Update()
 
 			pitch += sensitive * input->GetRightStickY();
 			yaw += sensitive * input->GetRightStickX();
-		}
+		}*/
 
 		pitch += sensitive * input->GetMouseDeltaY();
 		yaw += sensitive * input->GetMouseDeltaX();
@@ -207,18 +203,21 @@ int32_t Game::Update()
 		bool jump = input->IsButtonDown(ButtonId::kKeySpace)
 			|| input->IsButtonDown(ButtonId::kGamepadFaceDown);
 
-		math::quat camRot = math::euler(pitch, yaw, 0.0f);
-		math::float3 camTgt = tPlayer->GetLocalPosition() + math::float3{ 0.0f, 2.0f, 0.0f };
-		math::float3 camPos = camTgt + camRot * (math::float3{ 0.0f, 0.0f, -5.0f });
+		//math::quat camRot = math::euler(pitch, yaw, 0.0f);
+		//math::float3 camTgt = tPlayer->GetLocalPosition() + math::float3{ 0.0f, 2.0f, 0.0f };
+		//math::float3 camPos = camTgt + camRot * (math::float3{ 0.0f, 0.0f, -5.0f });
 
-		tCamera->SetLocalPosition(camPos);
-		tCamera->SetLocalRotation(camRot);
+		cam->UpdateTarget(tPlayer->GetLocalPosition());
+		//tCamera->SetLocalPosition(camPos);
+		
+		cam->Rotate(math::float2{ pitch, yaw });
+		//tCamera->SetLocalRotation(camRot);
 
 		float maxSpeed = WalkSpeed;
 
 		if (math::length(inputDir) > 0.25f)
 		{
-			math::float3 moveDir = camRot * inputDir;
+			math::float3 moveDir = cam->GetRotation() * inputDir;
 			moveDir.y = 0.0f;
 			moveDir = math::normalize(moveDir);
 			tPlayer->FaceTo(moveDir);

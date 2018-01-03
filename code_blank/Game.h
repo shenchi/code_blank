@@ -4,6 +4,8 @@
 
 // Temp Includes pending further investigation
 #include <Entity.h>
+#include "Camera.h"
+
 #include <TransformComponent.h>
 #include <CameraComponent.h>
 #include <RenderingComponent.h>
@@ -21,6 +23,8 @@ public:
 
 	virtual int32_t Update() override;
 
+	virtual ~Game() override;
+
 private:
 	// Temp variables for testing
 	tofu::TransformComponent tIntro;
@@ -34,12 +38,13 @@ private:
 	tofu::TransformComponent tBox7;
 	tofu::TransformComponent tGround;
 	tofu::TransformComponent tPlayer;
-	tofu::TransformComponent tCamera;
+	//tofu::TransformComponent tCamera;
 	tofu::PhysicsComponent pPlayer;
 	tofu::AnimationComponent anim;
 
 	// Class variables
-	tofu::CameraComponent cam;
+	//tofu::CameraComponent cam;
+	Camera* cam;
 
 	enum sceneType
 	{
