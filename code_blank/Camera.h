@@ -17,6 +17,7 @@ public:
 	void Move();
 	void Move(tofu::math::float3);
 	void Rotate(tofu::math::float2);
+	void Update();
 	void UpdateTarget(tofu::math::float3);
 
 	tofu::math::quat GetRotation();
@@ -25,6 +26,7 @@ public:
 	void SetDistMod(tofu::math::float3);
 	void SetFov(float);
 	void SetPosition(tofu::math::float3);
+	void SetSensitivity(float);
 	void SetSkybox(tofu::Material*);
 
 private:
@@ -33,10 +35,14 @@ private:
 
 	tofu::math::float3 camTarget;
 	tofu::math::quat camRot;
+	tofu::math::float3 camPos;
 	tofu::math::float3 distMod;
 
 	float fov;
+	float pitch;
+	float yaw;
+	float sensitive;
 
 	const float kMaxPitch = tofu::math::PI * 0.25f;
-	const float kMinPitch = 0.0f;
+	const float kMinPitch = tofu::math::PI * -0.125f;
 };

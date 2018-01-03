@@ -148,6 +148,8 @@ int32_t Game::Update()
 		//	assert(ret);
 		//}
 
+		cam->Update();
+
 		inAir = !pPlayer->IsCollided();
 
 		InputSystem* input = InputSystem::instance();
@@ -155,9 +157,6 @@ int32_t Game::Update()
 		{
 			Engine::instance()->Quit();
 		}
-
-		constexpr float sensitive = 0.01f;
-
 
 		math::float3 inputDir = math::float3();
 
@@ -174,12 +173,6 @@ int32_t Game::Update()
 			pitch += sensitive * input->GetRightStickY();
 			yaw += sensitive * input->GetRightStickX();
 		}*/
-
-		pitch += sensitive * input->GetMouseDeltaY();
-		yaw += sensitive * input->GetMouseDeltaX();
-
-		if (pitch < MinPitch) pitch = MinPitch;
-		if (pitch > MaxPitch) pitch = MaxPitch;
 
 
 		if (input->IsButtonDown(kKeyW))
@@ -206,11 +199,11 @@ int32_t Game::Update()
 		//math::quat camRot = math::euler(pitch, yaw, 0.0f);
 		//math::float3 camTgt = tPlayer->GetLocalPosition() + math::float3{ 0.0f, 2.0f, 0.0f };
 		//math::float3 camPos = camTgt + camRot * (math::float3{ 0.0f, 0.0f, -5.0f });
-
+		cam->Rotate(math::float2{ input->GetMouseDeltaY(), input->GetMouseDeltaX() });
 		cam->UpdateTarget(tPlayer->GetLocalPosition());
 		//tCamera->SetLocalPosition(camPos);
 		
-		cam->Rotate(math::float2{ pitch, yaw });
+		
 		//tCamera->SetLocalRotation(camRot);
 
 		float maxSpeed = WalkSpeed;

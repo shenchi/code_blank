@@ -18,6 +18,8 @@ Camera::Camera()
 	SetFov(60.0f);
 
 	distMod = math::float3{ 0.0f, 2.0f, 0.0f };
+
+	SetSensitivity(0.01f);
 }
 
 // Destructor
@@ -28,7 +30,7 @@ Camera::~Camera()
 // Move the Camera
 void Camera::Move()
 {
-	math::float3 camPos = camTarget + camRot * (math::float3{ 0.0f, 0.0f, -5.0f });
+	camPos = camTarget + camRot * (math::float3{ 0.0f, 0.0f, -5.0f });
 	SetPosition(camPos);
 }
 
@@ -38,9 +40,21 @@ void Camera::Move(math::float3 mov) {}
 // Rotate the Camera
 void Camera::Rotate(math::float2 rot)
 {
-	//math::quat camRot = math::euler(pitch, yaw, 0.0f);
-	camRot = math::euler(rot.x, rot.y, 0.0f);
+	pitch += sensitive * rot.x;
+	yaw += sensitive * rot.y;
+
+	if (pitch < kMinPitch) pitch = kMinPitch;
+	if (pitch > kMaxPitch) pitch = kMaxPitch;
+
+	camRot = math::euler(pitch, yaw, 0.0f);
 	tCamera->SetLocalRotation(camRot);
+}
+
+// Update
+void Camera::Update()
+{
+	/*tCamera->SetLocalRotation(camRot);
+	SetPosition(camPos);*/
 }
 
 void Camera::UpdateTarget(math::float3 target)
@@ -76,6 +90,13 @@ void Camera::SetFov(float _fov)
 void Camera::SetPosition(math::float3 pos)
 {
 	tCamera->SetLocalPosition(pos);
+}
+
+// Set Camera Rotation Sensitivity
+void Camera::SetSensitivity(float sen)
+{
+	assert(sen > 0.0f && sen < 0.1f);	// Change to value range for options screen
+	sensitive = sen;
 }
 
 // Set Skybox
