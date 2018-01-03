@@ -1,16 +1,10 @@
 #pragma once
 
 #include <Module.h>
-
-// Temp Includes pending further investigation
 #include <Entity.h>
 #include "Camera.h"
-
+#include "PController.h"
 #include <TransformComponent.h>
-#include <CameraComponent.h>
-#include <RenderingComponent.h>
-#include <AnimationComponent.h>
-#include <PhysicsComponent.h>
 
 // Game: The main game loop.
 // Runs all things game related.
@@ -37,14 +31,12 @@ private:
 	tofu::TransformComponent tBox6;
 	tofu::TransformComponent tBox7;
 	tofu::TransformComponent tGround;
-	tofu::TransformComponent tPlayer;
-	//tofu::TransformComponent tCamera;
-	tofu::PhysicsComponent pPlayer;
-	tofu::AnimationComponent anim;
 
 	// Class variables
 	//tofu::CameraComponent cam;
 	Camera* cam;
+	Player* player;
+	PController* pControl;
 
 	enum sceneType
 	{
@@ -63,13 +55,6 @@ private:
 
 	sceneType currentScene;
 	sceneType lastScene;
-
-
-
-	float pitch;
-	float yaw;
-	float speed;
-	bool inAir;
 
 	// Member Functions
 	// These may be temporary or call the needed functions.

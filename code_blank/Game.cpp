@@ -2,26 +2,19 @@
 #include "Game.h"
 
 #include <RenderingSystem.h>
+#include <RenderingComponent.h>
+#include <PhysicsComponent.h>
 #include <InputSystem.h>
 
 using namespace tofu;
-
-namespace
-{
-	constexpr float MaxPitch = math::PI * 0.25f;
-	constexpr float MinPitch = 0.0f;
-	constexpr float InitPitch = math::PI * 0.125f;
-
-	constexpr float Accelerate = 6.67f;
-	constexpr float Deaccelerate = 10.0f;
-	constexpr float WalkSpeed = 2.0f;
-}
 
 InputSystem* input;
 
 Game::~Game()
 {
 	delete cam;
+	delete player;
+	delete pControl;
 }
 
 // Intialization of Game components
@@ -32,8 +25,9 @@ int32_t Game::Init()
 	// Create a camera
 	cam = new Camera();
 
-	// Get the input instance
-	input = InputSystem::instance();
+	// Create a Player Controller
+	pControl = new PController();
+	pControl->SetCamera(cam);
 
 	// Load the initial scene (Defalut is Intro)
 	// Load other scenes here for fast testing
@@ -57,11 +51,16 @@ int32_t Game::Update()
 {
 	uint32_t ret;
 
-	// First check if I should pause
-	if (input->IsButtonDown(ButtonId::kKeyEscape))
+	pControl->Update();
+
+	// should pause?
+	if (pControl->GetPause())
 	{
-		// For testing this exits instead of pausing
+		// Temp for Testing
 		Engine::instance()->Quit();
+
+		// TODO
+		// Pause the game and load the pasue menu
 	}
 
 	// Switch for game state
@@ -149,93 +148,8 @@ int32_t Game::Update()
 		//}
 
 		cam->Update();
+		pControl->UpdateP(Time::DeltaTime);
 
-		inAir = !pPlayer->IsCollided();
-
-		InputSystem* input = InputSystem::instance();
-		if (input->IsButtonDown(ButtonId::kKeyEscape))
-		{
-			Engine::instance()->Quit();
-		}
-
-		math::float3 inputDir = math::float3();
-
-		/*if (input->IsGamepadConnected())
-		{
-			if (input->IsButtonDown(ButtonId::kGamepadFaceRight))
-			{
-				Engine::instance()->Quit();
-			}
-
-			inputDir.z = -input->GetLeftStickY();
-			inputDir.x = input->GetLeftStickX();
-
-			pitch += sensitive * input->GetRightStickY();
-			yaw += sensitive * input->GetRightStickX();
-		}*/
-
-
-		if (input->IsButtonDown(kKeyW))
-		{
-			inputDir.z = 1.0f;
-		}
-		else if (input->IsButtonDown(kKeyS))
-		{
-			inputDir.z = -1.0f;
-		}
-
-		if (input->IsButtonDown(kKeyD))
-		{
-			inputDir.x = 1.0f;
-		}
-		else if (input->IsButtonDown(kKeyA))
-		{
-			inputDir.x = -1.0f;
-		}
-
-		bool jump = input->IsButtonDown(ButtonId::kKeySpace)
-			|| input->IsButtonDown(ButtonId::kGamepadFaceDown);
-
-		//math::quat camRot = math::euler(pitch, yaw, 0.0f);
-		//math::float3 camTgt = tPlayer->GetLocalPosition() + math::float3{ 0.0f, 2.0f, 0.0f };
-		//math::float3 camPos = camTgt + camRot * (math::float3{ 0.0f, 0.0f, -5.0f });
-		cam->Rotate(math::float2{ input->GetMouseDeltaY(), input->GetMouseDeltaX() });
-		cam->UpdateTarget(tPlayer->GetLocalPosition());
-		//tCamera->SetLocalPosition(camPos);
-		
-		
-		//tCamera->SetLocalRotation(camRot);
-
-		float maxSpeed = WalkSpeed;
-
-		if (math::length(inputDir) > 0.25f)
-		{
-			math::float3 moveDir = cam->GetRotation() * inputDir;
-			moveDir.y = 0.0f;
-			moveDir = math::normalize(moveDir);
-			tPlayer->FaceTo(moveDir);
-
-			speed += Time::DeltaTime * Accelerate;
-			if (speed > maxSpeed)
-				speed = maxSpeed;
-
-			tPlayer->Translate(moveDir * Time::DeltaTime * speed);
-
-			anim->CrossFade(1, 0.3f);
-		}
-		else
-		{
-			speed -= Time::DeltaTime * Deaccelerate;
-			if (speed < 0.0f) speed = 0.0f;
-			tPlayer->Translate(tPlayer->GetForwardVector() * Time::DeltaTime * speed);
-
-			anim->CrossFade(0, 0.2f);
-		}
-
-		if (jump && !inAir)
-		{
-			pPlayer->ApplyImpulse(math::float3{ 0.0f, 2.0f, 0.0f });
-		}
 		break;
 	}
 	case 9: // End of Level
@@ -406,35 +320,10 @@ bool Game::LoadScene(sceneType num)
 				ph->SetBoxCollider(math::float3{ 25.0f, 0.5f, 25.0f });
 				ph->SetColliderOrigin(math::float3{ 0.0f, -0.5f, 0.0f });
 			}
-			{
-				Entity e = Entity::Create();
 
-				tPlayer = e.AddComponent<TransformComponent>();
-				tPlayer->SetLocalPosition(math::float3{ 0.0f, 1.0f, 0.0f });
-				tPlayer->SetLocalScale(math::float3{ 0.01f, 0.01f, 0.01f });
-
-				RenderingComponent r = e.AddComponent<RenderingComponent>();
-
-				Model* model = RenderingSystem::instance()->CreateModel("assets/archer.model");
-
-				anim = e.AddComponent<AnimationComponent>();
-
-				Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaqueSkinned);
-				TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");
-				TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/archer_1.texture");
-
-				material->SetTexture(diffuse);
-				material->SetNormalMap(normalMap);
-
-				r->SetMaterial(material);
-				r->SetModel(model);
-
-				pPlayer = e.AddComponent<PhysicsComponent>();
-
-				pPlayer->LockRotation(true, false, true);
-				pPlayer->SetCapsuleCollider(0.5f, 1.0f);
-				pPlayer->SetColliderOrigin(math::float3{ 0.0f, 1.0f, 0.0f });
-			}
+			// Setup the Player
+			player = new Player();
+			pControl->SetPlayer(player);
 			break;
 		}
 		case 7:
