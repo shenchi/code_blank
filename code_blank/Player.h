@@ -13,6 +13,14 @@ public:
 	void Act(float, bool, tofu::math::float3, tofu::math::quat);
 	void Update();
 
+	void Aim();
+	void Attack();
+	void Dash();
+	void Dodge();
+	void Interact();
+	void Special();
+	void VisionHack();
+
 	bool IsInAir();
 	tofu::math::float3 GetPosition();
 
@@ -31,7 +39,7 @@ private:
 	// Player Stats
 	float health;
 
-	const float kMaxSpeed = 2.0f;
+	const float kMaxSpeed = 5.0f;
 	const float kAccelerate = 6.67f;
 	const float kDeaccelerate = 10.0f;
 };

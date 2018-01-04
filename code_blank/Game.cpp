@@ -29,6 +29,8 @@ int32_t Game::Init()
 	pControl = new PController();
 	pControl->SetCamera(cam);
 
+	player = NULL;
+
 	// Load the initial scene (Defalut is Intro)
 	// Load other scenes here for fast testing
 	currentScene = level;
@@ -322,8 +324,12 @@ bool Game::LoadScene(sceneType num)
 			}
 
 			// Setup the Player
-			player = new Player();
-			pControl->SetPlayer(player);
+			if (player == NULL)
+			{
+				player = new Player();
+				pControl->SetPlayer(player);
+			}
+			assert(player != NULL);
 			break;
 		}
 		case 7:

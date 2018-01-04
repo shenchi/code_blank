@@ -44,6 +44,9 @@ Player::~Player(){}
 void Player::Update()
 {
 	inAir = !pPlayer->IsCollided();
+
+	// TODO
+	// Handle the reset of dashing here
 }
 
 void Player::Act(float dT, bool jump, math::float3 inputDir, math::quat camRot)
@@ -58,6 +61,18 @@ void Player::Act(float dT, bool jump, math::float3 inputDir, math::quat camRot)
 		tPlayer->FaceTo(moveDir);
 
 		speed += dT * kAccelerate;
+
+		if (!isDashing)
+		{
+			if (speed > walkSpeed)
+				speed = walkSpeed;
+		}
+		else
+		{
+			if (speed > dashSpeed)
+				speed = dashSpeed;
+		}
+
 		if (speed > kMaxSpeed)
 			speed = kMaxSpeed;
 
@@ -79,6 +94,58 @@ void Player::Act(float dT, bool jump, math::float3 inputDir, math::quat camRot)
 		pPlayer->ApplyImpulse(math::float3{ 0.0f, 2.0f, 0.0f });
 	}
 }
+
+//-------------------------------------------------------------------------------------------------
+// Player Actions
+
+// Transistion to Aiming Mode
+void Player::Aim()
+{
+
+}
+
+// Attack (Uses a combo system)
+void Player::Attack()
+{
+
+}
+
+// Dash forward (move faster)
+void Player::Dash()
+{
+	// TODO
+	// Set dashing to true if cool allows
+	isDashing = true;
+}
+
+// Dodge, in the current player direction
+void Player::Dodge()
+{
+
+}
+
+// Interact with interactable object
+void Player::Interact()
+{
+
+}
+
+// Combo Special move (Sword/Gun)
+void Player::Special()
+{
+
+}
+
+// Transistion to Vision Hack Mode
+void Player::VisionHack()
+{
+
+}
+
+//-------------------------------------------------------------------------------------------------
+// Setters
+
+
 
 //-------------------------------------------------------------------------------------------------
 // Getters

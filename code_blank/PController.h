@@ -22,6 +22,10 @@ private:
 
 	bool paused;
 	bool inAir;
+	bool isAiming;
+	bool isHacking;
 	float speed;
 
+	float pitch;
+	float yaw;
 };
