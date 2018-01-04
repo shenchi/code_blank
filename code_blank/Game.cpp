@@ -12,6 +12,7 @@ InputSystem* input;
 
 Game::~Game()
 {
+	delete comp;
 	delete cam;
 	delete player;
 	delete pControl;
@@ -29,6 +30,7 @@ int32_t Game::Init()
 	pControl = new PController();
 	pControl->SetCamera(cam);
 
+	comp = NULL;
 	player = NULL;
 
 	// Load the initial scene (Defalut is Intro)
@@ -149,6 +151,8 @@ int32_t Game::Update()
 		//	assert(ret);
 		//}
 
+		// May also need to run player update here
+		comp->Update(Time::DeltaTime, player->GetPosition(), player->GetForward());
 		cam->Update();
 		pControl->UpdateP(Time::DeltaTime);
 
@@ -262,15 +266,15 @@ bool Game::LoadScene(sceneType num)
 
 				RenderingComponent r = e.AddComponent<RenderingComponent>();
 
-				Model* quadModel = RenderingSystem::instance()->CreateModel("assets/cube.model");
+				Model* cubeModel = RenderingSystem::instance()->CreateModel("assets/cube.model");
 
-				Material* quadMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
+				Material* cubeMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
 				TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
 
-				quadMat->SetTexture(diffuse);
+				cubeMat->SetTexture(diffuse);
 
-				r->SetMaterial(quadMat);
-				r->SetModel(quadModel);
+				r->SetMaterial(cubeMat);
+				r->SetModel(cubeModel);
 
 				tBox6->SetLocalPosition(math::float3{ -2.0f, 1.0f, 0.0f });
 				PhysicsComponent ph = e.AddComponent<PhysicsComponent>();
@@ -330,6 +334,15 @@ bool Game::LoadScene(sceneType num)
 				pControl->SetPlayer(player);
 			}
 			assert(player != NULL);
+
+			// Setup the Player's Companion
+			if (comp == NULL)
+			{
+				comp = new Companion(player->GetPosition());
+				pControl->SetCompanion(comp);
+			}
+			assert(player != NULL);
+
 			break;
 		}
 		case 7:

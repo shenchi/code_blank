@@ -1,7 +1,7 @@
 #pragma once
 #include "Camera.h"
 #include "Player.h"
-
+#include "Companion.h"
 
 class PController
 {
@@ -12,6 +12,7 @@ public:
 	void Update();
 	void UpdateP(float);
 	void SetCamera(Camera*);
+	void SetCompanion(Companion*);
 	void SetPlayer(Player*);
 
 	bool GetPause();
@@ -19,6 +20,7 @@ public:
 private:
 	Camera* cam;
 	Player* player;
+	Companion* comp;
 
 	bool paused;
 	bool inAir;

@@ -177,6 +177,13 @@ void PController::SetCamera(Camera* _cam)
 	cam = _cam;
 }
 
+// Set Player Companion
+void PController::SetCompanion(Companion* _comp)
+{
+	assert(_comp != NULL);
+	comp = _comp;
+}
+
 // Set Player
 void PController::SetPlayer(Player* _player)
 {

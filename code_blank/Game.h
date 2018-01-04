@@ -36,6 +36,7 @@ private:
 	//tofu::CameraComponent cam;
 	Camera* cam;
 	Player* player;
+	Companion* comp;
 	PController* pControl;
 
 	enum sceneType

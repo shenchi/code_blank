@@ -196,12 +196,20 @@ void Player::VisionHack()
 //-------------------------------------------------------------------------------------------------
 // Getters
 
+// Is the player in air
 bool Player::IsInAir()
 {
 	return inAir;
 }
 
+// Return Player Position
 tofu::math::float3 Player::GetPosition()
 {
 	return tPlayer->GetLocalPosition();
+}
+
+// Return Player Forward
+tofu::math::float3 Player::GetForward()
+{
+	return tPlayer->GetForwardVector();
 }

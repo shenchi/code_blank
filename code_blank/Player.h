@@ -24,6 +24,7 @@ public:
 
 	bool IsInAir();
 	tofu::math::float3 GetPosition();
+	tofu::math::float3 GetForward();
 
 private:
 	tofu::TransformComponent	tPlayer;
