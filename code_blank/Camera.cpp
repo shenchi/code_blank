@@ -113,3 +113,9 @@ math::quat Camera::GetRotation()
 {
 	return camRot;
 }
+
+// Get Camera's Forward Vector
+math::float3 Camera::GetForward()
+{
+	return tCamera->GetForwardVector();
+}

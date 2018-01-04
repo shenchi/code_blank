@@ -117,6 +117,10 @@ void PController::UpdateP(float dT)
 		player->Aim();
 		isAiming = true;
 	}
+	else
+	{
+		isAiming = false;
+	}
 
 	// Change Camera control if in aiming mode
 	if (!isAiming)
@@ -141,12 +145,20 @@ void PController::UpdateP(float dT)
 	{
 		// TODO
 		// Aiming mode camera control
+		// If target is available (close enough and in right view angle) snap to
+		// Possibly from a list of nearby enemies
+
+		cam->UpdateTarget(player->GetPosition());
 	}
 
 
-	if (!isHacking)
+	if (!isHacking && !isAiming)
 	{
-		player->Act(dT, jump, inputDir, cam->GetRotation());
+		player->MoveReg(dT, jump, inputDir, cam->GetRotation());
+	}
+	else if (isAiming)
+	{
+		player->MoveAim(dT, inputDir, cam->GetRotation(), cam->GetForward());
 	}
 	else
 	{

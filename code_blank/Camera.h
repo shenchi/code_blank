@@ -21,6 +21,7 @@ public:
 	void UpdateTarget(tofu::math::float3);
 
 	tofu::math::quat GetRotation();
+	tofu::math::float3 GetForward();
 
 	void SetClearColor(tofu::math::float4);
 	void SetDistMod(tofu::math::float3);

@@ -49,7 +49,8 @@ void Player::Update()
 	// Handle the reset of dashing here
 }
 
-void Player::Act(float dT, bool jump, math::float3 inputDir, math::quat camRot)
+// Player Movement
+void Player::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camRot)
 {
 	Update();
 
@@ -95,19 +96,64 @@ void Player::Act(float dT, bool jump, math::float3 inputDir, math::quat camRot)
 	}
 }
 
+// Player Movement in Aiming Mode
+void Player::MoveAim(float dT, tofu::math::float3 inputDir, math::quat camRot, tofu::math::float3 camFwd)
+{
+	Update();
+
+	if (math::length(inputDir) > 0.25f)
+	{
+		math::float3 moveDir = camRot * inputDir;
+		moveDir.y = 0.0f;
+		moveDir = math::normalize(moveDir);
+
+		camFwd.y = 0;
+		camFwd = math::normalize(camFwd);
+		tPlayer->FaceTo(camFwd);
+
+		speed += dT * kAccelerate;
+
+		if (!isDashing)
+		{
+			if (speed > walkSpeed)
+				speed = walkSpeed;
+		}
+		else
+		{
+			if (speed > dashSpeed)
+				speed = dashSpeed;
+		}
+
+		if (speed > kMaxSpeed)
+			speed = kMaxSpeed;
+
+		tPlayer->Translate(moveDir * dT * speed);
+
+		anim->CrossFade(1, 0.3f);
+	}
+	else
+	{
+		speed -= dT * kDeaccelerate;
+		if (speed < 0.0f) speed = 0.0f;
+		tPlayer->Translate(tPlayer->GetForwardVector() * dT * speed);
+
+		anim->CrossFade(0, 0.2f);
+	}
+}
+
 //-------------------------------------------------------------------------------------------------
 // Player Actions
 
 // Transistion to Aiming Mode
 void Player::Aim()
 {
-
+	// TODO
 }
 
 // Attack (Uses a combo system)
 void Player::Attack()
 {
-
+	// TODO
 }
 
 // Dash forward (move faster)
@@ -121,25 +167,25 @@ void Player::Dash()
 // Dodge, in the current player direction
 void Player::Dodge()
 {
-
+	// TODO
 }
 
 // Interact with interactable object
 void Player::Interact()
 {
-
+	// TODO
 }
 
 // Combo Special move (Sword/Gun)
 void Player::Special()
 {
-
+	// TODO
 }
 
 // Transistion to Vision Hack Mode
 void Player::VisionHack()
 {
-
+	// TODO
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -10,7 +10,8 @@ public:
 	Player();
 	~Player();
 
-	void Act(float, bool, tofu::math::float3, tofu::math::quat);
+	void MoveReg(float, bool, tofu::math::float3, tofu::math::quat);
+	void MoveAim(float, tofu::math::float3, tofu::math::quat, tofu::math::float3);
 	void Update();
 
 	void Aim();
@@ -42,4 +43,6 @@ private:
 	const float kMaxSpeed = 5.0f;
 	const float kAccelerate = 6.67f;
 	const float kDeaccelerate = 10.0f;
+
+	//void Move();
 };
