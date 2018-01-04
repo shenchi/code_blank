@@ -20,7 +20,7 @@ public:
 
 private:
 	tofu::TransformComponent	tComp;
-	tofu::AnimationComponent	anim;
+	tofu::AnimationComponent	aComp;
 
 	bool inUse;
 	bool targetSet;

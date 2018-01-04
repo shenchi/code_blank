@@ -4,11 +4,11 @@
 #include <TransformComponent.h>
 #include <AnimationComponent.h>
 
-class Player
+class Enemy
 {
 public:
-	Player();
-	~Player();
+	Enemy(tofu::math::float3);
+	~Enemy();
 
 	void MoveReg(float, bool, tofu::math::float3, tofu::math::quat);
 	void MoveAim(float, tofu::math::float3, tofu::math::quat, tofu::math::float3);
@@ -27,9 +27,9 @@ public:
 	tofu::math::float3 GetForward();
 
 private:
-	tofu::TransformComponent	tPlayer;
-	tofu::PhysicsComponent		pPlayer;
-	tofu::AnimationComponent	aPlayer;
+	tofu::TransformComponent	tEnemy;
+	tofu::PhysicsComponent		pEnemy;
+	tofu::AnimationComponent	aEnemy;
 
 	// Movement
 	float walkSpeed;
@@ -38,7 +38,7 @@ private:
 	bool inAir;
 	bool isDashing;
 
-	// Player Stats
+	// Enemy Stats
 	float health;
 
 	const float kMaxSpeed = 5.0f;

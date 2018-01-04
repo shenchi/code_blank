@@ -12,6 +12,13 @@ InputSystem* input;
 
 Game::~Game()
 {
+	//*********************************************************************************************
+	//temp for test
+	delete enemy01;
+	delete enemy02;
+	delete enemy03;
+	//*********************************************************************************************
+
 	delete comp;
 	delete cam;
 	delete player;
@@ -342,6 +349,13 @@ bool Game::LoadScene(sceneType num)
 				pControl->SetCompanion(comp);
 			}
 			assert(player != NULL);
+
+			//*********************************************************************************************
+			//temp for test
+			enemy01 = new Enemy(math::float3{ 10.0f, 1.0f, 10.0f });
+			enemy02 = new Enemy(math::float3{ -10.0f, 1.0f, -10.0f });
+			enemy03 = new Enemy(math::float3{ -10.0f, 1.0f, 10.0f });
+			//*********************************************************************************************
 
 			break;
 		}

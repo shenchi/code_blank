@@ -14,7 +14,7 @@ Companion::Companion(tofu::math::float3 _target)
 		RenderingComponent r = e.AddComponent<RenderingComponent>();
 
 
-		//anim = e.AddComponent<AnimationComponent>();
+		//aComp = e.AddComponent<AnimationComponent>();
 
 		Model* compModel = RenderingSystem::instance()->CreateModel("assets/cube.model");
 

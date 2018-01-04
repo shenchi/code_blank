@@ -1,22 +1,22 @@
-#include "Player.h"
+#include "Enemy.h"
 #include <RenderingComponent.h>
 
 using namespace tofu;
 
-Player::Player()
+Enemy::Enemy(tofu::math::float3 pos)
 {
 	{
 		Entity e = Entity::Create();
 
-		tPlayer = e.AddComponent<TransformComponent>();
-		tPlayer->SetLocalPosition(math::float3{ 0.0f, 1.0f, 0.0f });
-		tPlayer->SetLocalScale(math::float3{ 0.01f, 0.01f, 0.01f });
+		tEnemy = e.AddComponent<TransformComponent>();
+		tEnemy->SetLocalPosition(pos);
+		tEnemy->SetLocalScale(math::float3{ 0.01f, 0.01f, 0.01f });
 
 		RenderingComponent r = e.AddComponent<RenderingComponent>();
 
 		Model* model = RenderingSystem::instance()->CreateModel("assets/archer.model");
 
-		aPlayer = e.AddComponent<AnimationComponent>();
+		aEnemy = e.AddComponent<AnimationComponent>();
 
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaqueSkinned);
 		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");
@@ -28,29 +28,29 @@ Player::Player()
 		r->SetMaterial(material);
 		r->SetModel(model);
 
-		pPlayer = e.AddComponent<PhysicsComponent>();
+		pEnemy = e.AddComponent<PhysicsComponent>();
 
-		pPlayer->LockRotation(true, false, true);
-		pPlayer->SetCapsuleCollider(0.5f, 1.0f);
-		pPlayer->SetColliderOrigin(math::float3{ 0.0f, 1.0f, 0.0f });
+		pEnemy->LockRotation(true, false, true);
+		pEnemy->SetCapsuleCollider(0.5f, 1.0f);
+		pEnemy->SetColliderOrigin(math::float3{ 0.0f, 1.0f, 0.0f });
 	}
 
 	walkSpeed = 2.0f;
 	dashSpeed = 4.0f;
 }
 
-Player::~Player(){}
+Enemy::~Enemy() {}
 
-void Player::Update()
+void Enemy::Update()
 {
-	inAir = !pPlayer->IsCollided();
+	inAir = !pEnemy->IsCollided();
 
 	// TODO
 	// Handle the reset of dashing here
 }
 
-// Player Movement
-void Player::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camRot)
+// Enemy Movement
+void Enemy::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camRot)
 {
 	Update();
 
@@ -59,7 +59,7 @@ void Player::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camR
 		math::float3 moveDir = camRot * inputDir;
 		moveDir.y = 0.0f;
 		moveDir = math::normalize(moveDir);
-		tPlayer->FaceTo(moveDir);
+		tEnemy->FaceTo(moveDir);
 
 		speed += dT * kAccelerate;
 
@@ -77,27 +77,27 @@ void Player::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camR
 		if (speed > kMaxSpeed)
 			speed = kMaxSpeed;
 
-		tPlayer->Translate(moveDir * dT * speed);
+		tEnemy->Translate(moveDir * dT * speed);
 
-		aPlayer->CrossFade(1, 0.3f);
+		aEnemy->CrossFade(1, 0.3f);
 	}
 	else
 	{
 		speed -= dT * kDeaccelerate;
 		if (speed < 0.0f) speed = 0.0f;
-		tPlayer->Translate(tPlayer->GetForwardVector() * dT * speed);
+		tEnemy->Translate(tEnemy->GetForwardVector() * dT * speed);
 
-		aPlayer->CrossFade(0, 0.2f);
+		aEnemy->CrossFade(0, 0.2f);
 	}
 
 	if (jump && !inAir)
 	{
-		pPlayer->ApplyImpulse(math::float3{ 0.0f, 2.0f, 0.0f });
+		pEnemy->ApplyImpulse(math::float3{ 0.0f, 2.0f, 0.0f });
 	}
 }
 
-// Player Movement in Aiming Mode
-void Player::MoveAim(float dT, tofu::math::float3 inputDir, math::quat camRot, tofu::math::float3 camFwd)
+// Enemy Movement in Aiming Mode
+void Enemy::MoveAim(float dT, tofu::math::float3 inputDir, math::quat camRot, tofu::math::float3 camFwd)
 {
 	Update();
 
@@ -109,7 +109,7 @@ void Player::MoveAim(float dT, tofu::math::float3 inputDir, math::quat camRot, t
 
 		camFwd.y = 0;
 		camFwd = math::normalize(camFwd);
-		tPlayer->FaceTo(camFwd);
+		tEnemy->FaceTo(camFwd);
 
 		speed += dT * kAccelerate;
 
@@ -127,63 +127,63 @@ void Player::MoveAim(float dT, tofu::math::float3 inputDir, math::quat camRot, t
 		if (speed > kMaxSpeed)
 			speed = kMaxSpeed;
 
-		tPlayer->Translate(moveDir * dT * speed);
+		tEnemy->Translate(moveDir * dT * speed);
 
-		aPlayer->CrossFade(1, 0.3f);
+		aEnemy->CrossFade(1, 0.3f);
 	}
 	else
 	{
 		speed -= dT * kDeaccelerate;
 		if (speed < 0.0f) speed = 0.0f;
-		tPlayer->Translate(tPlayer->GetForwardVector() * dT * speed);
+		tEnemy->Translate(tEnemy->GetForwardVector() * dT * speed);
 
-		aPlayer->CrossFade(0, 0.2f);
+		aEnemy->CrossFade(0, 0.2f);
 	}
 }
 
 //-------------------------------------------------------------------------------------------------
-// Player Actions
+// Enemy Actions
 
 // Transistion to Aiming Mode
-void Player::Aim()
+void Enemy::Aim()
 {
 	// TODO
 }
 
 // Attack (Uses a combo system)
-void Player::Attack()
+void Enemy::Attack()
 {
 	// TODO
 }
 
 // Dash forward (move faster)
-void Player::Dash()
+void Enemy::Dash()
 {
 	// TODO
 	// Set dashing to true if cool allows
 	isDashing = true;
 }
 
-// Dodge, in the current player direction
-void Player::Dodge()
+// Dodge, in the current Enemy direction
+void Enemy::Dodge()
 {
 	// TODO
 }
 
 // Interact with interactable object
-void Player::Interact()
+void Enemy::Interact()
 {
 	// TODO
 }
 
 // Combo Special move (Sword/Gun)
-void Player::Special()
+void Enemy::Special()
 {
 	// TODO
 }
 
 // Transistion to Vision Hack Mode
-void Player::VisionHack()
+void Enemy::VisionHack()
 {
 	// TODO
 }
@@ -196,20 +196,20 @@ void Player::VisionHack()
 //-------------------------------------------------------------------------------------------------
 // Getters
 
-// Is the player in air
-bool Player::IsInAir()
+// Is the Enemy in air
+bool Enemy::IsInAir()
 {
 	return inAir;
 }
 
-// Return Player Position
-tofu::math::float3 Player::GetPosition()
+// Return Enemy Position
+tofu::math::float3 Enemy::GetPosition()
 {
-	return tPlayer->GetLocalPosition();
+	return tEnemy->GetLocalPosition();
 }
 
-// Return Player Forward
-tofu::math::float3 Player::GetForward()
+// Return Enemy Forward
+tofu::math::float3 Enemy::GetForward()
 {
-	return tPlayer->GetForwardVector();
+	return tEnemy->GetForwardVector();
 }

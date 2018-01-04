@@ -4,6 +4,7 @@
 #include <Entity.h>
 #include "Camera.h"
 #include "PController.h"
+#include "Enemy.h"
 #include <TransformComponent.h>
 
 // Game: The main game loop.
@@ -64,4 +65,11 @@ private:
 	bool UnloadScene(sceneType);
 	bool LoadOnTop(sceneType);
 	bool UnloadOffTop(sceneType);
+
+	//*********************************************************************************************
+	//temp for test
+	Enemy* enemy01;
+	Enemy* enemy02;
+	Enemy* enemy03;
+	//*********************************************************************************************
 };
