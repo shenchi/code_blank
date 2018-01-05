@@ -10,17 +10,13 @@ public:
 	Enemy(tofu::math::float3);
 	~Enemy();
 
-	void MoveReg(float, bool, tofu::math::float3, tofu::math::quat);
-	void MoveAim(float, tofu::math::float3, tofu::math::quat, tofu::math::float3);
+	void Move(float, bool, tofu::math::float3);
 	void Update();
 
-	void Aim();
 	void Attack();
 	void Dash();
 	void Dodge();
-	void Interact();
 	void Special();
-	void VisionHack();
 
 	bool IsInAir();
 	tofu::math::float3 GetPosition();

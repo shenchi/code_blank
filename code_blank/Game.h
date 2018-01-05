@@ -71,5 +71,8 @@ private:
 	Enemy* enemy01;
 	Enemy* enemy02;
 	Enemy* enemy03;
+	float timePassed;
+	float startTime;
+	bool loopStart;
 	//*********************************************************************************************
 };

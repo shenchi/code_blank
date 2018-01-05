@@ -49,18 +49,21 @@ void Enemy::Update()
 	// Handle the reset of dashing here
 }
 
+// TODO
+// Change as needed, this is really only a temp function for testing
 // Enemy Movement
-void Enemy::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camRot)
+void Enemy::Move(float dT, bool jump, math::float3 inputDir)
 {
 	Update();
 
 	if (math::length(inputDir) > 0.25f)
 	{
-		math::float3 moveDir = camRot * inputDir;
+		//math::float3 moveDir = rot * inputDir;
+		math::float3 moveDir = inputDir;
 		moveDir.y = 0.0f;
 		moveDir = math::normalize(moveDir);
 		tEnemy->FaceTo(moveDir);
-
+		
 		speed += dT * kAccelerate;
 
 		if (!isDashing)
@@ -96,59 +99,10 @@ void Enemy::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camRo
 	}
 }
 
-// Enemy Movement in Aiming Mode
-void Enemy::MoveAim(float dT, tofu::math::float3 inputDir, math::quat camRot, tofu::math::float3 camFwd)
-{
-	Update();
 
-	if (math::length(inputDir) > 0.25f)
-	{
-		math::float3 moveDir = camRot * inputDir;
-		moveDir.y = 0.0f;
-		moveDir = math::normalize(moveDir);
-
-		camFwd.y = 0;
-		camFwd = math::normalize(camFwd);
-		tEnemy->FaceTo(camFwd);
-
-		speed += dT * kAccelerate;
-
-		if (!isDashing)
-		{
-			if (speed > walkSpeed)
-				speed = walkSpeed;
-		}
-		else
-		{
-			if (speed > dashSpeed)
-				speed = dashSpeed;
-		}
-
-		if (speed > kMaxSpeed)
-			speed = kMaxSpeed;
-
-		tEnemy->Translate(moveDir * dT * speed);
-
-		aEnemy->CrossFade(1, 0.3f);
-	}
-	else
-	{
-		speed -= dT * kDeaccelerate;
-		if (speed < 0.0f) speed = 0.0f;
-		tEnemy->Translate(tEnemy->GetForwardVector() * dT * speed);
-
-		aEnemy->CrossFade(0, 0.2f);
-	}
-}
 
 //-------------------------------------------------------------------------------------------------
 // Enemy Actions
-
-// Transistion to Aiming Mode
-void Enemy::Aim()
-{
-	// TODO
-}
 
 // Attack (Uses a combo system)
 void Enemy::Attack()
@@ -170,23 +124,12 @@ void Enemy::Dodge()
 	// TODO
 }
 
-// Interact with interactable object
-void Enemy::Interact()
-{
-	// TODO
-}
-
 // Combo Special move (Sword/Gun)
 void Enemy::Special()
 {
 	// TODO
 }
 
-// Transistion to Vision Hack Mode
-void Enemy::VisionHack()
-{
-	// TODO
-}
 
 //-------------------------------------------------------------------------------------------------
 // Setters

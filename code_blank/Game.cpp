@@ -48,6 +48,12 @@ int32_t Game::Init()
 	ret = LoadScene(currentScene);
 	assert(ret == kOK);
 
+	//*********************************************************************************************
+	//temp for test
+	timePassed = 0.0f;
+	loopStart = true;
+	//*********************************************************************************************
+
 	return kOK;
 }
 
@@ -162,6 +168,43 @@ int32_t Game::Update()
 		comp->Update(Time::DeltaTime, player->GetPosition(), player->GetForward());
 		cam->Update();
 		pControl->UpdateP(Time::DeltaTime);
+
+		//*******************************************************************************
+		// Temp Enemy control code
+		if (loopStart)
+		{
+			startTime = Time::TotalTime;
+			loopStart = false;
+		}
+		
+		timePassed = Time::TotalTime - startTime;
+		
+		if (timePassed > 0 && timePassed <= 10)	// Move Forward
+		{
+			enemy01->Move(Time::DeltaTime, false, math::float3{0, 0, 1});
+		}
+		else if (timePassed > 10 && timePassed <= 20) // Move Left
+		{
+			enemy01->Move(Time::DeltaTime, false, math::float3{-1, 0, 0 });
+		}
+		else if (timePassed > 20 && timePassed <= 30) // Move Backward
+		{
+			enemy01->Move(Time::DeltaTime, false, math::float3{0, 0, -1});
+		}
+		else if (timePassed > 30 && timePassed <= 40) // Move Right
+		{
+			enemy01->Move(Time::DeltaTime, false, math::float3{1, 0, 0});
+		}
+
+		if (timePassed > 40)
+		{
+			timePassed = 0.0f;
+			loopStart = true;
+		}
+
+		assert(!(timePassed < 0) && timePassed < 50);
+		//*******************************************************************************
+
 
 		break;
 	}
@@ -352,7 +395,7 @@ bool Game::LoadScene(sceneType num)
 
 			//*********************************************************************************************
 			//temp for test
-			enemy01 = new Enemy(math::float3{ 10.0f, 1.0f, 10.0f });
+			enemy01 = new Enemy(math::float3{ 10.0f, 1.0f, 0.0f });
 			enemy02 = new Enemy(math::float3{ -10.0f, 1.0f, -10.0f });
 			enemy03 = new Enemy(math::float3{ -10.0f, 1.0f, 10.0f });
 			//*********************************************************************************************
