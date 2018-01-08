@@ -416,15 +416,16 @@ namespace tofu
 		{
 			RenderingComponentData& comp = renderables[activeRenderables[i]];
 
-			assert(nullptr != comp.model && nullptr != comp.material);
+			assert(nullptr != comp.model && 0 != comp.numMaterials);
 
 			Model& model = *comp.model;
-			Material* mat = comp.material;
+			//Material* mat = comp.material;
 
 			for (uint32_t iMesh = 0; iMesh < model.numMeshes; ++iMesh)
 			{
 				assert(model.meshes[iMesh]);
 				Mesh& mesh = meshes[model.meshes[iMesh].id];
+				Material* mat = comp.materials[iMesh < comp.numMaterials ? iMesh : (comp.numMaterials - 1)];
 
 				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
 				params->pipelineState = materialPSOs[mat->type];

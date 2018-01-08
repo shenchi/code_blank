@@ -11,7 +11,7 @@ int32_t SceneLoadingDemo::Init()
 	rapidjson::Document d;
 	char* json = nullptr;
 	CHECKED(FileIO::ReadFile(
-		"assets/scenes/test2.json", 
+		"assets/scenes/test3.json", 
 		true, 
 		4, 
 		kAllocLevelBasedMem, 
@@ -221,17 +221,22 @@ int32_t SceneLoadingDemo::LoadComponents(const rapidjson::Value & value, tofu::E
 				return kErrUnknown;
 			}
 
-			// material
-			Material* material = resMgr.LoadMaterial(comp["materials"][0].GetString());
-			if (nullptr == material)
-			{
-				return kErrUnknown;
-			}
-
 			// rendering component
 			auto r = e.AddComponent<RenderingComponent>();
 			r->SetModel(model);
-			r->SetMaterial(material);
+
+			// material
+			value_t matList = comp["materials"];
+			for (rapidjson::SizeType i = 0; i < matList.Size(); i++)
+			{
+				Material* material = resMgr.LoadMaterial(matList[i].GetString());
+				if (nullptr == material)
+				{
+					return kErrUnknown;
+				}
+				r->AddMaterial(material);
+			}
+
 		}
 	}
 

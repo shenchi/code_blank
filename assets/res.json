@@ -3,6 +3,10 @@
         {
             "name": "Unity_Builtin_Cube",
             "guid": "0000000000000000e000000000000000"
+        },
+        {
+            "name": "City_Wall_Corner",
+            "guid": "f6683efd485bed64c92ad9243948dbd8"
         }
     ],
     "materials": [
@@ -11,6 +15,24 @@
             "GUID": "a279ff533c8c0d1408b26d70a2693428",
             "AlbedoMap": "textures/Floor1_Diff+Spec",
             "NormalMap": "textures/Floor1_Bump"
+        },
+        {
+            "Name": "Floor3",
+            "GUID": "5a92d152b0a4b8f41a4e549b3a63a4e7",
+            "AlbedoMap": "textures/Floor3_Diff+Spec",
+            "NormalMap": "textures/Floor3_Bump"
+        },
+        {
+            "Name": "Wall3",
+            "GUID": "5aaf6b5ee7e06a245a4ad3ba6a0ed917",
+            "AlbedoMap": "textures/Wall3_Diff+Spec",
+            "NormalMap": "textures/Wall3_Bump"
+        },
+        {
+            "Name": "Wall2",
+            "GUID": "107eee8dc45625b44a144a214d8d7b31",
+            "AlbedoMap": "textures/Wall2_Halfblock_Diff+Spec",
+            "NormalMap": "textures/Wall2_Halfblock_Bump"
         }
     ],
     "textures": [
@@ -30,6 +52,60 @@
             "WrapMode": "repeat",
             "FilterMode": "trilinear",
             "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Floor3_Diff+Spec",
+            "GUID": "65cacb3b8f364b24eb7ea5b180888e56",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 10,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Floor3_Bump",
+            "GUID": "26dee1916efb09d449d76fb70fac9713",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "trilinear",
+            "MipmapCount": 10,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Wall3_Diff+Spec",
+            "GUID": "185513efb9a9c084b972d64f9bd20d46",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 10,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Wall3_Bump",
+            "GUID": "671d66de0327e994e8905c503d1a9f21",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "trilinear",
+            "MipmapCount": 10,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Wall2_Halfblock_Diff+Spec",
+            "GUID": "6604aaacb9f1558449abfc0c6d2e0570",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 10,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Wall2_Halfblock_Bump",
+            "GUID": "cd43279f80e31604e86e8208bdea472b",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "trilinear",
+            "MipmapCount": 10,
             "MipmapBias": 0.0
         }
     ]
