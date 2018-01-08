@@ -16,17 +16,13 @@ namespace tofu
 		TransformComponentData() : TransformComponentData(Entity()) {}
 
 		TransformComponentData(Entity e)
-			: 
+			:
 			entity(e),
 			parent(),
 			dirty(1)
 		{}
 
-		TF_INLINE void					SetParent(TransformComponent parent)
-		{
-			// TODO
-			UpdateTransfromInHierachy();
-		}
+		void							SetParent(TransformComponent parent);
 
 		TF_INLINE TransformComponent	GetParent() const { return parent; }
 

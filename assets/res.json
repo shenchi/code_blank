@@ -1,0 +1,36 @@
+{
+    "models": [
+        {
+            "name": "Unity_Builtin_Cube",
+            "guid": "0000000000000000e000000000000000"
+        }
+    ],
+    "materials": [
+        {
+            "Name": "Floor1",
+            "GUID": "a279ff533c8c0d1408b26d70a2693428",
+            "AlbedoMap": "textures/Floor1_Diff+Spec",
+            "NormalMap": "textures/Floor1_Bump"
+        }
+    ],
+    "textures": [
+        {
+            "Path": "textures/Floor1_Diff+Spec",
+            "GUID": "cc39a17532b382042b971e892c29aee4",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Floor1_Bump",
+            "GUID": "d4953f7c4b5211a4d880b0889f5e31b4",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "trilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        }
+    ]
+}

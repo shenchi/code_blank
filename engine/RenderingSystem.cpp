@@ -503,7 +503,7 @@ namespace tofu
 
 		uint8_t* data = nullptr;
 		size_t size = 0u;
-		int32_t err = FileIO::ReadFile(filename, reinterpret_cast<void**>(&data), &size, 4, kAllocFrameBasedMem);
+		int32_t err = FileIO::ReadFile(filename, false, 4, kAllocFrameBasedMem, reinterpret_cast<void**>(&data), &size);
 		if (kOK != err)
 		{
 			return nullptr;
@@ -512,7 +512,10 @@ namespace tofu
 		// read header
 		model::ModelHeader* header = reinterpret_cast<model::ModelHeader*>(data);
 
-		assert(header->Magic == model::kModelFileMagic);
+		if (header->Magic != model::kModelFileMagic)
+		{
+			return nullptr;
+		}
 		assert(header->StructOfArray == 0);
 		assert(header->HasIndices == 1);
 		assert(header->HasTangent == 1);
@@ -635,7 +638,7 @@ namespace tofu
 	{
 		void* data = nullptr;
 		size_t size = 0;
-		int32_t err = FileIO::ReadFile(filename, &data, &size, 4, allocNo);
+		int32_t err = FileIO::ReadFile(filename, false, 4, allocNo, &data, &size);
 
 		if (kOK != err)
 		{
@@ -695,10 +698,11 @@ namespace tofu
 
 			int32_t err = FileIO::ReadFile(
 				vsFile,
-				&(params->data),
-				&(params->size),
+				false,
 				4,
-				allocNo);
+				allocNo,
+				&(params->data),
+				&(params->size));
 
 			if (kOK != err)
 			{
@@ -715,10 +719,11 @@ namespace tofu
 
 			int32_t err = FileIO::ReadFile(
 				psFile,
-				&(params->data),
-				&(params->size),
+				false,
 				4,
-				allocNo);
+				allocNo,
+				&(params->data),
+				&(params->size));
 
 			if (kOK != err)
 			{

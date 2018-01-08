@@ -123,6 +123,12 @@
     <ClInclude Include="..\3rd_party\DirectXTK\Src\PlatformHelpers.h">
       <Filter>3rd_party\DirectXTK</Filter>
     </ClInclude>
+    <ClInclude Include="Tofu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimationComponent.cpp">
@@ -184,6 +190,9 @@
     </ClCompile>
     <ClCompile Include="..\3rd_party\DirectXTK\Src\Mouse.cpp">
       <Filter>3rd_party\DirectXTK</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
