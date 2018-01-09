@@ -31,8 +31,9 @@ namespace tofu
 					uint32_t	NumTexcoordChannels : 4;
 				};
 			};
+
 			uint32_t			NumMeshes;
-			uint32_t			NumBones;
+			uint16_t			NumBones;
 			uint32_t			NumAnimations;
 			uint32_t			NumAnimChannels;
 			uint32_t			NumTotalTranslationFrames;
@@ -98,25 +99,62 @@ namespace tofu
 
 		struct ModelBone
 		{
-			uint32_t		id;
-			uint32_t		parent;
-			uint32_t		firstChild;
-			uint32_t		nextSibling;
+			uint16_t		id;
+			uint16_t		parent;
+			uint16_t		firstChild;
+			uint16_t		nextSibling;
 			math::float4x4	transform;
 			math::float4x4	offsetMatrix;
 		};
 
+		/*struct JointPose
+		{
+			uint32_t		boneId;
+			math::float3	translation;
+			float			scale;
+			math::quat		quaternion;
+		};
+
+		struct AnimationSamples
+		{
+			JointPose *jointPoses;
+		};*/
+
 		struct ModelAnimation
 		{
-			float			durationInTicks;
+			float			tickCount;
 			float			ticksPerSecond;
 			uint32_t		numChannels;
 			uint32_t		startChannelId;
+			//AnimationSamples *samples;
 		};
+
+		//struct ModelAnimFrame {
+		//	uint16_t keyTime = 0;
+		//	uint16_t jointIndex = 0;
+
+		//	// Payload, which can be a quantized 3d vector or a quantized quaternion
+		//	// depending on what type of channel this data belongs to
+		//	uint16_t v[3];
+
+		//	ChannelType GetChannelType() const
+		//	{
+		//		// Most significant two bits of this 16bit index contains channel type info.
+		//		return static_cast<ChannelType>((jointIndex & (0xc000)) >> 14);
+		//	}
+		//	void SetChannelType(ChannelType type)
+		//	{
+		//		jointIndex |= (static_cast<uint16_t>(type) << 14);
+		//	}
+		//	std::uint16_t GetJointIndex() const
+		//	{
+		//		return jointIndex & 0x3fff; m
+		//	}
+		//};
 
 		struct ModelAnimChannel
 		{
-			uint32_t		boneId;
+			uint16_t		boneId;
 			uint32_t		startTranslationFrame;
 			uint32_t		numTranslationFrame;
 			uint32_t		startRotationFrame;

@@ -20,7 +20,7 @@ struct Input
 	float3 position	: POSITION;
 	float3 normal	: NORMAL;
 	float3 tangent	: TANGENT;
-	int4   boneIds	: BLENDINDICES;
+	float4 boneIds	: BLENDINDICES;
 	float4 weights	: BLENDWEIGHT;
 	float2 uv		: TEXCOORD0;
 };
