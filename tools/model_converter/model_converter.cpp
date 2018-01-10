@@ -436,7 +436,7 @@ struct ModelFile
 					return __LINE__;
 				}
 
-				uint32_t boneId = iter->second;
+				uint16_t boneId = iter->second;
 				uint32_t numT = chan->mNumPositionKeys;
 				uint32_t numR = chan->mNumRotationKeys;
 				uint32_t numS = chan->mNumScalingKeys;
@@ -684,6 +684,20 @@ struct ModelFile
 
 int main(int argc, char* argv[])
 {
+	argc = 4;
+
+	char* tempArgv[6] =
+	{
+		"",
+		"../../archer.model",
+		"../../assets/archer_idle.fbx",
+		//"../../assets/archer_jump.fbx",
+		//"../../assets/archer_running.fbx",
+		"../../assets/archer_walking.fbx"
+	};
+
+	argv = tempArgv;
+
 	if (argc < 3)
 	{
 		printf("model_converter output_file input_file1 [input_file2 ...]\n");
