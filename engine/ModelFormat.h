@@ -39,6 +39,7 @@ namespace tofu
 			uint32_t			NumTotalTranslationFrames;
 			uint32_t			NumTotalRotationFrames;
 			uint32_t			NumTotalScaleFrames;
+			uint32_t			NumAnimationFrames;
 
 			inline uint32_t CalculateVertexSize() const
 			{
@@ -107,50 +108,45 @@ namespace tofu
 			math::float4x4	offsetMatrix;
 		};
 
-		/*struct JointPose
-		{
-			uint32_t		boneId;
-			math::float3	translation;
-			float			scale;
-			math::quat		quaternion;
-		};
-
-		struct AnimationSamples
-		{
-			JointPose *jointPoses;
-		};*/
-
 		struct ModelAnimation
 		{
 			float			tickCount;
 			float			ticksPerSecond;
 			uint32_t		numChannels;
 			uint32_t		startChannelId;
-			//AnimationSamples *samples;
+			size_t			startFrames;
+			size_t			numFrames;
 		};
 
-		//struct ModelAnimFrame {
-		//	uint16_t keyTime = 0;
-		//	uint16_t jointIndex = 0;
+		enum ChannelType { kChannelTranslation, kChannelRotation, kChannelScale };
 
-		//	// Payload, which can be a quantized 3d vector or a quantized quaternion
-		//	// depending on what type of channel this data belongs to
-		//	uint16_t v[3];
+		struct ModelAnimFrame
+		{
+			uint16_t time = 0;
+			uint16_t jointIndex = 0;
 
-		//	ChannelType GetChannelType() const
-		//	{
-		//		// Most significant two bits of this 16bit index contains channel type info.
-		//		return static_cast<ChannelType>((jointIndex & (0xc000)) >> 14);
-		//	}
-		//	void SetChannelType(ChannelType type)
-		//	{
-		//		jointIndex |= (static_cast<uint16_t>(type) << 14);
-		//	}
-		//	std::uint16_t GetJointIndex() const
-		//	{
-		//		return jointIndex & 0x3fff; m
-		//	}
-		//};
+			// TODO: float compression
+			// https://github.com/guillaumeblanc/ozz-animation/blob/71f622e1480bf76d3cc0da5fe90900dc247234c3/include/ozz/base/maths/internal/simd_math_sse-inl.h
+			//// Payload, which can be a quantized 3d vector or a quantized quaternion
+			//// depending on what type of channel this data belongs to
+			//uint16_t v[3];
+
+			math::float3 value;
+
+			ChannelType GetChannelType() const
+			{
+				// Most significant two bits of this 16bit index contains channel type info.
+				return static_cast<ChannelType>((jointIndex & (0xc000)) >> 14);
+			}
+			void SetChannelType(ChannelType type)
+			{
+				jointIndex |= (static_cast<uint16_t>(type) << 14);
+			}
+			std::uint16_t GetJointIndex() const
+			{
+				return jointIndex & 0x3fff;
+			}
+		};
 
 		struct ModelAnimChannel
 		{
