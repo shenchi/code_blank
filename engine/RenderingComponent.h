@@ -64,6 +64,8 @@ namespace tofu
 			return nullptr;
 		}
 
+		uint32_t GetNumMaterial() const { return numMaterials; }
+
 	private:
 		Entity				entity;
 		uint32_t			numMaterials;

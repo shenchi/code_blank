@@ -4,14 +4,43 @@ using namespace tofu;
 
 typedef const rapidjson::Value& value_t;
 
+namespace
+{
+	constexpr float speed = 2.0f;
+}
+
 int32_t SceneLoadingDemo::Init()
 {
 	CHECKED(resMgr.LoadConfig());
 
+	{
+		void* data1 = MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(16, 4);
+		void* data2 = MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(16, 4);
+		if (nullptr == data1 || nullptr == data2)
+		{
+			return kErrUnknown;
+		}
+
+		*reinterpret_cast<math::float4*>(data1) = math::float4{ 1, 1, 1, 1 };
+		*reinterpret_cast<math::float4*>(data2) = math::float4{ 0, 0, 1, 1 };
+
+		TextureHandle defaultAlbedoTex = RenderingSystem::instance()->CreateTexture(kFormatR8g8b8a8Unorm, 1, 1, 16, data1);
+		if (!defaultAlbedoTex)
+			return kErrUnknown;
+
+		TextureHandle defaultNormalMap = RenderingSystem::instance()->CreateTexture(kFormatR8g8b8a8Unorm, 1, 1, 16, data2);
+		if (!defaultNormalMap)
+			return kErrUnknown;
+
+		resMgr.SetDefaultAlbedoMap(defaultAlbedoTex);
+		resMgr.SetDefaultNormalMap(defaultNormalMap);
+	}
+	//
+
 	rapidjson::Document d;
 	char* json = nullptr;
 	CHECKED(FileIO::ReadFile(
-		"assets/scenes/test3.json", 
+		"assets/scenes/test.json", 
 		true, 
 		4, 
 		kAllocLevelBasedMem, 
@@ -104,29 +133,29 @@ int32_t SceneLoadingDemo::Update()
 
 	if (input->IsButtonDown(kKeyW))
 	{
-		tCamera->Translate(tCamera->GetForwardVector() * Time::DeltaTime);
+		tCamera->Translate(tCamera->GetForwardVector() * Time::DeltaTime * speed);
 	}
 	else if (input->IsButtonDown(kKeyS))
 	{
-		tCamera->Translate(-tCamera->GetForwardVector() * Time::DeltaTime);
+		tCamera->Translate(-tCamera->GetForwardVector() * Time::DeltaTime * speed);
 	}
 
 	if (input->IsButtonDown(kKeyD))
 	{
-		tCamera->Translate(tCamera->GetRightVector() * Time::DeltaTime);
+		tCamera->Translate(tCamera->GetRightVector() * Time::DeltaTime * speed);
 	}
 	else if (input->IsButtonDown(kKeyA))
 	{
-		tCamera->Translate(-tCamera->GetRightVector() * Time::DeltaTime);
+		tCamera->Translate(-tCamera->GetRightVector() * Time::DeltaTime * speed);
 	}
 
 	if (input->IsButtonDown(kKeySpace))
 	{
-		tCamera->Translate(tCamera->GetUpVector() * Time::DeltaTime);
+		tCamera->Translate(tCamera->GetUpVector() * Time::DeltaTime * speed);
 	}
 	else if (input->IsButtonDown(kKeyLeftShift))
 	{
-		tCamera->Translate(-tCamera->GetUpVector() * Time::DeltaTime);
+		tCamera->Translate(-tCamera->GetUpVector() * Time::DeltaTime * speed);
 	}
 
 	return kOK;
@@ -184,7 +213,7 @@ int32_t SceneLoadingDemo::LoadSceneEntity(const rapidjson::Value& v, TransformCo
 		value_t children = v["children"];
 		for (rapidjson::SizeType i = 0; i < children.Size(); i++)
 		{
-			LoadSceneEntity(children[i], t);
+			CHECKED(LoadSceneEntity(children[i], t));
 		}
 	}
 
@@ -236,7 +265,7 @@ int32_t SceneLoadingDemo::LoadComponents(const rapidjson::Value & value, tofu::E
 				}
 				r->AddMaterial(material);
 			}
-
+			assert(r->GetNumMaterial() != 0);
 		}
 	}
 

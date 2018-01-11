@@ -1,0 +1,1072 @@
+{
+  "entities": [
+    {
+      "name": "Directional Light",
+      "transform": {
+        "translate": {
+          "x": 0.0,
+          "y": 3.0,
+          "z": 0.0
+        },
+        "rotate": {
+          "x": 0.408217877,
+          "y": -0.234569684,
+          "z": 0.109381631,
+          "w": 0.8754261
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": null,
+      "children": null
+    },
+    {
+      "name": "Room_Mid_1Door_1Win_3F",
+      "transform": {
+        "translate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": null,
+      "children": [
+        {
+          "name": "Decor_Doorframe_Single",
+          "transform": {
+            "translate": {
+              "x": -10.0,
+              "y": 0.0,
+              "z": -5.90867043
+            },
+            "rotate": {
+              "x": 5.7601163E-08,
+              "y": 0.7071068,
+              "z": -5.7601163E-08,
+              "w": 0.7071068
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Decor_Doorframe_Single.model",
+              "materials": [
+                "Wall2"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Decor_Doorframe_Single",
+          "transform": {
+            "translate": {
+              "x": -9.599999,
+              "y": 0.0,
+              "z": -4.09133
+            },
+            "rotate": {
+              "x": 9.415697E-08,
+              "y": -0.7071068,
+              "z": 9.415697E-08,
+              "w": 0.7071068
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Decor_Doorframe_Single.model",
+              "materials": [
+                "Wall2"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "FloorTile_Slab_10x10",
+          "transform": {
+            "translate": {
+              "x": -5.0,
+              "y": 0.0,
+              "z": -5.0
+            },
+            "rotate": {
+              "x": -0.7071068,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 0.7071068
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/FloorTile_Slab_10x10.model",
+              "materials": [
+                "Floor1"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Ramp1",
+          "transform": {
+            "translate": {
+              "x": -0.4000001,
+              "y": 0.0,
+              "z": -9.599999
+            },
+            "rotate": {
+              "x": 2.18556941E-08,
+              "y": 1.1920929E-07,
+              "z": -2.60540177E-15,
+              "w": 1.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Ramp1.model",
+              "materials": [
+                "Floor3",
+                "Wall1"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Ramp1",
+          "transform": {
+            "translate": {
+              "x": -9.600001,
+              "y": 3.414756,
+              "z": -9.599998
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 0.7071068,
+              "z": 0.0,
+              "w": 0.7071068
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Ramp1.model",
+              "materials": [
+                "Floor3",
+                "Wall1"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Roof",
+          "transform": {
+            "translate": {
+              "x": -9.536743E-07,
+              "y": 9.800003,
+              "z": 4.351139E-06
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Roof.model",
+              "materials": [
+                "Floor1",
+                "Wall2"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Roof_Stair1",
+          "transform": {
+            "translate": {
+              "x": 0.0,
+              "y": 3.0,
+              "z": 0.0
+            },
+            "rotate": {
+              "x": 2.18556941E-08,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Roof_Stair1.model",
+              "materials": [
+                "Wall2",
+                "Floor1"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Roof_Stair1",
+          "transform": {
+            "translate": {
+              "x": 0.0,
+              "y": 6.400002,
+              "z": -9.999999
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 0.7071068,
+              "z": 0.0,
+              "w": 0.7071068
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Roof_Stair1.model",
+              "materials": [
+                "Wall2",
+                "Floor1"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Wall",
+          "transform": {
+            "translate": {
+              "x": -10.0,
+              "y": 0.0,
+              "z": -10.0
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 1.0,
+              "z": 0.0,
+              "w": -4.371139E-08
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Wall.model",
+              "materials": [
+                "Wall1",
+                "Wall1_Halfblock"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Wall",
+          "transform": {
+            "translate": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": -10.0
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 0.7071068,
+              "z": 0.0,
+              "w": 0.7071068
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Wall.model",
+              "materials": [
+                "Wall1",
+                "Wall1_Halfblock"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Wall",
+          "transform": {
+            "translate": {
+              "x": -10.0,
+              "y": 3.400001,
+              "z": -10.0
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 1.0,
+              "z": 0.0,
+              "w": 0.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Wall.model",
+              "materials": [
+                "Wall1",
+                "Wall1_Halfblock"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Wall",
+          "transform": {
+            "translate": {
+              "x": 9.536743E-07,
+              "y": 3.40000129,
+              "z": -9.999999
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 0.7071068,
+              "z": 0.0,
+              "w": 0.7071068
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Wall.model",
+              "materials": [
+                "Wall1",
+                "Wall1_Halfblock"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Wall",
+          "transform": {
+            "translate": {
+              "x": -10.0,
+              "y": 3.40000081,
+              "z": -2.896736E-07
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": -0.7071068,
+              "z": 0.0,
+              "w": 0.7071068
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Wall.model",
+              "materials": [
+                "Wall1",
+                "Wall1_Halfblock"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Wall",
+          "transform": {
+            "translate": {
+              "x": -10.000001,
+              "y": 6.80000257,
+              "z": 3.81469727E-06
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": -0.7071068,
+              "z": 0.0,
+              "w": 0.7071068
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Wall.model",
+              "materials": [
+                "Wall1",
+                "Wall1_Halfblock"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Wall",
+          "transform": {
+            "translate": {
+              "x": -1.90734863E-06,
+              "y": 6.80000257,
+              "z": -9.999996
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 0.7071068,
+              "z": 0.0,
+              "w": 0.7071068
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Wall.model",
+              "materials": [
+                "Wall1",
+                "Wall1_Halfblock"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Wall",
+          "transform": {
+            "translate": {
+              "x": -10.000001,
+              "y": 6.80000257,
+              "z": -9.999996
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 1.0,
+              "z": 0.0,
+              "w": 0.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Wall.model",
+              "materials": [
+                "Wall1",
+                "Wall1_Halfblock"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Wall_Door",
+          "transform": {
+            "translate": {
+              "x": -10.0,
+              "y": 0.0,
+              "z": -10.0
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 0.7071068,
+              "z": 0.0,
+              "w": 0.7071068
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Wall_Door.model",
+              "materials": [
+                "Wall1",
+                "Wall1_Halfblock"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Wall_Window",
+          "transform": {
+            "translate": {
+              "x": -10.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 1.0,
+              "z": 0.0,
+              "w": -4.371139E-08
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Wall_Window.model",
+              "materials": [
+                "Wall1_Halfblock",
+                "Wall1"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Wall_Window",
+          "transform": {
+            "translate": {
+              "x": -10.0,
+              "y": 3.40000129,
+              "z": 3.09944153E-06
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 1.0,
+              "z": 0.0,
+              "w": 0.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Wall_Window.model",
+              "materials": [
+                "Wall1_Halfblock",
+                "Wall1"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Wall_Window",
+          "transform": {
+            "translate": {
+              "x": -10.000001,
+              "y": 6.80000257,
+              "z": 3.81469727E-06
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 1.0,
+              "z": 0.0,
+              "w": 0.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Wall_Window.model",
+              "materials": [
+                "Wall1_Halfblock",
+                "Wall1"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Window1",
+          "transform": {
+            "translate": {
+              "x": -5.0,
+              "y": 1.0,
+              "z": -0.20000042
+            },
+            "rotate": {
+              "x": 2.18556941E-08,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Window1.model",
+              "materials": [
+                "Wall2",
+                "Glass"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Window1",
+          "transform": {
+            "translate": {
+              "x": -7.0,
+              "y": 1.0,
+              "z": -0.20000042
+            },
+            "rotate": {
+              "x": 2.18556941E-08,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Window1.model",
+              "materials": [
+                "Wall2",
+                "Glass"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Window1",
+          "transform": {
+            "translate": {
+              "x": -3.0,
+              "y": 1.0,
+              "z": -0.20000042
+            },
+            "rotate": {
+              "x": 2.18556941E-08,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Window1.model",
+              "materials": [
+                "Wall2",
+                "Glass"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Window1",
+          "transform": {
+            "translate": {
+              "x": -1.0,
+              "y": 1.0,
+              "z": -0.20000042
+            },
+            "rotate": {
+              "x": 2.18556941E-08,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Window1.model",
+              "materials": [
+                "Wall2",
+                "Glass"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Window1",
+          "transform": {
+            "translate": {
+              "x": -3.000002,
+              "y": 4.40000153,
+              "z": -0.2834649
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Window1.model",
+              "materials": [
+                "Wall2",
+                "Glass"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Window1",
+          "transform": {
+            "translate": {
+              "x": -5.000002,
+              "y": 4.40000153,
+              "z": -0.2834649
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Window1.model",
+              "materials": [
+                "Wall2",
+                "Glass"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Window1",
+          "transform": {
+            "translate": {
+              "x": -7.000002,
+              "y": 4.40000153,
+              "z": -0.2834649
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Window1.model",
+              "materials": [
+                "Wall2",
+                "Glass"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Window1",
+          "transform": {
+            "translate": {
+              "x": -1.00000191,
+              "y": 4.40000153,
+              "z": -0.283464879
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Window1.model",
+              "materials": [
+                "Wall2",
+                "Glass"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Window1",
+          "transform": {
+            "translate": {
+              "x": -1.00000191,
+              "y": 7.800003,
+              "z": -0.2834612
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Window1.model",
+              "materials": [
+                "Wall2",
+                "Glass"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Window1",
+          "transform": {
+            "translate": {
+              "x": -7.0,
+              "y": 7.800003,
+              "z": -0.2834612
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Window1.model",
+              "materials": [
+                "Wall2",
+                "Glass"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Window1",
+          "transform": {
+            "translate": {
+              "x": -5.0,
+              "y": 7.800003,
+              "z": -0.2834612
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Window1.model",
+              "materials": [
+                "Wall2",
+                "Glass"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Room_Mid_Window1",
+          "transform": {
+            "translate": {
+              "x": -3.0,
+              "y": 7.800003,
+              "z": -0.2834612
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/Room_Mid_Window1.model",
+              "materials": [
+                "Wall2",
+                "Glass"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        }
+      ]
+    }
+  ]
+}

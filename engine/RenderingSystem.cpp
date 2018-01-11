@@ -416,7 +416,8 @@ namespace tofu
 		{
 			RenderingComponentData& comp = renderables[activeRenderables[i]];
 
-			assert(nullptr != comp.model && 0 != comp.numMaterials);
+			assert(nullptr != comp.model);
+			assert(0 != comp.numMaterials);
 
 			Model& model = *comp.model;
 			//Material* mat = comp.material;
@@ -498,7 +499,7 @@ namespace tofu
 			auto iter = modelTable.find(strFilename);
 			if (iter != modelTable.end())
 			{
-				return &models[iter->second];
+				return &models[iter->second.id];
 			}
 		}
 
@@ -632,6 +633,8 @@ namespace tofu
 			cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
 		}
 
+		modelTable.insert(std::pair<std::string, ModelHandle>(strFilename, modelHandle));
+
 		return &model;
 	}
 
@@ -659,6 +662,30 @@ namespace tofu
 		params->isFile = 1;
 		params->data = data;
 		params->width = static_cast<uint32_t>(size);
+
+		cmdBuf->Add(RendererCommand::kCommandCreateTexture, params);
+
+		return handle;
+	}
+
+	TextureHandle RenderingSystem::CreateTexture(PixelFormat format, uint32_t width, uint32_t height, uint32_t pitch, void* data)
+	{
+		TextureHandle handle = textureHandleAlloc.Allocate();
+		if (!handle)
+		{
+			return handle;
+		}
+
+		CreateTextureParams* params = MemoryAllocator::Allocate<CreateTextureParams>(allocNo);
+
+		params->handle = handle;
+		params->bindingFlags = kBindingShaderResource;
+		params->format = format;
+		params->arraySize = 1;
+		params->width = width;
+		params->height = height;
+		params->pitch = pitch;
+		params->data = data;
 
 		cmdBuf->Add(RendererCommand::kCommandCreateTexture, params);
 

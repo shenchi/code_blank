@@ -85,16 +85,26 @@ namespace tofu
 
 		const Value& matConfig = config["materials"][(SizeType)iter->second];
 
-		TextureHandle albedo = LoadTexture(matConfig["AlbedoMap"].GetString());
-		if (!albedo)
+		TextureHandle albedo = defaultAlbedoMap;
+		const char* albedoTexPath = matConfig["AlbedoMap"].GetString();
+		if (nullptr != albedoTexPath && albedoTexPath[0] != 0)
 		{
-			return nullptr;
+			albedo = LoadTexture(albedoTexPath);
+			if (!albedo)
+			{
+				return nullptr;
+			}
 		}
 
-		TextureHandle normal = LoadTexture(matConfig["NormalMap"].GetString());
-		if (!normal)
+		TextureHandle normal = defaultNormalMap;
+		const char* normalMapPath = matConfig["NormalMap"].GetString();
+		if (nullptr != normalMapPath && normalMapPath[0] != 0)
 		{
-			return nullptr;
+			normal = LoadTexture(normalMapPath);
+			if (!normal)
+			{
+				return nullptr;
+			}
 		}
 
 		Material* mat = RenderingSystem::instance()->CreateMaterial(kMaterialTypeOpaque);

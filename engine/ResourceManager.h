@@ -19,8 +19,15 @@ namespace tofu
 
 		TextureHandle LoadTexture(const char* path);
 
+		void SetDefaultAlbedoMap(TextureHandle tex) { defaultAlbedoMap = tex; }
+
+		void SetDefaultNormalMap(TextureHandle tex) { defaultNormalMap = tex; }
+
 	private:
 		rapidjson::Document		config;
+
+		TextureHandle			defaultAlbedoMap;
+		TextureHandle			defaultNormalMap;
 
 		std::unordered_map<std::string, Material*>	materials;
 		std::unordered_map<std::string, TextureHandle> textures;
