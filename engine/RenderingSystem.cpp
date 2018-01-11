@@ -603,6 +603,10 @@ namespace tofu
 				model.scaleFrames = reinterpret_cast<model::ModelFloat3Frame*>(
 					model.rotationFrames + header->NumTotalRotationFrames
 					);
+
+				model.frames = reinterpret_cast<model::ModelAnimFrame*>(
+					model.scaleFrames + header->NumTotalScaleFrames
+					);
 			}
 		}
 

@@ -30,6 +30,7 @@ namespace tofu
 		model::ModelFloat3Frame*	translationFrames;
 		model::ModelQuatFrame*		rotationFrames;
 		model::ModelFloat3Frame*	scaleFrames;
+		model::ModelAnimFrame*		frames;
 		void*						rawData;
 		size_t						rawDataSize;
 	};
