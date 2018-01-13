@@ -161,6 +161,11 @@ namespace tofu
 			}
 		};
 
+		struct ForSortingFrame {
+			uint16_t usedTime;
+			ModelAnimFrame frame;
+		};
+
 		struct ModelAnimChannel
 		{
 			uint16_t		boneId;

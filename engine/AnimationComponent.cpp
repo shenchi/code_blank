@@ -4,6 +4,7 @@
 #include "TofuMath.h"
 #include "Transform.h"
 #include "RenderingComponent.h"
+#include <algorithm>
 
 #include <cassert>
 
@@ -53,6 +54,12 @@ namespace tofu
 
 		// update current animation play back time
 		currentTime += Time::DeltaTime * playbackSpeed;
+
+		model::ModelAnimation& anim = model->animations[currentAnimation];
+
+		// convert time in seconds to ticks
+		ticks = currentTime * anim.ticksPerSecond;
+		ticks = std::fmodf(ticks, anim.tickCount);
 	}
 
 	int32_t AnimationComponentData::FillInBoneMatrices(void* buffer, uint32_t bufferSize)
@@ -72,10 +79,6 @@ namespace tofu
 
 		model::ModelAnimation& anim = model->animations[currentAnimation];
 		
-		// convert time in seconds to ticks
-		float ticks = currentTime * anim.ticksPerSecond;
-		ticks = std::fmodf(ticks, anim.tickCount);
-
 		// load bone matrices
 		for (uint16_t i = 0; i < model->header->NumBones; i++)
 		{
@@ -193,4 +196,44 @@ namespace tofu
 		return math::quat();
 	}
 
+	void AnimationComponentData::UpdateCache()
+	{
+		int updateNums[3];
+
+		auto *frames = model->frames;
+
+		cursor = std::min(std::min(caches[0][3], caches[1][3]), caches[2][3]);
+
+		// Animation start
+		if (cursor == 0) {
+			updateNums[0] = updateNums[1] = updateNums[2] = 4;
+		}
+		else {
+			for (int type = 0; type < 3; type++) {
+				for (int i = 2; i < 4; i++) {
+
+					// Tick pass
+					if (frames[caches[type][i]].time < ticks) {
+						updateNums[type]++;
+					}
+				}
+			}
+		}
+		
+		while (!(updateNums[0] == 0 && updateNums[1] == 0 && updateNums[2] == 0) && cursor < model->header->NumAnimationFrames) {
+			
+			auto type = frames[cursor].GetChannelType();
+
+			if (updateNums[type] > 0) {
+				updateNums[type]--;
+
+				caches[type][0] = caches[type][1];
+				caches[type][1] = caches[type][2];
+				caches[type][2] = caches[type][3];
+				caches[type][3] = cursor;
+			}
+
+			cursor++;
+		}
+	}
 }

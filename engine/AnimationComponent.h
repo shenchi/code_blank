@@ -45,6 +45,7 @@ namespace tofu
 		// id of animation currently used
 		uint32_t				currentAnimation;
 		float					currentTime;
+		float					ticks;
 		float					playbackSpeed;
 
 		// interpolation parameter for cross fading
@@ -58,6 +59,11 @@ namespace tofu
 		// play back time of the old animation
 		float					lastAnimationTime;
 
+		// New
+		uint32_t cursor = 0;
+
+		uint32_t caches[3][4];
+
 	private:
 		// update play back time and cross fade parameters
 		void UpdateTiming();
@@ -70,6 +76,8 @@ namespace tofu
 
 		// get interpolated quaterion frame for given ticks
 		math::quat SampleFrame(model::ModelQuatFrame* frames, uint32_t startFrame, uint32_t numFrames, float ticks);
+
+		void UpdateCache();
 	};
 
 	typedef Component<AnimationComponentData> AnimationComponent;

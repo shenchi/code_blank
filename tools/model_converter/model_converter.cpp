@@ -150,7 +150,27 @@ uint32_t loadBoneHierarchy(aiNode* node, BoneTree& bones, BoneTable& table, uint
 	return boneId;
 }
 
-bool AnimationFrameComp (ModelAnimFrame i, ModelAnimFrame j) { return (i.time < j.time); }
+bool AnimationFrameComp (ModelAnimFrame i, ModelAnimFrame j) { return (i.time <= j.time); }
+
+bool SortingFrameComp(ForSortingFrame i, ForSortingFrame j) { 
+	if (i.usedTime == j.usedTime) {
+		if (i.frame.jointIndex == j.frame.jointIndex) {
+			if (i.frame.GetChannelType() == j.frame.GetChannelType()) {
+				return i.frame.time < j.frame.time;
+			}
+			else {
+				return i.frame.GetChannelType() < j.frame.GetChannelType();
+			}
+		}
+		else {
+			return i.frame.jointIndex < j.frame.jointIndex;
+		}
+	}
+	else {
+		return i.usedTime < j.usedTime;
+	}
+
+}
 
 struct ModelFile
 {
@@ -168,7 +188,8 @@ struct ModelFile
 	std::vector<VFrame>			tFrames;
 	std::vector<QFrame>			rFrames;
 	std::vector<VFrame>			sFrames;
-	std::vector<ModelAnimFrame> frames;
+	std::vector<ForSortingFrame> frames;
+	std::vector<ModelAnimFrame> orderedFrames;
 
 	int Init(const char* filename)
 	{
@@ -522,7 +543,11 @@ struct ModelFile
 				for (uint32_t iFrame = 0; iFrame < numT; iFrame++)
 				{
 					aiVectorKey& key = chan->mPositionKeys[iFrame];
-					ModelAnimFrame frame;
+
+					ForSortingFrame temp;
+					temp.usedTime = chan->mPositionKeys[iFrame < 2 ? 0 : iFrame - 2].mTime;
+
+					ModelAnimFrame &frame = temp.frame;
 					frame.time = static_cast<float>(key.mTime);
 					frame.jointIndex = boneId;
 					frame.SetChannelType(kChannelTranslation);
@@ -530,14 +555,18 @@ struct ModelFile
 					frame.value.y = key.mValue.y;
 					frame.value.z = key.mValue.z;
 
-					frames.push_back(frame);
+					frames.push_back(temp);
 				}
 
 				// rotation keys
 				for (uint32_t iFrame = 0; iFrame < numT; iFrame++)
 				{
 					aiQuatKey& key = chan->mRotationKeys[iFrame];
-					ModelAnimFrame frame;
+
+					ForSortingFrame temp;
+					temp.usedTime = chan->mRotationKeys[iFrame < 2 ? 0 : iFrame - 2].mTime;
+
+					ModelAnimFrame &frame = temp.frame;
 					frame.time = static_cast<float>(key.mTime);
 					frame.jointIndex = boneId;
 					frame.SetChannelType(kChannelRotation);
@@ -545,14 +574,18 @@ struct ModelFile
 					frame.value.y = key.mValue.y;
 					frame.value.z = key.mValue.z;
 
-					frames.push_back(frame);
+					frames.push_back(temp);
 				}
 
 				// scale keys
 				for (uint32_t iFrame = 0; iFrame < numT; iFrame++)
 				{
-					aiVectorKey& key = chan->mPositionKeys[iFrame];
-					ModelAnimFrame frame;
+					aiVectorKey& key = chan->mScalingKeys[iFrame];
+
+					ForSortingFrame temp;
+					temp.usedTime = chan->mScalingKeys[iFrame < 2 ? 0 : iFrame - 2].mTime;
+
+					ModelAnimFrame &frame = temp.frame;
 					frame.time = static_cast<float>(key.mTime);
 					frame.jointIndex = boneId;
 					frame.SetChannelType(kChannelScale);
@@ -560,15 +593,24 @@ struct ModelFile
 					frame.value.y = key.mValue.y;
 					frame.value.z = key.mValue.z;
 
-					frames.push_back(frame);
+					frames.push_back(temp);
 				}
 			}
 
 			animation.numFrames = frames.size();
 			anims.push_back(animation);
 
-			std::sort(frames.begin() + animation.startFrames, frames.end(), AnimationFrameComp);
+			std::sort(frames.begin() + animation.startFrames, frames.end(), SortingFrameComp);
 		}
+
+		orderedFrames.reserve(frames.size());
+
+		for (auto &frame : frames) {
+			orderedFrames.push_back(std::move(frame.frame));
+		}
+
+		frames.resize(0);
+
 		header.NumAnimChannels = static_cast<uint32_t>(channels.size());
 		header.NumTotalTranslationFrames = static_cast<uint32_t>(tFrames.size());
 		header.NumTotalRotationFrames = static_cast<uint32_t>(rFrames.size());
@@ -597,7 +639,7 @@ struct ModelFile
 		tFrames.insert(tFrames.end(), other.tFrames.begin(), other.tFrames.end());
 		rFrames.insert(rFrames.end(), other.rFrames.begin(), other.rFrames.end());
 		sFrames.insert(sFrames.end(), other.sFrames.begin(), other.sFrames.end());
-		frames.insert(frames.end(), other.frames.begin(), other.frames.end());
+		orderedFrames.insert(orderedFrames.end(), other.orderedFrames.begin(), other.orderedFrames.end());
 
 		for (uint32_t i = 0; i < other.header.NumAnimations; i++)
 		{
@@ -714,7 +756,7 @@ struct ModelFile
 				return __LINE__;
 			}
 
-			if (1 != fwrite(&(frames[0]), sizeof(ModelAnimFrame) * header.NumAnimationFrames, 1, file))
+			if (1 != fwrite(&(orderedFrames[0]), sizeof(ModelAnimFrame) * header.NumAnimationFrames, 1, file))
 			{
 				printf("failed to write frame list to the file.\n");
 				return __LINE__;
