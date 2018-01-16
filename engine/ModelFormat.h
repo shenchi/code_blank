@@ -108,19 +108,6 @@ namespace tofu
 			math::float4x4	offsetMatrix;
 		};
 
-		/*struct JointPose
-		{
-			uint32_t		boneId;
-			math::float3	translation;
-			float			scale;
-			math::quat		quaternion;
-		};
-
-		struct AnimationSamples
-		{
-			JointPose *jointPoses;
-		};*/
-
 		struct ModelAnimation
 		{
 			float			tickCount;
@@ -139,6 +126,7 @@ namespace tofu
 			uint16_t jointIndex = 0;
 
 			// TODO: float compression
+			// https://github.com/Maratyszcza/FP16/blob/master/third-party/float16-compressor.h
 			// https://github.com/guillaumeblanc/ozz-animation/blob/71f622e1480bf76d3cc0da5fe90900dc247234c3/include/ozz/base/maths/internal/simd_math_sse-inl.h
 			//// Payload, which can be a quantized 3d vector or a quantized quaternion
 			//// depending on what type of channel this data belongs to

@@ -8,6 +8,7 @@
 #include <vector>
 #include <unordered_map>
 #include <algorithm>
+#include <math.h> 
 
 #pragma comment (lib, "assimp-vc140-mt.lib")
 
@@ -15,6 +16,7 @@
 
 #include "../../engine/ModelFormat.h"
 #include "../../engine/TofuMath.h"
+#include "../../engine/Compression.h"
 
 using tofu::math::float2;
 using tofu::math::float3;
@@ -35,6 +37,7 @@ typedef std::unordered_map<std::string, uint16_t> BoneTable;
 
 using namespace tofu::math;
 using namespace tofu::model;
+using namespace tofu::compression;
 
 void Basename(char* buf, size_t bufSize, const char* path)
 {
@@ -154,7 +157,7 @@ bool AnimationFrameComp (ModelAnimFrame i, ModelAnimFrame j) { return (i.time <=
 
 bool SortingFrameComp(ForSortingFrame i, ForSortingFrame j) { 
 	if (i.usedTime == j.usedTime) {
-		if (i.frame.jointIndex == j.frame.jointIndex) {
+		if (i.frame.GetJointIndex() == j.frame.GetJointIndex()) {
 			if (i.frame.GetChannelType() == j.frame.GetChannelType()) {
 				return i.frame.time < j.frame.time;
 			}
@@ -163,7 +166,7 @@ bool SortingFrameComp(ForSortingFrame i, ForSortingFrame j) {
 			}
 		}
 		else {
-			return i.frame.jointIndex < j.frame.jointIndex;
+			return i.frame.GetJointIndex() < j.frame.GetJointIndex();
 		}
 	}
 	else {
@@ -453,16 +456,6 @@ struct ModelFile
 				frames.size()
 			};
 
-			/*anims.push_back(Animation
-			{
-				static_cast<float>(anim->mDuration),
-				static_cast<float>(anim->mTicksPerSecond),
-				anim->mNumChannels,
-				static_cast<uint32_t>(channels.size()),
-				frames.size(),
-				
-			});*/
-
 			for (uint32_t iChan = 0; iChan < anim->mNumChannels; iChan++)
 			{
 				aiNodeAnim* chan = anim->mChannels[iChan];
@@ -481,12 +474,6 @@ struct ModelFile
 				uint32_t startT = (0 == numT) ? UINT32_MAX : static_cast<uint32_t>(tFrames.size());
 				uint32_t startR = (0 == numR) ? UINT32_MAX : static_cast<uint32_t>(rFrames.size());
 				uint32_t startS = (0 == numS) ? UINT32_MAX : static_cast<uint32_t>(sFrames.size());
-
-				//if (numT != anim->mDuration + 1 || numT != numR || numT != numS)
-				//{
-				//	printf("Jointpose number error.\n");
-				//	//return __LINE__;
-				//}
 
 				channels.push_back(Channel
 				{
@@ -543,12 +530,13 @@ struct ModelFile
 				for (uint32_t iFrame = 0; iFrame < numT; iFrame++)
 				{
 					aiVectorKey& key = chan->mPositionKeys[iFrame];
+					aiVectorKey& sortKey = chan->mPositionKeys[iFrame < 2 ? 0 : iFrame - 2];
 
 					ForSortingFrame temp;
-					temp.usedTime = chan->mPositionKeys[iFrame < 2 ? 0 : iFrame - 2].mTime;
+					temp.usedTime = static_cast<uint16_t>(round(sortKey.mTime));
 
 					ModelAnimFrame &frame = temp.frame;
-					frame.time = static_cast<float>(key.mTime);
+					frame.time = static_cast<uint16_t>(round(key.mTime));
 					frame.jointIndex = boneId;
 					frame.SetChannelType(kChannelTranslation);
 					frame.value.x = key.mValue.x;
@@ -562,17 +550,23 @@ struct ModelFile
 				for (uint32_t iFrame = 0; iFrame < numT; iFrame++)
 				{
 					aiQuatKey& key = chan->mRotationKeys[iFrame];
+					aiQuatKey& sortKey = chan->mRotationKeys[iFrame < 2 ? 0 : iFrame - 2];
 
 					ForSortingFrame temp;
-					temp.usedTime = chan->mRotationKeys[iFrame < 2 ? 0 : iFrame - 2].mTime;
+					temp.usedTime = static_cast<uint16_t>(round(sortKey.mTime));
 
 					ModelAnimFrame &frame = temp.frame;
-					frame.time = static_cast<float>(key.mTime);
+					frame.time = static_cast<uint16_t>(round(key.mTime));
 					frame.jointIndex = boneId;
 					frame.SetChannelType(kChannelRotation);
-					frame.value.x = key.mValue.x;
-					frame.value.y = key.mValue.y;
-					frame.value.z = key.mValue.z;
+
+					quat q;
+					q.x = key.mValue.x;
+					q.y = key.mValue.y;
+					q.z = key.mValue.z;
+					q.w = key.mValue.w;
+
+					CompressQuaternion(q, *reinterpret_cast<uint32_t*>(&frame.value.x));
 
 					frames.push_back(temp);
 				}
@@ -581,12 +575,13 @@ struct ModelFile
 				for (uint32_t iFrame = 0; iFrame < numT; iFrame++)
 				{
 					aiVectorKey& key = chan->mScalingKeys[iFrame];
+					aiVectorKey& sortKey = chan->mScalingKeys[iFrame < 2 ? 0 : iFrame - 2];
 
 					ForSortingFrame temp;
-					temp.usedTime = chan->mScalingKeys[iFrame < 2 ? 0 : iFrame - 2].mTime;
+					temp.usedTime = static_cast<uint16_t>(round(sortKey.mTime));
 
 					ModelAnimFrame &frame = temp.frame;
-					frame.time = static_cast<float>(key.mTime);
+					frame.time = static_cast<uint16_t>(round(key.mTime));
 					frame.jointIndex = boneId;
 					frame.SetChannelType(kChannelScale);
 					frame.value.x = key.mValue.x;
@@ -615,7 +610,7 @@ struct ModelFile
 		header.NumTotalTranslationFrames = static_cast<uint32_t>(tFrames.size());
 		header.NumTotalRotationFrames = static_cast<uint32_t>(rFrames.size());
 		header.NumTotalScaleFrames = static_cast<uint32_t>(sFrames.size());
-		header.NumAnimationFrames = static_cast<uint32_t>(frames.size());
+		header.NumAnimationFrames = static_cast<uint32_t>(orderedFrames.size());
 
 		return 0;
 	}
@@ -670,7 +665,7 @@ struct ModelFile
 		header.NumTotalTranslationFrames = static_cast<uint32_t>(tFrames.size());
 		header.NumTotalRotationFrames = static_cast<uint32_t>(rFrames.size());
 		header.NumTotalScaleFrames = static_cast<uint32_t>(sFrames.size());
-		header.NumAnimationFrames = static_cast<uint32_t>(frames.size());
+		header.NumAnimationFrames = static_cast<uint32_t>(orderedFrames.size());
 
 		return 0;
 	}

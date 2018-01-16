@@ -658,6 +658,19 @@ namespace tofu
 			return (std::sinf((1.0f - t) * omega) * a + std::sinf(t * omega) * c) / std::sinf(omega);
 		}
 
+		TF_INLINE float norm(quat q)
+		{
+			return sqrt(q.x * q.x +
+				q.y * q.y +
+				q.z * q.z +
+				q.w * q.w);
+		}
+
+		TF_INLINE quat normalize(quat q)
+		{
+			return q / norm(q);
+		}
+
 		// float4x4
 
 		// row vector
@@ -861,6 +874,5 @@ namespace tofu
 				float4{ 0.0f, 0.0f, 1.0, 0.0f }
 			};
 		}
-
 	}
 }

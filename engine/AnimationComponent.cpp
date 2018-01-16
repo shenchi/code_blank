@@ -5,8 +5,11 @@
 #include "Transform.h"
 #include "RenderingComponent.h"
 #include <algorithm>
+#include "Compression.h"
 
 #include <cassert>
+
+using namespace tofu::model;
 
 namespace tofu
 {
@@ -35,6 +38,7 @@ namespace tofu
 
 		lastAnimationTime = currentTime;
 		currentTime = 0.0f;
+		ResetCaches();
 
 		// start cross fading, set cross fading speed
 		crossFadeFactor = 1.0f;
@@ -57,9 +61,23 @@ namespace tofu
 
 		model::ModelAnimation& anim = model->animations[currentAnimation];
 
+		// TODO: scale time || uint_16 ticks
 		// convert time in seconds to ticks
 		ticks = currentTime * anim.ticksPerSecond;
-		ticks = std::fmodf(ticks, anim.tickCount);
+
+		// TODO: Add loop to animation
+		bool loop = true;
+
+		if (ticks > anim.tickCount - 1.f) {
+			if (loop) {
+				ticks = std::fmodf(ticks, anim.tickCount - 1.f);
+				ResetCaches();
+			}
+			else {
+				// end of animation
+				// event?
+			}
+		}
 	}
 
 	int32_t AnimationComponentData::FillInBoneMatrices(void* buffer, uint32_t bufferSize)
@@ -85,20 +103,114 @@ namespace tofu
 			matrices[i] = model->bones[i].transform;
 		}
 
-		// update bone matrices for each channel
-		for (uint32_t i = 0; i < anim.numChannels; i++)
+		//// update bone matrices for each channel
+		//for (uint32_t i = 0; i < anim.numChannels; i++)
+		//{
+		//	model::ModelAnimChannel& chan = model->channels[anim.startChannelId + i];
+
+		//	uint16_t boneId = chan.boneId;
+
+		//	// get interlopated matrix
+		//	Transform t;
+		//	t.SetTranslation(SampleFrame(model->translationFrames, chan.startTranslationFrame, chan.numTranslationFrame, ticks));
+		//	t.SetRotation(SampleFrame(model->rotationFrames, chan.startRotationFrame, chan.numRotationFrame, ticks));
+		//	t.SetScale(SampleFrame(model->scaleFrames, chan.startScaleFrame, chan.numScaleFrame, ticks));
+
+		//	matrices[boneId] = t.GetMatrix();
+
+		//	traVector[boneId] = SampleFrame(model->translationFrames, chan.startTranslationFrame, chan.numTranslationFrame, ticks);
+		//}
+
+		UpdateCache();
+
+		for (uint16_t i = 0; i < model->header->NumBones; i++)
 		{
-			model::ModelAnimChannel& chan = model->channels[anim.startChannelId + i];
+			AnimationFrameCache &cache = caches[i];
 
-			uint16_t boneId = chan.boneId;
+			if (cache.indices[kChannelTranslation][3] == SIZE_MAX &&
+				cache.indices[kChannelRotation][3] == SIZE_MAX &&
+				cache.indices[kChannelScale][3] == SIZE_MAX) {
+				continue;
+			}
 
-			// get interlopated matrix
-			Transform t;
-			t.SetTranslation(SampleFrame(model->translationFrames, chan.startTranslationFrame, chan.numTranslationFrame, ticks));
-			t.SetRotation(SampleFrame(model->rotationFrames, chan.startRotationFrame, chan.numRotationFrame, ticks));
-			t.SetScale(SampleFrame(model->scaleFrames, chan.startScaleFrame, chan.numScaleFrame, ticks));
+			Transform trans;
 
-			matrices[boneId] = t.GetMatrix();
+			// TODO: Spline calculation 
+			/*if (cache.indices[kChannelTranslation][0] != SIZE_MAX) {
+
+			}
+			else if (cache.indices[kChannelTranslation][1] != SIZE_MAX)*/ 
+				
+			if (cache.indices[kChannelTranslation][1] != SIZE_MAX 
+				&& model->frames[cache.indices[kChannelTranslation][1]].time <= ticks) {
+
+				trans.SetTranslation(
+					LerpFromFrameIndex(
+						cache.indices[kChannelTranslation][1], 
+						cache.indices[kChannelTranslation][2]
+					));
+			}
+			else if (cache.indices[kChannelTranslation][2] != SIZE_MAX) {
+				trans.SetTranslation(
+					LerpFromFrameIndex(
+						cache.indices[kChannelTranslation][2],
+						cache.indices[kChannelTranslation][3]
+					));
+			}
+			else if (cache.indices[kChannelTranslation][3] != SIZE_MAX) {
+				trans.SetTranslation(model->frames[cache.indices[kChannelTranslation][3]].value);
+			}
+
+			// Rotation
+			if (cache.indices[kChannelRotation][1] != SIZE_MAX
+				&& model->frames[cache.indices[kChannelRotation][1]].time <= ticks) {
+
+				trans.SetRotation(
+					SlerpFromFrameIndex(
+						cache.indices[kChannelRotation][1],
+						cache.indices[kChannelRotation][2]
+					));
+
+			}
+			else if (cache.indices[kChannelRotation][2] != SIZE_MAX) {
+				trans.SetRotation(
+					SlerpFromFrameIndex(
+						cache.indices[kChannelRotation][2],
+						cache.indices[kChannelRotation][3]
+					));
+
+			}
+			else if (cache.indices[kChannelRotation][3] != SIZE_MAX) {
+				math::quat q;
+				math::float3 &compress = model->frames[cache.indices[kChannelTranslation][3]].value;
+
+				tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&compress.x), q);
+
+				trans.SetRotation(q);
+			}
+
+			// Scale
+			if (cache.indices[kChannelScale][1] != SIZE_MAX
+				&& model->frames[cache.indices[kChannelScale][1]].time <= ticks) {
+
+				trans.SetScale(
+					LerpFromFrameIndex(
+						cache.indices[kChannelScale][1],
+						cache.indices[kChannelScale][2]
+					));
+			}
+			else if (cache.indices[kChannelScale][2] != SIZE_MAX) {
+				trans.SetScale(
+					LerpFromFrameIndex(
+						cache.indices[kChannelScale][2],
+						cache.indices[kChannelScale][3]
+					));
+			}
+			else if (cache.indices[kChannelScale][3] != SIZE_MAX) {
+				trans.SetScale(model->frames[cache.indices[kChannelScale][3]].value);
+			}
+
+			matrices[i] = trans.GetMatrix();
 		}
 
 		// if we are cross fading
@@ -196,44 +308,91 @@ namespace tofu
 		return math::quat();
 	}
 
+	math::float3 AnimationComponentData::LerpFromFrameIndex(size_t lhs, size_t rhs)
+	{
+		ModelAnimFrame& fa = model->frames[lhs];
+		ModelAnimFrame& fb = model->frames[rhs];
+
+		float t = (ticks - fa.time) / (fb.time - fa.time);
+		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
+
+		return math::mix(fa.value, fb.value, t);
+	}
+
+	math::quat AnimationComponentData::SlerpFromFrameIndex(size_t lhs, size_t rhs)
+	{
+		ModelAnimFrame& fa = model->frames[lhs];
+		ModelAnimFrame& fb = model->frames[rhs];
+
+		float t = (ticks - fa.time) / (fb.time - fa.time);
+		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
+
+		math::quat a, b;
+
+		tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&fa.value.x), a);
+		tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&fb.value.x), b);
+
+		return math::slerp(a, b, t);
+	}
+
 	void AnimationComponentData::UpdateCache()
 	{
-		int updateNums[3];
-
-		auto *frames = model->frames;
-
-		cursor = std::min(std::min(caches[0][3], caches[1][3]), caches[2][3]);
-
-		// Animation start
-		if (cursor == 0) {
-			updateNums[0] = updateNums[1] = updateNums[2] = 4;
+		// TODO: backward update cache
+		if (cursor == model->animations[currentAnimation].numFrames) {
+			return;
 		}
-		else {
-			for (int type = 0; type < 3; type++) {
-				for (int i = 2; i < 4; i++) {
 
-					// Tick pass
-					if (frames[caches[type][i]].time < ticks) {
-						updateNums[type]++;
-					}
-				}
+		// prevent load-hit-store
+		size_t tempCursor = cursor;
+
+		std::vector<ModelAnimFrame> test;
+
+		for (int i = 0; i <= model->header->NumAnimationFrames; i++) {
+			test.push_back(model->frames[i]);
+		}
+
+		while (tempCursor < model->animations[currentAnimation].numFrames) {
+			uint32_t frameIndex = tempCursor + model->animations[currentAnimation].startFrames;
+			ModelAnimFrame &frame = model->frames[frameIndex];
+			AnimationFrameCache &cache = caches[frame.GetJointIndex()];
+
+			size_t cacheIndex = cache.indices[frame.GetChannelType()][2];
+
+			if (cacheIndex == SIZE_MAX || model->frames[cacheIndex].time <= ticks) {
+				cache.AddFrameIndex(frame.GetChannelType(), frameIndex);
+				tempCursor++;
+			}
+			else {
+				break;
 			}
 		}
-		
-		while (!(updateNums[0] == 0 && updateNums[1] == 0 && updateNums[2] == 0) && cursor < model->header->NumAnimationFrames) {
-			
-			auto type = frames[cursor].GetChannelType();
+		cursor = tempCursor;
+	}
 
-			if (updateNums[type] > 0) {
-				updateNums[type]--;
+	void AnimationComponentData::ResetCaches() {
+		cursor = 0;
 
-				caches[type][0] = caches[type][1];
-				caches[type][1] = caches[type][2];
-				caches[type][2] = caches[type][3];
-				caches[type][3] = cursor;
-			}
-
-			cursor++;
+		for (uint16_t i = 0; i < model->header->NumBones; i++) {
+			caches[i] = AnimationFrameCache();
 		}
+	}
+
+	void AnimationFrameCache::Reset()
+	{
+		// Assume channel numbers = 3
+		for (int i = 0; i < 3; i++) {
+			indices[i][0] = SIZE_MAX;
+			indices[i][1] = SIZE_MAX;
+			indices[i][2] = SIZE_MAX;
+			indices[i][3] = SIZE_MAX;
+		}
+	}
+
+	void AnimationFrameCache::AddFrameIndex(model::ChannelType type, size_t index)
+	{
+		indices[type][0] = indices[type][1];
+		indices[type][1] = indices[type][2];
+		indices[type][2] = indices[type][3];
+		indices[type][3] = index;
 	}
 }
