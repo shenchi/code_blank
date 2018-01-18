@@ -201,7 +201,7 @@ struct ModelFile
 		unsigned int flags = aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_CalcTangentSpace
 			| aiProcess_LimitBoneWeights | aiProcess_ValidateDataStructure;
 
-		bool bConvertToLeftHanded = false;
+		bool bConvertToLeftHanded = true;
 		bool bStructureOfArray = false;
 
 		if (bConvertToLeftHanded)
