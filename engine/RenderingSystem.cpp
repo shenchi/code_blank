@@ -583,6 +583,17 @@ namespace tofu
 		uint8_t* vertices = reinterpret_cast<uint8_t*>(meshInfos + header->NumMeshes);
 		uint8_t* indices = vertices + vertexBufferSize;
 
+		for (uint32_t i = 0; i < header->NumMeshes; ++i)
+		{
+			uint32_t id = model.meshes[i].id;
+			model.numVertices[i] = meshes[id].NumVertices;
+			model.numIndices[i] = meshes[id].NumIndices;
+			model.vertices[i] = reinterpret_cast<float*>(
+				vertices + meshes[id].StartVertex * model.vertexSize);
+			model.indices[i] = reinterpret_cast<uint16_t*>(
+				indices + meshes[id].StartIndex * sizeof(uint16_t));
+		}
+
 		// keep pointers to bone and animation structures
 		if (header->NumBones > 0)
 		{

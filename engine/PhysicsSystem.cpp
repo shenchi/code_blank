@@ -1,11 +1,11 @@
 #include "PhysicsSystem.h"
 
 #include "Engine.h"
+#include "RenderingSystem.h"
 #include "PhysicsComponent.h"
 #include "TransformComponent.h"
 
 #include <btBulletDynamicsCommon.h>
-
 
 namespace
 {
@@ -18,6 +18,97 @@ namespace
 	{
 		return btQuaternion(q.x, q.y, q.z, q.w);
 	}
+
+	class TofuMeshAdaptor : public btStridingMeshInterface
+	{
+	public:
+		TofuMeshAdaptor(tofu::Model* model) : model(model) {}
+
+		virtual void getLockedVertexIndexBase(
+			unsigned char **vertexbase, 
+			int& numverts, 
+			PHY_ScalarType& type, 
+			int& stride, 
+			unsigned char **indexbase, 
+			int & indexstride, 
+			int& numfaces, 
+			PHY_ScalarType& indicestype, 
+			int subpart = 0
+		) override
+		{
+			*vertexbase = nullptr;
+			numverts = 0;
+			type = PHY_FLOAT;
+			stride = model->GetStride();
+			*indexbase = nullptr;
+			indexstride = 3;
+			numfaces = 0;
+			indicestype = PHY_SHORT;
+		}
+
+		virtual void getLockedReadOnlyVertexIndexBase(
+			const unsigned char **vertexbase, 
+			int& numverts, 
+			PHY_ScalarType& type, 
+			int& stride, 
+			const unsigned char **indexbase, 
+			int & indexstride, 
+			int& numfaces, 
+			PHY_ScalarType& indicestype, 
+			int subpart = 0
+		) const override
+		{
+			*vertexbase = nullptr;
+			numverts = 0;
+			type = PHY_FLOAT;
+			stride = model->GetStride();
+			*indexbase = nullptr;
+			indexstride = 3;
+			numfaces = 0;
+			indicestype = PHY_SHORT;
+
+			if (subpart < static_cast<int>(model->GetNumMeshes()))
+			{
+				*vertexbase = reinterpret_cast<const unsigned char*>(
+					model->GetVertices(subpart)
+					);
+				*indexbase = reinterpret_cast<const unsigned char*>(
+					model->GetIndices(subpart)
+					);
+
+				numverts = static_cast<int>(model->GetNumVertices(subpart));
+				numfaces = static_cast<int>(model->GetNumIndices(subpart)) / 3;
+			}
+		}
+
+		virtual void unLockVertexBase(int subpart) override
+		{
+
+		}
+
+		virtual void unLockReadOnlyVertexBase(int subpart) const override
+		{
+
+		}
+
+		virtual int	getNumSubParts() const override
+		{
+			return static_cast<int>(model->GetNumMeshes());
+		}
+
+		virtual void preallocateVertices(int numverts) override
+		{
+
+		}
+
+		virtual void preallocateIndices(int numindices) override
+		{
+
+		}
+
+	private:
+		tofu::Model * model;
+	};
 }
 
 namespace tofu
@@ -62,6 +153,11 @@ namespace tofu
 				{
 					delete comp.collider;
 					comp.collider = nullptr;
+				}
+				if (nullptr != comp.meshInterface)
+				{
+					delete reinterpret_cast<TofuMeshAdaptor*>(comp.meshInterface);
+					comp.meshInterface = nullptr;
 				}
 			}
 		}
@@ -114,6 +210,11 @@ namespace tofu
 					delete comp.collider;
 					comp.collider = nullptr;
 				}
+				if (nullptr != comp.meshInterface)
+				{
+					delete reinterpret_cast<TofuMeshAdaptor*>(comp.meshInterface);
+					comp.meshInterface = nullptr;
+				}
 
 				{
 					math::quat rot = t->GetWorldRotation();
@@ -137,6 +238,12 @@ namespace tofu
 						break;
 					case ColliderType::kColliderTypeCylinder:
 						comp.collider = new btCylinderShape(btVec3(comp.colliderDesc.halfExtends));
+						break;
+					case ColliderType::kColliderTypeMesh:
+						if (!comp.isStatic)
+							return kErrUnknown;
+						comp.meshInterface = new TofuMeshAdaptor(comp.colliderDesc.model);
+						comp.collider = new btBvhTriangleMeshShape(comp.meshInterface, false);
 						break;
 					}
 
@@ -165,17 +272,17 @@ namespace tofu
 					{
 						comp.rigidbody->setLinearFactor(
 							btVector3(
-								comp.lockPosX ? 0 : 1,
-								comp.lockPosY ? 0 : 1,
-								comp.lockPosZ ? 0 : 1
+								comp.lockPosX ? 0.0f : 1.0f,
+								comp.lockPosY ? 0.0f : 1.0f,
+								comp.lockPosZ ? 0.0f : 1.0f
 							)
 						);
 
 						comp.rigidbody->setAngularFactor(
 							btVector3(
-								comp.lockRotX ? 0 : 1,
-								comp.lockRotY ? 0 : 1,
-								comp.lockRotZ ? 0 : 1
+								comp.lockRotX ? 0.0f : 1.0f,
+								comp.lockRotY ? 0.0f : 1.0f,
+								comp.lockRotZ ? 0.0f : 1.0f
 							)
 						);
 					}

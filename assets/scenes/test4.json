@@ -72,6 +72,21 @@
                 "Wall2"
               ],
               "type": "renderable"
+            },
+            {
+              "colliderType": "mesh",
+              "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "size": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "model": "models/Decor_Doorframe_Single.model",
+              "type": "physics"
             }
           ],
           "children": null
@@ -103,6 +118,21 @@
                 "Wall2"
               ],
               "type": "renderable"
+            },
+            {
+              "colliderType": "mesh",
+              "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "size": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "model": "models/Decor_Doorframe_Single.model",
+              "type": "physics"
             }
           ],
           "children": null
@@ -134,6 +164,21 @@
                 "Floor1"
               ],
               "type": "renderable"
+            },
+            {
+              "colliderType": "mesh",
+              "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "size": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "model": "models/FloorTile_Slab_10x10.model",
+              "type": "physics"
             }
           ],
           "children": null
@@ -166,6 +211,21 @@
                 "Wall1"
               ],
               "type": "renderable"
+            },
+            {
+              "colliderType": "mesh",
+              "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "size": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "model": "models/Room_Mid_Ramp1.model",
+              "type": "physics"
             }
           ],
           "children": null
@@ -198,6 +258,21 @@
                 "Wall1"
               ],
               "type": "renderable"
+            },
+            {
+              "colliderType": "mesh",
+              "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "size": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "model": "models/Room_Mid_Ramp1.model",
+              "type": "physics"
             }
           ],
           "children": null
@@ -230,6 +305,21 @@
                 "Wall2"
               ],
               "type": "renderable"
+            },
+            {
+              "colliderType": "box",
+              "center": {
+                "x": -5.0,
+                "y": 0.2000002,
+                "z": -4.99999952
+              },
+              "size": {
+                "x": 10.0,
+                "y": 0.400000632,
+                "z": 9.999999
+              },
+              "model": null,
+              "type": "physics"
             }
           ],
           "children": null
@@ -262,6 +352,21 @@
                 "Floor1"
               ],
               "type": "renderable"
+            },
+            {
+              "colliderType": "mesh",
+              "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "size": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "model": "models/Room_Mid_Roof_Stair1.model",
+              "type": "physics"
             }
           ],
           "children": null
@@ -294,6 +399,21 @@
                 "Floor1"
               ],
               "type": "renderable"
+            },
+            {
+              "colliderType": "mesh",
+              "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "size": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "model": "models/Room_Mid_Roof_Stair1.model",
+              "type": "physics"
             }
           ],
           "children": null
@@ -326,6 +446,21 @@
                 "Wall1_Halfblock"
               ],
               "type": "renderable"
+            },
+            {
+              "colliderType": "mesh",
+              "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "size": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "model": "models/Room_Mid_Wall.model",
+              "type": "physics"
             }
           ],
           "children": null
@@ -358,6 +493,21 @@
                 "Wall1_Halfblock"
               ],
               "type": "renderable"
+            },
+            {
+              "colliderType": "mesh",
+              "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "size": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "model": "models/Room_Mid_Wall.model",
+              "type": "physics"
             }
           ],
           "children": null
@@ -390,6 +540,21 @@
                 "Wall1_Halfblock"
               ],
               "type": "renderable"
+            },
+            {
+              "colliderType": "mesh",
+              "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "size": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "model": "models/Room_Mid_Wall.model",
+              "type": "physics"
             }
           ],
           "children": null
@@ -422,6 +587,21 @@
                 "Wall1_Halfblock"
               ],
               "type": "renderable"
+            },
+            {
+              "colliderType": "mesh",
+              "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "size": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "model": "models/Room_Mid_Wall.model",
+              "type": "physics"
             }
           ],
           "children": null
@@ -454,6 +634,21 @@
                 "Wall1_Halfblock"
               ],
               "type": "renderable"
+            },
+            {
+              "colliderType": "mesh",
+              "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "size": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "model": "models/Room_Mid_Wall.model",
+              "type": "physics"
             }
           ],
           "children": null
@@ -486,6 +681,21 @@
                 "Wall1_Halfblock"
               ],
               "type": "renderable"
+            },
+            {
+              "colliderType": "mesh",
+              "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "size": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "model": "models/Room_Mid_Wall.model",
+              "type": "physics"
             }
           ],
           "children": null
@@ -518,6 +728,21 @@
                 "Wall1_Halfblock"
               ],
               "type": "renderable"
+            },
+            {
+              "colliderType": "mesh",
+              "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "size": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "model": "models/Room_Mid_Wall.model",
+              "type": "physics"
             }
           ],
           "children": null
@@ -550,6 +775,21 @@
                 "Wall1_Halfblock"
               ],
               "type": "renderable"
+            },
+            {
+              "colliderType": "mesh",
+              "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "size": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "model": "models/Room_Mid_Wall.model",
+              "type": "physics"
             }
           ],
           "children": null
@@ -582,6 +822,21 @@
                 "Wall1_Halfblock"
               ],
               "type": "renderable"
+            },
+            {
+              "colliderType": "mesh",
+              "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "size": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "model": "models/Room_Mid_Wall_Door.model",
+              "type": "physics"
             }
           ],
           "children": null
@@ -614,6 +869,21 @@
                 "Wall1"
               ],
               "type": "renderable"
+            },
+            {
+              "colliderType": "mesh",
+              "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "size": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "model": "models/Room_Mid_Wall_Window.model",
+              "type": "physics"
             }
           ],
           "children": null
@@ -646,6 +916,21 @@
                 "Wall1"
               ],
               "type": "renderable"
+            },
+            {
+              "colliderType": "mesh",
+              "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "size": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "model": "models/Room_Mid_Wall_Window.model",
+              "type": "physics"
             }
           ],
           "children": null
@@ -678,6 +963,21 @@
                 "Wall1"
               ],
               "type": "renderable"
+            },
+            {
+              "colliderType": "mesh",
+              "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "size": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "model": "models/Room_Mid_Wall_Window.model",
+              "type": "physics"
             }
           ],
           "children": null
