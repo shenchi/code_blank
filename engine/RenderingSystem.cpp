@@ -582,6 +582,16 @@ namespace tofu
 		if (header->NumBones > 0)
 		{
 			model.bones = reinterpret_cast<model::ModelBone*>(indices + indexBufferSize);
+			
+#ifdef TOFU_USE_GLM
+			// transpose matrix, model convertor is using row-major layout
+			for (uint32_t iBone = 0; iBone < header->NumBones; iBone++)
+			{
+				model.bones[iBone].transform = math::transpose(model.bones[iBone].transform);
+				model.bones[iBone].offsetMatrix = math::transpose(model.bones[iBone].offsetMatrix);
+			}
+#endif
+			
 			if (header->HasAnimation)
 			{
 				model.animations = reinterpret_cast<model::ModelAnimation*>(

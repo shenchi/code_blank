@@ -1,6 +1,6 @@
 #pragma once
 
-//#define TOFU_USE_GLM
+#define TOFU_USE_GLM
 
 #if defined(TOFU_FORCE_GLM)
 
