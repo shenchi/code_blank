@@ -14,7 +14,9 @@ namespace tofu
 	{
 		friend class RenderingSystem;
 		friend class AnimationComponentData;
+
 	public:
+		Model() :animationTable(model::AnimationTable()) {}
 
 		TF_INLINE bool HasAnimation() const { return header->HasAnimation; }
 
@@ -26,6 +28,7 @@ namespace tofu
 		model::ModelHeader*			header;
 		model::ModelBone*			bones;
 		model::ModelAnimation*		animations;
+		model::AnimationTable		animationTable;
 		model::ModelAnimChannel*	channels;
 		model::ModelFloat3Frame*	translationFrames;
 		model::ModelQuatFrame*		rotationFrames;

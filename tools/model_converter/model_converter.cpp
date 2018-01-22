@@ -153,7 +153,10 @@ uint32_t loadBoneHierarchy(aiNode* node, BoneTree& bones, BoneTable& table, uint
 	return boneId;
 }
 
-bool AnimationFrameComp (ModelAnimFrame i, ModelAnimFrame j) { return (i.time <= j.time); }
+struct ForSortingFrame {
+	uint16_t usedTime;
+	ModelAnimFrame frame;
+};
 
 bool SortingFrameComp(ForSortingFrame i, ForSortingFrame j) { 
 	if (i.usedTime == j.usedTime) {
@@ -449,12 +452,16 @@ struct ModelFile
 			aiAnimation* anim = scene->mAnimations[iAnim];
 
 			Animation animation = {
+				"",
 				static_cast<float>(anim->mDuration),
 				static_cast<float>(anim->mTicksPerSecond),
 				anim->mNumChannels,
 				static_cast<uint32_t>(channels.size()),
 				frames.size()
 			};
+
+			strncpy(animation.name, anim->mName.C_Str(), 127);
+			animation.name[127] = 0;
 
 			for (uint32_t iChan = 0; iChan < anim->mNumChannels; iChan++)
 			{
@@ -692,7 +699,6 @@ struct ModelFile
 			printf("failed to write mesh data.\n");
 			return __LINE__;
 		}
-
 
 		// write vertices to file
 		if (1 != fwrite(&vertices[0], header.CalculateVertexSize() * numVertices, 1, file))

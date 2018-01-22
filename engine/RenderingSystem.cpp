@@ -588,6 +588,10 @@ namespace tofu
 					model.bones + header->NumBones
 					);
 
+				for (uint16_t i = 0; i < header->NumAnimations; i++) {
+					model.animationTable[model.animations[i].name] = i;
+				}
+
 				model.channels = reinterpret_cast<model::ModelAnimChannel*>(
 					model.animations + header->NumAnimations
 					);
