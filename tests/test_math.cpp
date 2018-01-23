@@ -1,3 +1,4 @@
+#define TOFU_FORCE_NOT_GLM
 #include "../engine/TofuMath.h"
 
 #define GLM_FORCE_RADIANS 1

@@ -22,6 +22,7 @@
 #define GLM_FORCE_LEFT_HANDED
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #else // TOFU_USE_GLM
 
@@ -80,36 +81,45 @@ namespace tofu
 				cy * cp * sr - sy * sp * cr);
 		}
 
-		//// apply in order of scale, rotation, translation
-		//TF_INLINE float4x4 transform(const float3& t, const quat& r, const float3& s)
-		//{
+		TF_INLINE float4x4 lookTo(const float3& position, const float3& direction, const float3& up)
+		{
+			float3 z = normalize(direction);
+			float3 x = normalize(cross(normalize(up), z));
+			float3 y = cross(z, x);
+			
+			return float4x4{
+				float4{ x.x, y.x, z.x, 0.0f },
+				float4{ x.y, y.y, z.y, 0.0f },
+				float4{ x.z, y.z, z.z, 0.0f },
+				float4{ -dot(x, position), -dot(y, position), -dot(z, position), 1.0f }
+			};
+		}
 
-		//	float a_sqr = r.w * r.w;
-		//	float b_sqr = r.x * r.x;
-		//	float c_sqr = r.y * r.y;
-		//	float d_sqr = r.z * r.z;
+		// apply in order of scale, rotation, translation
+		TF_INLINE float4x4 transform(const float3& t, const quat& r, const float3& s)
+		{
 
-		//	float a_b_2 = r.w * r.x * 2;
-		//	float a_c_2 = r.w * r.y * 2;
-		//	float a_d_2 = r.w * r.z * 2;
+			float a_sqr = r.w * r.w;
+			float b_sqr = r.x * r.x;
+			float c_sqr = r.y * r.y;
+			float d_sqr = r.z * r.z;
 
-		//	float b_c_2 = r.x * r.y * 2;
-		//	float b_d_2 = r.x * r.z * 2;
+			float a_b_2 = r.w * r.x * 2;
+			float a_c_2 = r.w * r.y * 2;
+			float a_d_2 = r.w * r.z * 2;
 
-		//	float c_d_2 = r.y * r.z * 2;
+			float b_c_2 = r.x * r.y * 2;
+			float b_d_2 = r.x * r.z * 2;
 
-		//	return float4x4(
-		//		s.x * (a_sqr + b_sqr - c_sqr - d_sqr), s.y * (b_c_2 - a_d_2), s.z * (a_c_2 + b_d_2), t.x,
-		//		s.x * (a_d_2 + b_c_2), s.y * (a_sqr - b_sqr + c_sqr - d_sqr), s.z * (c_d_2 - a_b_2), t.y,
-		//		s.x * (b_d_2 - a_c_2), s.y * (a_b_2 + c_d_2), s.z * (a_sqr - b_sqr - c_sqr + d_sqr), t.z,
-		//		0.0f, 0.0f, 0.0f, 1.0f
-		//	);
-		//}
+			float c_d_2 = r.y * r.z * 2;
 
-		//TF_INLINE float4x4 lookTo(const float3& position, const float3& direction, const float3& up)
-		//{
-		//	return lookAt(position, position + direction, up);
-		//}
+			return float4x4{
+				float4{ s.x * (a_sqr + b_sqr - c_sqr - d_sqr), s.x * (a_d_2 + b_c_2), s.x * (b_d_2 - a_c_2), 0.0f },
+				float4{ s.y * (b_c_2 - a_d_2), s.y * (a_sqr - b_sqr + c_sqr - d_sqr), s.y * (a_b_2 + c_d_2), 0.0f },
+				float4{ s.z * (a_c_2 + b_d_2),  s.z * (c_d_2 - a_b_2), s.z * (a_sqr - b_sqr - c_sqr + d_sqr), 0.0f },
+				float4{ t.x, t.y, t.z, 1.0f }
+			};
+		}
 
 #else
 
@@ -507,7 +517,7 @@ namespace tofu
 				x(v.x), y(v.y), z(v.z), w(v.w)
 			{ }
 
-			TF_INLINE quat(float _x, float _y, float _z, float _w)
+			TF_INLINE quat(float _w, float _x, float _y, float _z)
 				:
 				x(_x), y(_y), z(_z), w(_w)
 			{ }
@@ -533,10 +543,10 @@ namespace tofu
 			TF_INLINE quat operator* (const quat& b) const
 			{
 				return quat{
-					x * b.w + y * b.z - z * b.y + w * b.x,
-					-x * b.z + y * b.w + z * b.x + w * b.y,
-					x * b.y - y * b.x + z * b.w + w * b.z,
-					-x * b.x - y * b.y - z * b.z + w * b.w
+					-x * b.x - y * b.y - z * b.z + w * b.w, // w
+					x * b.w + y * b.z - z * b.y + w * b.x,  // x
+					-x * b.z + y * b.w + z * b.x + w * b.y, // y
+					x * b.y - y * b.x + z * b.w + w * b.z   // z 
 				};
 			}
 
@@ -548,7 +558,7 @@ namespace tofu
 
 		TF_INLINE quat conjugate(const quat& q)
 		{
-			return quat(-q.x, -q.y, -q.z, q.w);
+			return quat(q.w, -q.x, -q.y, -q.z);
 		}
 
 		TF_INLINE float dot(const quat& a, const quat& b)
@@ -563,39 +573,39 @@ namespace tofu
 
 		TF_INLINE quat operator+ (const quat& a, const quat& b)
 		{
-			return quat{ a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w };
+			return quat(a.w + b.w, a.x + b.x, a.y + b.y, a.z + b.z);
 		}
 
 		TF_INLINE quat operator- (const quat& a, const quat& b)
 		{
-			return quat{ a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w };
+			return quat(a.w - b.w, a.x - b.x, a.y - b.y, a.z - b.z);
 		}
 
 		TF_INLINE quat operator- (const quat& a)
 		{
-			return quat{ -a.x,  -a.y,  -a.z,  -a.w };
+			return quat(-a.w, -a.x, -a.y, -a.z);
 		}
 
 		TF_INLINE float3 operator* (const quat& q, const float3& v)
 		{
-			quat v4{ v.x, v.y, v.z, 0.0f };
+			quat v4{ 0.0f, v.x, v.y, v.z };
 			v4 = (q * v4) * conjugate(q);
 			return float3{ v4.x, v4.y, v4.z };
 		}
 
 		TF_INLINE quat operator* (const quat& q, float f)
 		{
-			return quat{ f * q.x, f * q.y, f * q.z, f * q.w };
+			return quat{ f * q.w, f * q.x, f * q.y, f * q.z };
 		}
 
 		TF_INLINE quat operator* (float f, const quat& q)
 		{
-			return quat{ f * q.x, f * q.y, f * q.z, f * q.w };
+			return quat{ f * q.w, f * q.x, f * q.y, f * q.z};
 		}
 
 		TF_INLINE quat operator/ (const quat& q, float f)
 		{
-			return quat{ q.x / f, q.y / f, q.z / f, q.w / f };
+			return quat{ q.w / f, q.x / f, q.y / f, q.z / f };
 		}
 
 		TF_INLINE quat angleAxis(float theta, const float3& axis)
@@ -606,7 +616,7 @@ namespace tofu
 			//y = s * axis.y;
 			//z = s * axis.z;
 			//w = c;
-			return quat(s * axis.x, s * axis.y, s * axis.z, c);
+			return quat(c, s * axis.x, s * axis.y, s * axis.z);
 		}
 
 		// order : roll, pitch, yaw
@@ -625,10 +635,11 @@ namespace tofu
 			//w =	sy * sp * sr + cy * cp * cr;
 
 			return quat(
+				sy * sp * sr + cy * cp * cr,
 				sy * cp * sr + cy * sp * cr,
 				sy * cp * cr - cy * sp * sr,
-				cy * cp * sr - sy * sp * cr,
-				sy * sp * sr + cy * cp * cr);
+				cy * cp * sr - sy * sp * cr
+				);
 		}
 
 		TF_INLINE quat mix(const quat& a, const quat& b, float t)
@@ -738,9 +749,6 @@ namespace tofu
 				float4{ 0.0f, 0.0f, 0.0f, 1.0f }
 			};
 		}
-
-
-#endif
 
 		TF_INLINE float4x4 translate(const float3& t)
 		{
@@ -874,5 +882,7 @@ namespace tofu
 				float4{ 0.0f, 0.0f, 1.0, 0.0f }
 			};
 		}
+
+#endif
 	}
 }

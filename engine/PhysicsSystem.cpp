@@ -249,7 +249,7 @@ namespace tofu
 			btQuaternion btRot = btTrans.getRotation();
 
 			math::float3 pos{ float(btPos.x()), float(btPos.y()), float(btPos.z()) };
-			math::quat rot(float(btRot.x()), float(btRot.y()), float(btRot.z()), float(btRot.w()));
+			math::quat rot(float(btRot.w()), float(btRot.x()), float(btRot.y()), float(btRot.z()));
 			pos -= rot * (comp.colliderDesc.origin);
 
 			// TODO world position & rotation actually

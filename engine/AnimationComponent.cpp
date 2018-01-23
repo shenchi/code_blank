@@ -242,13 +242,20 @@ namespace tofu
 		for (uint16_t i = 1; i < model->header->NumBones; i++)
 		{
 			uint16_t p = model->bones[i].parent;
+
 			matrices[i] = matrices[p] * matrices[i];
 		}
 
 		// append the offset matrices ( convert vertices from model space to bone local space )
 		for (uint16_t i = 0; i < model->header->NumBones; i++)
 		{
+			float* p = reinterpret_cast<float*>(&(model->bones[i].offsetMatrix));
+
+#ifdef TOFU_USE_GLM
+			matrices[i] = math::transpose(matrices[i] * model->bones[i].offsetMatrix);
+#else
 			matrices[i] = matrices[i] * model->bones[i].offsetMatrix;
+#endif
 		}
 
 		return kOK;

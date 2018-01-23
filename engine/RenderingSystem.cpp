@@ -272,8 +272,14 @@ namespace tofu
 				MemoryAllocator::Allocators[allocNo].Allocate(sizeof(FrameConstants), 4)
 				);
 			assert(nullptr != data);
+
+#ifdef TOFU_USE_GLM
+			data->matView = math::transpose(camera.CalcViewMatrix());
+			data->matProj = math::transpose(camera.CalcProjectionMatrix());
+#else
 			data->matView = camera.CalcViewMatrix();
 			data->matProj = camera.CalcProjectionMatrix();
+#endif
 
 			TransformComponent t = camera.entity.GetComponent<TransformComponent>();
 			data->cameraPos = t->GetWorldPosition();
@@ -355,7 +361,12 @@ namespace tofu
 
 			uint32_t idx = numActiveRenderables++;
 			activeRenderables[idx] = i;
+
+#ifdef TOFU_USE_GLM
+			transformArray[idx * 4] = math::transpose(transform->GetWorldTransform().GetMatrix());
+#else
 			transformArray[idx * 4] = transform->GetWorldTransform().GetMatrix();
+#endif
 		}
 
 		// upload transform matrices
