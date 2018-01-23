@@ -3,6 +3,8 @@
 #include "Component.h"
 #include "RenderingSystem.h"
 
+class AnimationStateMachine;
+
 namespace tofu
 {
 	class AnimationFrameCache 
@@ -70,7 +72,9 @@ namespace tofu
 		// current position in key frames (for linear scan)
 		uint32_t				cursor;
 		// cache to keep t-1 to t+2 key frame index from previous search
-		AnimationFrameCache		*caches;
+		AnimationFrameCache*	caches;
+
+		AnimationStateMachine*	stateMachine;
 
 		// interpolation parameter for cross fading
 		// 1 stands for fully using old animation, 0 stands for fully using new animation

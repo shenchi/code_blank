@@ -8,7 +8,6 @@ namespace tofu
 {
 	namespace model
 	{
-
 		typedef std::unordered_map<std::string, uint16_t> AnimationTable;
 
 		constexpr uint32_t kModelFileMagic = 0x004C444D;

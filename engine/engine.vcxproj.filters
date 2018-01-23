@@ -126,6 +126,9 @@
     <ClInclude Include="Compression.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AnimationStateMachine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimationComponent.cpp">
@@ -187,6 +190,9 @@
     </ClCompile>
     <ClCompile Include="..\3rd_party\DirectXTK\Src\Mouse.cpp">
       <Filter>3rd_party\DirectXTK</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationStateMachine.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

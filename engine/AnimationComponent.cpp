@@ -345,12 +345,6 @@ namespace tofu
 		// prevent load-hit-store
 		size_t tempCursor = cursor;
 
-		std::vector<ModelAnimFrame> test;
-
-		for (int i = 0; i <= model->header->NumAnimationFrames; i++) {
-			test.push_back(model->frames[i]);
-		}
-
 		while (tempCursor < model->animations[currentAnimation].numFrames) {
 			uint32_t frameIndex = tempCursor + model->animations[currentAnimation].startFrames;
 			ModelAnimFrame &frame = model->frames[frameIndex];

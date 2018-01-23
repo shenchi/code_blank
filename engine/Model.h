@@ -14,6 +14,8 @@ namespace tofu
 	{
 		friend class RenderingSystem;
 		friend class AnimationComponentData;
+		friend class AnimationState;
+		friend class AnimationStateMachine;
 
 	public:
 		Model() :animationTable(model::AnimationTable()) {}
