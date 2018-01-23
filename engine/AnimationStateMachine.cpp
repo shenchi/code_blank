@@ -6,45 +6,42 @@ namespace tofu
 {
 	void AnimNodeBase::Update(Model * model)
 	{
+
 	}
 	void AnimNodeBase::Evaluate(Model * model, PoseContext & Output)
 	{
+		
 	}
 
-	AnimationState::AnimationState()
+	void AnimationState::Enter()
 	{
+		cache = new AnimationStateCache();
 	}
 
-
-	AnimationState::~AnimationState()
+	void AnimationState::Exit()
 	{
-
+		free(cache);
 	}
 
 	void AnimationState::Update(Model * model)
 	{
-		uint16_t animIndex = model->animationTable[animationName];
+		model::ModelAnimation& anim = model->animations[model->GetAnimationIndex(animationName)];
 
-		model::ModelAnimation& anim = model->animations[animIndex];
+		// TODO: scale time || uint_16 ticks
+		// convert time in seconds to ticks
+		cache->ticks += Time::DeltaTime * playbackSpeed * anim.ticksPerSecond;
 
-		if (cache) {
-			// TODO: scale time || uint_16 ticks
-			// convert time in seconds to ticks
-			cache->ticks += Time::DeltaTime * playbackSpeed * anim.ticksPerSecond;
-
-			if (cache->ticks > anim.tickCount - 1.f) {
-				if (isLoop) {
-					cache->ticks = std::fmodf(cache->ticks, anim.tickCount - 1.f);
-					cache->caches.ResetCaches();
-				}
-				else {
-					// end of animation
-					// event?
-				}
+		if (cache->ticks > anim.tickCount - 1.f) {
+			if (isLoop) {
+				cache->ticks = std::fmodf(cache->ticks, anim.tickCount - 1.f);
+				cache->Reset();
+			}
+			else {
+				// end of animation
+				// event?
+				// Transition?
 			}
 		}
-
-		
 	}
 
 	void AnimationState::Evaluate(Model * model, PoseContext & Output)
@@ -52,30 +49,37 @@ namespace tofu
 	}
 
 	
+	void AnimationStateMachine::AddState(AnimationState & state)
+	{
+		stateIndexTable[state.name] = states.size();
+		states.push_back(std::move(state));
+	}
+
+	void AnimationStateMachine::SetStartState(std::string name)
+	{
+		startState = stateIndexTable[name];
+	}
+
+	void AnimationStateMachine::Enter()
+	{
+		current = &states[startState];
+		current->Enter();
+	}
+
+	void AnimationStateMachine::Exit()
+	{
+		current->Exit();
+	}
+
 	void AnimationStateMachine::Update(Model * model)
 	{
 		// update current animation play back time
-		elapsedTime += Time::DeltaTime * playbackSpeed;
+		elapsedTime += Time::DeltaTime;
+		
+		// check transition
 
-		model::ModelAnimation& anim = model->animations[currentAnimation];
-
-		// TODO: scale time || uint_16 ticks
-		// convert time in seconds to ticks
-		ticks = currentTime * anim.ticksPerSecond;
-
-		// TODO: Add loop to animation
-		bool loop = true;
-
-		if (ticks > anim.tickCount - 1.f) {
-			if (loop) {
-				ticks = std::fmodf(ticks, anim.tickCount - 1.f);
-				ResetCaches();
-			}
-			else {
-				// end of animation
-				// event?
-			}
-		}
+		// if no transition, update previous state
+		current->Update(model);
 	}
 
 	void AnimationStateMachine::Evaluate(Model * model, PoseContext & Output)
@@ -83,5 +87,13 @@ namespace tofu
 
 	}
 	
+	void AnimationStateCache::Reset()
+	{
+		cursor = 0;
+
+		for (AnimationFrameCache cache : caches) {
+			cache.Reset();
+		}
+	}
 }
 

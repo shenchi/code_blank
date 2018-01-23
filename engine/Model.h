@@ -17,11 +17,6 @@ namespace tofu
 		friend class AnimationState;
 		friend class AnimationStateMachine;
 
-	public:
-		Model() :animationTable(model::AnimationTable()) {}
-
-		TF_INLINE bool HasAnimation() const { return header->HasAnimation; }
-
 	private:
 		ModelHandle					handle;
 		MeshHandle					meshes[kMaxMeshesPerModel];
@@ -38,5 +33,11 @@ namespace tofu
 		model::ModelAnimFrame*		frames;
 		void*						rawData;
 		size_t						rawDataSize;
+
+	public:
+		Model() :animationTable(model::AnimationTable()) {}
+		TF_INLINE bool HasAnimation() const { return header->HasAnimation; }
+
+		uint16_t GetAnimationIndex(std::string name) { return animationTable[name]; }
 	};
 }

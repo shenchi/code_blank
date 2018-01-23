@@ -19,46 +19,44 @@ namespace tofu
 	{
 		virtual ~AnimNodeBase() {}
 
+		virtual void Enter() {}
+		virtual void Exit() {}
+
 		virtual void Update(Model* model);
 		virtual void Evaluate(Model* model, PoseContext& Output);
 	};
 
 	class AnimationFrameCache
 	{
-		friend class AnimationComponentData;
-
-	public:
-		AnimationFrameCache() {
-			Reset();
-		}
-
 	private:
 		size_t indices[3][4];
 
-	private:
+	public:
+		AnimationFrameCache() { Reset(); }
+
 		void Reset();
 		void AddFrameIndex(model::ChannelType type, size_t index);
 	};
 
 	struct AnimationStateCache
 	{
-		float					ticks;
+		float ticks;
 
 		// current position in key frames (for linear scan)
-		uint32_t				cursor;
+		uint32_t cursor;
 		
 		// cache to keep t-1 to t+2 key frame index from previous search
-		AnimationFrameCache		caches;
+		std::vector<AnimationFrameCache> caches;
+
+		void Reset();
 	};
 
 	struct AnimationState : AnimNodeBase
 	{
-	public:
-		AnimationState();
-		~AnimationState();
+		friend class AnimationStateMachine;
 
 	private:
-		std::string				stateName;
+		std::string				name;
 		std::string				animationName;
 
 		AnimationStateCache*	cache;
@@ -67,6 +65,9 @@ namespace tofu
 		bool					isLoop;
 
 	public:
+		virtual void Enter();
+		virtual void Exit();
+
 		virtual void Update(Model* model) override;
 		virtual void Evaluate(Model* model, PoseContext& Output) override;
 	};
@@ -74,11 +75,14 @@ namespace tofu
 	struct AnimationStateMachine : AnimNodeBase 
 	{
 		friend class AnimationComponent;
-		
-	protected:
-		std::vector<AnimationState> animationStates;
 
-		uint16_t currentState;
+	protected:
+		std::vector<AnimationState> states;
+		std::unordered_map<std::string, uint16_t> stateIndexTable;
+
+		uint16_t startState;
+
+		AnimNodeBase *current;
 
 		// Elapsed time since entering the current state
 		float elapsedTime;
@@ -105,11 +109,17 @@ namespace tofu
 
 		//TArray<FGraphTraversalCounter> StateCacheBoneCounters;
 
-	public:
+	public:		
+		// should only set before first update
+		void SetStartState(std::string name);
+
+		void AddState(AnimationState &state);
+
+		virtual void Enter();
+		virtual void Exit();
+
 		virtual void Update(Model* model) override;
 		virtual void Evaluate(Model* model, PoseContext& Output) override;
-
-	
 
 	protected:
 
