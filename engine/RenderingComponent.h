@@ -7,6 +7,7 @@ namespace tofu
 	class RenderingSystem;
 	class Model;
 	class Material;
+	class Light;
 
 	class RenderingComponentData
 	{
@@ -19,22 +20,27 @@ namespace tofu
 			: 
 			entity(e),
 			model(nullptr),
-			material(nullptr)
+			material(nullptr),
+			light(nullptr)
 		{}
 
 		void SetModel(Model* model) { this->model = model; }
 
 		void SetMaterial(Material* material) { this->material = material; }
 
+		void SetLight(Light* light) { this->light = light; }
+
 		Model* GetModel() const { return model; }
 
 		Material* GetMaterial() const { return material; }
+
+		Light* GetLight() const { return light; }
 
 	private:
 		Entity				entity;
 		Model*				model;
 		Material*			material;
-
+		Light*              light;
 	};
 
 	typedef Component<RenderingComponentData> RenderingComponent;

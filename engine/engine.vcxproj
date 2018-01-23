@@ -161,6 +161,7 @@
     <ClInclude Include="HandleAllocator.h" />
     <ClInclude Include="InputStates.h" />
     <ClInclude Include="InputSystem.h" />
+    <ClInclude Include="Light.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="MemoryAllocator.h" />
     <ClInclude Include="Model.h" />
@@ -241,6 +242,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
+    <FxCompile Include="Shaders\shadow_vs.hlsl" />
     <FxCompile Include="Shaders\skybox_ps.hlsl">
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>

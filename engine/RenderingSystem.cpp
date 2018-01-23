@@ -37,6 +37,7 @@ namespace tofu
 		modelHandleAlloc(),
 		meshHandleAlloc(),
 		materialHandleAlloc(),
+		lightHandleAlloc(),
 		modelTable(),
 		bufferHandleAlloc(),
 		textureHandleAlloc(),
@@ -678,6 +679,21 @@ namespace tofu
 		mat->handle = handle;
 
 		return mat;
+	}
+
+	Light * RenderingSystem::CreateLight(LightType type)
+	{
+		LightHandle handle = lightHandleAlloc.Allocate();
+		if (!handle)
+		{
+			return nullptr;
+		}
+
+		Light* lgt = &(lights[handle.id]);
+		new (lgt) Light(type);
+		lgt->handle = handle;
+
+		return lgt;
 	}
 
 	int32_t RenderingSystem::InitBuiltinShader(MaterialType matType, const char * vsFile, const char * psFile)

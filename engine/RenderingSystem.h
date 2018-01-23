@@ -4,6 +4,7 @@
 #include "Module.h"
 #include "Model.h"
 #include "Material.h"
+#include "Light.h"
 
 #include "Renderer.h"
 
@@ -53,6 +54,8 @@ namespace tofu
 
 		Material* CreateMaterial(MaterialType type);
 
+		Light* CreateLight(LightType type);
+
 	private:
 
 		int32_t InitBuiltinShader(MaterialType matType, const char* vsFile, const char* psFile);
@@ -65,6 +68,7 @@ namespace tofu
 		HandleAllocator<ModelHandle, kMaxModels>			modelHandleAlloc;
 		HandleAllocator<MeshHandle, kMaxMeshes>				meshHandleAlloc;
 		HandleAllocator<MaterialHandle, kMaxMaterials>		materialHandleAlloc;
+		HandleAllocator<LightHandle, kMaxLights>		    lightHandleAlloc;
 
 		std::unordered_map<std::string, ModelHandle>		modelTable;
 
@@ -86,6 +90,7 @@ namespace tofu
 		Mesh					meshes[kMaxMeshes];
 		Model					models[kMaxModels];
 		Material				materials[kMaxMaterials];
+		Light                   lights[kMaxLights];
 
 		PipelineStateHandle		materialPSOs[kMaxMaterialTypes];
 		VertexShaderHandle		materialVSs[kMaxMaterialTypes];

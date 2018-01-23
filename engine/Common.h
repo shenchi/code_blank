@@ -59,6 +59,7 @@ namespace tofu
 	constexpr uint32_t kMaxModels = 1024;
 	constexpr uint32_t kMaxMeshes = 1024;
 	constexpr uint32_t kMaxMaterials = 1024;
+	constexpr uint32_t kMaxLights = 1024;
 
 	constexpr uint32_t kMaxMeshesPerModel = 8;
 
