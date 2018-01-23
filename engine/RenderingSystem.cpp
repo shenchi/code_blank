@@ -745,11 +745,6 @@ namespace tofu
 			// TODO dealloc
 		}
 
-		if (c.caches) {
-			// TODO dealloc
-			free(c.caches);
-		}
-
 		Model* model = c.model;
 		if (nullptr == model || nullptr == model->header || !model->HasAnimation() || 0 == model->header->NumBones)
 		{
@@ -773,10 +768,6 @@ namespace tofu
 		params->dynamic = 1;
 
 		cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
-
-		// TODO: buffer
-		c.caches = (AnimationFrameCache*)malloc(c.model->header->NumBones * sizeof(AnimationFrameCache));
-		c.ResetCaches();
 
 		return kOK;
 	}

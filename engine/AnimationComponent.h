@@ -2,28 +2,10 @@
 
 #include "Component.h"
 #include "RenderingSystem.h"
-
-class AnimationStateMachine;
+#include "AnimationStateMachine.h"
 
 namespace tofu
 {
-	class AnimationFrameCache 
-	{
-		friend class AnimationComponentData;
-
-	public:
-		AnimationFrameCache() {
-			Reset();
-		}
-
-	private:
-		size_t indices[3][4];
-
-	private:
-		void Reset();
-		void AddFrameIndex(model::ChannelType type, size_t index);
-	};
-
 	class AnimationComponentData
 	{
 		friend class RenderingSystem;
@@ -39,12 +21,12 @@ namespace tofu
 			currentAnimation(0),
 			currentTime(0.0f),
 			playbackSpeed(1.0f),
-			cursor(0u),
-			caches(nullptr),
 			crossFadeFactor(0.0f),
 			crossFadeSpeed(0.0f),
 			lastAnimation(0)
 		{}
+
+		AnimationStateMachine* GetStateMachine() { return &stateMachine; }
 
 		// switch to an animation
 		int32_t Play(uint32_t animId);
@@ -69,12 +51,12 @@ namespace tofu
 		float					ticks;
 		float					playbackSpeed;
 
-		// current position in key frames (for linear scan)
-		uint32_t				cursor;
-		// cache to keep t-1 to t+2 key frame index from previous search
-		AnimationFrameCache*	caches;
+		//// current position in key frames (for linear scan)
+		//size_t				cursor;
+		//// cache to keep t-1 to t+2 key frame index from previous search
+		//AnimationFrameCache*	caches;
 
-		AnimationStateMachine*	stateMachine;
+		AnimationStateMachine	stateMachine;
 
 		// interpolation parameter for cross fading
 		// 1 stands for fully using old animation, 0 stands for fully using new animation
@@ -103,9 +85,6 @@ namespace tofu
 		math::float3 LerpFromFrameIndex(size_t lhs, size_t rhs);
 
 		math::quat SlerpFromFrameIndex(size_t lhs, size_t rhs);
-
-		void ResetCaches();
-		void UpdateCache();
 	};
 
 	typedef Component<AnimationComponentData> AnimationComponent;

@@ -38,7 +38,7 @@ namespace tofu
 
 		lastAnimationTime = currentTime;
 		currentTime = 0.0f;
-		ResetCaches();
+		//ResetCaches();
 
 		// start cross fading, set cross fading speed
 		crossFadeFactor = 1.0f;
@@ -71,7 +71,7 @@ namespace tofu
 		if (ticks > anim.tickCount - 1.f) {
 			if (loop) {
 				ticks = std::fmodf(ticks, anim.tickCount - 1.f);
-				ResetCaches();
+				//ResetCaches();
 			}
 			else {
 				// end of animation
@@ -103,115 +103,113 @@ namespace tofu
 			matrices[i] = model->bones[i].transform;
 		}
 
-		//// update bone matrices for each channel
-		//for (uint32_t i = 0; i < anim.numChannels; i++)
-		//{
-		//	model::ModelAnimChannel& chan = model->channels[anim.startChannelId + i];
-
-		//	uint16_t boneId = chan.boneId;
-
-		//	// get interlopated matrix
-		//	Transform t;
-		//	t.SetTranslation(SampleFrame(model->translationFrames, chan.startTranslationFrame, chan.numTranslationFrame, ticks));
-		//	t.SetRotation(SampleFrame(model->rotationFrames, chan.startRotationFrame, chan.numRotationFrame, ticks));
-		//	t.SetScale(SampleFrame(model->scaleFrames, chan.startScaleFrame, chan.numScaleFrame, ticks));
-
-		//	matrices[boneId] = t.GetMatrix();
-
-		//	traVector[boneId] = SampleFrame(model->translationFrames, chan.startTranslationFrame, chan.numTranslationFrame, ticks);
-		//}
-
-		UpdateCache();
-
-		for (uint16_t i = 0; i < model->header->NumBones; i++)
+		// update bone matrices for each channel
+		for (uint32_t i = 0; i < anim.numChannels; i++)
 		{
-			AnimationFrameCache &cache = caches[i];
+			model::ModelAnimChannel& chan = model->channels[anim.startChannelId + i];
 
-			if (cache.indices[kChannelTranslation][3] == SIZE_MAX &&
-				cache.indices[kChannelRotation][3] == SIZE_MAX &&
-				cache.indices[kChannelScale][3] == SIZE_MAX) {
-				continue;
-			}
+			uint16_t boneId = chan.boneId;
 
-			Transform trans;
+			// get interlopated matrix
+			Transform t;
+			t.SetTranslation(SampleFrame(model->translationFrames, chan.startTranslationFrame, chan.numTranslationFrame, ticks));
+			t.SetRotation(SampleFrame(model->rotationFrames, chan.startRotationFrame, chan.numRotationFrame, ticks));
+			t.SetScale(SampleFrame(model->scaleFrames, chan.startScaleFrame, chan.numScaleFrame, ticks));
 
-			// TODO: Spline calculation 
-			/*if (cache.indices[kChannelTranslation][0] != SIZE_MAX) {
-
-			}
-			else if (cache.indices[kChannelTranslation][1] != SIZE_MAX)*/ 
-				
-			if (cache.indices[kChannelTranslation][1] != SIZE_MAX 
-				&& model->frames[cache.indices[kChannelTranslation][1]].time <= ticks) {
-
-				trans.SetTranslation(
-					LerpFromFrameIndex(
-						cache.indices[kChannelTranslation][1], 
-						cache.indices[kChannelTranslation][2]
-					));
-			}
-			else if (cache.indices[kChannelTranslation][2] != SIZE_MAX) {
-				trans.SetTranslation(
-					LerpFromFrameIndex(
-						cache.indices[kChannelTranslation][2],
-						cache.indices[kChannelTranslation][3]
-					));
-			}
-			else if (cache.indices[kChannelTranslation][3] != SIZE_MAX) {
-				trans.SetTranslation(model->frames[cache.indices[kChannelTranslation][3]].value);
-			}
-
-			// Rotation
-			if (cache.indices[kChannelRotation][1] != SIZE_MAX
-				&& model->frames[cache.indices[kChannelRotation][1]].time <= ticks) {
-
-				trans.SetRotation(
-					SlerpFromFrameIndex(
-						cache.indices[kChannelRotation][1],
-						cache.indices[kChannelRotation][2]
-					));
-
-			}
-			else if (cache.indices[kChannelRotation][2] != SIZE_MAX) {
-				trans.SetRotation(
-					SlerpFromFrameIndex(
-						cache.indices[kChannelRotation][2],
-						cache.indices[kChannelRotation][3]
-					));
-
-			}
-			else if (cache.indices[kChannelRotation][3] != SIZE_MAX) {
-				math::quat q;
-				math::float3 &compress = model->frames[cache.indices[kChannelTranslation][3]].value;
-
-				tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&compress.x), q);
-
-				trans.SetRotation(q);
-			}
-
-			// Scale
-			if (cache.indices[kChannelScale][1] != SIZE_MAX
-				&& model->frames[cache.indices[kChannelScale][1]].time <= ticks) {
-
-				trans.SetScale(
-					LerpFromFrameIndex(
-						cache.indices[kChannelScale][1],
-						cache.indices[kChannelScale][2]
-					));
-			}
-			else if (cache.indices[kChannelScale][2] != SIZE_MAX) {
-				trans.SetScale(
-					LerpFromFrameIndex(
-						cache.indices[kChannelScale][2],
-						cache.indices[kChannelScale][3]
-					));
-			}
-			else if (cache.indices[kChannelScale][3] != SIZE_MAX) {
-				trans.SetScale(model->frames[cache.indices[kChannelScale][3]].value);
-			}
-
-			matrices[i] = trans.GetMatrix();
+			matrices[boneId] = t.GetMatrix();
 		}
+
+		//UpdateCache();
+
+		//for (uint16_t i = 0; i < model->header->NumBones; i++)
+		//{
+		//	AnimationFrameCache &cache = caches[i];
+
+		//	if (cache.indices[kChannelTranslation][3] == SIZE_MAX &&
+		//		cache.indices[kChannelRotation][3] == SIZE_MAX &&
+		//		cache.indices[kChannelScale][3] == SIZE_MAX) {
+		//		continue;
+		//	}
+
+		//	Transform trans;
+
+		//	// TODO: Spline calculation 
+		//	/*if (cache.indices[kChannelTranslation][0] != SIZE_MAX) {
+
+		//	}
+		//	else if (cache.indices[kChannelTranslation][1] != SIZE_MAX)*/ 
+		//		
+		//	if (cache.indices[kChannelTranslation][1] != SIZE_MAX 
+		//		&& model->frames[cache.indices[kChannelTranslation][1]].time <= ticks) {
+
+		//		trans.SetTranslation(
+		//			LerpFromFrameIndex(
+		//				cache.indices[kChannelTranslation][1], 
+		//				cache.indices[kChannelTranslation][2]
+		//			));
+		//	}
+		//	else if (cache.indices[kChannelTranslation][2] != SIZE_MAX) {
+		//		trans.SetTranslation(
+		//			LerpFromFrameIndex(
+		//				cache.indices[kChannelTranslation][2],
+		//				cache.indices[kChannelTranslation][3]
+		//			));
+		//	}
+		//	else if (cache.indices[kChannelTranslation][3] != SIZE_MAX) {
+		//		trans.SetTranslation(model->frames[cache.indices[kChannelTranslation][3]].value);
+		//	}
+
+		//	// Rotation
+		//	if (cache.indices[kChannelRotation][1] != SIZE_MAX
+		//		&& model->frames[cache.indices[kChannelRotation][1]].time <= ticks) {
+
+		//		trans.SetRotation(
+		//			SlerpFromFrameIndex(
+		//				cache.indices[kChannelRotation][1],
+		//				cache.indices[kChannelRotation][2]
+		//			));
+
+		//	}
+		//	else if (cache.indices[kChannelRotation][2] != SIZE_MAX) {
+		//		trans.SetRotation(
+		//			SlerpFromFrameIndex(
+		//				cache.indices[kChannelRotation][2],
+		//				cache.indices[kChannelRotation][3]
+		//			));
+
+		//	}
+		//	else if (cache.indices[kChannelRotation][3] != SIZE_MAX) {
+		//		math::quat q;
+		//		math::float3 &compress = model->frames[cache.indices[kChannelTranslation][3]].value;
+
+		//		tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&compress.x), q);
+
+		//		trans.SetRotation(q);
+		//	}
+
+		//	// Scale
+		//	if (cache.indices[kChannelScale][1] != SIZE_MAX
+		//		&& model->frames[cache.indices[kChannelScale][1]].time <= ticks) {
+
+		//		trans.SetScale(
+		//			LerpFromFrameIndex(
+		//				cache.indices[kChannelScale][1],
+		//				cache.indices[kChannelScale][2]
+		//			));
+		//	}
+		//	else if (cache.indices[kChannelScale][2] != SIZE_MAX) {
+		//		trans.SetScale(
+		//			LerpFromFrameIndex(
+		//				cache.indices[kChannelScale][2],
+		//				cache.indices[kChannelScale][3]
+		//			));
+		//	}
+		//	else if (cache.indices[kChannelScale][3] != SIZE_MAX) {
+		//		trans.SetScale(model->frames[cache.indices[kChannelScale][3]].value);
+		//	}
+
+		//	matrices[i] = trans.GetMatrix();
+		//}
 
 		// if we are cross fading
 		if (crossFadeFactor > 0.0f)
@@ -335,58 +333,31 @@ namespace tofu
 		return math::slerp(a, b, t);
 	}
 
-	void AnimationComponentData::UpdateCache()
-	{
-		// TODO: backward update cache
-		if (cursor == model->animations[currentAnimation].numFrames) {
-			return;
-		}
+	//void AnimationComponentData::UpdateCache()
+	//{
+	//	// TODO: backward update cache
+	//	if (cursor == model->animations[currentAnimation].numFrames) {
+	//		return;
+	//	}
 
-		// prevent load-hit-store
-		size_t tempCursor = cursor;
+	//	// prevent load-hit-store
+	//	size_t tempCursor = cursor;
 
-		while (tempCursor < model->animations[currentAnimation].numFrames) {
-			uint32_t frameIndex = tempCursor + model->animations[currentAnimation].startFrames;
-			ModelAnimFrame &frame = model->frames[frameIndex];
-			AnimationFrameCache &cache = caches[frame.GetJointIndex()];
+	//	while (tempCursor < model->animations[currentAnimation].numFrames) {
+	//		size_t frameIndex = tempCursor + model->animations[currentAnimation].startFrames;
+	//		ModelAnimFrame &frame = model->frames[frameIndex];
+	//		AnimationFrameCache &cache = caches[frame.GetJointIndex()];
 
-			size_t cacheIndex = cache.indices[frame.GetChannelType()][2];
+	//		size_t cacheIndex = cache.indices[frame.GetChannelType()][2];
 
-			if (cacheIndex == SIZE_MAX || model->frames[cacheIndex].time <= ticks) {
-				cache.AddFrameIndex(frame.GetChannelType(), frameIndex);
-				tempCursor++;
-			}
-			else {
-				break;
-			}
-		}
-		cursor = tempCursor;
-	}
-
-	void AnimationComponentData::ResetCaches() {
-		cursor = 0;
-
-		for (uint16_t i = 0; i < model->header->NumBones; i++) {
-			caches[i] = AnimationFrameCache();
-		}
-	}
-
-	void AnimationFrameCache::Reset()
-	{
-		// Assume channel numbers = 3
-		for (int i = 0; i < 3; i++) {
-			indices[i][0] = SIZE_MAX;
-			indices[i][1] = SIZE_MAX;
-			indices[i][2] = SIZE_MAX;
-			indices[i][3] = SIZE_MAX;
-		}
-	}
-
-	void AnimationFrameCache::AddFrameIndex(model::ChannelType type, size_t index)
-	{
-		indices[type][0] = indices[type][1];
-		indices[type][1] = indices[type][2];
-		indices[type][2] = indices[type][3];
-		indices[type][3] = index;
-	}
+	//		if (cacheIndex == SIZE_MAX || model->frames[cacheIndex].time <= ticks) {
+	//			cache.AddFrameIndex(frame.GetChannelType(), frameIndex);
+	//			tempCursor++;
+	//		}
+	//		else {
+	//			break;
+	//		}
+	//	}
+	//	cursor = tempCursor;
+	//}
 }

@@ -13,6 +13,25 @@ namespace tofu
 		
 	}
 
+	void AnimationFrameCache::Reset()
+	{
+		// Assume channel numbers = 3
+		for (int i = 0; i < 3; i++) {
+			indices[i][0] = SIZE_MAX;
+			indices[i][1] = SIZE_MAX;
+			indices[i][2] = SIZE_MAX;
+			indices[i][3] = SIZE_MAX;
+		}
+	}
+
+	void AnimationFrameCache::AddFrameIndex(model::ChannelType type, size_t index)
+	{
+		indices[type][0] = indices[type][1];
+		indices[type][1] = indices[type][2];
+		indices[type][2] = indices[type][3];
+		indices[type][3] = index;
+	}
+
 	void AnimationState::Enter()
 	{
 		cache = new AnimationStateCache();
@@ -51,7 +70,7 @@ namespace tofu
 	
 	void AnimationStateMachine::AddState(AnimationState & state)
 	{
-		stateIndexTable[state.name] = states.size();
+		stateIndexTable[state.name] = static_cast<uint16_t>(states.size());
 		states.push_back(std::move(state));
 	}
 

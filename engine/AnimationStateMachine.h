@@ -15,9 +15,10 @@ namespace tofu
 		uint16_t numBones;
 	};
 
-	struct AnimNodeBase
+	class AnimNodeBase
 	{
-		virtual ~AnimNodeBase() {}
+	public:
+		//virtual ~AnimNodeBase() {}
 
 		virtual void Enter() {}
 		virtual void Exit() {}
@@ -38,8 +39,10 @@ namespace tofu
 		void AddFrameIndex(model::ChannelType type, size_t index);
 	};
 
-	struct AnimationStateCache
+	class AnimationStateCache
 	{
+		friend class AnimationState;
+
 		float ticks;
 
 		// current position in key frames (for linear scan)
@@ -51,7 +54,7 @@ namespace tofu
 		void Reset();
 	};
 
-	struct AnimationState : AnimNodeBase
+	class AnimationState : AnimNodeBase
 	{
 		friend class AnimationStateMachine;
 
@@ -65,6 +68,8 @@ namespace tofu
 		bool					isLoop;
 
 	public:
+		//virtual ~AnimationState() {}
+
 		virtual void Enter();
 		virtual void Exit();
 
@@ -72,9 +77,8 @@ namespace tofu
 		virtual void Evaluate(Model* model, PoseContext& Output) override;
 	};
 
-	struct AnimationStateMachine : AnimNodeBase 
+	class AnimationStateMachine : AnimNodeBase
 	{
-		friend class AnimationComponent;
 
 	protected:
 		std::vector<AnimationState> states;
@@ -115,8 +119,8 @@ namespace tofu
 
 		void AddState(AnimationState &state);
 
-		virtual void Enter();
-		virtual void Exit();
+		virtual void Enter() override;
+		virtual void Exit() override;
 
 		virtual void Update(Model* model) override;
 		virtual void Evaluate(Model* model, PoseContext& Output) override;

@@ -125,9 +125,9 @@ namespace tofu {
 			const float normal_b = (b - minimum) / (maximum - minimum);
 			const float normal_c = (c - minimum) / (maximum - minimum);
 
-			uint32_t integer_a = floor(normal_a * 1024.0f + 0.5f);
-			uint32_t integer_b = floor(normal_b * 1024.0f + 0.5f);
-			uint32_t integer_c = floor(normal_c * 1024.0f + 0.5f);
+			uint32_t integer_a = static_cast<uint32_t>(floor(normal_a * 1024.0f + 0.5f));
+			uint32_t integer_b = static_cast<uint32_t>(floor(normal_b * 1024.0f + 0.5f));
+			uint32_t integer_c = static_cast<uint32_t>(floor(normal_c * 1024.0f + 0.5f));
 
 			//		printf( "integer: a = %d, b = %d, c = %d, largest = %d\n", 
 			//			integer_a, integer_b, integer_c, largest );

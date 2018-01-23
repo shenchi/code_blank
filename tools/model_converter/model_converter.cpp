@@ -115,16 +115,16 @@ inline bool IsEqual(const float4x4& a, const aiMatrix4x4& b)
 	return true;
 }
 
-uint32_t loadBoneHierarchy(aiNode* node, BoneTree& bones, BoneTable& table, uint32_t parentId = UINT32_MAX, uint32_t lastSibling = UINT32_MAX)
+uint32_t loadBoneHierarchy(aiNode* node, BoneTree& bones, BoneTable& table, uint32_t parentId = UINT16_MAX, uint32_t lastSibling = UINT16_MAX)
 {
 	uint32_t boneId = static_cast<uint32_t>(bones.size());
 	bones.push_back(Bone());
 	Bone& bone = bones[boneId];
 	bone.id = boneId;
 	bone.parent = parentId;
-	bone.nextSibling = UINT32_MAX;
+	bone.nextSibling = UINT16_MAX;
 
-	if (lastSibling != UINT32_MAX)
+	if (lastSibling != UINT16_MAX)
 	{
 		bones[lastSibling].nextSibling = boneId;
 	}
