@@ -54,7 +54,7 @@ namespace tofu
 
 		Material* CreateMaterial(MaterialType type);
 
-		Light* CreateLight(LightType type);
+		Light* CreateLight();
 
 	private:
 

@@ -9,30 +9,26 @@ namespace tofu
 
 	enum LightType
 	{
-		kLightTypeTest,
 		kLightTypeDirectional,
 		kLightTypePoint,
-		kLightTypeSpot,
-		kLightTypes
+		kLightTypeSpot
 	};
 
 	class Light
 	{
 		friend class RenderingSystem;
 	public:
+		void SetType(LightType t) { type = t; }
 
 		void SetColor(tofu::math::float4 t) { lightColor = t; }
 
-		void SetDirection(tofu::math::float3 t) { lightDirection = t; }
-
 		void CreateDepthMap() {}
 	private:
-		Light(LightType type = LightType::kLightTypeTest)
+		Light()
 			:
-			type(type),
+			type(),
 			handle(),
 			lightColor(),
-			lightDirection(),
 			depthMap()
 		{}
 
@@ -40,7 +36,6 @@ namespace tofu
 		LightType	type;
 		LightHandle	handle;
 		tofu::math::float4	lightColor;
-		tofu::math::float3	lightDirection;
 		TextureHandle  depthMap;
 	};
 }

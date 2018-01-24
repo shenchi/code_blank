@@ -23,6 +23,7 @@ private:
 	tofu::TransformComponent	tBox;
 	tofu::TransformComponent	tPlayer;
 	tofu::TransformComponent	tCamera;
+	tofu::TransformComponent    tSun;
 	tofu::PhysicsComponent		pPlayer;
 	tofu::AnimationComponent	anim;
 	tofu::CameraComponent		cam;

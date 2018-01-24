@@ -53,6 +53,7 @@ namespace tofu
 		meshes(),
 		models(),
 		materials(),
+		lights(),
 		materialPSOs(),
 		materialVSs(),
 		materialPSs(),
@@ -681,7 +682,7 @@ namespace tofu
 		return mat;
 	}
 
-	Light * RenderingSystem::CreateLight(LightType type)
+	Light * RenderingSystem::CreateLight()
 	{
 		LightHandle handle = lightHandleAlloc.Allocate();
 		if (!handle)
@@ -690,7 +691,7 @@ namespace tofu
 		}
 
 		Light* lgt = &(lights[handle.id]);
-		new (lgt) Light(type);
+		new (lgt) Light();
 		lgt->handle = handle;
 
 		return lgt;
