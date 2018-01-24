@@ -1,7 +1,10 @@
 cbuffer LightingConstants : register (b0)
 {
-	float4	cameraPos;
-	float4  _reserv1[3];
+	float4  lightColor;
+	float3  lightDirection;
+	float   padding1;
+	float3	lightPos;
+	
 }
 
 struct PS_INPUT
@@ -16,5 +19,6 @@ SamplerState samp : register(s0);
 
 float4 main(PS_INPUT input) : SV_TARGET
 {
+	//return float4(lightColor);
 	return tex.Sample(samp, input.texcoord);
 }

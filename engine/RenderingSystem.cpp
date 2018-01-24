@@ -33,7 +33,8 @@ namespace
 		float					padding1;		
 		tofu::math::float3		lightPosition;		// 1 shader constants
 		float					padding2;
-		float					padding3[4];	// 1 shader constants
+		tofu::math::float3		cameraPos;			// 1 shader constants
+		float					padding7[4 * 12];	// 12 shader constants
 	};
 }
 
@@ -60,6 +61,7 @@ namespace tofu
 		transformBuffer(),
 		transformBufferSize(0),
 		frameConstantBuffer(),
+		lightingConstantBuffer(),
 		meshes(),
 		models(),
 		materials(),
@@ -292,7 +294,9 @@ namespace tofu
 			renderer->GetFrameBufferSize(w, h);
 			camera.SetAspect(h == 0 ? 1.0f : float(w) / h);
 		}
+		LightComponentData& light0 = LightComponent::GetAllComponents()[0];
 
+		math::float3 camPos;
 		{
 			FrameConstants* data = reinterpret_cast<FrameConstants*>(
 				MemoryAllocator::Allocators[allocNo].Allocate(sizeof(FrameConstants), 4)
@@ -304,6 +308,8 @@ namespace tofu
 			TransformComponent t = camera.entity.GetComponent<TransformComponent>();
 			data->cameraPos = t->GetWorldPosition();
 
+			camPos = data->cameraPos;
+
 			UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
 			assert(nullptr != params);
 			params->handle = frameConstantBuffer;
@@ -314,7 +320,7 @@ namespace tofu
 		}
 
 		// Light constant buffer data
-		LightComponentData& light0 = LightComponent::GetAllComponents()[0];
+		
 		{
 			LightingConstants* data = reinterpret_cast<LightingConstants*>(
 				MemoryAllocator::Allocators[allocNo].Allocate(sizeof(LightingConstants), 4)
@@ -323,10 +329,12 @@ namespace tofu
 			data->lightColor = light0.lightColor;
 
 			TransformComponent t = light0.entity.GetComponent<TransformComponent>();
-			data->lightDirection = math::float3{ (t->GetWorldRotation() * t->GetForwardVector()).x,
-				(t->GetWorldRotation() * t->GetForwardVector()).y,
+			data->lightDirection = math::float3{ (t->GetWorldRotation() * t->GetRightVector()).x,
+				(t->GetWorldRotation() * t->GetUpVector()).y,
 				(t->GetWorldRotation() * t->GetForwardVector()).z };
 			data->lightPosition = t->GetWorldPosition();
+
+			data->cameraPos = camPos;
 
 			UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
 			assert(nullptr != params);
@@ -489,7 +497,6 @@ namespace tofu
 				case kMaterialTypeTest:
 					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
 					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
-					//params->psConstantBuffers[0] = { frameConstantBuffer, }
 					params->psTextures[0] = mat->mainTex;
 					params->psSamplers[0] = defaultSampler;
 					break;
@@ -507,7 +514,7 @@ namespace tofu
 				case kMaterialTypeOpaque:
 					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
 					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
-					params->psConstantBuffers[0] = { frameConstantBuffer, 16, 16 };
+					params->psConstantBuffers[0] = { lightingConstantBuffer,0,16 };
 					params->psTextures[0] = skyboxTex;
 					params->psTextures[1] = mat->mainTex;
 					params->psTextures[2] = mat->normalMap;
