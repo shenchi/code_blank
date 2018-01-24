@@ -5,8 +5,6 @@
 #include "Transform.h"
 #include "RenderingComponent.h"
 #include <algorithm>
-#include "Compression.h"
-
 #include <cassert>
 
 using namespace tofu::model;
@@ -59,6 +57,8 @@ namespace tofu
 		// update current animation play back time
 		currentTime += Time::DeltaTime * playbackSpeed;
 
+		//UpdateStateMachine();
+
 		model::ModelAnimation& anim = model->animations[currentAnimation];
 
 		// TODO: scale time || uint_16 ticks
@@ -96,7 +96,7 @@ namespace tofu
 		}
 
 		model::ModelAnimation& anim = model->animations[currentAnimation];
-		
+
 		// load bone matrices
 		for (uint16_t i = 0; i < model->header->NumBones; i++)
 		{
@@ -119,97 +119,9 @@ namespace tofu
 			matrices[boneId] = t.GetMatrix();
 		}
 
-		//UpdateCache();
+		//EvaluateContext context{ model, matrices };
 
-		//for (uint16_t i = 0; i < model->header->NumBones; i++)
-		//{
-		//	AnimationFrameCache &cache = caches[i];
-
-		//	if (cache.indices[kChannelTranslation][3] == SIZE_MAX &&
-		//		cache.indices[kChannelRotation][3] == SIZE_MAX &&
-		//		cache.indices[kChannelScale][3] == SIZE_MAX) {
-		//		continue;
-		//	}
-
-		//	Transform trans;
-
-		//	// TODO: Spline calculation 
-		//	/*if (cache.indices[kChannelTranslation][0] != SIZE_MAX) {
-
-		//	}
-		//	else if (cache.indices[kChannelTranslation][1] != SIZE_MAX)*/ 
-		//		
-		//	if (cache.indices[kChannelTranslation][1] != SIZE_MAX 
-		//		&& model->frames[cache.indices[kChannelTranslation][1]].time <= ticks) {
-
-		//		trans.SetTranslation(
-		//			LerpFromFrameIndex(
-		//				cache.indices[kChannelTranslation][1], 
-		//				cache.indices[kChannelTranslation][2]
-		//			));
-		//	}
-		//	else if (cache.indices[kChannelTranslation][2] != SIZE_MAX) {
-		//		trans.SetTranslation(
-		//			LerpFromFrameIndex(
-		//				cache.indices[kChannelTranslation][2],
-		//				cache.indices[kChannelTranslation][3]
-		//			));
-		//	}
-		//	else if (cache.indices[kChannelTranslation][3] != SIZE_MAX) {
-		//		trans.SetTranslation(model->frames[cache.indices[kChannelTranslation][3]].value);
-		//	}
-
-		//	// Rotation
-		//	if (cache.indices[kChannelRotation][1] != SIZE_MAX
-		//		&& model->frames[cache.indices[kChannelRotation][1]].time <= ticks) {
-
-		//		trans.SetRotation(
-		//			SlerpFromFrameIndex(
-		//				cache.indices[kChannelRotation][1],
-		//				cache.indices[kChannelRotation][2]
-		//			));
-
-		//	}
-		//	else if (cache.indices[kChannelRotation][2] != SIZE_MAX) {
-		//		trans.SetRotation(
-		//			SlerpFromFrameIndex(
-		//				cache.indices[kChannelRotation][2],
-		//				cache.indices[kChannelRotation][3]
-		//			));
-
-		//	}
-		//	else if (cache.indices[kChannelRotation][3] != SIZE_MAX) {
-		//		math::quat q;
-		//		math::float3 &compress = model->frames[cache.indices[kChannelTranslation][3]].value;
-
-		//		tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&compress.x), q);
-
-		//		trans.SetRotation(q);
-		//	}
-
-		//	// Scale
-		//	if (cache.indices[kChannelScale][1] != SIZE_MAX
-		//		&& model->frames[cache.indices[kChannelScale][1]].time <= ticks) {
-
-		//		trans.SetScale(
-		//			LerpFromFrameIndex(
-		//				cache.indices[kChannelScale][1],
-		//				cache.indices[kChannelScale][2]
-		//			));
-		//	}
-		//	else if (cache.indices[kChannelScale][2] != SIZE_MAX) {
-		//		trans.SetScale(
-		//			LerpFromFrameIndex(
-		//				cache.indices[kChannelScale][2],
-		//				cache.indices[kChannelScale][3]
-		//			));
-		//	}
-		//	else if (cache.indices[kChannelScale][3] != SIZE_MAX) {
-		//		trans.SetScale(model->frames[cache.indices[kChannelScale][3]].value);
-		//	}
-
-		//	matrices[i] = trans.GetMatrix();
-		//}
+		//stateMachine.Evaluate(context);
 
 		// if we are cross fading
 		if (crossFadeFactor > 0.0f)
@@ -230,7 +142,7 @@ namespace tofu
 				t.SetTranslation(SampleFrame(model->translationFrames, chan.startTranslationFrame, chan.numTranslationFrame, lastAnimTicks));
 				t.SetRotation(SampleFrame(model->rotationFrames, chan.startRotationFrame, chan.numRotationFrame, lastAnimTicks));
 				t.SetScale(SampleFrame(model->scaleFrames, chan.startScaleFrame, chan.numScaleFrame, lastAnimTicks));
-				
+
 				math::float4x4 m = t.GetMatrix();
 				matrices[boneId] = math::mix(matrices[boneId], m, crossFadeFactor);
 			}
@@ -250,6 +162,12 @@ namespace tofu
 		}
 
 		return kOK;
+	}
+
+	void AnimationComponentData::UpdateStateMachine()
+	{
+		UpdateContext context{ model };
+		stateMachine.Update(context);
 	}
 
 	math::float3 AnimationComponentData::SampleFrame(model::ModelFloat3Frame* frames, uint32_t startFrame, uint32_t numFrames, float ticks)
@@ -306,7 +224,7 @@ namespace tofu
 		return math::quat();
 	}
 
-	math::float3 AnimationComponentData::LerpFromFrameIndex(size_t lhs, size_t rhs)
+	/*math::float3 AnimationComponentData::LerpFromFrameIndex(size_t lhs, size_t rhs)
 	{
 		ModelAnimFrame& fa = model->frames[lhs];
 		ModelAnimFrame& fb = model->frames[rhs];
@@ -331,7 +249,7 @@ namespace tofu
 		tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&fb.value.x), b);
 
 		return math::slerp(a, b, t);
-	}
+	}*/
 
 	//void AnimationComponentData::UpdateCache()
 	//{

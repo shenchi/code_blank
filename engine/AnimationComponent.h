@@ -76,6 +76,8 @@ namespace tofu
 		// calculate bone matrices and fill in the buffer
 		int32_t FillInBoneMatrices(void* buffer, uint32_t bufferSize);
 
+		void UpdateStateMachine();
+
 		// get interpolated vector frame for given ticks
 		math::float3 SampleFrame(model::ModelFloat3Frame* frames, uint32_t startFrame, uint32_t numFrames, float ticks);
 

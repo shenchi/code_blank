@@ -9,26 +9,21 @@ namespace tofu
 {
 	class Model;
 
-	struct PoseContext 
+	struct UpdateContext 
 	{
-		math::float4x4* Transformation;
-		uint16_t numBones;
+		Model *model;
 	};
 
-	class AnimNodeBase
+	struct EvaluateContext
 	{
-	public:
-		//virtual ~AnimNodeBase() {}
-
-		virtual void Enter() {}
-		virtual void Exit() {}
-
-		virtual void Update(Model* model);
-		virtual void Evaluate(Model* model, PoseContext& Output);
+		Model *model;
+		math::float4x4* Transformations;
 	};
 
 	class AnimationFrameCache
 	{
+		friend class AnimationState;
+
 	private:
 		size_t indices[3][4];
 
@@ -43,22 +38,37 @@ namespace tofu
 	{
 		friend class AnimationState;
 
+	private:
 		float ticks;
 
 		// current position in key frames (for linear scan)
 		uint32_t cursor;
-		
-		// cache to keep t-1 to t+2 key frame index from previous search
-		std::vector<AnimationFrameCache> caches;
 
+		// cache to keep t-1 to t+2 key frame index from previous search
+		std::vector<AnimationFrameCache> frameCaches;
+
+	public:
+		AnimationStateCache() { Reset(); }
 		void Reset();
+	};
+
+	class AnimNodeBase
+	{
+	public:
+		//virtual ~AnimNodeBase() {}
+
+		virtual void Enter(Model *model) {}
+		virtual void Exit() {}
+
+		virtual void Update(UpdateContext& context) {}
+		virtual void Evaluate(EvaluateContext& context) {}
 	};
 
 	class AnimationState : AnimNodeBase
 	{
 		friend class AnimationStateMachine;
 
-	private:
+	protected:
 		std::string				name;
 		std::string				animationName;
 
@@ -70,11 +80,14 @@ namespace tofu
 	public:
 		//virtual ~AnimationState() {}
 
-		virtual void Enter();
-		virtual void Exit();
+		virtual void Enter(Model *model) override;
+		virtual void Exit() override;
 
-		virtual void Update(Model* model) override;
-		virtual void Evaluate(Model* model, PoseContext& Output) override;
+		virtual void Update(UpdateContext& context) override;
+		virtual void Evaluate(EvaluateContext& context) override;
+
+		math::float3 LerpFromFrameIndex(Model * model, size_t lhs, size_t rhs) const;
+		math::quat SlerpFromFrameIndex(Model * model, size_t lhs, size_t rhs) const;
 	};
 
 	class AnimationStateMachine : AnimNodeBase
@@ -119,13 +132,11 @@ namespace tofu
 
 		void AddState(AnimationState &state);
 
-		virtual void Enter() override;
+		virtual void Enter(Model *model) override;
 		virtual void Exit() override;
 
-		virtual void Update(Model* model) override;
-		virtual void Evaluate(Model* model, PoseContext& Output) override;
-
-	protected:
+		virtual void Update(UpdateContext& context) override;
+		virtual void Evaluate(EvaluateContext& context) override;
 
 		//void SetState(const FAnimationBaseContext& Context, int32 NewStateIndex);
 		//void SetStateInternal(int32 NewStateIndex);
