@@ -19,6 +19,34 @@ namespace
 		return btQuaternion(q.x, q.y, q.z, q.w);
 	}
 
+	void AddToBulletTriangleMesh(btTriangleMesh* mesh, tofu::Model* model)
+	{
+		uint32_t numSubMesh = model->GetNumMeshes();
+		uint32_t stride = model->GetStride();
+
+		for (uint32_t iMesh = 0; iMesh < numSubMesh; iMesh++)
+		{
+			const uint16_t* indices = model->GetIndices(iMesh);
+			const uint8_t* vertices = reinterpret_cast<const uint8_t*>(model->GetVertices(iMesh));
+
+			uint32_t numTriangles = model->GetNumIndices(iMesh) / 3u;
+
+			for (uint32_t iTriangle = 0; iTriangle < numTriangles; iTriangle++)
+			{
+				uint16_t i1 = indices[iTriangle * 3];
+				uint16_t i2 = indices[iTriangle * 3 + 1];
+				uint16_t i3 = indices[iTriangle * 3 + 2];
+
+				auto& v1 = *reinterpret_cast<const tofu::math::float3*>(vertices + stride * i1);
+				auto& v2 = *reinterpret_cast<const tofu::math::float3*>(vertices + stride * i2);
+				auto& v3 = *reinterpret_cast<const tofu::math::float3*>(vertices + stride * i3);
+
+				mesh->addTriangle(btVec3(v1), btVec3(v2), btVec3(v3));
+			}
+
+		}
+	}
+
 	class TofuMeshAdaptor : public btStridingMeshInterface
 	{
 	public:
@@ -156,7 +184,7 @@ namespace tofu
 				}
 				if (nullptr != comp.meshInterface)
 				{
-					delete reinterpret_cast<TofuMeshAdaptor*>(comp.meshInterface);
+					delete comp.meshInterface;
 					comp.meshInterface = nullptr;
 				}
 			}
@@ -212,38 +240,51 @@ namespace tofu
 				}
 				if (nullptr != comp.meshInterface)
 				{
-					delete reinterpret_cast<TofuMeshAdaptor*>(comp.meshInterface);
+					delete comp.meshInterface;
 					comp.meshInterface = nullptr;
+				}
+
+				math::float3 scale = t->GetWorldScale();
+				float uniformScale = 1.0f;
+				if (std::abs(scale.x - scale.y) < 0.0001f && std::abs(scale.x - scale.z) < 0.0001f)
+				{
+					uniformScale = scale.x;
 				}
 
 				{
 					math::quat rot = t->GetWorldRotation();
 					math::float3 pos = t->GetWorldPosition() + 
-						rot * (comp.colliderDesc.origin);
+						rot * (comp.colliderDesc.origin * scale);
 					
 					btTransform btTrans(btQuat(rot), btVec3(pos));
 					
 					switch (comp.colliderDesc.type)
 					{
 					case ColliderType::kColliderTypeBox:
-						comp.collider = new btBoxShape(btVec3(comp.colliderDesc.halfExtends));
+						comp.collider = new btBoxShape(btVec3(comp.colliderDesc.halfExtends * scale));
 						break;
 					case ColliderType::kColliderTypeSphere:
-						comp.collider = new btSphereShape(comp.colliderDesc.radius);
+						comp.collider = new btSphereShape(comp.colliderDesc.radius * uniformScale);
 						break;
 					case ColliderType::kColliderTypeCapsule:
 						comp.collider = new btCapsuleShape(
-							comp.colliderDesc.radius,
-							comp.colliderDesc.height);
+							comp.colliderDesc.radius * uniformScale,
+							comp.colliderDesc.height * uniformScale);
 						break;
 					case ColliderType::kColliderTypeCylinder:
-						comp.collider = new btCylinderShape(btVec3(comp.colliderDesc.halfExtends));
+						comp.collider = new btCylinderShape(btVec3(comp.colliderDesc.halfExtends * scale));
 						break;
 					case ColliderType::kColliderTypeMesh:
 						if (!comp.isStatic)
 							return kErrUnknown;
-						comp.meshInterface = new TofuMeshAdaptor(comp.colliderDesc.model);
-						comp.collider = new btBvhTriangleMeshShape(comp.meshInterface, false);
+
+						//comp.meshInterface = new TofuMeshAdaptor(comp.colliderDesc.model);
+						btTriangleMesh* m = new btTriangleMesh();
+						AddToBulletTriangleMesh(m, comp.colliderDesc.model);
+						comp.meshInterface = m;
+
+						comp.meshInterface->setScaling(btVec3(scale));
+						comp.collider = new btBvhTriangleMeshShape(comp.meshInterface, false, true);
 						break;
 					}
 

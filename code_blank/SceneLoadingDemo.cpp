@@ -76,6 +76,7 @@ int32_t SceneLoadingDemo::Init()
 
 		tPlayer = e.AddComponent<TransformComponent>();
 		tPlayer->SetLocalPosition(math::float3{ -5.0f, 8.0f, -5.0f });
+		//tPlayer->SetLocalPosition(math::float3{ 0.0f, 8.0f, 0.0f });
 		tPlayer->SetLocalScale(math::float3{ 0.01f, 0.01f, 0.01f });
 
 		RenderingComponent r = e.AddComponent<RenderingComponent>();
@@ -97,7 +98,7 @@ int32_t SceneLoadingDemo::Init()
 		pPlayer = e.AddComponent<PhysicsComponent>();
 
 		pPlayer->LockRotation(true, false, true);
-		pPlayer->SetCapsuleCollider(0.5f, 1.0f);
+		pPlayer->SetCapsuleCollider(50.0f, 100.0f);
 		pPlayer->SetColliderOrigin(math::float3{ 0.0f, 1.0f, 0.0f });
 	}
 

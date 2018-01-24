@@ -69,6 +69,16 @@ namespace tofu
 			return GetWorldTransform().TransformPosition(math::float3());
 		}
 
+		TF_INLINE math::float3			GetLocalScale() const
+		{
+			return localTransform.GetScale();
+		}
+
+		TF_INLINE math::float3			GetWorldScale() const
+		{
+			return worldTransform.GetScale();
+		}
+
 		// get right vector in world space
 		TF_INLINE math::float3			GetRightVector() const
 		{
