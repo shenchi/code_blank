@@ -97,23 +97,18 @@ int32_t TestGame::Init()
 		pPlayer->SetColliderOrigin(math::float3{ 0.0f, 1.0f, 0.0f });
 	}
 	// light
-	/*{
+	{
 		Entity e = Entity::Create();
 
 		tSun = e.AddComponent<TransformComponent>();
-		tSun->SetLocalPosition(math::float3{ 5, 5, 0 });
+		tSun->SetLocalPosition(math::float3{ 5, 5, -5 });
 		tSun->SetLocalRotation(math::angleAxis(3.14 / 4, math::float3{ 1.0f, 0.0f, 0.0f }));
 
-		RenderingComponent r = e.AddComponent<RenderingComponent>();
-
-		Light * sunLight = RenderingSystem::instance()->CreateLight();
-
+		lSun = e.AddComponent<LightComponent>();
+		lSun->SetType(LightType::kLightTypeDirectional);
 		math::float4 sunColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
-		sunLight->SetType(LightType::kLightTypeDirectional);
-		sunLight->SetColor(sunColor);
-	
-		r->SetLight(sunLight);
-	}*/
+		lSun->SetColor(sunColor);
+	}
 
 	{
 		Entity e = Entity::Create();

@@ -1,3 +1,9 @@
+cbuffer LightingConstants : register (b0)
+{
+	float4	cameraPos;
+	float4  _reserv1[3];
+}
+
 struct PS_INPUT
 {
 	float4		position	: SV_POSITION;

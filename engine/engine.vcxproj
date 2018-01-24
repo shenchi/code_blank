@@ -161,7 +161,7 @@
     <ClInclude Include="HandleAllocator.h" />
     <ClInclude Include="InputStates.h" />
     <ClInclude Include="InputSystem.h" />
-    <ClInclude Include="Light.h" />
+    <ClInclude Include="LightComponent.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="MemoryAllocator.h" />
     <ClInclude Include="Model.h" />

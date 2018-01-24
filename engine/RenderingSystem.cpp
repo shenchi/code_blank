@@ -13,6 +13,7 @@
 #include "CameraComponent.h"
 #include "RenderingComponent.h"
 #include "AnimationComponent.h"
+#include "LightComponent.h"
 
 namespace
 {
@@ -24,6 +25,15 @@ namespace
 		tofu::math::float3		cameraPos;			// 1 shader constants
 		float					padding2;
 		float					padding3[4 * 15];	// 15 shader constants
+	};
+
+	struct LightingConstants {
+		tofu::math::float4	    lightColor;			// 1 shader constants
+		tofu::math::float3	    lightDirection;	    // 1 shader constants
+		float					padding1;		
+		tofu::math::float3		lightPosition;		// 1 shader constants
+		float					padding2;
+		float					padding3[4];	// 1 shader constants
 	};
 }
 
@@ -37,7 +47,7 @@ namespace tofu
 		modelHandleAlloc(),
 		meshHandleAlloc(),
 		materialHandleAlloc(),
-		lightHandleAlloc(),
+	//	lightHandleAlloc(),
 		modelTable(),
 		bufferHandleAlloc(),
 		textureHandleAlloc(),
@@ -53,7 +63,7 @@ namespace tofu
 		meshes(),
 		models(),
 		materials(),
-		lights(),
+	//	lights(),
 		materialPSOs(),
 		materialVSs(),
 		materialPSs(),
@@ -147,6 +157,20 @@ namespace tofu
 
 				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
 			}
+
+			lightingConstantBuffer = bufferHandleAlloc.Allocate();
+			assert(lightingConstantBuffer);
+			{
+				CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
+				assert(nullptr != params);
+				params->handle = lightingConstantBuffer;
+				params->bindingFlags = kBindingConstantBuffer;
+				params->size = sizeof(LightingConstants);
+				params->dynamic = 1;
+
+				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
+			}
+			
 		}
 
 		// create built-in pipeline states
@@ -289,8 +313,31 @@ namespace tofu
 			cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
 		}
 
-		// clear
+		// Light constant buffer data
+		LightComponentData& light0 = LightComponent::GetAllComponents()[0];
+		{
+			LightingConstants* data = reinterpret_cast<LightingConstants*>(
+				MemoryAllocator::Allocators[allocNo].Allocate(sizeof(LightingConstants), 4)
+				);
+			assert(nullptr != data);
+			data->lightColor = light0.lightColor;
 
+			TransformComponent t = light0.entity.GetComponent<TransformComponent>();
+			data->lightDirection = math::float3{ (t->GetWorldRotation() * t->GetForwardVector()).x,
+				(t->GetWorldRotation() * t->GetForwardVector()).y,
+				(t->GetWorldRotation() * t->GetForwardVector()).z };
+			data->lightPosition = t->GetWorldPosition();
+
+			UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
+			assert(nullptr != params);
+			params->handle = lightingConstantBuffer;
+			params->data = data;
+			params->size = sizeof(LightingConstants);
+
+			cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
+		}
+
+		// clear
 		TextureHandle skyboxTex = TextureHandle();
 
 		if (nullptr == camera.skybox)
@@ -422,6 +469,7 @@ namespace tofu
 
 			Model& model = *comp.model;
 			Material* mat = comp.material;
+			
 
 			for (uint32_t iMesh = 0; iMesh < model.numMeshes; ++iMesh)
 			{
@@ -441,6 +489,7 @@ namespace tofu
 				case kMaterialTypeTest:
 					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
 					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
+					//params->psConstantBuffers[0] = { frameConstantBuffer, }
 					params->psTextures[0] = mat->mainTex;
 					params->psSamplers[0] = defaultSampler;
 					break;
@@ -468,6 +517,7 @@ namespace tofu
 					assert(false && "this material type is not applicable for entities");
 					break;
 				}
+
 
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
@@ -682,7 +732,7 @@ namespace tofu
 		return mat;
 	}
 
-	Light * RenderingSystem::CreateLight()
+	/*Light * RenderingSystem::CreateLight()
 	{
 		LightHandle handle = lightHandleAlloc.Allocate();
 		if (!handle)
@@ -695,7 +745,7 @@ namespace tofu
 		lgt->handle = handle;
 
 		return lgt;
-	}
+	}*/
 
 	int32_t RenderingSystem::InitBuiltinShader(MaterialType matType, const char * vsFile, const char * psFile)
 	{

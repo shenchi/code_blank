@@ -8,6 +8,7 @@
 #include <RenderingComponent.h>
 #include <AnimationComponent.h>
 #include <PhysicsComponent.h>
+#include <LightComponent.h>
 
 class TestGame : public tofu::Module
 {
@@ -27,6 +28,7 @@ private:
 	tofu::PhysicsComponent		pPlayer;
 	tofu::AnimationComponent	anim;
 	tofu::CameraComponent		cam;
+	tofu::LightComponent        lSun;
 	float pitch;
 	float yaw;
 	float speed;
