@@ -46,7 +46,7 @@ int32_t SceneLoadingDemo::Init()
 	rapidjson::Document d;
 	char* json = nullptr;
 	CHECKED(FileIO::ReadFile(
-		"assets/scenes/test4.json",
+		"assets/scenes/test.json",
 		true,
 		4,
 		kAllocLevelBasedMem,

@@ -279,7 +279,7 @@ namespace tofu
 							return kErrUnknown;
 
 						//comp.meshInterface = new TofuMeshAdaptor(comp.colliderDesc.model);
-						btTriangleMesh* m = new btTriangleMesh();
+						btTriangleMesh* m = new btTriangleMesh(false, false);
 						AddToBulletTriangleMesh(m, comp.colliderDesc.model);
 						comp.meshInterface = m;
 

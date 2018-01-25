@@ -43,6 +43,166 @@
         {
             "name": "Ramp",
             "guid": "24c333ebd9de243408b9fd68e57b5290"
+        },
+        {
+            "name": "Fence_Railing_Corner",
+            "guid": "5deeca04b5e1b914996f077a48b2340a"
+        },
+        {
+            "name": "Fence_Railing_Straight",
+            "guid": "389dfb449917000478517808837b9e11"
+        },
+        {
+            "name": "Room_Mid_Balcony",
+            "guid": "251586e8f30c01e41852227b71ef083a"
+        },
+        {
+            "name": "Room_Mid_Balcony_Support",
+            "guid": "c2d82ef1bd132164099578a5b3a125f6"
+        },
+        {
+            "name": "Room_Mid_Balcony_Support_Fullfloor",
+            "guid": "24e51249154074a44b3e2a28b246caff"
+        },
+        {
+            "name": "FloorTile_Slab_5x5",
+            "guid": "41f9009996b13d741a929bf8897f6562"
+        },
+        {
+            "name": "Room_Small_Roof",
+            "guid": "4060e90e81e5f3941952e1490b7c8416"
+        },
+        {
+            "name": "Room_Small_Wall",
+            "guid": "cbe7367095aabc549b381adcce3388e7"
+        },
+        {
+            "name": "Room_Small_Wall_Door",
+            "guid": "4df189844fc7de24c85535a1d82edd4e"
+        },
+        {
+            "name": "Room_Mid_Floorspacer",
+            "guid": "250e1e97305dc7f49af4ddb02bb6cc90"
+        },
+        {
+            "name": "Compound_Wall_Ramp_Single",
+            "guid": "f03a3adbd7c5f9a4e80da240aca821f2"
+        },
+        {
+            "name": "Room_Mid_Window3",
+            "guid": "abf11fa860a64c54f9e58180cf349dfb"
+        },
+        {
+            "name": "Decor_Doorframe_Double",
+            "guid": "0aff4e501e24bc54a9e8a22b5283ea8b"
+        },
+        {
+            "name": "Room_Mid_Wall_Door_Double",
+            "guid": "16d43a060a133804f9d85c55ae463f4e"
+        },
+        {
+            "name": "Decor_StreetLight",
+            "guid": "51ca5f5e3e57516479e9bee60de9ea28"
+        },
+        {
+            "name": "Decor_Light_Box",
+            "guid": "3eb24026d8a20d64c94cd1789bb9eb04"
+        },
+        {
+            "name": "Decor_Table_Corner",
+            "guid": "005a13e160530f043bd8665887913f50"
+        },
+        {
+            "name": "Decor_Screen3",
+            "guid": "bf0b15e831a443047852b2bb141a985c"
+        },
+        {
+            "name": "Decor_Computer",
+            "guid": "ca3272ca330bb744283476020253fdc1"
+        },
+        {
+            "name": "Decor_Table",
+            "guid": "53cb93b4d9c2e4a469bbe837f089f018"
+        },
+        {
+            "name": "Decor_Keyboard",
+            "guid": "d3d70a208d4501b4898c8a855d76891a"
+        },
+        {
+            "name": "Decor_Screen1",
+            "guid": "33ee62d20d872f54e9177c0633a877da"
+        },
+        {
+            "name": "Decor_Light_Strip",
+            "guid": "7d3f246c2e276094b9e9187f49540feb"
+        },
+        {
+            "name": "Decor_Screen2",
+            "guid": "6464896be035b774593b21248f3dfa58"
+        },
+        {
+            "name": "Fence_Railing_Straight_End",
+            "guid": "ba34419429c468b4faaa7d00e00522c5"
+        },
+        {
+            "name": "Filler_5x3_Wall",
+            "guid": "485d5fe32aede3548bcfcc1e4b885786"
+        },
+        {
+            "name": "Filler_3x1_Wall",
+            "guid": "21205b0884ab4e5458c1f7cfe7187cc5"
+        },
+        {
+            "name": "Filler_5x2_Wall",
+            "guid": "5b91d52bd1d0bb94280a8127c044c93e"
+        },
+        {
+            "name": "Filler_5x1_Wall",
+            "guid": "130d368fe5312ce408ad2d7a9f2a25ec"
+        },
+        {
+            "name": "Road_Straight",
+            "guid": "1cdfad9e430dfe547950e09bec1496ac"
+        },
+        {
+            "name": "Road_Box_Filler_Panel",
+            "guid": "bd5d95e913641394b8144b79966eba1c"
+        },
+        {
+            "name": "Road_Corner",
+            "guid": "0e8455119ac7b6640b7cc2c619cbad3f"
+        },
+        {
+            "name": "Road_Ramp",
+            "guid": "d4d93c91ddefa1a429556ad9589b5898"
+        },
+        {
+            "name": "Road_End",
+            "guid": "e8a5600f4bf412a4c9ebcf62f6db5d2c"
+        },
+        {
+            "name": "Road_X",
+            "guid": "dc63be736e67dd642850bf74e4ddca25"
+        },
+        {
+            "name": "Road_T",
+            "guid": "c7da215bc0f1d7b438f44bb1f1544b48"
+        },
+        {
+            "name": "Road_Tunnel_Entrance_Exit",
+            "guid": "5bdbf15f19e66e147820d8b487cbd80c"
+        },
+        {
+            "name": "City_Wall_Corner",
+            "guid": "f6683efd485bed64c92ad9243948dbd8"
+        },
+        {
+            "name": "City_Wall_Straight1",
+            "guid": "26389347e8ebb82449e38b151d7a1058"
+        },
+        {
+            "name": "City_Wall_Strut1",
+            "guid": "c209b7dc231071b43b333881e2284f6d"
         }
     ],
     "materials": [
@@ -99,6 +259,48 @@
             "GUID": "704f6d686747cad42a5813085cedc419",
             "AlbedoMap": "",
             "NormalMap": ""
+        },
+        {
+            "Name": "Light_Fittings",
+            "GUID": "6197e67528e0bb5448572d0105335293",
+            "AlbedoMap": "textures/Light_Fittings_Diff",
+            "NormalMap": ""
+        },
+        {
+            "Name": "PlaticTile",
+            "GUID": "9cf38d08ee26404479b06e4808f3cfc9",
+            "AlbedoMap": "textures/PlaticTile_Diff",
+            "NormalMap": "textures/PlaticTile_Bump"
+        },
+        {
+            "Name": "Decor",
+            "GUID": "4948955c1cc7dd14fba3c0f923e6ffc9",
+            "AlbedoMap": "textures/Decor_Diff",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Decor2",
+            "GUID": "494100ee648661f4b926d4cb719b35f8",
+            "AlbedoMap": "textures/Decor2_Diff",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Floor2",
+            "GUID": "49a47c5825dfd2e40ad48b13a608b1c2",
+            "AlbedoMap": "textures/Floor2_Diff+Spec",
+            "NormalMap": "textures/Floor2_Bump"
+        },
+        {
+            "Name": "Wall3",
+            "GUID": "5aaf6b5ee7e06a245a4ad3ba6a0ed917",
+            "AlbedoMap": "textures/Wall3_Diff+Spec",
+            "NormalMap": "textures/Wall3_Bump"
+        },
+        {
+            "Name": "Roof1",
+            "GUID": "1e99526875e475247b475b85e863e82a",
+            "AlbedoMap": "textures/Roof1_Diff+Spec",
+            "NormalMap": "textures/Roof1_Bump"
         }
     ],
     "textures": [
@@ -199,6 +401,105 @@
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
             "MipmapCount": 9,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Light_Fittings_Diff",
+            "GUID": "4369cdd42219eb642a05d8ebc504bc78",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 9,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/PlaticTile_Diff",
+            "GUID": "342d6a4b579b28c46a2375b80c0c2904",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 9,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/PlaticTile_Bump",
+            "GUID": "79d910e099a945747942bc01afdb8f93",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "trilinear",
+            "MipmapCount": 9,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Decor_Diff",
+            "GUID": "44b57bcf0dc320f4cb47b148fc3f0666",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 10,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Decor2_Diff",
+            "GUID": "2a6d42e3dd9da5d4fafddd90a9f4d9cb",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 10,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Floor2_Diff+Spec",
+            "GUID": "54297a8e0a24e21458e8aea40fef21de",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Floor2_Bump",
+            "GUID": "7ec7bf88fd7bd624c81862e975cb4077",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "trilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Wall3_Diff+Spec",
+            "GUID": "185513efb9a9c084b972d64f9bd20d46",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 10,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Wall3_Bump",
+            "GUID": "671d66de0327e994e8905c503d1a9f21",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "trilinear",
+            "MipmapCount": 10,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Roof1_Diff+Spec",
+            "GUID": "a75e8d74afd55ce4a87445c821c70b39",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 10,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Roof1_Bump",
+            "GUID": "9193748617ff2c240ba1e79fd522b6d8",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "trilinear",
+            "MipmapCount": 10,
             "MipmapBias": 0.0
         }
     ]
