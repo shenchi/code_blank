@@ -11,9 +11,11 @@ namespace tofu
 
 	class ResourceManager
 	{
+		//SINGLETON_DECL(ResourceManager);
+
 	public:
 
-		int32_t LoadConfig();
+		int32_t Init();
 
 		Material* LoadMaterial(const char* name);
 
@@ -22,6 +24,10 @@ namespace tofu
 		void SetDefaultAlbedoMap(TextureHandle tex) { defaultAlbedoMap = tex; }
 
 		void SetDefaultNormalMap(TextureHandle tex) { defaultNormalMap = tex; }
+
+	private:
+
+		int32_t LoadConfig();
 
 	private:
 		rapidjson::Document		config;

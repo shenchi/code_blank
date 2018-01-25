@@ -172,6 +172,7 @@
     <ClInclude Include="RenderingComponent.h" />
     <ClInclude Include="RenderingSystem.h" />
     <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Tofu.h" />
     <ClInclude Include="TofuMath.h" />
     <ClInclude Include="Transform.h" />
@@ -197,6 +198,7 @@
     <ClCompile Include="RendererDX11.cpp" />
     <ClCompile Include="RenderingSystem.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="TransformComponent.cpp" />
   </ItemGroup>

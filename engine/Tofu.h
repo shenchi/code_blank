@@ -15,4 +15,5 @@
 #include "FileIO.h"
 #include "MemoryAllocator.h"
 #include "ResourceManager.h"
+#include "SceneManager.h"
 #include "TofuMath.h"
