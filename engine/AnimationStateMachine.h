@@ -18,6 +18,7 @@ namespace tofu
 	{
 		Model *model;
 		math::float4x4* Transformations;
+		AnimNodeBase *nextState;
 	};
 
 	class AnimationFrameCache
@@ -68,16 +69,17 @@ namespace tofu
 	{
 		friend class AnimationStateMachine;
 
-	protected:
-		std::string				name;
-		std::string				animationName;
-
-		AnimationStateCache*	cache;
-
-		float					playbackSpeed;
-		bool					isLoop;
-
 	public:
+		std::string	name;
+		std::string	animationName;
+
+		AnimationStateCache* cache;
+
+		bool isLoop = true;
+		float playbackSpeed;
+		
+	public:
+		AnimationState(std::string name) :name(name) {}
 		//virtual ~AnimationState() {}
 
 		virtual void Enter(Model *model) override;
@@ -88,6 +90,25 @@ namespace tofu
 
 		math::float3 LerpFromFrameIndex(Model * model, size_t lhs, size_t rhs) const;
 		math::quat SlerpFromFrameIndex(Model * model, size_t lhs, size_t rhs) const;
+	};
+
+	class TransitionState : AnimNodeBase
+	{
+	private:
+		AnimNodeBase *previous;
+		AnimNodeBase *next;
+		float duration;
+		float elapsedTime;
+
+	public:
+		TransitionState(AnimNodeBase *previous, AnimNodeBase *next, float duration = 0.3f) 
+			:previous(previous), next(next), duration(duration) {}
+
+		virtual void Enter(Model *model) override;
+		virtual void Exit() override;
+
+		virtual void Update(UpdateContext& context) override;
+		virtual void Evaluate(EvaluateContext& context) override;
 	};
 
 	class AnimationStateMachine : AnimNodeBase
@@ -127,10 +148,10 @@ namespace tofu
 		//TArray<FGraphTraversalCounter> StateCacheBoneCounters;
 
 	public:		
-		// should only set before first update
 		void SetStartState(std::string name);
+		void SetStartState(AnimationState & state);
 
-		void AddState(AnimationState &state);
+		AnimationState & AddState(std::string name);
 
 		virtual void Enter(Model *model) override;
 		virtual void Exit() override;

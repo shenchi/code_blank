@@ -57,7 +57,7 @@ namespace tofu
 		// update current animation play back time
 		currentTime += Time::DeltaTime * playbackSpeed;
 
-		//UpdateStateMachine();
+		UpdateStateMachine();
 
 		model::ModelAnimation& anim = model->animations[currentAnimation];
 
@@ -119,9 +119,8 @@ namespace tofu
 			matrices[boneId] = t.GetMatrix();
 		}
 
-		//EvaluateContext context{ model, matrices };
-
-		//stateMachine.Evaluate(context);
+		EvaluateContext context{ model, matrices };
+		stateMachine.Evaluate(context);
 
 		// if we are cross fading
 		if (crossFadeFactor > 0.0f)

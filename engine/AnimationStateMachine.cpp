@@ -4,6 +4,7 @@
 #include "Transform.h"
 #include "Compression.h"
 #include <assert.h>
+#include <algorithm>
 
 using namespace tofu::model;
 
@@ -30,8 +31,10 @@ namespace tofu
 
 	void AnimationState::Enter(Model *model)
 	{
-		cache = new AnimationStateCache();
-		cache->frameCaches.resize(model->header->NumBones);
+		if (!cache) {
+			cache = new AnimationStateCache();
+			cache->frameCaches.resize(model->header->NumBones);
+		}
 	}
 
 	void AnimationStateCache::Reset()
@@ -89,8 +92,6 @@ namespace tofu
 
 			}
 			else if (cache.indices[kChannelTranslation][1] != SIZE_MAX)*/ 
-				
-
 
 			if (frameCache.indices[kChannelTranslation][1] != SIZE_MAX
 				&& context.model->frames[frameCache.indices[kChannelTranslation][1]].time <= cache->ticks) {
@@ -198,15 +199,30 @@ namespace tofu
 		return math::slerp(a, b, t);
 	}
 	
-	void AnimationStateMachine::AddState(AnimationState & state)
+	AnimationState& AnimationStateMachine::AddState(std::string name)
 	{
-		stateIndexTable[state.name] = static_cast<uint16_t>(states.size());
-		states.push_back(std::move(state));
+		stateIndexTable[name] = static_cast<uint16_t>(states.size());
+		states.push_back(AnimationState(name));
+
+		return states.back();
+	}
+
+	void AnimationStateMachine::SetStartState(AnimationState &state)
+	{
+		SetStartState(state.name);
 	}
 
 	void AnimationStateMachine::SetStartState(std::string name)
 	{
 		startState = stateIndexTable[name];
+
+		// FIXME: test noly
+		if (name.compare("idle") == 0) {
+			startState = 0;
+		}
+		else if (name.compare("walk") == 0) {
+			startState = 1;
+		}
 	}
 
 	void AnimationStateMachine::Enter(Model *model)
@@ -233,8 +249,32 @@ namespace tofu
 
 	void AnimationStateMachine::Evaluate(EvaluateContext & context)
 	{
+		current->Evaluate(context);
 	}
 
+	void TransitionState::Enter(Model * model)
+	{
+		next->Enter(model);
+	}
+
+	void TransitionState::Exit()
+	{
+		previous->Exit();
+	}
+
+	void TransitionState::Update(UpdateContext & context)
+	{
+		elapsedTime = std::min(elapsedTime + Time::DeltaTime, duration);
+		
+	}
+
+	void TransitionState::Evaluate(EvaluateContext & context)
+	{
+		float alpha = elapsedTime / duration;
+		
+
 	
+
+	}
 }
 
