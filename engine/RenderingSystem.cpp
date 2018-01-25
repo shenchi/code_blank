@@ -27,7 +27,7 @@ namespace
 		float					padding3[4 * 15];	// 15 shader constants
 	};
 
-	struct LightingConstants {
+	struct LightingConstants {                      // 16 shader constants in total
 		tofu::math::float4	    lightColor;			// 1 shader constants
 		tofu::math::float3	    lightDirection;	    // 1 shader constants
 		float					padding1;		
@@ -48,7 +48,6 @@ namespace tofu
 		modelHandleAlloc(),
 		meshHandleAlloc(),
 		materialHandleAlloc(),
-	//	lightHandleAlloc(),
 		modelTable(),
 		bufferHandleAlloc(),
 		textureHandleAlloc(),
@@ -65,7 +64,6 @@ namespace tofu
 		meshes(),
 		models(),
 		materials(),
-	//	lights(),
 		materialPSOs(),
 		materialVSs(),
 		materialPSs(),
@@ -738,21 +736,6 @@ namespace tofu
 
 		return mat;
 	}
-
-	/*Light * RenderingSystem::CreateLight()
-	{
-		LightHandle handle = lightHandleAlloc.Allocate();
-		if (!handle)
-		{
-			return nullptr;
-		}
-
-		Light* lgt = &(lights[handle.id]);
-		new (lgt) Light();
-		lgt->handle = handle;
-
-		return lgt;
-	}*/
 
 	int32_t RenderingSystem::InitBuiltinShader(MaterialType matType, const char * vsFile, const char * psFile)
 	{

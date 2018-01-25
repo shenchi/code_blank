@@ -106,7 +106,7 @@ int32_t TestGame::Init()
 
 		lSun = e.AddComponent<LightComponent>();
 		lSun->SetType(LightType::kLightTypeDirectional);
-		math::float4 sunColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
+		math::float4 sunColor = math::float4{ 1.0f, 0.0f, 0.0f, 1.0f };
 		lSun->SetColor(sunColor);
 	}
 

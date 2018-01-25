@@ -11,7 +11,8 @@ cbuffer LightingConstants : register (b0)
 	float   padding1;
 	float3	lightPos;
 	float   padding2;
-	float4   cameraPos;
+	float3   cameraPos;
+	float   padding3;
 	float4  _reserv1[12];
 
 }
@@ -45,9 +46,13 @@ float4 main(V2F input) : SV_TARGET
 	float3 viewDir = normalize(cameraPos.xyz - input.worldPos);
 	float3 refl = reflect(-viewDir, normal);
 
-	float3 color = diffuseTex.Sample(samp, input.uv).rgb;
-	color = color * 0.8 + cubeMap.Sample(samp, refl).rgb * 0.2;
+	float sunLightAmount = saturate(dot(-lightDirection, normal));
+	float4 sunLightColor = lightColor * sunLightAmount;
 
-	//return float4(cameraPos.xyz,1);
+	float3 color = diffuseTex.Sample(samp, input.uv).rgb;
+	color = sunLightColor * color * 0.8 + cubeMap.Sample(samp, refl).rgb * 0.2;
+
+	//color = sunLightColor * color;
+
 	return float4(color, 1);
 }
