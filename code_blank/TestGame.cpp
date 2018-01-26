@@ -204,7 +204,8 @@ int32_t TestGame::Update()
 		if (speed > maxSpeed)
 			speed = maxSpeed;
 
-		tPlayer->Translate(moveDir * Time::DeltaTime * speed);
+		pPlayer->SetVelocity(moveDir * speed);
+		//tPlayer->Translate(moveDir * Time::DeltaTime * speed);
 
 		anim->CrossFade(1, 0.3f);
 	}
@@ -212,7 +213,9 @@ int32_t TestGame::Update()
 	{
 		speed -= Time::DeltaTime * Deaccelerate;
 		if (speed < 0.0f) speed = 0.0f;
-		tPlayer->Translate(tPlayer->GetForwardVector() * Time::DeltaTime * speed);
+
+		pPlayer->SetVelocity(tPlayer->GetForwardVector() * speed);
+		//tPlayer->Translate(tPlayer->GetForwardVector() * Time::DeltaTime * speed);
 
 		anim->CrossFade(0, 0.2f);
 	}
