@@ -76,10 +76,10 @@ namespace tofu
 
 		t->SetLocalRotation(math::quat
 		{
+			rotate["w"].GetFloat(),
 			rotate["x"].GetFloat(),
 			rotate["y"].GetFloat(),
-			rotate["z"].GetFloat(),
-			rotate["w"].GetFloat()
+			rotate["z"].GetFloat()
 		});
 
 		t->SetLocalScale(math::float3

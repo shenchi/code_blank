@@ -150,7 +150,7 @@ int32_t SceneLoadingDemo::Update()
 		math::float3 moveDir = camRot * inputDir;
 		moveDir.y = 0.0f;
 		moveDir = math::normalize(moveDir);
-		tPlayer->FaceTo(moveDir);
+		tPlayer->FaceTo(-moveDir);
 
 		speed += Time::DeltaTime * Accelerate;
 		if (speed > maxSpeed)

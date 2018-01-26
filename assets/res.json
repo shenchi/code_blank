@@ -1,10 +1,6 @@
 {
     "models": [
         {
-            "name": "Unity_Builtin_Cube",
-            "guid": "0000000000000000e000000000000000"
-        },
-        {
             "name": "Decor_Doorframe_Single",
             "guid": "0e0ca3c62a03d644da2187399aab477a"
         },
@@ -39,10 +35,6 @@
         {
             "name": "Room_Mid_Window1",
             "guid": "256054a64dbafae469c7e161d7f5379d"
-        },
-        {
-            "name": "Ramp",
-            "guid": "24c333ebd9de243408b9fd68e57b5290"
         },
         {
             "name": "Fence_Railing_Corner",
@@ -207,12 +199,6 @@
     ],
     "materials": [
         {
-            "Name": "Wall1",
-            "GUID": "b7540bbafd5d39341ab34852c651160d",
-            "AlbedoMap": "textures/Wall1_Diff+Spec",
-            "NormalMap": "textures/Wall1_Bump"
-        },
-        {
             "Name": "Wall2",
             "GUID": "107eee8dc45625b44a144a214d8d7b31",
             "AlbedoMap": "textures/Wall2_Halfblock_Diff+Spec",
@@ -231,6 +217,12 @@
             "NormalMap": "textures/Floor3_Bump"
         },
         {
+            "Name": "Wall1",
+            "GUID": "b7540bbafd5d39341ab34852c651160d",
+            "AlbedoMap": "textures/Wall1_Diff+Spec",
+            "NormalMap": "textures/Wall1_Bump"
+        },
+        {
             "Name": "Wall1_Halfblock",
             "GUID": "545cf3d8cf1375b4395aa95b6022bca9",
             "AlbedoMap": "textures/Wall1_Halfblock_Diff+Spec",
@@ -240,24 +232,6 @@
             "Name": "Glass",
             "GUID": "8000864a8a175df468a93306d9605197",
             "AlbedoMap": "textures/Glass_Diff+Spec",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Floor3_Diff",
-            "GUID": "e758d54a1ae70f142aec3bde8c97f713",
-            "AlbedoMap": "",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Wall1_Diff",
-            "GUID": "9bb23e67cef5af04088ee281a40b60b7",
-            "AlbedoMap": "",
-            "NormalMap": ""
-        },
-        {
-            "Name": "lambert1",
-            "GUID": "704f6d686747cad42a5813085cedc419",
-            "AlbedoMap": "",
             "NormalMap": ""
         },
         {
@@ -304,24 +278,6 @@
         }
     ],
     "textures": [
-        {
-            "Path": "textures/Wall1_Diff+Spec",
-            "GUID": "2b3b7bc7498198b4d996d8c918eaf453",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 10,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Wall1_Bump",
-            "GUID": "f7f8e34c49bb0d24593f5a03458f330b",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "trilinear",
-            "MipmapCount": 10,
-            "MipmapBias": 0.0
-        },
         {
             "Path": "textures/Wall2_Halfblock_Diff+Spec",
             "GUID": "6604aaacb9f1558449abfc0c6d2e0570",
@@ -370,6 +326,24 @@
         {
             "Path": "textures/Floor3_Bump",
             "GUID": "26dee1916efb09d449d76fb70fac9713",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "trilinear",
+            "MipmapCount": 10,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Wall1_Diff+Spec",
+            "GUID": "2b3b7bc7498198b4d996d8c918eaf453",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 10,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Wall1_Bump",
+            "GUID": "f7f8e34c49bb0d24593f5a03458f330b",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "trilinear",
