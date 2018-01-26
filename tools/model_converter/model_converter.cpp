@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <algorithm>
+#include <math.h> 
 
 #pragma comment (lib, "assimp-vc140-mt.lib")
 
@@ -14,6 +16,7 @@
 
 #include "../../engine/ModelFormat.h"
 #include "../../engine/TofuMath.h"
+#include "../../engine/Compression.h"
 
 using tofu::math::float2;
 using tofu::math::float3;
@@ -30,7 +33,11 @@ typedef tofu::model::ModelFloat3Frame VFrame;
 typedef tofu::model::ModelQuatFrame QFrame;
 
 typedef std::vector<Bone> BoneTree;
-typedef std::unordered_map<std::string, uint32_t> BoneTable;
+typedef std::unordered_map<std::string, uint16_t> BoneTable;
+
+using namespace tofu::math;
+using namespace tofu::model;
+using namespace tofu::compression;
 
 void Basename(char* buf, size_t bufSize, const char* path)
 {
@@ -76,8 +83,10 @@ void Directory(char* buf, size_t bufSize, const char* path)
 	{
 		strncpy_s(buf, bufSize, "./", 3);
 	}
-
-	strncpy_s(buf, bufSize, path + start, end - start + 1);
+	else
+	{
+		strncpy_s(buf, bufSize, path + start, end - start + 1);
+	}
 }
 
 inline void CopyMatrix(float4x4& dstMatrix, const aiMatrix4x4& srcMatrix)
@@ -146,6 +155,28 @@ uint32_t loadBoneHierarchy(aiNode* node, BoneTree& bones, BoneTable& table, uint
 	return boneId;
 }
 
+bool AnimationFrameComp (ModelAnimFrame i, ModelAnimFrame j) { return (i.time <= j.time); }
+
+bool SortingFrameComp(ForSortingFrame i, ForSortingFrame j) { 
+	if (i.usedTime == j.usedTime) {
+		if (i.frame.GetJointIndex() == j.frame.GetJointIndex()) {
+			if (i.frame.GetChannelType() == j.frame.GetChannelType()) {
+				return i.frame.time < j.frame.time;
+			}
+			else {
+				return i.frame.GetChannelType() < j.frame.GetChannelType();
+			}
+		}
+		else {
+			return i.frame.GetJointIndex() < j.frame.GetJointIndex();
+		}
+	}
+	else {
+		return i.usedTime < j.usedTime;
+	}
+
+}
+
 struct ModelFile
 {
 	Assimp::Importer importer;
@@ -162,27 +193,29 @@ struct ModelFile
 	std::vector<VFrame>			tFrames;
 	std::vector<QFrame>			rFrames;
 	std::vector<VFrame>			sFrames;
+	std::vector<ForSortingFrame> frames;
+	std::vector<ModelAnimFrame> orderedFrames;
 
 	int Init(const char* filename)
 	{
 		importer.FreeScene();
 
-		unsigned int flags = aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_CalcTangentSpace;
+		unsigned int flags = aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_CalcTangentSpace
+			| aiProcess_LimitBoneWeights | aiProcess_ValidateDataStructure;
 
-		bool bConvertToLeftHanded = false;
+		bool bConvertToLeftHanded = true;
 		bool bStructureOfArray = false;
 
 		if (bConvertToLeftHanded)
 		{
 			flags |= aiProcess_ConvertToLeftHanded;
 		}
-		flags |= aiProcess_FlipUVs;
 
 		const aiScene* scene = importer.ReadFile(std::string(filename), flags);
 
-		if (nullptr == scene)
+		if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
-			printf("failed to read input file.\n%s\n", importer.GetErrorString());
+			fprintf(stderr, "failed to read input file.\n%s\n", importer.GetErrorString());
 			return __LINE__;
 		}
 
@@ -289,8 +322,8 @@ struct ModelFile
 					if (header.HasAnimation)
 					{
 						// reserve space for bone Ids and weights
-						*reinterpret_cast<int4*>(ptr) = int4();
-						ptr += sizeof(int4);
+						*reinterpret_cast<uint4*>(ptr) = uint4();
+						ptr += sizeof(uint4);
 						*reinterpret_cast<float4*>(ptr) = float4();
 						ptr += sizeof(float4);
 					}
@@ -328,7 +361,7 @@ struct ModelFile
 						return __LINE__;
 					}
 
-					uint32_t boneId = iter->second;
+					uint16_t boneId = iter->second;
 
 					if (IsIdentity(bones[boneId].offsetMatrix))
 					{
@@ -345,7 +378,7 @@ struct ModelFile
 						uint32_t vertexId = bone->mWeights[k].mVertexId;
 						float weight = bone->mWeights[k].mWeight;
 
-						int4* boneIds = reinterpret_cast<int4*>(meshBaseAddr
+						uint4* boneIds = reinterpret_cast<uint4*>(meshBaseAddr
 							+ vertexSize * vertexId
 							+ sizeof(float3) * (header.HasTangent ? 3 : 2));
 
@@ -417,13 +450,13 @@ struct ModelFile
 		{
 			aiAnimation* anim = scene->mAnimations[iAnim];
 
-			anims.push_back(Animation
-			{
+			Animation animation = {
 				static_cast<float>(anim->mDuration),
 				static_cast<float>(anim->mTicksPerSecond),
 				anim->mNumChannels,
-				static_cast<uint32_t>(channels.size())
-			});
+				static_cast<uint32_t>(channels.size()),
+				frames.size()
+			};
 
 			for (uint32_t iChan = 0; iChan < anim->mNumChannels; iChan++)
 			{
@@ -436,7 +469,7 @@ struct ModelFile
 					return __LINE__;
 				}
 
-				uint32_t boneId = iter->second;
+				uint16_t boneId = iter->second;
 				uint32_t numT = chan->mNumPositionKeys;
 				uint32_t numR = chan->mNumRotationKeys;
 				uint32_t numS = chan->mNumScalingKeys;
@@ -494,12 +527,92 @@ struct ModelFile
 
 					sFrames.push_back(frame);
 				}
+
+				// translation keys
+				for (uint32_t iFrame = 0; iFrame < numT; iFrame++)
+				{
+					aiVectorKey& key = chan->mPositionKeys[iFrame];
+					aiVectorKey& sortKey = chan->mPositionKeys[iFrame < 2 ? 0 : iFrame - 2];
+
+					ForSortingFrame temp;
+					temp.usedTime = static_cast<uint16_t>(round(sortKey.mTime));
+
+					ModelAnimFrame &frame = temp.frame;
+					frame.time = static_cast<uint16_t>(round(key.mTime));
+					frame.jointIndex = boneId;
+					frame.SetChannelType(kChannelTranslation);
+					frame.value.x = key.mValue.x;
+					frame.value.y = key.mValue.y;
+					frame.value.z = key.mValue.z;
+
+					frames.push_back(temp);
+				}
+
+				// rotation keys
+				for (uint32_t iFrame = 0; iFrame < numT; iFrame++)
+				{
+					aiQuatKey& key = chan->mRotationKeys[iFrame];
+					aiQuatKey& sortKey = chan->mRotationKeys[iFrame < 2 ? 0 : iFrame - 2];
+
+					ForSortingFrame temp;
+					temp.usedTime = static_cast<uint16_t>(round(sortKey.mTime));
+
+					ModelAnimFrame &frame = temp.frame;
+					frame.time = static_cast<uint16_t>(round(key.mTime));
+					frame.jointIndex = boneId;
+					frame.SetChannelType(kChannelRotation);
+
+					quat q;
+					q.x = key.mValue.x;
+					q.y = key.mValue.y;
+					q.z = key.mValue.z;
+					q.w = key.mValue.w;
+
+					CompressQuaternion(q, *reinterpret_cast<uint32_t*>(&frame.value.x));
+
+					frames.push_back(temp);
+				}
+
+				// scale keys
+				for (uint32_t iFrame = 0; iFrame < numT; iFrame++)
+				{
+					aiVectorKey& key = chan->mScalingKeys[iFrame];
+					aiVectorKey& sortKey = chan->mScalingKeys[iFrame < 2 ? 0 : iFrame - 2];
+
+					ForSortingFrame temp;
+					temp.usedTime = static_cast<uint16_t>(round(sortKey.mTime));
+
+					ModelAnimFrame &frame = temp.frame;
+					frame.time = static_cast<uint16_t>(round(key.mTime));
+					frame.jointIndex = boneId;
+					frame.SetChannelType(kChannelScale);
+					frame.value.x = key.mValue.x;
+					frame.value.y = key.mValue.y;
+					frame.value.z = key.mValue.z;
+
+					frames.push_back(temp);
+				}
 			}
+
+			animation.numFrames = frames.size();
+			anims.push_back(animation);
+
+			std::sort(frames.begin() + animation.startFrames, frames.end(), SortingFrameComp);
 		}
+
+		orderedFrames.reserve(frames.size());
+
+		for (auto &frame : frames) {
+			orderedFrames.push_back(std::move(frame.frame));
+		}
+
+		frames.resize(0);
+
 		header.NumAnimChannels = static_cast<uint32_t>(channels.size());
 		header.NumTotalTranslationFrames = static_cast<uint32_t>(tFrames.size());
 		header.NumTotalRotationFrames = static_cast<uint32_t>(rFrames.size());
 		header.NumTotalScaleFrames = static_cast<uint32_t>(sFrames.size());
+		header.NumAnimationFrames = static_cast<uint32_t>(orderedFrames.size());
 
 		return 0;
 	}
@@ -523,11 +636,17 @@ struct ModelFile
 		tFrames.insert(tFrames.end(), other.tFrames.begin(), other.tFrames.end());
 		rFrames.insert(rFrames.end(), other.rFrames.begin(), other.rFrames.end());
 		sFrames.insert(sFrames.end(), other.sFrames.begin(), other.sFrames.end());
+		orderedFrames.insert(orderedFrames.end(), other.orderedFrames.begin(), other.orderedFrames.end());
 
 		for (uint32_t i = 0; i < other.header.NumAnimations; i++)
 		{
 			Animation& anim = anims[i + header.NumAnimations];
 			anim.startChannelId += header.NumAnimChannels;
+
+			if (anim.startChannelId == 104) {
+				int a = 0;
+			}
+			anim.startFrames += header.NumAnimationFrames;
 		}
 
 		for (uint32_t i = 0; i < other.header.NumAnimChannels; i++)
@@ -548,6 +667,7 @@ struct ModelFile
 		header.NumTotalTranslationFrames = static_cast<uint32_t>(tFrames.size());
 		header.NumTotalRotationFrames = static_cast<uint32_t>(rFrames.size());
 		header.NumTotalScaleFrames = static_cast<uint32_t>(sFrames.size());
+		header.NumAnimationFrames = static_cast<uint32_t>(orderedFrames.size());
 
 		return 0;
 	}
@@ -632,6 +752,12 @@ struct ModelFile
 				printf("failed to write scale frame list to the file.\n");
 				return __LINE__;
 			}
+
+			if (1 != fwrite(&(orderedFrames[0]), sizeof(ModelAnimFrame) * header.NumAnimationFrames, 1, file))
+			{
+				printf("failed to write frame list to the file.\n");
+				return __LINE__;
+			}
 		}
 
 		fclose(file);
@@ -684,6 +810,36 @@ struct ModelFile
 
 int main(int argc, char* argv[])
 {
+	//argc = 4;
+
+	//char* tempArgv[6] =
+	//{
+	//	"",
+	//	"../../archer.model",
+	//	"../../assets/archer_idle.fbx",
+	//	//"../../assets/archer_jump.fbx",
+	//	//"../../assets/archer_running.fbx",
+	//	"../../assets/archer_walking.fbx"
+	//};
+
+	////argc = 3;
+	//
+	////char* tempArgv[6] =
+	////{
+	////	"",
+	////	"../../cube.model",
+	////	"../../assets/cube.fbx",
+	////};
+
+	////char* tempArgv[6] =
+	////{
+	////	"",
+	////	"../../ground.model",
+	////	"../../assets/ground.fbx",
+	////};
+
+	//argv = tempArgv;
+
 	if (argc < 3)
 	{
 		printf("model_converter output_file input_file1 [input_file2 ...]\n");

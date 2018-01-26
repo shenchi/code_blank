@@ -5,6 +5,23 @@
 
 namespace tofu
 {
+	class AnimationFrameCache 
+	{
+		friend class AnimationComponentData;
+
+	public:
+		AnimationFrameCache() {
+			Reset();
+		}
+
+	private:
+		size_t indices[3][4];
+
+	private:
+		void Reset();
+		void AddFrameIndex(model::ChannelType type, size_t index);
+	};
+
 	class AnimationComponentData
 	{
 		friend class RenderingSystem;
@@ -20,6 +37,8 @@ namespace tofu
 			currentAnimation(0),
 			currentTime(0.0f),
 			playbackSpeed(1.0f),
+			cursor(0u),
+			caches(nullptr),
 			crossFadeFactor(0.0f),
 			crossFadeSpeed(0.0f),
 			lastAnimation(0)
@@ -45,7 +64,13 @@ namespace tofu
 		// id of animation currently used
 		uint32_t				currentAnimation;
 		float					currentTime;
+		float					ticks;
 		float					playbackSpeed;
+
+		// current position in key frames (for linear scan)
+		uint32_t				cursor;
+		// cache to keep t-1 to t+2 key frame index from previous search
+		AnimationFrameCache		*caches;
 
 		// interpolation parameter for cross fading
 		// 1 stands for fully using old animation, 0 stands for fully using new animation
@@ -70,6 +95,13 @@ namespace tofu
 
 		// get interpolated quaterion frame for given ticks
 		math::quat SampleFrame(model::ModelQuatFrame* frames, uint32_t startFrame, uint32_t numFrames, float ticks);
+
+		math::float3 LerpFromFrameIndex(size_t lhs, size_t rhs);
+
+		math::quat SlerpFromFrameIndex(size_t lhs, size_t rhs);
+
+		void ResetCaches();
+		void UpdateCache();
 	};
 
 	typedef Component<AnimationComponentData> AnimationComponent;

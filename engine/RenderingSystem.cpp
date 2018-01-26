@@ -272,8 +272,14 @@ namespace tofu
 				MemoryAllocator::Allocators[allocNo].Allocate(sizeof(FrameConstants), 4)
 				);
 			assert(nullptr != data);
+
+#ifdef TOFU_USE_GLM
+			data->matView = math::transpose(camera.CalcViewMatrix());
+			data->matProj = math::transpose(camera.CalcProjectionMatrix());
+#else
 			data->matView = camera.CalcViewMatrix();
 			data->matProj = camera.CalcProjectionMatrix();
+#endif
 
 			TransformComponent t = camera.entity.GetComponent<TransformComponent>();
 			data->cameraPos = t->GetWorldPosition();
@@ -355,7 +361,12 @@ namespace tofu
 
 			uint32_t idx = numActiveRenderables++;
 			activeRenderables[idx] = i;
+
+#ifdef TOFU_USE_GLM
+			transformArray[idx * 4] = math::transpose(transform->GetWorldTransform().GetMatrix());
+#else
 			transformArray[idx * 4] = transform->GetWorldTransform().GetMatrix();
+#endif
 		}
 
 		// upload transform matrices
@@ -598,6 +609,16 @@ namespace tofu
 		if (header->NumBones > 0)
 		{
 			model.bones = reinterpret_cast<model::ModelBone*>(indices + indexBufferSize);
+			
+#ifdef TOFU_USE_GLM
+			// transpose matrix, model convertor is using row-major layout
+			for (uint32_t iBone = 0; iBone < header->NumBones; iBone++)
+			{
+				model.bones[iBone].transform = math::transpose(model.bones[iBone].transform);
+				model.bones[iBone].offsetMatrix = math::transpose(model.bones[iBone].offsetMatrix);
+			}
+#endif
+			
 			if (header->HasAnimation)
 			{
 				model.animations = reinterpret_cast<model::ModelAnimation*>(
@@ -618,6 +639,10 @@ namespace tofu
 
 				model.scaleFrames = reinterpret_cast<model::ModelFloat3Frame*>(
 					model.rotationFrames + header->NumTotalRotationFrames
+					);
+
+				model.frames = reinterpret_cast<model::ModelAnimFrame*>(
+					model.scaleFrames + header->NumTotalScaleFrames
 					);
 			}
 		}
@@ -781,6 +806,11 @@ namespace tofu
 			// TODO dealloc
 		}
 
+		if (c.caches) {
+			// TODO dealloc
+			free(c.caches);
+		}
+
 		Model* model = c.model;
 		if (nullptr == model || nullptr == model->header || !model->HasAnimation() || 0 == model->header->NumBones)
 		{
@@ -805,8 +835,10 @@ namespace tofu
 
 		cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
 
+		// TODO: buffer
+		c.caches = (AnimationFrameCache*)malloc(c.model->header->NumBones * sizeof(AnimationFrameCache));
+		c.ResetCaches();
+
 		return kOK;
 	}
-
-
 }

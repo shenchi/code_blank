@@ -42,6 +42,7 @@ namespace tofu
 		model::ModelFloat3Frame*	translationFrames;
 		model::ModelQuatFrame*		rotationFrames;
 		model::ModelFloat3Frame*	scaleFrames;
+		model::ModelAnimFrame*		frames;
 		float*						vertices[kMaxMeshesPerModel];
 		uint16_t*					indices[kMaxMeshesPerModel];
 		uint32_t					numVertices[kMaxMeshesPerModel];

@@ -31,13 +31,15 @@ namespace tofu
 					uint32_t	NumTexcoordChannels : 4;
 				};
 			};
+
 			uint32_t			NumMeshes;
-			uint32_t			NumBones;
+			uint16_t			NumBones;
 			uint32_t			NumAnimations;
 			uint32_t			NumAnimChannels;
 			uint32_t			NumTotalTranslationFrames;
 			uint32_t			NumTotalRotationFrames;
 			uint32_t			NumTotalScaleFrames;
+			uint32_t			NumAnimationFrames;
 
 			inline uint32_t CalculateVertexSize() const
 			{
@@ -98,25 +100,63 @@ namespace tofu
 
 		struct ModelBone
 		{
-			uint32_t		id;
-			uint32_t		parent;
-			uint32_t		firstChild;
-			uint32_t		nextSibling;
+			uint16_t		id;
+			uint16_t		parent;
+			uint16_t		firstChild;
+			uint16_t		nextSibling;
 			math::float4x4	transform;
 			math::float4x4	offsetMatrix;
 		};
 
 		struct ModelAnimation
 		{
-			float			durationInTicks;
+			float			tickCount;
 			float			ticksPerSecond;
 			uint32_t		numChannels;
 			uint32_t		startChannelId;
+			size_t			startFrames;
+			size_t			numFrames;
+		};
+
+		enum ChannelType { kChannelTranslation, kChannelRotation, kChannelScale };
+
+		struct ModelAnimFrame
+		{
+			uint16_t time = 0;
+			uint16_t jointIndex = 0;
+
+			// TODO: float compression
+			// https://github.com/Maratyszcza/FP16/blob/master/third-party/float16-compressor.h
+			// https://github.com/guillaumeblanc/ozz-animation/blob/71f622e1480bf76d3cc0da5fe90900dc247234c3/include/ozz/base/maths/internal/simd_math_sse-inl.h
+			//// Payload, which can be a quantized 3d vector or a quantized quaternion
+			//// depending on what type of channel this data belongs to
+			//uint16_t v[3];
+
+			math::float3 value;
+
+			ChannelType GetChannelType() const
+			{
+				// Most significant two bits of this 16bit index contains channel type info.
+				return static_cast<ChannelType>((jointIndex & (0xc000)) >> 14);
+			}
+			void SetChannelType(ChannelType type)
+			{
+				jointIndex |= (static_cast<uint16_t>(type) << 14);
+			}
+			std::uint16_t GetJointIndex() const
+			{
+				return jointIndex & 0x3fff;
+			}
+		};
+
+		struct ForSortingFrame {
+			uint16_t usedTime;
+			ModelAnimFrame frame;
 		};
 
 		struct ModelAnimChannel
 		{
-			uint32_t		boneId;
+			uint16_t		boneId;
 			uint32_t		startTranslationFrame;
 			uint32_t		numTranslationFrame;
 			uint32_t		startRotationFrame;
