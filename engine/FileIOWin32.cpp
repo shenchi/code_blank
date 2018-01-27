@@ -6,7 +6,7 @@
 
 namespace tofu
 {
-	int32_t FileIO::ReadFile(const char* file, void** data, size_t* size, size_t alignment, uint32_t allocNo)
+	int32_t FileIO::ReadFile(const char* file, bool isText, size_t alignment, uint32_t allocNo, void** data, size_t* size)
 	{
 		MemoryAllocator& alloc = MemoryAllocator::Allocators[allocNo];
 
@@ -37,7 +37,7 @@ namespace tofu
 		}
 
 		// allocate memory for content
-		void* ptr = alloc.Allocate(fileSize, alignment);
+		void* ptr = alloc.Allocate(isText ? (fileSize + 1) : fileSize, alignment);
 		if (nullptr == ptr)
 		{
 			fclose(fp);
@@ -53,8 +53,17 @@ namespace tofu
 
 		fclose(fp);
 
+		if (isText)
+		{
+			reinterpret_cast<uint8_t*>(ptr)[fileSize] = 0;
+		}
+
 		*data = ptr;
-		*size = fileSize;
+
+		if (nullptr != size)
+		{
+			*size = fileSize;
+		}
 
 		return kOK;
 	}

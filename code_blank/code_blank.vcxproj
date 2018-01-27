@@ -70,19 +70,19 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)engine;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)engine;$(SolutionDir)3rd_party\rapidjson-1.1.0\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)3rd_party\bullet\bin;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)engine;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)engine;$(SolutionDir)3rd_party\rapidjson-1.1.0\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)3rd_party\bullet\bin;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)engine;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)engine;$(SolutionDir)3rd_party\rapidjson-1.1.0\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)3rd_party\bullet\bin;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)engine;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)engine;$(SolutionDir)3rd_party\rapidjson-1.1.0\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)3rd_party\bullet\bin;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -138,10 +138,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="SceneLoadingDemo.h" />
     <ClInclude Include="TestGame.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="SceneLoadingDemo.cpp" />
     <ClCompile Include="TestGame.cpp" />
   </ItemGroup>
   <ItemGroup>

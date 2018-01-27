@@ -16,17 +16,13 @@ namespace tofu
 		TransformComponentData() : TransformComponentData(Entity()) {}
 
 		TransformComponentData(Entity e)
-			: 
+			:
 			entity(e),
 			parent(),
 			dirty(1)
 		{}
 
-		TF_INLINE void					SetParent(TransformComponent parent)
-		{
-			// TODO
-			UpdateTransfromInHierachy();
-		}
+		void							SetParent(TransformComponent parent);
 
 		TF_INLINE TransformComponent	GetParent() const { return parent; }
 
@@ -71,6 +67,16 @@ namespace tofu
 		TF_INLINE math::float3			GetWorldPosition() const
 		{
 			return GetWorldTransform().TransformPosition(math::float3());
+		}
+
+		TF_INLINE math::float3			GetLocalScale() const
+		{
+			return localTransform.GetScale();
+		}
+
+		TF_INLINE math::float3			GetWorldScale() const
+		{
+			return worldTransform.GetScale();
 		}
 
 		// get right vector in world space

@@ -4,6 +4,14 @@
 
 namespace tofu
 {
+	void PhysicsComponentData::SetVelocity(const math::float3& vel)
+	{
+		if (nullptr != rigidbody && !isStatic && !isKinematic)
+		{
+			rigidbody->setLinearVelocity(btVector3(vel.x, vel.y, vel.z));
+		}
+	}
+
 	void PhysicsComponentData::ApplyForce(const math::float3& force)
 	{
 		if (nullptr != rigidbody && !isStatic && !isKinematic)

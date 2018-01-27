@@ -5,17 +5,20 @@
 
 class btRigidBody;
 class btCollisionShape;
+class btStridingMeshInterface;
 
 namespace tofu
 {
 	class PhysicsSystem;
+	class Model;
 
 	enum class ColliderType
 	{
 		kColliderTypeBox,
 		kColliderTypeSphere,
 		kColliderTypeCapsule,
-		kColliderTypeCylinder
+		kColliderTypeCylinder,
+		kColliderTypeMesh,
 	};
 
 	struct ColliderDesc
@@ -30,6 +33,7 @@ namespace tofu
 				float		radius;
 				float		height;
 			};
+			Model*			model;
 		};
 
 		ColliderDesc()
@@ -52,6 +56,7 @@ namespace tofu
 			entity(e),
 			rigidbody(nullptr),
 			collider(nullptr),
+			meshInterface(nullptr),
 			colliderDesc(),
 			isStatic(false),
 			isKinematic(false),
@@ -115,6 +120,13 @@ namespace tofu
 			dirty = true;
 		}
 
+		void SetMeshCollider(Model* model)
+		{
+			colliderDesc.type = ColliderType::kColliderTypeMesh;
+			colliderDesc.model = model;
+			dirty = true;
+		}
+
 		ColliderDesc GetColliderDesc() const { return colliderDesc; }
 
 		void LockPosition(bool x, bool y, bool z)
@@ -135,6 +147,7 @@ namespace tofu
 
 		bool IsCollided() const { return isCollided; }
 
+		void SetVelocity(const math::float3& vel);
 		void ApplyForce(const math::float3& force);
 		void ApplyImpulse(const math::float3& impulse);
 
@@ -142,6 +155,7 @@ namespace tofu
 		Entity				entity;
 		btRigidBody*		rigidbody;
 		btCollisionShape*	collider;
+		btStridingMeshInterface*	meshInterface;
 		ColliderDesc		colliderDesc;
 		bool				isStatic;
 		bool				isKinematic;
