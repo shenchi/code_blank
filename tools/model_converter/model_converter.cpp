@@ -568,7 +568,11 @@ struct ModelFile
 					q.z = key.mValue.z;
 					q.w = key.mValue.w;
 
-					CompressQuaternion(q, *reinterpret_cast<uint32_t*>(&frame.value.x));
+					//CompressQuaternion(q, *reinterpret_cast<uint32_t*>(&frame.value.x));
+
+					bool negativeW;
+					CompressQuaternion(q, frame.value, negativeW);
+					frame.SetSignedBit(negativeW);
 
 					frames.push_back(temp);
 				}

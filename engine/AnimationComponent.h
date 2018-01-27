@@ -96,6 +96,10 @@ namespace tofu
 		// get interpolated quaterion frame for given ticks
 		math::quat SampleFrame(model::ModelQuatFrame* frames, uint32_t startFrame, uint32_t numFrames, float ticks);
 
+		math::float3 CatmullRomIndex(size_t i1, size_t i2, size_t i3, size_t i4);
+
+		math::quat SquadIndex(size_t i1, size_t i2, size_t i3, size_t i4);
+
 		math::float3 LerpFromFrameIndex(size_t lhs, size_t rhs);
 
 		math::quat SlerpFromFrameIndex(size_t lhs, size_t rhs);

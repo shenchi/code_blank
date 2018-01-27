@@ -68,9 +68,9 @@ namespace tofu
 		// TODO: Add loop to animation
 		bool loop = true;
 
-		if (ticks > anim.tickCount - 1.f) {
+		if (ticks > anim.tickCount) {
 			if (loop) {
-				ticks = std::fmodf(ticks, anim.tickCount - 1.f);
+				ticks = std::fmodf(ticks, anim.tickCount);
 				ResetCaches();
 			}
 			else {
@@ -135,52 +135,39 @@ namespace tofu
 
 			Transform trans;
 
-			// TODO: Spline calculation 
-			/*if (cache.indices[kChannelTranslation][0] != SIZE_MAX) {
+			size_t *indices = cache.indices[kChannelTranslation];
 
+			if (indices[1] != SIZE_MAX)
+			{
+				if (model->frames[indices[2]].time <= ticks) {
+					trans.SetTranslation(CatmullRomIndex(indices[1], indices[2], indices[3], indices[3]));
+				}
+				else {
+					trans.SetTranslation(CatmullRomIndex(indices[0] == SIZE_MAX ? indices[1] : indices[0], indices[1], indices[2], indices[3]));
+				}
 			}
-			else if (cache.indices[kChannelTranslation][1] != SIZE_MAX)*/ 
-				
-			if (cache.indices[kChannelTranslation][1] != SIZE_MAX 
-				&& model->frames[cache.indices[kChannelTranslation][1]].time <= ticks) {
-
-				trans.SetTranslation(
-					LerpFromFrameIndex(
-						cache.indices[kChannelTranslation][1], 
-						cache.indices[kChannelTranslation][2]
-					));
+			else if (indices[2] != SIZE_MAX) {
+				trans.SetTranslation(LerpFromFrameIndex(indices[2], indices[3]));
 			}
-			else if (cache.indices[kChannelTranslation][2] != SIZE_MAX) {
-				trans.SetTranslation(
-					LerpFromFrameIndex(
-						cache.indices[kChannelTranslation][2],
-						cache.indices[kChannelTranslation][3]
-					));
-			}
-			else if (cache.indices[kChannelTranslation][3] != SIZE_MAX) {
-				trans.SetTranslation(model->frames[cache.indices[kChannelTranslation][3]].value);
+			else if (indices[3] != SIZE_MAX) {
+				trans.SetTranslation(model->frames[indices[3]].value);
 			}
 
-			// Rotation
-			if (cache.indices[kChannelRotation][1] != SIZE_MAX
-				&& model->frames[cache.indices[kChannelRotation][1]].time <= ticks) {
+			indices = cache.indices[kChannelRotation];
 
-				trans.SetRotation(
-					SlerpFromFrameIndex(
-						cache.indices[kChannelRotation][1],
-						cache.indices[kChannelRotation][2]
-					));
-
+			if (indices[1] != SIZE_MAX)
+			{
+				if (model->frames[indices[2]].time <= ticks) {
+					trans.SetRotation(SquadIndex(indices[1], indices[2], indices[3], indices[3]));
+				}
+				else {
+					trans.SetRotation(SquadIndex(indices[0] == SIZE_MAX ? indices[1] : indices[0], indices[1], indices[2], indices[3]));
+				}
 			}
-			else if (cache.indices[kChannelRotation][2] != SIZE_MAX) {
-				trans.SetRotation(
-					SlerpFromFrameIndex(
-						cache.indices[kChannelRotation][2],
-						cache.indices[kChannelRotation][3]
-					));
-
+			else if (indices[2] != SIZE_MAX) {
+				trans.SetRotation(SlerpFromFrameIndex(indices[2], indices[3]));
 			}
-			else if (cache.indices[kChannelRotation][3] != SIZE_MAX) {
+			else if (indices[3] != SIZE_MAX) {
 				math::quat q;
 				math::float3 &compress = model->frames[cache.indices[kChannelTranslation][3]].value;
 
@@ -189,25 +176,23 @@ namespace tofu
 				trans.SetRotation(q);
 			}
 
-			// Scale
-			if (cache.indices[kChannelScale][1] != SIZE_MAX
-				&& model->frames[cache.indices[kChannelScale][1]].time <= ticks) {
+			indices = cache.indices[kChannelScale];
 
-				trans.SetScale(
-					LerpFromFrameIndex(
-						cache.indices[kChannelScale][1],
-						cache.indices[kChannelScale][2]
-					));
+			if (indices[1] != SIZE_MAX)
+			{
+				if (model->frames[indices[2]].time <= ticks) {
+					trans.SetScale(CatmullRomIndex(indices[1], indices[2], indices[3], indices[3]));
+				}
+				else {
+					trans.SetScale(CatmullRomIndex(indices[0] == SIZE_MAX ? indices[1] : indices[0], indices[1], indices[2], indices[3]));
+					//trans.SetScale(LerpFromFrameIndex(indices[1], indices[2]));
+				}
 			}
-			else if (cache.indices[kChannelScale][2] != SIZE_MAX) {
-				trans.SetScale(
-					LerpFromFrameIndex(
-						cache.indices[kChannelScale][2],
-						cache.indices[kChannelScale][3]
-					));
+			else if (indices[2] != SIZE_MAX) {
+				trans.SetScale(LerpFromFrameIndex(indices[2], indices[3]));
 			}
-			else if (cache.indices[kChannelScale][3] != SIZE_MAX) {
-				trans.SetScale(model->frames[cache.indices[kChannelScale][3]].value);
+			else if (indices[3] != SIZE_MAX) {
+				trans.SetScale(model->frames[indices[3]].value);
 			}
 
 			matrices[i] = trans.GetMatrix();
@@ -313,6 +298,46 @@ namespace tofu
 			}
 		}
 		return math::quat();
+	}
+
+	math::float3 AnimationComponentData::CatmullRomIndex(size_t i1, size_t i2, size_t i3, size_t i4)
+	{
+		ModelAnimFrame& f1 = model->frames[i1];
+		ModelAnimFrame& f2 = model->frames[i2];
+		ModelAnimFrame& f3 = model->frames[i3];
+		ModelAnimFrame& f4 = model->frames[i4];
+
+		float t = (ticks - f2.time) / (f3.time - f2.time);
+		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
+
+		//return math::mix(f2.value, f3.value, t);
+		return catmullRom(f1.value, f2.value, f3.value, f4.value, t);
+	}
+
+	math::quat AnimationComponentData::SquadIndex(size_t i1, size_t i2, size_t i3, size_t i4)
+	{
+		ModelAnimFrame& f1 = model->frames[i1];
+		ModelAnimFrame& f2 = model->frames[i2];
+		ModelAnimFrame& f3 = model->frames[i3];
+		ModelAnimFrame& f4 = model->frames[i4];
+
+		math::quat q1, q2, q3, q4;
+
+		/*tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&f1.value.x), q1);
+		tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&f2.value.x), q2);
+		tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&f3.value.x), q3);
+		tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&f4.value.x), q4);*/
+
+		tofu::compression::DecompressQuaternion(q1, f1.value, f1.GetSignedBit());
+		tofu::compression::DecompressQuaternion(q2, f2.value, f2.GetSignedBit());
+		tofu::compression::DecompressQuaternion(q3, f3.value, f3.GetSignedBit());
+		tofu::compression::DecompressQuaternion(q4, f4.value, f4.GetSignedBit());
+
+		float t = (ticks - f2.time) / (f3.time - f2.time);
+		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
+
+		//return math::slerp(q2, q3, t);
+		return squad(q2, q3, intermediate(q1, q2, q3), intermediate(q2, q3, q4), t);
 	}
 
 	math::float3 AnimationComponentData::LerpFromFrameIndex(size_t lhs, size_t rhs)

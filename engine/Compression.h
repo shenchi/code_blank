@@ -213,5 +213,26 @@ namespace tofu {
 
 			orientation = math::normalize(orientation);
 		}
+
+		void CompressQuaternion(const math::quat &quat, math::float3& float3, bool &negativeW) {
+			float3.x = quat.x;
+			float3.y = quat.y;
+			float3.z = quat.z;
+
+			if (quat.w < 0) {
+				negativeW = true;
+			}
+		}
+
+		void DecompressQuaternion(math::quat &quat, const math::float3& float3, const bool &negativeW) {
+			quat.x = float3.x;
+			quat.y = float3.y;
+			quat.z = float3.z;
+			quat.w = sqrt(1 - quat.x * quat.x - quat.y * quat.y - quat.z * quat.z);
+
+			if (negativeW) {
+				quat.w = -quat.w;
+			}
+		}
 	}
 }

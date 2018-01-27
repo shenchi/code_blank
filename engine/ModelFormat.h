@@ -134,6 +134,17 @@ namespace tofu
 
 			math::float3 value;
 
+			bool GetSignedBit() const 
+			{
+				// Most significant two bits of this 16bit index contains channel type info.
+				return static_cast<bool>((jointIndex & (0x2000)) >> 13);
+			}
+
+			void SetSignedBit(bool s)
+			{
+				jointIndex |= (static_cast<uint16_t>(s == true ? 1 : 0) << 13);
+			}
+
 			ChannelType GetChannelType() const
 			{
 				// Most significant two bits of this 16bit index contains channel type info.
@@ -145,7 +156,7 @@ namespace tofu
 			}
 			std::uint16_t GetJointIndex() const
 			{
-				return jointIndex & 0x3fff;
+				return jointIndex & 0x1fff;
 			}
 		};
 

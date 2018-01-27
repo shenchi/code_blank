@@ -23,6 +23,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/spline.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 #else // TOFU_USE_GLM
 
