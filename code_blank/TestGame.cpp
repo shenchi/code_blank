@@ -82,12 +82,10 @@ int32_t TestGame::Init()
 		anim = e.AddComponent<AnimationComponent>();
 		AnimationStateMachine *stateMachine = anim->GetStateMachine();
 
-		AnimationState idle = stateMachine->AddState("idle");
-		idle.animationName = "idle";
-		AnimationState walk = stateMachine->AddState("walk");
-		walk.animationName = "walk";
-
-		stateMachine->SetStartState("walk");
+		AnimationState *idle = stateMachine->AddState("idle");
+		idle->animationName = "idle";
+		AnimationState *walk = stateMachine->AddState("walk");
+		walk->animationName = "walk";
 		
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaqueSkinned);
 		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");

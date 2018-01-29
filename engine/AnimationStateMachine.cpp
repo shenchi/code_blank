@@ -31,10 +31,8 @@ namespace tofu
 
 	void AnimationState::Enter(Model *model)
 	{
-		if (!cache) {
-			cache = new AnimationStateCache();
-			cache->frameCaches.resize(model->header->NumBones);
-		}
+		cache = new AnimationStateCache();
+		cache->frameCaches.resize(model->header->NumBones);
 	}
 
 	void AnimationStateCache::Reset()
@@ -47,6 +45,36 @@ namespace tofu
 		}
 	}
 
+	void AnimationStateCache::Update(UpdateContext* context, ModelAnimation* animation)
+	{
+		// TODO: backward update cache
+
+		// prevent load-hit-store
+		size_t tempCursor = cursor;
+
+		while (tempCursor < animation->numFrames) {
+			size_t frameIndex = tempCursor + animation->startFrames;
+			ModelAnimFrame &frame = context->model->frames[frameIndex];
+			AnimationFrameCache &cache = frameCaches[frame.GetJointIndex()];
+
+			size_t cacheIndex = cache.indices[frame.GetChannelType()][2];
+
+			if (cacheIndex == SIZE_MAX || context->model->frames[cacheIndex].time <= ticks) {
+				cache.AddFrameIndex(frame.GetChannelType(), frameIndex);
+				tempCursor++;
+			}
+			else {
+				break;
+			}
+		}
+		cursor = tempCursor;
+	}
+
+	AnimNodeBase::AnimNodeBase(std::string name)
+		:name(name)
+	{
+	}
+
 	void AnimationState::Exit()
 	{
 		free(cache);
@@ -54,15 +82,15 @@ namespace tofu
 
 	void AnimationState::Update(UpdateContext& context)
 	{
-		model::ModelAnimation& anim = context.model->animations[context.model->GetAnimationIndex(animationName)];
+		model::ModelAnimation *anim = context.model->GetAnimation(animationName);
 
 		// TODO: scale time || uint_16 ticks
 		// convert time in seconds to ticks
-		cache->ticks += Time::DeltaTime * playbackSpeed * anim.ticksPerSecond;
+		cache->ticks += Time::DeltaTime * playbackSpeed * anim->ticksPerSecond;
 
-		if (cache->ticks > anim.tickCount - 1.f) {
+		if (cache->ticks > anim->tickCount) {
 			if (isLoop) {
-				cache->ticks = std::fmodf(cache->ticks, anim.tickCount - 1.f);
+				cache->ticks = std::fmodf(cache->ticks, anim->tickCount);
 				cache->Reset();
 			}
 			else {
@@ -71,6 +99,8 @@ namespace tofu
 				// Transition?
 			}
 		}
+
+		cache->Update(&context, anim);
 	}
 
 	void AnimationState::Evaluate(EvaluateContext & context)
@@ -172,6 +202,12 @@ namespace tofu
 		}
 	}
 
+	float AnimationState::GetDuration(Model * model)
+	{
+		auto anim = model->GetAnimation(animationName);
+		return anim->tickCount * anim->ticksPerSecond;
+	}
+
 	math::float3 AnimationState::LerpFromFrameIndex(Model *model, size_t lhs, size_t rhs) const
 	{
 		ModelAnimFrame& fa = model->frames[lhs];
@@ -199,60 +235,97 @@ namespace tofu
 		return math::slerp(a, b, t);
 	}
 	
-	AnimationState& AnimationStateMachine::AddState(std::string name)
+	// AnimationStateMachine
+	
+	AnimationStateMachine::AnimationStateMachine(std::string name) : AnimNodeBase(name)
+	{
+		states.push_back(new AnimNodeBase("entry"));
+		current = states.back();
+	}
+
+	AnimationStateMachine::~AnimationStateMachine()
+	{
+		for (AnimNodeBase* node : states) {
+			delete node;
+		}
+	}
+
+	AnimationState* AnimationStateMachine::AddState(std::string name)
 	{
 		stateIndexTable[name] = static_cast<uint16_t>(states.size());
-		states.push_back(AnimationState(name));
+		states.push_back(new AnimationState(name));
 
-		return states.back();
+		return static_cast<AnimationState*>(states.back());
 	}
 
-	void AnimationStateMachine::SetStartState(AnimationState &state)
+	void AnimationStateMachine::Play(std::string name)
 	{
-		SetStartState(state.name);
+		transitions.push_front(AnimationTransitionEntry{ name, 0.0f });
 	}
 
-	void AnimationStateMachine::SetStartState(std::string name)
+	void AnimationStateMachine::CrossFade(std::string name, float normalizedDuration)
 	{
-		startState = stateIndexTable[name];
-
-		// FIXME: test noly
-		if (name.compare("idle") == 0) {
-			startState = 0;
-		}
-		else if (name.compare("walk") == 0) {
-			startState = 1;
-		}
+		transitions.push_front(AnimationTransitionEntry{ name, normalizedDuration });
 	}
 
 	void AnimationStateMachine::Enter(Model *model)
 	{
-		current = &states[startState];
-		current->Enter(model);
+	
 	}
 
 	void AnimationStateMachine::Exit()
 	{
+		if (previous) {
+			previous->Exit();
+		}
+		
 		current->Exit();
 	}
 
 	void AnimationStateMachine::Update(UpdateContext& context)
 	{
+		// check transition
+		for (AnimationTransitionEntry &entry : transitions) {
+
+			if (stateIndexTable.find(entry.name) != stateIndexTable.end()) {
+
+				if (previous) {
+					previous->Exit();
+				}
+				previous = current;
+
+				current = states[stateIndexTable[entry.name]];
+				current->Enter(context.model);
+
+				transitionDuration = entry.normalizedDuration * current->GetDuration(context.model);
+				break;
+			}
+		}
+
+		transitions.clear();
+		
 		// update current animation play back time
 		elapsedTime += Time::DeltaTime;
-		
-		// check transition
 
-		// if no transition, update previous state
 		current->Update(context);
+
+		if (transitionDuration)
+			previous->Update(context);
 	}
 
 	void AnimationStateMachine::Evaluate(EvaluateContext & context)
 	{
+
+
 		current->Evaluate(context);
 	}
 
-	void TransitionState::Enter(Model * model)
+	float AnimationStateMachine::GetDuration(Model * model)
+	{
+		return current->GetDuration(model);
+	}
+
+	/*void TransitionState::Enter(Model * model)
 	{
 		next->Enter(model);
 	}
@@ -272,9 +345,6 @@ namespace tofu
 	{
 		float alpha = elapsedTime / duration;
 		
-
-	
-
-	}
+	}*/
 }
 

@@ -1,13 +1,20 @@
 #pragma once
 
 #include <string>
-#include <vector>
+#include <list>
 #include "TofuMath.h"
 #include "ModelFormat.h"
 
 namespace tofu
 {
 	class Model;
+	class AnimNodeBase;
+
+	struct AnimationTransitionEntry
+	{
+		std::string name;
+		float normalizedDuration;
+	};
 
 	struct UpdateContext 
 	{
@@ -18,12 +25,13 @@ namespace tofu
 	{
 		Model *model;
 		math::float4x4* Transformations;
-		AnimNodeBase *nextState;
+		std::list<AnimationTransitionEntry> *transitions;
 	};
 
 	class AnimationFrameCache
 	{
 		friend class AnimationState;
+		friend class AnimationStateCache;
 
 	private:
 		size_t indices[3][4];
@@ -51,18 +59,27 @@ namespace tofu
 	public:
 		AnimationStateCache() { Reset(); }
 		void Reset();
+
+		void Update(UpdateContext* context, tofu::model::ModelAnimation* animation);
 	};
 
 	class AnimNodeBase
 	{
-	public:
-		//virtual ~AnimNodeBase() {}
 
+	public:
+		std::string	name;
+
+	public:
+		AnimNodeBase(std::string name);
+		virtual ~AnimNodeBase() {}
+		
 		virtual void Enter(Model *model) {}
 		virtual void Exit() {}
 
 		virtual void Update(UpdateContext& context) {}
 		virtual void Evaluate(EvaluateContext& context) {}
+
+		virtual float GetDuration(Model *model) { return 0.f; }
 	};
 
 	class AnimationState : AnimNodeBase
@@ -70,16 +87,14 @@ namespace tofu
 		friend class AnimationStateMachine;
 
 	public:
-		std::string	name;
 		std::string	animationName;
 
-		AnimationStateCache* cache;
-
 		bool isLoop = true;
-		float playbackSpeed;
-		
+		float playbackSpeed = 1.0f;
+
+		AnimationStateCache* cache;
 	public:
-		AnimationState(std::string name) :name(name) {}
+		AnimationState(std::string name) : AnimNodeBase(name) {}
 		//virtual ~AnimationState() {}
 
 		virtual void Enter(Model *model) override;
@@ -88,40 +103,44 @@ namespace tofu
 		virtual void Update(UpdateContext& context) override;
 		virtual void Evaluate(EvaluateContext& context) override;
 
+		virtual float GetDuration(Model *model) override;
+
 		math::float3 LerpFromFrameIndex(Model * model, size_t lhs, size_t rhs) const;
 		math::quat SlerpFromFrameIndex(Model * model, size_t lhs, size_t rhs) const;
 	};
 
-	class TransitionState : AnimNodeBase
-	{
-	private:
-		AnimNodeBase *previous;
-		AnimNodeBase *next;
-		float duration;
-		float elapsedTime;
+	//class TransitionState : AnimNodeBase
+	//{
+	//private:
+	//	AnimNodeBase *previous;
+	//	AnimNodeBase *next;
+	//	float duration;
+	//	float elapsedTime;
 
-	public:
-		TransitionState(AnimNodeBase *previous, AnimNodeBase *next, float duration = 0.3f) 
-			:previous(previous), next(next), duration(duration) {}
+	//public:
+	//	TransitionState(AnimNodeBase *previous, AnimNodeBase *next, float duration = 0.3f) 
+	//		:previous(previous), next(next), duration(duration) {}
 
-		virtual void Enter(Model *model) override;
-		virtual void Exit() override;
+	//	virtual void Enter(Model *model) override;
+	//	virtual void Exit() override;
 
-		virtual void Update(UpdateContext& context) override;
-		virtual void Evaluate(EvaluateContext& context) override;
-	};
+	//	virtual void Update(UpdateContext& context) override;
+	//	virtual void Evaluate(EvaluateContext& context) override;
+	//};
 
 	class AnimationStateMachine : AnimNodeBase
 	{
 
 	protected:
-		std::vector<AnimationState> states;
+		std::vector<AnimNodeBase*> states;
 		std::unordered_map<std::string, uint16_t> stateIndexTable;
 
-		uint16_t startState;
-
+		AnimNodeBase *previous;
 		AnimNodeBase *current;
-
+		
+		float transitionDuration;
+		std::list<AnimationTransitionEntry> transitions;
+		
 		// Elapsed time since entering the current state
 		float elapsedTime;
 
@@ -147,17 +166,22 @@ namespace tofu
 
 		//TArray<FGraphTraversalCounter> StateCacheBoneCounters;
 
-	public:		
-		void SetStartState(std::string name);
-		void SetStartState(AnimationState & state);
+	public:
+		AnimationStateMachine(std::string name);
+		virtual ~AnimationStateMachine();
 
-		AnimationState & AddState(std::string name);
+		void Play(std::string name);
+		void CrossFade(std::string name, float normalizedTransitionDuration);
+
+		AnimationState* AddState(std::string name);
 
 		virtual void Enter(Model *model) override;
 		virtual void Exit() override;
 
 		virtual void Update(UpdateContext& context) override;
 		virtual void Evaluate(EvaluateContext& context) override;
+
+		virtual float GetDuration(Model *model) override;
 
 		//void SetState(const FAnimationBaseContext& Context, int32 NewStateIndex);
 		//void SetStateInternal(int32 NewStateIndex);

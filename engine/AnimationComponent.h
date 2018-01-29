@@ -18,6 +18,7 @@ namespace tofu
 			model(nullptr),
 			boneMatricesBuffer(),
 			boneMatricesBufferSize(),
+			stateMachine("default"),
 			currentAnimation(0),
 			currentTime(0.0f),
 			playbackSpeed(1.0f),
@@ -45,13 +46,13 @@ namespace tofu
 		BufferHandle			boneMatricesBuffer;
 		uint32_t				boneMatricesBufferSize;
 
+		AnimationStateMachine	stateMachine;
+
 		// id of animation currently used
 		uint32_t				currentAnimation;
 		float					currentTime;
 		float					ticks;
 		float					playbackSpeed;
-
-		AnimationStateMachine	stateMachine;
 
 		// interpolation parameter for cross fading
 		// 1 stands for fully using old animation, 0 stands for fully using new animation
@@ -78,6 +79,8 @@ namespace tofu
 
 		// get interpolated quaterion frame for given ticks
 		math::quat SampleFrame(model::ModelQuatFrame* frames, uint32_t startFrame, uint32_t numFrames, float ticks);
+
+		void ReallocResources() {}
 	};
 
 	typedef Component<AnimationComponentData> AnimationComponent;

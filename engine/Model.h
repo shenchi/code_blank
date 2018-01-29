@@ -16,6 +16,7 @@ namespace tofu
 		friend class AnimationComponentData;
 		friend class AnimationState;
 		friend class AnimationStateMachine;
+		friend class AnimationStateCache;
 
 	private:
 		ModelHandle					handle;
@@ -38,6 +39,6 @@ namespace tofu
 		Model() :animationTable(model::AnimationTable()) {}
 		TF_INLINE bool HasAnimation() const { return header->HasAnimation; }
 
-		uint16_t GetAnimationIndex(std::string name) { return animationTable[name]; }
+		TF_INLINE model::ModelAnimation* GetAnimation(std::string name) { return &animations[animationTable[name]]; }
 	};
 }
