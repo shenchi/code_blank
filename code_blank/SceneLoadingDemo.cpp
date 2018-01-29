@@ -52,6 +52,37 @@ int32_t SceneLoadingDemo::Init()
 		pPlayer->SetColliderOrigin(math::float3{ 0.0f, 1.0f, 0.0f });
 	}
 
+	// Add an enemy here.
+	{
+		Entity e = Entity::Create();
+
+		tEnemy= e.AddComponent<TransformComponent>();
+		tEnemy->SetLocalPosition(math::float3{ -3.0f, 8.0f, -5.0f });
+		tEnemy->SetLocalScale(math::float3{ 0.01f, 0.01f, 0.01f });
+
+		RenderingComponent r = e.AddComponent<RenderingComponent>();
+
+		Model* model = RenderingSystem::instance()->CreateModel("assets/archer.model");
+
+		animEnemy = e.AddComponent<AnimationComponent>();
+
+		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaqueSkinned);
+		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");
+		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/archer_1.texture");
+
+		material->SetTexture(diffuse);
+		material->SetNormalMap(normalMap);
+
+		r->SetMaterial(material);
+		r->SetModel(model);
+
+		pEnemy = e.AddComponent<PhysicsComponent>();
+
+		pEnemy->LockRotation(true, false, true);
+		pEnemy->SetCapsuleCollider(50.0f, 100.0f);
+		pEnemy->SetColliderOrigin(math::float3{ 0.0f, 1.0f, 0.0f });
+	}
+
 	// camera
 	{
 		Entity e = Entity::Create();
@@ -144,6 +175,14 @@ int32_t SceneLoadingDemo::Update()
 	tCamera->SetLocalRotation(camRot);
 
 	float maxSpeed = WalkSpeed;
+
+	// Enemy Movement
+	{
+		math::float3 moveDir = math::float3(1.0f, 0.0f, 0.0f);
+		tEnemy->FaceTo(-moveDir);
+		tEnemy->Translate(moveDir * Time::DeltaTime * 0.1f);
+		animEnemy->CrossFade(1, 0.3f);
+	}
 
 	if (math::length(inputDir) > 0.25f)
 	{
