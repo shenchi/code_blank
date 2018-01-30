@@ -300,8 +300,14 @@ namespace tofu
 				MemoryAllocator::Allocators[allocNo].Allocate(sizeof(FrameConstants), 4)
 				);
 			assert(nullptr != data);
+
+#ifdef TOFU_USE_GLM
+			data->matView = math::transpose(camera.CalcViewMatrix());
+			data->matProj = math::transpose(camera.CalcProjectionMatrix());
+#else
 			data->matView = camera.CalcViewMatrix();
 			data->matProj = camera.CalcProjectionMatrix();
+#endif
 
 			TransformComponent t = camera.entity.GetComponent<TransformComponent>();
 			data->cameraPos = t->GetWorldPosition();
@@ -410,7 +416,12 @@ namespace tofu
 
 			uint32_t idx = numActiveRenderables++;
 			activeRenderables[idx] = i;
+
+#ifdef TOFU_USE_GLM
+			transformArray[idx * 4] = math::transpose(transform->GetWorldTransform().GetMatrix());
+#else
 			transformArray[idx * 4] = transform->GetWorldTransform().GetMatrix();
+#endif
 		}
 
 		// upload transform matrices
@@ -471,16 +482,17 @@ namespace tofu
 		{
 			RenderingComponentData& comp = renderables[activeRenderables[i]];
 
-			assert(nullptr != comp.model && nullptr != comp.material);
+			assert(nullptr != comp.model);
+			assert(0 != comp.numMaterials);
 
 			Model& model = *comp.model;
-			Material* mat = comp.material;
-			
+			//Material* mat = comp.material;
 
 			for (uint32_t iMesh = 0; iMesh < model.numMeshes; ++iMesh)
 			{
 				assert(model.meshes[iMesh]);
 				Mesh& mesh = meshes[model.meshes[iMesh].id];
+				Material* mat = comp.materials[iMesh < comp.numMaterials ? iMesh : (comp.numMaterials - 1)];
 
 				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
 				params->pipelineState = materialPSOs[mat->type];
@@ -554,13 +566,13 @@ namespace tofu
 			auto iter = modelTable.find(strFilename);
 			if (iter != modelTable.end())
 			{
-				return &models[iter->second];
+				return &models[iter->second.id];
 			}
 		}
 
 		uint8_t* data = nullptr;
 		size_t size = 0u;
-		int32_t err = FileIO::ReadFile(filename, reinterpret_cast<void**>(&data), &size, 4, kAllocFrameBasedMem);
+		int32_t err = FileIO::ReadFile(filename, false, 4, kAllocFrameBasedMem, reinterpret_cast<void**>(&data), &size);
 		if (kOK != err)
 		{
 			return nullptr;
@@ -569,7 +581,10 @@ namespace tofu
 		// read header
 		model::ModelHeader* header = reinterpret_cast<model::ModelHeader*>(data);
 
-		assert(header->Magic == model::kModelFileMagic);
+		if (header->Magic != model::kModelFileMagic)
+		{
+			return nullptr;
+		}
 		assert(header->StructOfArray == 0);
 		assert(header->HasIndices == 1);
 		assert(header->HasTangent == 1);
@@ -635,10 +650,31 @@ namespace tofu
 		uint8_t* vertices = reinterpret_cast<uint8_t*>(meshInfos + header->NumMeshes);
 		uint8_t* indices = vertices + vertexBufferSize;
 
+		for (uint32_t i = 0; i < header->NumMeshes; ++i)
+		{
+			uint32_t id = model.meshes[i].id;
+			model.numVertices[i] = meshes[id].NumVertices;
+			model.numIndices[i] = meshes[id].NumIndices;
+			model.vertices[i] = reinterpret_cast<float*>(
+				vertices + meshes[id].StartVertex * model.vertexSize);
+			model.indices[i] = reinterpret_cast<uint16_t*>(
+				indices + meshes[id].StartIndex * sizeof(uint16_t));
+		}
+
 		// keep pointers to bone and animation structures
 		if (header->NumBones > 0)
 		{
 			model.bones = reinterpret_cast<model::ModelBone*>(indices + indexBufferSize);
+			
+#ifdef TOFU_USE_GLM
+			// transpose matrix, model convertor is using row-major layout
+			for (uint32_t iBone = 0; iBone < header->NumBones; iBone++)
+			{
+				model.bones[iBone].transform = math::transpose(model.bones[iBone].transform);
+				model.bones[iBone].offsetMatrix = math::transpose(model.bones[iBone].offsetMatrix);
+			}
+#endif
+			
 			if (header->HasAnimation)
 			{
 				model.animations = reinterpret_cast<model::ModelAnimation*>(
@@ -689,6 +725,8 @@ namespace tofu
 			cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
 		}
 
+		modelTable.insert(std::pair<std::string, ModelHandle>(strFilename, modelHandle));
+
 		return &model;
 	}
 
@@ -696,7 +734,7 @@ namespace tofu
 	{
 		void* data = nullptr;
 		size_t size = 0;
-		int32_t err = FileIO::ReadFile(filename, &data, &size, 4, allocNo);
+		int32_t err = FileIO::ReadFile(filename, false, 4, allocNo, &data, &size);
 
 		if (kOK != err)
 		{
@@ -716,6 +754,30 @@ namespace tofu
 		params->isFile = 1;
 		params->data = data;
 		params->width = static_cast<uint32_t>(size);
+
+		cmdBuf->Add(RendererCommand::kCommandCreateTexture, params);
+
+		return handle;
+	}
+
+	TextureHandle RenderingSystem::CreateTexture(PixelFormat format, uint32_t width, uint32_t height, uint32_t pitch, void* data)
+	{
+		TextureHandle handle = textureHandleAlloc.Allocate();
+		if (!handle)
+		{
+			return handle;
+		}
+
+		CreateTextureParams* params = MemoryAllocator::Allocate<CreateTextureParams>(allocNo);
+
+		params->handle = handle;
+		params->bindingFlags = kBindingShaderResource;
+		params->format = format;
+		params->arraySize = 1;
+		params->width = width;
+		params->height = height;
+		params->pitch = pitch;
+		params->data = data;
 
 		cmdBuf->Add(RendererCommand::kCommandCreateTexture, params);
 
@@ -756,10 +818,11 @@ namespace tofu
 
 			int32_t err = FileIO::ReadFile(
 				vsFile,
-				&(params->data),
-				&(params->size),
+				false,
 				4,
-				allocNo);
+				allocNo,
+				&(params->data),
+				&(params->size));
 
 			if (kOK != err)
 			{
@@ -776,10 +839,11 @@ namespace tofu
 
 			int32_t err = FileIO::ReadFile(
 				psFile,
-				&(params->data),
-				&(params->size),
+				false,
 				4,
-				allocNo);
+				allocNo,
+				&(params->data),
+				&(params->size));
 
 			if (kOK != err)
 			{

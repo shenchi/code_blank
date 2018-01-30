@@ -151,8 +151,7 @@ int32_t TestGame::Update()
 	}
 
 	constexpr float sensitive = 0.01f;
-
-
+	
 	math::float3 inputDir = math::float3();
 
 	if (input->IsGamepadConnected())
@@ -211,13 +210,14 @@ int32_t TestGame::Update()
 		math::float3 moveDir = camRot * inputDir;
 		moveDir.y = 0.0f;
 		moveDir = math::normalize(moveDir);
-		tPlayer->FaceTo(moveDir);
+		tPlayer->FaceTo(-moveDir);
 
 		speed += Time::DeltaTime * Accelerate;
 		if (speed > maxSpeed)
 			speed = maxSpeed;
 
-		tPlayer->Translate(moveDir * Time::DeltaTime * speed);
+		pPlayer->SetVelocity(moveDir * speed);
+		//tPlayer->Translate(moveDir * Time::DeltaTime * speed);
 
 		anim->CrossFade(1, 0.3f);
 	}
@@ -225,7 +225,9 @@ int32_t TestGame::Update()
 	{
 		speed -= Time::DeltaTime * Deaccelerate;
 		if (speed < 0.0f) speed = 0.0f;
-		tPlayer->Translate(tPlayer->GetForwardVector() * Time::DeltaTime * speed);
+
+		pPlayer->SetVelocity(tPlayer->GetForwardVector() * speed);
+		//tPlayer->Translate(tPlayer->GetForwardVector() * Time::DeltaTime * speed);
 
 		anim->CrossFade(0, 0.2f);
 	}

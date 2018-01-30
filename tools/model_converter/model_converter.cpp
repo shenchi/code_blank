@@ -83,8 +83,10 @@ void Directory(char* buf, size_t bufSize, const char* path)
 	{
 		strncpy_s(buf, bufSize, "./", 3);
 	}
-
-	strncpy_s(buf, bufSize, path + start, end - start + 1);
+	else
+	{
+		strncpy_s(buf, bufSize, path + start, end - start + 1);
+	}
 }
 
 inline void CopyMatrix(float4x4& dstMatrix, const aiMatrix4x4& srcMatrix)
@@ -566,7 +568,11 @@ struct ModelFile
 					q.z = key.mValue.z;
 					q.w = key.mValue.w;
 
-					CompressQuaternion(q, *reinterpret_cast<uint32_t*>(&frame.value.x));
+					//CompressQuaternion(q, *reinterpret_cast<uint32_t*>(&frame.value.x));
+
+					bool negativeW;
+					CompressQuaternion(q, frame.value, negativeW);
+					frame.SetSignedBit(negativeW);
 
 					frames.push_back(temp);
 				}
@@ -808,35 +814,35 @@ struct ModelFile
 
 int main(int argc, char* argv[])
 {
-	argc = 4;
-
-	char* tempArgv[6] =
-	{
-		"",
-		"../../archer.model",
-		"../../assets/archer_idle.fbx",
-		//"../../assets/archer_jump.fbx",
-		//"../../assets/archer_running.fbx",
-		"../../assets/archer_walking.fbx"
-	};
-
-	//argc = 3;
-	
-	//char* tempArgv[6] =
-	//{
-	//	"",
-	//	"../../cube.model",
-	//	"../../assets/cube.fbx",
-	//};
+	//argc = 4;
 
 	//char* tempArgv[6] =
 	//{
 	//	"",
-	//	"../../ground.model",
-	//	"../../assets/ground.fbx",
+	//	"../../archer.model",
+	//	"../../assets/archer_idle.fbx",
+	//	//"../../assets/archer_jump.fbx",
+	//	//"../../assets/archer_running.fbx",
+	//	"../../assets/archer_walking.fbx"
 	//};
 
-	argv = tempArgv;
+	////argc = 3;
+	//
+	////char* tempArgv[6] =
+	////{
+	////	"",
+	////	"../../cube.model",
+	////	"../../assets/cube.fbx",
+	////};
+
+	////char* tempArgv[6] =
+	////{
+	////	"",
+	////	"../../ground.model",
+	////	"../../assets/ground.fbx",
+	////};
+
+	//argv = tempArgv;
 
 	if (argc < 3)
 	{

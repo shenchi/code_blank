@@ -40,6 +40,7 @@ float4 main(V2F input) : SV_TARGET
 	float3x3 TBN = float3x3(tangent, bitangent, normal);
 
 	float3 normTexel = normalMap.Sample(samp, input.uv).xyz * 2.0 - 1.0;
+	//normTexel.z = sqrt(1 - normTexel.x * normTexel.x - normTexel.y * normTexel.y);
 
 	normal = mul(normTexel, TBN);
 

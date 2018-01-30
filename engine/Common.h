@@ -63,7 +63,7 @@ namespace tofu
 
 	constexpr uint32_t kMaxMeshesPerModel = 8;
 
-	constexpr uint32_t kCommandBufferCapacity = 64;
+	constexpr uint32_t kCommandBufferCapacity = 2048;
 
 	constexpr uint32_t kMaxBuffers = 1024;
 	constexpr uint32_t kMaxTextures = 1024;
