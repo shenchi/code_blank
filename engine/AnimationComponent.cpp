@@ -1,8 +1,7 @@
+#include "Transform.h"
 #include "AnimationComponent.h"
-
 #include "Engine.h"
 #include "TofuMath.h"
-#include "Transform.h"
 #include "RenderingComponent.h"
 #include <algorithm>
 #include <cassert>
@@ -13,78 +12,89 @@ namespace tofu
 {
 	int32_t AnimationComponentData::Play(uint32_t animId)
 	{
-		if (animId != currentAnimation)
-		{
-			// cancel cross fading if there is one
-			crossFadeFactor = 0.0f;
+		//if (animId != currentAnimation)
+		//{
+		//	// cancel cross fading if there is one
+		//	crossFadeFactor = 0.0f;
 
-			currentAnimation = animId;
-			currentTime = 0.0f;
-		}
+		//	currentAnimation = animId;
+		//	currentTime = 0.0f;
+		//}
+
+		if (animId == 0)
+			stateMachine.Play("idle");
+		else
+			stateMachine.Play("walk");
+
 		return kOK;
 	}
 
 	int32_t AnimationComponentData::CrossFade(uint32_t animId, float duration)
 	{
-		// test if we are cross fading or trying to switch to the same animation
-		if (crossFadeFactor > 0.0f || animId == currentAnimation)
-			return kOK;
+		//// test if we are cross fading or trying to switch to the same animation
+		//if (crossFadeFactor > 0.0f || animId == currentAnimation)
+		//	return kOK;
 
-		// record old animation and set new animation
-		lastAnimation = currentAnimation;
-		currentAnimation = animId;
+		//// record old animation and set new animation
+		//lastAnimation = currentAnimation;
+		//currentAnimation = animId;
 
-		lastAnimationTime = currentTime;
-		currentTime = 0.0f;
-		//ResetCaches();
+		//lastAnimationTime = currentTime;
+		//currentTime = 0.0f;
+		////ResetCaches();
 
-		// start cross fading, set cross fading speed
-		crossFadeFactor = 1.0f;
-		crossFadeSpeed = 1.0f / duration;
+		//// start cross fading, set cross fading speed
+		//crossFadeFactor = 1.0f;
+		//crossFadeSpeed = 1.0f / duration;
+
+		if(animId == 0)
+			stateMachine.CrossFade("idle", duration);
+		else 
+			stateMachine.CrossFade("walk", duration);
 
 		return kOK;
 	}
 
 	void AnimationComponentData::UpdateTiming()
 	{
-		if (crossFadeFactor > 0.0f)
-		{
-			// update cross fading and old animation parameters
-			crossFadeFactor -= crossFadeSpeed * Time::DeltaTime;
-			lastAnimationTime += Time::DeltaTime * playbackSpeed;
-		}
-
-		// update current animation play back time
-		currentTime += Time::DeltaTime * playbackSpeed;
-
 		UpdateStateMachine();
+	
+		//if (crossFadeFactor > 0.0f)
+		//{
+		//	// update cross fading and old animation parameters
+		//	crossFadeFactor -= crossFadeSpeed * Time::DeltaTime;
+		//	lastAnimationTime += Time::DeltaTime * playbackSpeed;
+		//}
 
-		model::ModelAnimation& anim = model->animations[currentAnimation];
+		//// update current animation play back time
+		//currentTime += Time::DeltaTime * playbackSpeed;
 
-		// TODO: scale time || uint_16 ticks
-		// convert time in seconds to ticks
-		ticks = currentTime * anim.ticksPerSecond;
+		//model::ModelAnimation& anim = model->animations[currentAnimation];
 
-		// TODO: Add loop to animation
-		bool loop = true;
+		//// TODO: scale time || uint_16 ticks
+		//// convert time in seconds to ticks
+		//ticks = currentTime * anim.ticksPerSecond;
 
-		if (ticks > anim.tickCount - 1.f) {
-			if (loop) {
-				ticks = std::fmodf(ticks, anim.tickCount - 1.f);
-				//ResetCaches();
-			}
-			else {
-				// end of animation
-				// event?
-			}
-		}
+		//// TODO: Add loop to animation
+		//bool loop = true;
+
+		//if (ticks > anim.tickCount - 1.f) {
+		//	if (loop) {
+		//		ticks = std::fmodf(ticks, anim.tickCount - 1.f);
+		//		//ResetCaches();
+		//	}
+		//	else {
+		//		// end of animation
+		//		// event?
+		//	}
+		//}
 	}
 
 	int32_t AnimationComponentData::FillInBoneMatrices(void* buffer, uint32_t bufferSize)
 	{
 		math::float4x4* matrices = reinterpret_cast<math::float4x4*>(buffer);
 
-		if (nullptr == model)
+		if (nullptr == model) 
 		{
 			return kErrUnknown;
 		}
@@ -95,57 +105,63 @@ namespace tofu
 			return kErrUnknown;
 		}
 
-		model::ModelAnimation& anim = model->animations[currentAnimation];
-
 		// load bone matrices
 		for (uint16_t i = 0; i < model->header->NumBones; i++)
 		{
 			matrices[i] = model->bones[i].transform;
 		}
 
-		// update bone matrices for each channel
-		for (uint32_t i = 0; i < anim.numChannels; i++)
-		{
-			model::ModelAnimChannel& chan = model->channels[anim.startChannelId + i];
+		EvaluateContext context(model);
+		stateMachine.Evaluate(context, 1.0f);
 
-			uint16_t boneId = chan.boneId;
-
-			// get interlopated matrix
-			Transform t;
-			t.SetTranslation(SampleFrame(model->translationFrames, chan.startTranslationFrame, chan.numTranslationFrame, ticks));
-			t.SetRotation(SampleFrame(model->rotationFrames, chan.startRotationFrame, chan.numRotationFrame, ticks));
-			t.SetScale(SampleFrame(model->scaleFrames, chan.startScaleFrame, chan.numScaleFrame, ticks));
-
-			matrices[boneId] = t.GetMatrix();
-		}
-
-		//EvaluateContext context{ model, matrices };
-		//stateMachine.Evaluate(context);
-
-		// if we are cross fading
-		if (crossFadeFactor > 0.0f)
-		{
-			model::ModelAnimation& lastAnim = model->animations[lastAnimation];
-
-			float lastAnimTicks = currentTime * lastAnim.ticksPerSecond;
-			lastAnimTicks = std::fmodf(lastAnimTicks, lastAnim.tickCount);
-
-			// interplotate matrices between new and old animtion
-			for (uint32_t i = 0; i < lastAnim.numChannels; i++)
-			{
-				model::ModelAnimChannel& chan = model->channels[lastAnim.startChannelId + i];
-
-				uint16_t boneId = chan.boneId;
-
-				Transform t;
-				t.SetTranslation(SampleFrame(model->translationFrames, chan.startTranslationFrame, chan.numTranslationFrame, lastAnimTicks));
-				t.SetRotation(SampleFrame(model->rotationFrames, chan.startRotationFrame, chan.numRotationFrame, lastAnimTicks));
-				t.SetScale(SampleFrame(model->scaleFrames, chan.startScaleFrame, chan.numScaleFrame, lastAnimTicks));
-
-				math::float4x4 m = t.GetMatrix();
-				matrices[boneId] = math::mix(matrices[boneId], m, crossFadeFactor);
+		for (auto i = 0; i < model->header->NumBones; i++) {
+			if (context.transforms[i].isDirty) {
+				matrices[i] = context.transforms[i].GetMatrix();
 			}
 		}
+
+		//model::ModelAnimation& anim = model->animations[currentAnimation];
+
+		//// update bone matrices for each channel
+		//for (uint32_t i = 0; i < anim.numChannels; i++)
+		//{
+		//	model::ModelAnimChannel& chan = model->channels[anim.startChannelId + i];
+
+		//	uint16_t boneId = chan.boneId;
+
+		//	// get interlopated matrix
+		//	Transform t;
+		//	t.SetTranslation(SampleFrame(model->translationFrames, chan.startTranslationFrame, chan.numTranslationFrame, ticks));
+		//	t.SetRotation(SampleFrame(model->rotationFrames, chan.startRotationFrame, chan.numRotationFrame, ticks));
+		//	t.SetScale(SampleFrame(model->scaleFrames, chan.startScaleFrame, chan.numScaleFrame, ticks));
+
+		//	matrices[boneId] = t.GetMatrix();
+		//}
+
+		//// if we are cross fading
+		//if (crossFadeFactor > 0.0f)
+		//{
+		//	model::ModelAnimation& lastAnim = model->animations[lastAnimation];
+
+		//	float lastAnimTicks = currentTime * lastAnim.ticksPerSecond;
+		//	lastAnimTicks = std::fmodf(lastAnimTicks, lastAnim.tickCount);
+
+		//	// interplotate matrices between new and old animtion
+		//	for (uint32_t i = 0; i < lastAnim.numChannels; i++)
+		//	{
+		//		model::ModelAnimChannel& chan = model->channels[lastAnim.startChannelId + i];
+
+		//		uint16_t boneId = chan.boneId;
+
+		//		Transform t;
+		//		t.SetTranslation(SampleFrame(model->translationFrames, chan.startTranslationFrame, chan.numTranslationFrame, lastAnimTicks));
+		//		t.SetRotation(SampleFrame(model->rotationFrames, chan.startRotationFrame, chan.numRotationFrame, lastAnimTicks));
+		//		t.SetScale(SampleFrame(model->scaleFrames, chan.startScaleFrame, chan.numScaleFrame, lastAnimTicks));
+
+		//		math::float4x4 m = t.GetMatrix();
+		//		matrices[boneId] = math::mix(matrices[boneId], m, crossFadeFactor);
+		//	}
+		//}
 
 		// convert to world space 
 		for (uint16_t i = 1; i < model->header->NumBones; i++)
@@ -165,6 +181,7 @@ namespace tofu
 
 	void AnimationComponentData::UpdateStateMachine()
 	{
+		// FIXME: Transition
 		UpdateContext context{ model };
 		stateMachine.Update(context);
 	}

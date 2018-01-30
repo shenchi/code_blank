@@ -1,7 +1,7 @@
+#include "Transform.h"
 #include "AnimationStateMachine.h"
 #include "Engine.h"
 #include "Model.h"
-#include "Transform.h"
 #include "Compression.h"
 #include <assert.h>
 #include <algorithm>
@@ -10,6 +10,17 @@ using namespace tofu::model;
 
 namespace tofu 
 {
+	EvaluateContext::EvaluateContext(Model * model) :model(model) 
+	{
+		transforms = new Transform[model->header->NumBones];
+	}
+
+	EvaluateContext::~EvaluateContext()
+	{
+		if (transforms)
+			delete[] transforms; 
+	}
+
 	void AnimationFrameCache::Reset()
 	{
 		// Assume channel numbers = 3
@@ -33,6 +44,11 @@ namespace tofu
 	{
 		cache = new AnimationStateCache();
 		cache->frameCaches.resize(model->header->NumBones);
+	}
+
+	void AnimationState::Exit()
+	{
+		delete cache;
 	}
 
 	void AnimationStateCache::Reset()
@@ -75,11 +91,6 @@ namespace tofu
 	{
 	}
 
-	void AnimationState::Exit()
-	{
-		free(cache);
-	}
-
 	void AnimationState::Update(UpdateContext& context)
 	{
 		model::ModelAnimation *anim = context.model->GetAnimation(animationName);
@@ -103,7 +114,7 @@ namespace tofu
 		cache->Update(&context, anim);
 	}
 
-	void AnimationState::Evaluate(EvaluateContext & context)
+	void AnimationState::Evaluate(EvaluateContext & context, float weight)
 	{
 		for (size_t i = 0; i < cache->frameCaches.size(); i++)
 		{
@@ -198,14 +209,16 @@ namespace tofu
 				trans.SetScale(context.model->frames[frameCache.indices[kChannelScale][3]].value);
 			}
 
-			context.Transformations[i] = trans.GetMatrix();
+			trans.isDirty = true;
+
+			context.transforms[i].BlendByWeight(trans, weight);
 		}
 	}
 
-	float AnimationState::GetDuration(Model * model)
+	float AnimationState::GetDurationInSecond(Model * model)
 	{
 		auto anim = model->GetAnimation(animationName);
-		return anim->tickCount * anim->ticksPerSecond;
+		return anim->tickCount / anim->ticksPerSecond;
 	}
 
 	math::float3 AnimationState::LerpFromFrameIndex(Model *model, size_t lhs, size_t rhs) const
@@ -214,7 +227,7 @@ namespace tofu
 		ModelAnimFrame& fb = model->frames[rhs];
 
 		float t = (cache->ticks - fa.time) / (fb.time - fa.time);
-		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
+		//assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
 
 		return math::mix(fa.value, fb.value, t);
 	}
@@ -225,7 +238,7 @@ namespace tofu
 		ModelAnimFrame& fb = model->frames[rhs];
 
 		float t = (cache->ticks - fa.time) / (fb.time - fa.time);
-		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
+		//assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
 
 		math::quat a, b;
 
@@ -287,6 +300,9 @@ namespace tofu
 		// check transition
 		for (AnimationTransitionEntry &entry : transitions) {
 
+			if (entry.name.compare(current->name) == 0)
+				continue;
+
 			if (stateIndexTable.find(entry.name) != stateIndexTable.end()) {
 
 				if (previous) {
@@ -297,54 +313,61 @@ namespace tofu
 				current = states[stateIndexTable[entry.name]];
 				current->Enter(context.model);
 
-				transitionDuration = entry.normalizedDuration * current->GetDuration(context.model);
+				transitionDuration = entry.normalizedDuration * current->GetDurationInSecond(context.model);
 				break;
 			}
 		}
-
-		transitions.clear();
 		
 		// update current animation play back time
 		elapsedTime += Time::DeltaTime;
 
+		if (transitionDuration) {
+			if (elapsedTime > transitionDuration) {
+				transitionDuration = 0.f;
+			}
+			else {
+				previous->Update(context);
+			}			
+		}
+
+		// TODO: better way to prevent passing previous transition?
+		transitions.clear();
+
 		current->Update(context);
-
-		if (transitionDuration)
-			previous->Update(context);
 	}
 
-	void AnimationStateMachine::Evaluate(EvaluateContext & context)
+	void AnimationStateMachine::Evaluate(EvaluateContext & context, float weight)
 	{
+		if (transitionDuration) {
+			float alpha = elapsedTime / transitionDuration;
 
+			if (weight == 1.0f) {			
+				// TODO: Prevent previous transition;
+				previous->Evaluate(context, 1.0f);
+				current->Evaluate(context, alpha);
+			}
+			else {
+				EvaluateContext temp = context;
+				temp.transforms = new Transform[context.model->header->NumBones];
 
-		current->Evaluate(context);
+				previous->Evaluate(temp, 1.0f);
+				current->Evaluate(temp, alpha);
+
+				for (auto i = 0; i < context.model->header->NumBones; i++) {
+					context.transforms[i].BlendByWeight(temp.transforms[i], weight);
+				}
+
+				delete[] temp.transforms;
+			}
+		}
+		else {
+			current->Evaluate(context, weight);
+		}
 	}
 
-	float AnimationStateMachine::GetDuration(Model * model)
+	float AnimationStateMachine::GetDurationInSecond(Model * model)
 	{
-		return current->GetDuration(model);
+		return current->GetDurationInSecond(model);
 	}
-
-	/*void TransitionState::Enter(Model * model)
-	{
-		next->Enter(model);
-	}
-
-	void TransitionState::Exit()
-	{
-		previous->Exit();
-	}
-
-	void TransitionState::Update(UpdateContext & context)
-	{
-		elapsedTime = std::min(elapsedTime + Time::DeltaTime, duration);
-		
-	}
-
-	void TransitionState::Evaluate(EvaluateContext & context)
-	{
-		float alpha = elapsedTime / duration;
-		
-	}*/
 }
 

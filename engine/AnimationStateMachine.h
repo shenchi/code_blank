@@ -4,9 +4,18 @@
 #include <list>
 #include "TofuMath.h"
 #include "ModelFormat.h"
+#include <array>
+
+class Transform;
 
 namespace tofu
 {
+	enum AnimationEvaluationType 
+	{
+		kAET_None,
+		kAET_Additive
+	};
+
 	class Model;
 	class AnimNodeBase;
 
@@ -19,13 +28,16 @@ namespace tofu
 	struct UpdateContext 
 	{
 		Model *model;
+		std::list<AnimationTransitionEntry> *transitions;
 	};
 
 	struct EvaluateContext
 	{
 		Model *model;
-		math::float4x4* Transformations;
-		std::list<AnimationTransitionEntry> *transitions;
+		Transform *transforms;
+
+		EvaluateContext(Model *model);
+		~EvaluateContext();
 	};
 
 	class AnimationFrameCache
@@ -51,7 +63,7 @@ namespace tofu
 		float ticks;
 
 		// current position in key frames (for linear scan)
-		uint32_t cursor;
+		size_t cursor;
 
 		// cache to keep t-1 to t+2 key frame index from previous search
 		std::vector<AnimationFrameCache> frameCaches;
@@ -77,9 +89,9 @@ namespace tofu
 		virtual void Exit() {}
 
 		virtual void Update(UpdateContext& context) {}
-		virtual void Evaluate(EvaluateContext& context) {}
+		virtual void Evaluate(EvaluateContext& context, float weight) {}
 
-		virtual float GetDuration(Model *model) { return 0.f; }
+		virtual float GetDurationInSecond(Model *model) { return 0.f; }
 	};
 
 	class AnimationState : AnimNodeBase
@@ -101,32 +113,13 @@ namespace tofu
 		virtual void Exit() override;
 
 		virtual void Update(UpdateContext& context) override;
-		virtual void Evaluate(EvaluateContext& context) override;
+		virtual void Evaluate(EvaluateContext& context, float weight) override;
 
-		virtual float GetDuration(Model *model) override;
+		virtual float GetDurationInSecond(Model *model) override;
 
 		math::float3 LerpFromFrameIndex(Model * model, size_t lhs, size_t rhs) const;
 		math::quat SlerpFromFrameIndex(Model * model, size_t lhs, size_t rhs) const;
 	};
-
-	//class TransitionState : AnimNodeBase
-	//{
-	//private:
-	//	AnimNodeBase *previous;
-	//	AnimNodeBase *next;
-	//	float duration;
-	//	float elapsedTime;
-
-	//public:
-	//	TransitionState(AnimNodeBase *previous, AnimNodeBase *next, float duration = 0.3f) 
-	//		:previous(previous), next(next), duration(duration) {}
-
-	//	virtual void Enter(Model *model) override;
-	//	virtual void Exit() override;
-
-	//	virtual void Update(UpdateContext& context) override;
-	//	virtual void Evaluate(EvaluateContext& context) override;
-	//};
 
 	class AnimationStateMachine : AnimNodeBase
 	{
@@ -179,9 +172,9 @@ namespace tofu
 		virtual void Exit() override;
 
 		virtual void Update(UpdateContext& context) override;
-		virtual void Evaluate(EvaluateContext& context) override;
+		virtual void Evaluate(EvaluateContext& context, float weight) override;
 
-		virtual float GetDuration(Model *model) override;
+		virtual float GetDurationInSecond(Model *model) override;
 
 		//void SetState(const FAnimationBaseContext& Context, int32 NewStateIndex);
 		//void SetStateInternal(int32 NewStateIndex);

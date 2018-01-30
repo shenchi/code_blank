@@ -17,6 +17,7 @@ namespace tofu
 		friend class AnimationState;
 		friend class AnimationStateMachine;
 		friend class AnimationStateCache;
+		friend struct EvaluateContext;
 
 	private:
 		ModelHandle					handle;
