@@ -139,12 +139,12 @@ uint32_t loadBoneHierarchy(aiNode* node, BoneTree& bones, BoneTable& table, uint
 	CopyMatrix(bone.transform, node->mTransformation);
 	bone.offsetMatrix = tofu::math::identity();
 
-	uint32_t firstChild = UINT32_MAX;
-	uint32_t lastChild = UINT32_MAX;
+	uint32_t firstChild = UINT16_MAX;
+	uint32_t lastChild = UINT16_MAX;
 	for (uint32_t i = 0; i < node->mNumChildren; i++)
 	{
 		uint32_t id = loadBoneHierarchy(node->mChildren[i], bones, table, boneId, lastChild);
-		if (firstChild == UINT32_MAX)
+		if (firstChild == UINT16_MAX)
 		{
 			firstChild = id;
 		}
@@ -820,17 +820,17 @@ struct ModelFile
 
 int main(int argc, char* argv[])
 {
-	//argc = 4;
+	argc = 4;
 
-	//char* tempArgv[6] =
-	//{
-	//	"",
-	//	"../../archer.model",
-	//	"../../assets/archer_idle.fbx",
-	//	//"../../assets/archer_jump.fbx",
-	//	//"../../assets/archer_running.fbx",
-	//	"../../assets/archer_walking.fbx"
-	//};
+	char* tempArgv[6] =
+	{
+		"",
+		"../../archer.model",
+		"../../assets/archer_idle.fbx",
+		//"../../assets/archer_jump.fbx",
+		//"../../assets/archer_running.fbx",
+		"../../assets/archer_walking.fbx"
+	};
 
 	////argc = 3;
 	//
@@ -848,7 +848,7 @@ int main(int argc, char* argv[])
 	////	"../../assets/ground.fbx",
 	////};
 
-	//argv = tempArgv;
+	argv = tempArgv;
 
 	if (argc < 3)
 	{

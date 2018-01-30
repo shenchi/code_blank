@@ -118,97 +118,6 @@ namespace tofu
 	{
 		for (size_t i = 0; i < cache->frameCaches.size(); i++)
 		{
-			//AnimationFrameCache &frameCache = cache->frameCaches[i];
-
-			//if (frameCache.indices[kChannelTranslation][3] == SIZE_MAX &&
-			//	frameCache.indices[kChannelRotation][3] == SIZE_MAX &&
-			//	frameCache.indices[kChannelScale][3] == SIZE_MAX) {
-			//	continue;
-			//}
-
-			//Transform trans;
-
-			//// TODO: Spline calculation 
-			///*if (cache.indices[kChannelTranslation][0] != SIZE_MAX) {
-
-			//}
-			//else if (cache.indices[kChannelTranslation][1] != SIZE_MAX)*/ 
-
-			//if (frameCache.indices[kChannelTranslation][1] != SIZE_MAX
-			//	&& context.model->frames[frameCache.indices[kChannelTranslation][1]].time <= cache->ticks) {
-
-			//	trans.SetTranslation(
-			//		LerpFromFrameIndex(
-			//			context.model,
-			//			frameCache.indices[kChannelTranslation][1],
-			//			frameCache.indices[kChannelTranslation][2]
-			//		));
-			//}
-			//else if (frameCache.indices[kChannelTranslation][2] != SIZE_MAX) {
-			//	trans.SetTranslation(
-			//		LerpFromFrameIndex(
-			//			context.model,
-			//			frameCache.indices[kChannelTranslation][2],
-			//			frameCache.indices[kChannelTranslation][3]
-			//		));
-			//}
-			//else if (frameCache.indices[kChannelTranslation][3] != SIZE_MAX) {
-			//	trans.SetTranslation(context.model->frames[frameCache.indices[kChannelTranslation][3]].value);
-			//}
-
-			//// Rotation
-			//if (frameCache.indices[kChannelRotation][1] != SIZE_MAX
-			//	&& context.model->frames[frameCache.indices[kChannelRotation][1]].time <= cache->ticks) {
-
-			//	trans.SetRotation(
-			//		SlerpFromFrameIndex(
-			//			context.model,
-			//			frameCache.indices[kChannelRotation][1],
-			//			frameCache.indices[kChannelRotation][2]
-			//		));
-
-			//}
-			//else if (frameCache.indices[kChannelRotation][2] != SIZE_MAX) {
-			//	trans.SetRotation(
-			//		SlerpFromFrameIndex(
-			//			context.model,
-			//			frameCache.indices[kChannelRotation][2],
-			//			frameCache.indices[kChannelRotation][3]
-			//		));
-
-			//}
-			//else if (frameCache.indices[kChannelRotation][3] != SIZE_MAX) {
-			//	math::quat q;
-			//	math::float3 &compress = context.model->frames[frameCache.indices[kChannelTranslation][3]].value;
-
-			//	tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&compress.x), q);
-
-			//	trans.SetRotation(q);
-			//}
-
-			//// Scale
-			//if (frameCache.indices[kChannelScale][1] != SIZE_MAX
-			//	&& context.model->frames[frameCache.indices[kChannelScale][1]].time <= cache->ticks) {
-
-			//	trans.SetScale(
-			//		LerpFromFrameIndex(
-			//			context.model,
-			//			frameCache.indices[kChannelScale][1],
-			//			frameCache.indices[kChannelScale][2]
-			//		));
-			//}
-			//else if (frameCache.indices[kChannelScale][2] != SIZE_MAX) {
-			//	trans.SetScale(
-			//		LerpFromFrameIndex(
-			//			context.model,
-			//			frameCache.indices[kChannelScale][2],
-			//			frameCache.indices[kChannelScale][3]
-			//		));
-			//}
-			//else if (frameCache.indices[kChannelScale][3] != SIZE_MAX) {
-			//	trans.SetScale(context.model->frames[frameCache.indices[kChannelScale][3]].value);
-			//}
-
 			AnimationFrameCache &frameCache = cache->frameCaches[i];
 
 			if (frameCache.indices[kChannelTranslation][3] == SIZE_MAX &&
@@ -280,7 +189,6 @@ namespace tofu
 			else if (indices[3] != SIZE_MAX) {
 				trans.SetScale(model->frames[indices[3]].value);
 			}
-
 
 			trans.isDirty = true;
 

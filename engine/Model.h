@@ -18,7 +18,8 @@ namespace tofu
 		friend class AnimationStateMachine;
 		friend class AnimationStateCache;
 		friend struct EvaluateContext;
-
+	
+	public:
 		TF_INLINE uint32_t GetStride() const { return vertexSize; }
 
 		TF_INLINE uint32_t GetNumMeshes() const { return numMeshes; }
