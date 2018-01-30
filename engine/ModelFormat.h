@@ -2,11 +2,13 @@
 
 #include <cstdint>
 #include "TofuMath.h"
+#include <unordered_map>
 
 namespace tofu
 {
 	namespace model
 	{
+		typedef std::unordered_map<std::string, uint16_t> AnimationTable;
 
 		constexpr uint32_t kModelFileMagic = 0x004C444D;
 		constexpr uint32_t kModelFileVersion = 0x00000001;
@@ -32,6 +34,7 @@ namespace tofu
 				};
 			};
 
+			// TODO: change type
 			uint32_t			NumMeshes;
 			uint16_t			NumBones;
 			uint32_t			NumAnimations;
@@ -98,6 +101,8 @@ namespace tofu
 
 		// ... followed by an array of all scale frames (ModelFloat3Frame)
 
+		// ... followed by an array of all uniform frames (ModelAnimFrame)
+
 		struct ModelBone
 		{
 			uint16_t		id;
@@ -110,6 +115,8 @@ namespace tofu
 
 		struct ModelAnimation
 		{
+			// TODO: Better solution for name? 
+			char			name[128];
 			float			tickCount;
 			float			ticksPerSecond;
 			uint32_t		numChannels;
@@ -158,11 +165,6 @@ namespace tofu
 			{
 				return jointIndex & 0x1fff;
 			}
-		};
-
-		struct ForSortingFrame {
-			uint16_t usedTime;
-			ModelAnimFrame frame;
 		};
 
 		struct ModelAnimChannel

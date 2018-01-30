@@ -35,6 +35,13 @@ int32_t SceneLoadingDemo::Init()
 
 		anim = e.AddComponent<AnimationComponent>();
 
+		AnimationStateMachine *stateMachine = anim->GetStateMachine();
+
+		AnimationState *idle = stateMachine->AddState("idle");
+		idle->animationName = "idle";
+		AnimationState *walk = stateMachine->AddState("walk");
+		walk->animationName = "walk";
+
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaqueSkinned);
 		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");
 		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/archer_1.texture");
@@ -166,7 +173,7 @@ int32_t SceneLoadingDemo::Update()
 		if (speed < 0.0f) speed = 0.0f;
 		tPlayer->Translate(tPlayer->GetForwardVector() * Time::DeltaTime * speed);
 
-		anim->CrossFade(0, 0.2f);
+		anim->CrossFade(0, 0.1f);
 	}
 
 	return kOK;
