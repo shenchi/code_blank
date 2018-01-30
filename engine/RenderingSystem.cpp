@@ -292,7 +292,7 @@ namespace tofu
 			renderer->GetFrameBufferSize(w, h);
 			camera.SetAspect(h == 0 ? 1.0f : float(w) / h);
 		}
-		LightComponentData& light0 = LightComponent::GetAllComponents()[0];
+		
 
 		math::float3 camPos;
 		{
@@ -317,8 +317,8 @@ namespace tofu
 			cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
 		}
 
+		LightComponentData& light0 = LightComponent::GetAllComponents()[0];
 		// Light constant buffer data
-		
 		{
 			LightingConstants* data = reinterpret_cast<LightingConstants*>(
 				MemoryAllocator::Allocators[allocNo].Allocate(sizeof(LightingConstants), 4)
