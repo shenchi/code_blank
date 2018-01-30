@@ -4,7 +4,6 @@
 #include <list>
 #include "TofuMath.h"
 #include "ModelFormat.h"
-#include <array>
 
 class Transform;
 
@@ -107,7 +106,7 @@ namespace tofu
 		AnimationStateCache* cache;
 	public:
 		AnimationState(std::string name) : AnimNodeBase(name) {}
-		//virtual ~AnimationState() {}
+		virtual ~AnimationState();
 
 		virtual void Enter(Model *model) override;
 		virtual void Exit() override;
@@ -126,7 +125,7 @@ namespace tofu
 	class AnimationStateMachine : AnimNodeBase
 	{
 
-	protected:
+	private:
 		std::vector<AnimNodeBase*> states;
 		std::unordered_map<std::string, uint16_t> stateIndexTable;
 
@@ -138,28 +137,6 @@ namespace tofu
 
 		// Elapsed time since entering the current state
 		float elapsedTime;
-
-		//// Current Transition Index being evaluated
-		//int32 EvaluatingTransitionIndex;
-
-		//// The set of active transitions, if there are any
-		//TArray<FAnimationActiveTransitionEntry> ActiveTransitionArray;
-
-		//// The set of states in this state machine
-		//TArray<FPoseLink> StatePoseLinks;
-
-		//// Used during transitions to make sure we don't double tick a state if it appears multiple times
-		//TArray<int32> StatesUpdated;
-
-	private:
-		// true if it is the first update.
-		//bool bFirstUpdate;
-
-		//TArray<FPoseContext*> StateCachedPoses;
-
-		//FGraphTraversalCounter UpdateCounter;
-
-		//TArray<FGraphTraversalCounter> StateCacheBoneCounters;
 
 	public:
 		AnimationStateMachine(std::string name);
@@ -177,30 +154,5 @@ namespace tofu
 		virtual void Evaluate(EvaluateContext& context, float weight) override;
 
 		virtual float GetDurationInSecond(Model *model) override;
-
-		//void SetState(const FAnimationBaseContext& Context, int32 NewStateIndex);
-		//void SetStateInternal(int32 NewStateIndex);
-
-		//const int32 GetStateIndex(const FBakedAnimationState& StateInfo) const;
-
-
-		//	// finds the highest priority valid transition, information pass via the OutPotentialTransition variable.
-		//	// OutVisitedStateIndices will let you know what states were checked, but is also used to make sure we don't get stuck in an infinite loop or recheck states
-		//	bool FindValidTransition(const FAnimationUpdateContext& Context,
-		//		const FBakedAnimationState& StateInfo,
-		//		/*OUT*/ FAnimationPotentialTransition& OutPotentialTransition,
-		//		/*OUT*/ TArray<int32, TInlineAllocator<4>>& OutVisitedStateIndices);
-
-		//	// Helper function that will update the states associated with a transition
-		//	void UpdateTransitionStates(const FAnimationUpdateContext& Context, FAnimationActiveTransitionEntry& Transition);
-
-		//	// helper functions for calling update and evaluate on state nodes
-		//	void UpdateState(int32 StateIndex, const FAnimationUpdateContext& Context);
-		//	const FPoseContext& EvaluateState(int32 StateIndex, const FPoseContext& Context);
-
-		//	// transition type evaluation functions
-		//	void EvaluateTransitionStandardBlend(FPoseContext& Output, FAnimationActiveTransitionEntry& Transition, bool bIntermediatePoseIsValid);
-		//	void EvaluateTransitionStandardBlendInternal(FPoseContext& Output, FAnimationActiveTransitionEntry& Transition, const FPoseContext& PreviousStateResult, const FPoseContext& NextStateResult);
-		//
 	};
 }

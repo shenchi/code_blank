@@ -40,6 +40,12 @@ namespace tofu
 		indices[type][3] = index;
 	}
 
+	AnimationState::~AnimationState()
+	{
+		if(cache)
+			delete cache;
+	}
+
 	void AnimationState::Enter(Model *model)
 	{
 		cache = new AnimationStateCache();
@@ -56,7 +62,7 @@ namespace tofu
 		ticks = 0;
 		cursor = 0;
 
-		for (AnimationFrameCache cache : frameCaches) {
+		for (AnimationFrameCache &cache : frameCaches) {
 			cache.Reset();
 		}
 	}
@@ -180,7 +186,6 @@ namespace tofu
 				}
 				else {
 					trans.SetScale(CatmullRomIndex(model, indices[0] == SIZE_MAX ? indices[1] : indices[0], indices[1], indices[2], indices[3]));
-					//trans.SetScale(LerpFromFrameIndex(indices[1], indices[2]));
 				}
 			}
 			else if (indices[2] != SIZE_MAX) {
@@ -333,6 +338,8 @@ namespace tofu
 
 				current = states[stateIndexTable[entry.name]];
 				current->Enter(context.model);
+
+				elapsedTime = 0.f;
 
 				transitionDuration = entry.normalizedDuration * current->GetDurationInSecond(context.model);
 				break;
