@@ -117,16 +117,16 @@ inline bool IsEqual(const float4x4& a, const aiMatrix4x4& b)
 	return true;
 }
 
-uint32_t loadBoneHierarchy(aiNode* node, BoneTree& bones, BoneTable& table, uint32_t parentId = UINT32_MAX, uint32_t lastSibling = UINT32_MAX)
+uint32_t loadBoneHierarchy(aiNode* node, BoneTree& bones, BoneTable& table, uint32_t parentId = UINT16_MAX, uint32_t lastSibling = UINT16_MAX)
 {
 	uint32_t boneId = static_cast<uint32_t>(bones.size());
 	bones.push_back(Bone());
 	Bone& bone = bones[boneId];
 	bone.id = boneId;
 	bone.parent = parentId;
-	bone.nextSibling = UINT32_MAX;
+	bone.nextSibling = UINT16_MAX;
 
-	if (lastSibling != UINT32_MAX)
+	if (lastSibling != UINT16_MAX)
 	{
 		bones[lastSibling].nextSibling = boneId;
 	}
@@ -139,12 +139,12 @@ uint32_t loadBoneHierarchy(aiNode* node, BoneTree& bones, BoneTable& table, uint
 	CopyMatrix(bone.transform, node->mTransformation);
 	bone.offsetMatrix = tofu::math::identity();
 
-	uint32_t firstChild = UINT32_MAX;
-	uint32_t lastChild = UINT32_MAX;
+	uint32_t firstChild = UINT16_MAX;
+	uint32_t lastChild = UINT16_MAX;
 	for (uint32_t i = 0; i < node->mNumChildren; i++)
 	{
 		uint32_t id = loadBoneHierarchy(node->mChildren[i], bones, table, boneId, lastChild);
-		if (firstChild == UINT32_MAX)
+		if (firstChild == UINT16_MAX)
 		{
 			firstChild = id;
 		}
@@ -155,7 +155,10 @@ uint32_t loadBoneHierarchy(aiNode* node, BoneTree& bones, BoneTable& table, uint
 	return boneId;
 }
 
-bool AnimationFrameComp (ModelAnimFrame i, ModelAnimFrame j) { return (i.time <= j.time); }
+struct ForSortingFrame {
+	uint16_t usedTime;
+	ModelAnimFrame frame;
+};
 
 bool SortingFrameComp(ForSortingFrame i, ForSortingFrame j) { 
 	if (i.usedTime == j.usedTime) {
@@ -451,12 +454,16 @@ struct ModelFile
 			aiAnimation* anim = scene->mAnimations[iAnim];
 
 			Animation animation = {
+				"",
 				static_cast<float>(anim->mDuration),
 				static_cast<float>(anim->mTicksPerSecond),
 				anim->mNumChannels,
 				static_cast<uint32_t>(channels.size()),
 				frames.size()
 			};
+
+			strncpy(animation.name, anim->mName.C_Str(), 127);
+			animation.name[127] = 0;
 
 			for (uint32_t iChan = 0; iChan < anim->mNumChannels; iChan++)
 			{
@@ -699,7 +706,6 @@ struct ModelFile
 			return __LINE__;
 		}
 
-
 		// write vertices to file
 		if (1 != fwrite(&vertices[0], header.CalculateVertexSize() * numVertices, 1, file))
 		{
@@ -814,17 +820,17 @@ struct ModelFile
 
 int main(int argc, char* argv[])
 {
-	//argc = 4;
+	argc = 4;
 
-	//char* tempArgv[6] =
-	//{
-	//	"",
-	//	"../../archer.model",
-	//	"../../assets/archer_idle.fbx",
-	//	//"../../assets/archer_jump.fbx",
-	//	//"../../assets/archer_running.fbx",
-	//	"../../assets/archer_walking.fbx"
-	//};
+	char* tempArgv[6] =
+	{
+		"",
+		"../../archer.model",
+		"../../assets/archer_idle.fbx",
+		//"../../assets/archer_jump.fbx",
+		//"../../assets/archer_running.fbx",
+		"../../assets/archer_walking.fbx"
+	};
 
 	////argc = 3;
 	//
@@ -842,7 +848,7 @@ int main(int argc, char* argv[])
 	////	"../../assets/ground.fbx",
 	////};
 
-	//argv = tempArgv;
+	argv = tempArgv;
 
 	if (argc < 3)
 	{

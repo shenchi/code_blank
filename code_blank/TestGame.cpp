@@ -5,6 +5,7 @@
 #include <InputSystem.h>
 
 using namespace tofu;
+using namespace std;
 
 namespace
 {
@@ -79,7 +80,13 @@ int32_t TestGame::Init()
 		Model* model = RenderingSystem::instance()->CreateModel("assets/archer.model");
 
 		anim = e.AddComponent<AnimationComponent>();
+		AnimationStateMachine *stateMachine = anim->GetStateMachine();
 
+		AnimationState *idle = stateMachine->AddState("idle");
+		idle->animationName = "idle";
+		AnimationState *walk = stateMachine->AddState("walk");
+		walk->animationName = "walk";
+		
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaqueSkinned);
 		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");
 		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/archer_1.texture");
