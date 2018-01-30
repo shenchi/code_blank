@@ -100,6 +100,8 @@ namespace tofu
 
 		Model*					builtinCube;
 
+		//TextureHandle			testRT;
+
 		RendererCommandBuffer*	cmdBuf;
 	};
 

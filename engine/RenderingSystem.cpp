@@ -242,6 +242,25 @@ namespace tofu
 		builtinCube = CreateModel("assets/cube.model");
 		assert(nullptr != builtinCube);
 
+		/*{
+			testRT = textureHandleAlloc.Allocate();
+			if (!testRT)
+				return kErrUnknown;
+
+			CreateTextureParams* params = MemoryAllocator::Allocate<CreateTextureParams>(allocNo);
+			params->handle = testRT;
+			params->format = kFormatR8g8b8a8Unorm;
+			params->arraySize = 1;
+			params->bindingFlags = kBindingShaderResource | kBindingRenderTarget;
+			
+			int32_t w, h;
+			renderer->GetFrameBufferSize(w, h);
+			params->width = w;
+			params->height = h;
+
+			cmdBuf->Add(RendererCommand::kCommandCreateTexture, params);
+		}*/
+
 		return kOK;
 	}
 
@@ -535,6 +554,7 @@ namespace tofu
 					break;
 				}
 
+				//params->renderTargets[0] = testRT;
 
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}

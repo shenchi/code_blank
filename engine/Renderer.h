@@ -248,6 +248,30 @@ namespace tofu
 		TextureHandle			psTextures[kMaxTextureBindings];
 		SamplerHandle			vsSamplers[kMaxSamplerBindings];
 		SamplerHandle			psSamplers[kMaxSamplerBindings];
+		TextureHandle			renderTargets[kMaxRenderTargetBindings];
+		TextureHandle			depthRenderTarget;
+
+		static const TextureHandle DefaultRenderTarget;
+
+		DrawParams()
+			:
+			pipelineState(),
+			vertexBuffer(),
+			indexBuffer(),
+			startIndex(),
+			startVertex(),
+			indexCount(),
+			vsConstantBuffers(),
+			psConstantBuffers(),
+			vsTextures(),
+			psTextures(),
+			vsSamplers(),
+			psSamplers(),
+			renderTargets(),
+			depthRenderTarget(DefaultRenderTarget)
+		{
+			renderTargets[0] = DefaultRenderTarget;
+		}
 	};
 
 	class Renderer
