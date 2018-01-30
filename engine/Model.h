@@ -14,9 +14,10 @@ namespace tofu
 	{
 		friend class RenderingSystem;
 		friend class AnimationComponentData;
-	public:
-
-		TF_INLINE bool HasAnimation() const { return header->HasAnimation; }
+		friend class AnimationState;
+		friend class AnimationStateMachine;
+		friend class AnimationStateCache;
+		friend struct EvaluateContext;
 
 		TF_INLINE uint32_t GetStride() const { return vertexSize; }
 
@@ -38,6 +39,7 @@ namespace tofu
 		model::ModelHeader*			header;
 		model::ModelBone*			bones;
 		model::ModelAnimation*		animations;
+		model::AnimationTable		animationTable;
 		model::ModelAnimChannel*	channels;
 		model::ModelFloat3Frame*	translationFrames;
 		model::ModelQuatFrame*		rotationFrames;
@@ -49,5 +51,11 @@ namespace tofu
 		uint32_t					numIndices[kMaxMeshesPerModel];
 		void*						rawData;
 		size_t						rawDataSize;
+
+	public:
+		Model() :animationTable(model::AnimationTable()) {}
+		TF_INLINE bool HasAnimation() const { return header->HasAnimation; }
+
+		TF_INLINE model::ModelAnimation* GetAnimation(std::string name) { return &animations[animationTable[name]]; }
 	};
 }

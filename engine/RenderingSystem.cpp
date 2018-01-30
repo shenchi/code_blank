@@ -399,6 +399,7 @@ namespace tofu
 			if (anim.model != r->model)
 			{
 				anim.model = r->model;
+				
 				int32_t err = ReallocAnimationResources(anim);
 				if (kOK != err)
 				{
@@ -625,6 +626,14 @@ namespace tofu
 					model.bones + header->NumBones
 					);
 
+				for (uint16_t i = 0; i < header->NumAnimations; i++) {
+					model.animationTable[model.animations[i].name] = i;
+				}
+
+				// FIXME: Test only
+				model.animationTable["idle"] = 0;
+				model.animationTable["walk"] = 1;
+
 				model.channels = reinterpret_cast<model::ModelAnimChannel*>(
 					model.animations + header->NumAnimations
 					);
@@ -806,10 +815,8 @@ namespace tofu
 			// TODO dealloc
 		}
 
-		if (c.caches) {
-			// TODO dealloc
-			free(c.caches);
-		}
+		// TODO:
+		c.ReallocResources();
 
 		Model* model = c.model;
 		if (nullptr == model || nullptr == model->header || !model->HasAnimation() || 0 == model->header->NumBones)
@@ -834,10 +841,6 @@ namespace tofu
 		params->dynamic = 1;
 
 		cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
-
-		// TODO: buffer
-		c.caches = (AnimationFrameCache*)malloc(c.model->header->NumBones * sizeof(AnimationFrameCache));
-		c.ResetCaches();
 
 		return kOK;
 	}
