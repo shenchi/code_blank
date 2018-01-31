@@ -352,9 +352,9 @@ namespace tofu
 			data->lightColor = light0.lightColor;
 
 			TransformComponent t = light0.entity.GetComponent<TransformComponent>();
-			data->lightDirection = math::float3{ (t->GetWorldRotation() * t->GetRightVector()).x,
-				(t->GetWorldRotation() * t->GetUpVector()).y,
-				(t->GetWorldRotation() * t->GetForwardVector()).z };
+			data->lightDirection = math::float3{ t->GetForwardVector().x,
+				t->GetForwardVector().y,
+				t->GetForwardVector().z };
 			data->lightPosition = t->GetWorldPosition();
 
 			data->cameraPos = camPos;

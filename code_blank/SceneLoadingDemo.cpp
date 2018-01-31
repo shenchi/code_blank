@@ -77,6 +77,20 @@ int32_t SceneLoadingDemo::Init()
 		cam->SetSkybox(skyboxMat);
 	}
 
+	// Dummy light
+	{
+		Entity e = Entity::Create();
+
+		tSun = e.AddComponent<TransformComponent>();
+		tSun->SetLocalPosition(math::float3{ 5, 5, -5 });
+		tSun->SetLocalRotation(math::angleAxis(3.14f / 2, math::float3{ 1.0f, 0.0f, 0.0f }));
+
+		lSun = e.AddComponent<LightComponent>();
+		lSun->SetType(LightType::kLightTypeDirectional);
+		math::float4 sunColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
+		lSun->SetColor(sunColor);
+	}
+
 	pitch = InitPitch;
 	yaw = 0.0f;
 
