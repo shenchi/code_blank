@@ -93,23 +93,47 @@ int32_t TestGame::Init()
 		pPlayer = e.AddComponent<PhysicsComponent>();
 
 		pPlayer->LockRotation(true, false, true);
-		pPlayer->SetCapsuleCollider(0.5f, 1.0f);
+		pPlayer->SetCapsuleCollider(50.0f, 100.0f);
 		pPlayer->SetColliderOrigin(math::float3{ 0.0f, 1.0f, 0.0f });
 	}
-	// light 
+	// Sun light 
 	{
 		Entity e = Entity::Create();
 
 		tSun = e.AddComponent<TransformComponent>();
-		tSun->SetLocalPosition(math::float3{ 5, 5, -5 });
-		tSun->SetLocalRotation(math::angleAxis(3.14 / 4, math::float3{ 1.0f, 0.0f, 0.0f }));
+		
+		tSun->SetLocalRotation(math::angleAxis(3.14f / 2.0f, math::float3{ 0.0f, 1.0f, 0.0f }));
 
 		lSun = e.AddComponent<LightComponent>();
 		lSun->SetType(LightType::kLightTypeDirectional);
 		math::float4 sunColor = math::float4{ 1.0f, 0.0f, 0.0f, 1.0f };
 		lSun->SetColor(sunColor);
 	}
+	// Moon light 
+	{
+		Entity e = Entity::Create();
 
+		tMoon = e.AddComponent<TransformComponent>();
+		
+		tMoon->SetLocalRotation(math::angleAxis(3.14f / 2.0f, math::float3{ 1.0f,0.0f, 0.0f }));
+
+		lMoon = e.AddComponent<LightComponent>();
+		lMoon->SetType(LightType::kLightTypeDirectional);
+		math::float4 moonColor = math::float4{ 0.0f, 0.0f, 1.0f, 1.0f };
+		lMoon->SetColor(moonColor);
+	}
+	// Point light
+	{
+		Entity e = Entity::Create();
+
+		tBulb = e.AddComponent<TransformComponent>();
+		tBulb->SetLocalPosition(math::float3{ -5, 5, -4 });
+		
+		lBulb = e.AddComponent<LightComponent>();
+		lBulb->SetType(LightType::kLightTypePoint);
+		math::float4 bulbColor = math::float4{ 0.0f, 1.0f, 0.0f, 1.0f };
+		lBulb->SetColor(bulbColor);
+	}
 	{
 		Entity e = Entity::Create();
 

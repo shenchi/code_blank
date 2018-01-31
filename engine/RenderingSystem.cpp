@@ -27,15 +27,16 @@ namespace
 		float					padding3[4 * 15];	// 15 shader constants
 	};
 
-	struct LightingConstants {                      // 16 shader constants in total
-		tofu::math::float4	    lightColor;			// 1 shader constants
-		tofu::math::float3	    lightDirection;	    // 1 shader constants
-		float					padding1;		
-		tofu::math::float3		lightPosition;		// 1 shader constants
-		float					padding2;
-		tofu::math::float3		cameraPos;			// 1 shader constants
-		float					padding7[4 * 12];	// 12 shader constants
+	struct DirectionalLightingConstants {                      // 16 shader constants in total
+		tofu::math::float4	    lightColor[256];			// 1 shader constants
+		tofu::math::float4	    lightDirection[256];	    // float4 for alignment, actually it's float3, 1 shader constants
+		float                   count;
+		tofu::math::float3      camPos;
+		tofu::math::float4      lightPosition[256];
+		tofu::math::float4      type[256];    
+		tofu::math::float4		_reserv1[3071];	
 	};
+
 }
 
 namespace tofu
@@ -60,7 +61,7 @@ namespace tofu
 		transformBuffer(),
 		transformBufferSize(0),
 		frameConstantBuffer(),
-		lightingConstantBuffer(),
+		LightingConstantBuffer(),
 		meshes(),
 		models(),
 		materials(),
@@ -158,14 +159,15 @@ namespace tofu
 				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
 			}
 
-			lightingConstantBuffer = bufferHandleAlloc.Allocate();
-			assert(lightingConstantBuffer);
+
+			LightingConstantBuffer = bufferHandleAlloc.Allocate();
+			assert(LightingConstantBuffer);
 			{
 				CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
 				assert(nullptr != params);
-				params->handle = lightingConstantBuffer;
+				params->handle = LightingConstantBuffer;
 				params->bindingFlags = kBindingConstantBuffer;
-				params->size = sizeof(LightingConstants);
+				params->size = sizeof(DirectionalLightingConstants);
 				params->dynamic = 1;
 
 				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
@@ -322,31 +324,56 @@ namespace tofu
 
 			cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
 		}
-
-		LightComponentData& light0 = LightComponent::GetAllComponents()[0];
+		
+		LightComponentData* lights = LightComponent::GetAllComponents();
+		uint32_t lightsCount = LightComponent::GetNumComponents();
+		
 		// Light constant buffer data
 		{
-			LightingConstants* data = reinterpret_cast<LightingConstants*>(
-				MemoryAllocator::Allocators[allocNo].Allocate(sizeof(LightingConstants), 4)
-				);
-			assert(nullptr != data);
-			data->lightColor = light0.lightColor;
+			DirectionalLightingConstants* data = reinterpret_cast<DirectionalLightingConstants*>(
+					MemoryAllocator::Allocators[allocNo].Allocate(sizeof(DirectionalLightingConstants), 16 * lightsCount)
+					);
+				assert(nullptr != data);
+				
+				for (uint32_t i = 0; i < lightsCount; ++i)
+				{
+					LightComponentData& comp = lights[i];
+					TransformComponent transform = comp.entity.GetComponent<TransformComponent>();
+					assert(transform);
 
-			TransformComponent t = light0.entity.GetComponent<TransformComponent>();
-			data->lightDirection = math::float3{ (t->GetWorldRotation() * t->GetRightVector()).x,
-				(t->GetWorldRotation() * t->GetUpVector()).y,
-				(t->GetWorldRotation() * t->GetForwardVector()).z };
-			data->lightPosition = t->GetWorldPosition();
 
-			data->cameraPos = camPos;
+					// TODO culling
+                    TransformComponent t = comp.entity.GetComponent<TransformComponent>();
+					if (comp.type == kLightTypeDirectional) {
+                        data->lightDirection[i] = math::float4{ (t->GetForwardVector()).x,
+						(t->GetForwardVector()).y,
+						( t->GetForwardVector()).z ,0.0f };
+						data->type[i].x = 1.0f;
+					}
+					else if (comp.type == kLightTypePoint) {
+						data->type[i].x = 2.0f;
+						data->lightPosition[i] = math::float4(t->GetWorldPosition(),0);
+					}
+					else {
+						data->type[i].x = 3.0f;
+					}
+	                data->lightColor[i] = comp.lightColor;
+				}
+				data->count = lightsCount;
+				data->camPos = camPos;
+				
 
-			UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
-			assert(nullptr != params);
-			params->handle = lightingConstantBuffer;
-			params->data = data;
-			params->size = sizeof(LightingConstants);
+				UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
+				assert(nullptr != params);
+				params->handle = LightingConstantBuffer;
+				params->data = data;
+				params->size = sizeof(DirectionalLightingConstants);
 
-			cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
+				cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
+
+			
+
+			
 		}
 
 		// clear
@@ -524,7 +551,7 @@ namespace tofu
 				case kMaterialTypeOpaque:
 					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
 					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
-					params->psConstantBuffers[0] = { lightingConstantBuffer,0,16 };
+					params->psConstantBuffers[0] = { LightingConstantBuffer,0, 4096 };
 					params->psTextures[0] = skyboxTex;
 					params->psTextures[1] = mat->mainTex;
 					params->psTextures[2] = mat->normalMap;

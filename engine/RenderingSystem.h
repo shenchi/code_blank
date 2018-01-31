@@ -86,8 +86,7 @@ namespace tofu
 
 		BufferHandle			frameConstantBuffer;
 
-		BufferHandle            lightingConstantBuffer;
-
+		BufferHandle            LightingConstantBuffer;
 
 		Mesh					meshes[kMaxMeshes];
 		Model					models[kMaxModels];

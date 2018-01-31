@@ -4,17 +4,15 @@
 //	float4  _reserv1[3];
 //}
 //
-cbuffer LightingConstants : register (b0)
+cbuffer DirectionalLightingConstants : register (b0)
 {
-	float4  lightColor;
-	float3  lightDirection;
-	float   padding1;
-	float3	lightPos;
-	float   padding2;
-	float3   cameraPos;
-	float   padding3;
-	float4  _reserv1[12];
-
+	float4  lightColor[256];
+	float4  lightDirection[256];
+	float   count;
+	float3	cameraPos;
+	float4  lightPosition[256];
+	float4   type[256];
+	float4  _reserv1[3071];
 }
 
 struct V2F
@@ -43,15 +41,36 @@ float4 main(V2F input) : SV_TARGET
 	//normTexel.z = sqrt(1 - normTexel.x * normTexel.x - normTexel.y * normTexel.y);
 
 	normal = mul(normTexel, TBN);
-
+	
 	float3 viewDir = normalize(cameraPos.xyz - input.worldPos);
 	float3 refl = reflect(-viewDir, normal);
 
-	float sunLightAmount = saturate(dot(-lightDirection, normal));
-	float4 sunLightColor = lightColor * sunLightAmount;
+	float4 allDiLightColor = float4(0, 0, 0, 0);
+	float4 allPoLightColor = float4(0, 0, 0, 0);
+
+	for (float i = 0.0f; i < count; i++) {
+		if (type[i].x == 1.0f) {
+			float3 direction = lightDirection[i].xyz;
+			float lightAmount = saturate(dot(-direction, normal));
+			allDiLightColor += lightColor[i] * lightAmount;
+		}
+		else if (type[i].x == 2.0f) {
+			float3 position = lightPosition[i].xyz;
+			float lightAmount = saturate(dot(normalize(position - input.worldPos), refl));
+			allPoLightColor += lightColor[i] * lightAmount;
+		}
+		else if (type[i].x == 3.0f) {
+
+		}
+
+	}
+		
+
 
 	float3 color = diffuseTex.Sample(samp, input.uv).rgb;
-	color = sunLightColor * color * 0.8 + cubeMap.Sample(samp, refl).rgb * 0.2;
+	color = (allDiLightColor
+		+ allPoLightColor)
+		* color * 0.8 + cubeMap.Sample(samp, refl).rgb * 0.2;
 
 	//color = sunLightColor * color;
 
