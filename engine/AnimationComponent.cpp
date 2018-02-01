@@ -15,6 +15,7 @@ namespace tofu
 		return &layers[layer].stateMachine;
 	}
 
+	// FIXME: id
 	int32_t AnimationComponentData::Play(uint32_t animId, size_t layerIndex)
 	{
 		if (animId == 0)
@@ -25,6 +26,7 @@ namespace tofu
 		return kOK;
 	}
 
+	// FIXME: id
 	int32_t AnimationComponentData::CrossFade(uint32_t animId, float duration, size_t layerIndex)
 	{
 		if (animId == 0)

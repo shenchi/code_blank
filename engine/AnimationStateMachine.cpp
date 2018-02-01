@@ -278,9 +278,10 @@ namespace tofu
 
 	// AnimationStateMachine
 
-	AnimationStateMachine::AnimationStateMachine(std::string name) : AnimNodeBase(name)
+	AnimationStateMachine::AnimationStateMachine(std::string name) : 
+		AnimNodeBase(name),	previous(nullptr)
 	{
-		states.push_back(new AnimNodeBase("entry"));
+		states.push_back(std::move(new AnimNodeBase("entry")));
 		current = states.back();
 	}
 
@@ -289,14 +290,43 @@ namespace tofu
 		for (AnimNodeBase* node : states) {
 			delete node;
 		}
-
-		states.clear();
 	}
+
+	/** Move constructor */
+	AnimationStateMachine::AnimationStateMachine(AnimationStateMachine&& other) noexcept : /* noexcept needed to enable optimizations in containers */
+	AnimNodeBase(other.name), previous(other.previous), current(other.current), elapsedTime(other.elapsedTime), transitionDuration(other.transitionDuration)
+	{
+		states = std::move(other.states);
+		stateIndexTable = std::move(other.stateIndexTable);
+		transitions = std::move(other.transitions);
+	}
+
+	///** Copy assignment operator */
+	//Foo& operator= (const Foo& other)
+	//{
+	//	Foo tmp(other);         // re-use copy-constructor
+	//	*this = std::move(tmp); // re-use move-assignment
+	//	return *this;
+	//}
+
+	///** Move assignment operator */
+	//Foo& operator= (Foo&& other) noexcept
+	//{
+	//	if (this == &other)
+	//	{
+	//		// take precautions against `foo = std::move(foo)`
+	//		return *this;
+	//	}
+	//	delete[] data;
+	//	data = other.data;
+	//	other.data = nullptr;
+	//	return *this;
+	//}
 
 	AnimationState* AnimationStateMachine::AddState(std::string name)
 	{
 		stateIndexTable[name] = static_cast<uint16_t>(states.size());
-		states.push_back(new AnimationState(name));
+		states.push_back(std::move(new AnimationState(name)));
 
 		return static_cast<AnimationState*>(states.back());
 	}
@@ -402,7 +432,7 @@ namespace tofu
 	}
 
 	AnimationLayer::AnimationLayer(std::string name, float weight)
-		:name(name), weight(weight), stateMachine(AnimationStateMachine("default"))
+		:name(name), weight(weight), stateMachine(std::move(AnimationStateMachine("default")))
 	{
 	}
 

@@ -18,7 +18,7 @@ namespace tofu
 			model(nullptr),
 			boneMatricesBuffer(),
 			boneMatricesBufferSize()
-			{ layers.push_back(AnimationLayer("Base")); }
+			{ layers.push_back(std::move(AnimationLayer("Base"))); }
 
 		AnimationStateMachine* GetStateMachine(size_t layer = 0);
 

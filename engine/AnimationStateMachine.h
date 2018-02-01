@@ -105,7 +105,7 @@ namespace tofu
 
 		AnimationStateCache* cache;
 	public:
-		AnimationState(std::string name) : AnimNodeBase(name) {}
+		AnimationState(std::string name = "state") : AnimNodeBase(name) {}
 		virtual ~AnimationState();
 
 		virtual void Enter(Model *model) override;
@@ -132,14 +132,17 @@ namespace tofu
 		AnimNodeBase *previous;
 		AnimNodeBase *current;
 
-		float transitionDuration;
-		std::list<AnimationTransitionEntry> transitions;
-
 		// Elapsed time since entering the current state
 		float elapsedTime;
 
+		float transitionDuration;
+		std::list<AnimationTransitionEntry> transitions;
+
 	public:
-		AnimationStateMachine(std::string name);
+		AnimationStateMachine(std::string name = "machine");
+		// TODO::
+		//AnimationStateMachine(const AnimationStateMachine& other);
+		AnimationStateMachine(AnimationStateMachine && other) noexcept;
 		virtual ~AnimationStateMachine();
 
 		void Play(std::string name);
