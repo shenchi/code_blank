@@ -126,7 +126,7 @@ int32_t TestGame::Init()
 
 		lMoon = e.AddComponent<LightComponent>();
 		lMoon->SetType(LightType::kLightTypeDirectional);
-		math::float4 moonColor = math::float4{ 0.0f, 0.0f, 1.0f, 1.0f };
+		math::float4 moonColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
 		lMoon->SetColor(moonColor);
 	}
 	// Point light

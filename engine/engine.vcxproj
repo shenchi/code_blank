@@ -194,6 +194,7 @@
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="FileIOWin32.cpp" />
     <ClCompile Include="InputSystem.cpp" />
+    <ClCompile Include="LightComponent.cpp" />
     <ClCompile Include="MemoryAllocator.cpp" />
     <ClCompile Include="NativeContextWin32.cpp" />
     <ClCompile Include="PhysicsComponent.cpp" />

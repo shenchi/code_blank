@@ -29,8 +29,9 @@ namespace tofu
 		void SetType(LightType t) { type = t; }
 
 		void SetColor(tofu::math::float4 t) { lightColor = t; }
+	private:
+		TextureHandle CreateDepthMap();
 
-		void CreateDepthMap() {}
 
 	private:
 		Entity entity;

@@ -389,10 +389,6 @@ namespace tofu
 				params->size = sizeof(DirectionalLightingConstants);
 
 				cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
-
-			
-
-			
 		}
 
 		// clear
