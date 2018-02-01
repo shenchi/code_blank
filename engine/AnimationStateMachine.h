@@ -155,4 +155,19 @@ namespace tofu
 
 		virtual float GetDurationInSecond(Model *model) override;
 	};
+
+	class AnimationLayer {
+		friend class AnimationComponentData;
+
+	public:
+		AnimationLayer(std::string name, float weight = 1.0f);
+
+		virtual void Update(Model *model);
+		virtual void Evaluate(EvaluateContext& context);
+
+	private:
+		std::string name;
+		float weight;
+		AnimationStateMachine stateMachine;
+	};
 }

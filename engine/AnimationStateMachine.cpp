@@ -23,7 +23,7 @@ namespace tofu
 
 	void AnimationFrameCache::Reset()
 	{
-		// Assume channel numbers = 3
+		// Assume channel numbers SQT = 3
 		for (int i = 0; i < 3; i++) {
 			indices[i][0] = SIZE_MAX;
 			indices[i][1] = SIZE_MAX;
@@ -118,6 +118,8 @@ namespace tofu
 		}
 
 		cache->Update(&context, anim);
+
+		// TODO: Add exitTime & transition
 	}
 
 	void AnimationState::Evaluate(EvaluateContext & context, float weight)
@@ -287,6 +289,8 @@ namespace tofu
 		for (AnimNodeBase* node : states) {
 			delete node;
 		}
+
+		states.clear();
 	}
 
 	AnimationState* AnimationStateMachine::AddState(std::string name)
@@ -370,7 +374,6 @@ namespace tofu
 			float alpha = elapsedTime / transitionDuration;
 
 			if (weight == 1.0f) {
-				// TODO: Prevent previous transition;
 				previous->Evaluate(context, 1.0f);
 				current->Evaluate(context, alpha);
 			}
@@ -396,6 +399,23 @@ namespace tofu
 	float AnimationStateMachine::GetDurationInSecond(Model * model)
 	{
 		return current->GetDurationInSecond(model);
+	}
+
+	AnimationLayer::AnimationLayer(std::string name, float weight)
+		:name(name), weight(weight), stateMachine(AnimationStateMachine("default"))
+	{
+	}
+
+	void AnimationLayer::Update(Model *model)
+	{ 
+		// TODO: Add transition parameter
+		UpdateContext context{ model };
+		stateMachine.Update(context);
+	}
+
+	void AnimationLayer::Evaluate(EvaluateContext & context)
+	{
+		stateMachine.Evaluate(context, weight);
 	}
 }
 
