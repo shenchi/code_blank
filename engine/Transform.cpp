@@ -12,6 +12,7 @@ namespace tofu
 		t.rotation = other.rotation * rotation;
 		t.scale = scale * other.scale;
 		t.translation = other.rotation * (other.scale * translation) + other.translation;
+		t.isDirty = other.isDirty;
 
 		return t;
 	}
@@ -43,6 +44,18 @@ namespace tofu
 	{
 		float3 ret = TransformPosition(float3{ v.x, v.y, v.z });
 		return float4{ ret.x, ret.y, ret.z, v.w };
+	}
+
+	void Transform::BlendByWeight(Transform other, float weight)
+	{
+		if (isDirty && other.isDirty) {
+			translation = mix(translation, other.translation, weight);
+			rotation = mix(rotation, other.rotation, weight);
+			scale = mix(scale, other.scale, weight);
+		}
+		else if (!isDirty) {
+			*this = other;
+		}
 	}
 }
 

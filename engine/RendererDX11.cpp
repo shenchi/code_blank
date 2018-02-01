@@ -242,6 +242,8 @@ namespace tofu
 			PipelineState				pipelineStates[kMaxPipelineStates];
 
 			PipelineStateHandle			currentPipelineState;
+			TextureHandle				renderTargets[kMaxRenderTargetBindings];
+			TextureHandle				depthRenderTarget;
 
 			typedef int32_t(RendererDX11::*cmd_callback_t)(void*);
 
@@ -383,6 +385,7 @@ namespace tofu
 				rt.width = winWidth;
 				rt.height = winHeight;
 				rt.arraySize = 1;
+				rt.bindingFlags = kBindingRenderTarget;
 
 				if (S_OK != (hr = device->CreateRenderTargetView(backbufferTex, nullptr, &(rt.rtv))))
 				{
@@ -399,6 +402,7 @@ namespace tofu
 				ds.width = winWidth;
 				ds.height = winHeight;
 				ds.arraySize = 1;
+				ds.bindingFlags = kBindingDepthStencil;
 
 				ID3D11Texture2D* depthStencilTex = nullptr;
 				D3D11_TEXTURE2D_DESC depthDesc{ 0 };
@@ -421,8 +425,16 @@ namespace tofu
 				}
 				ds.tex = depthStencilTex;
 
-				// set render targets, they are fixed for now
+				// set render targets
 				context->OMSetRenderTargets(1, &(rt.rtv), ds.dsv);
+
+				for (uint32_t i = 0; i < kMaxRenderTargetBindings; i++)
+				{
+					renderTargets[i] = TextureHandle();
+				}
+
+				renderTargets[0] = TextureHandle(kMaxTextures + 1);
+				depthRenderTarget = TextureHandle(kMaxTextures);
 
 				return 0;
 			}
@@ -590,6 +602,7 @@ namespace tofu
 				if (params->isFile) // load the texture from file
 				{
 					assert(bindingFlags & kBindingShaderResource);
+					bindingFlags = kBindingShaderResource;
 
 					ID3D11Resource* res = nullptr;
 					DXCHECKED(DirectX::CreateDDSTextureFromMemoryEx(
@@ -965,6 +978,64 @@ namespace tofu
 					context->OMSetBlendState(pso.blendState, nullptr, 0xffffffffu);
 
 					currentPipelineState = params->pipelineState;
+				}
+
+				// render targets
+				{
+					if (params->renderTargets[0].id == DrawParams::DefaultRenderTarget.id)
+						params->renderTargets[0] = TextureHandle(kMaxTextures + 1);
+
+					if (params->depthRenderTarget.id == DrawParams::DefaultRenderTarget.id)
+						params->depthRenderTarget = TextureHandle(kMaxTextures);
+
+					bool rebind = false;
+
+					if (params->depthRenderTarget.id != depthRenderTarget.id)
+					{
+						rebind = true;
+					}
+					else
+					{
+						for (uint32_t i = 0; i < kMaxRenderTargetBindings; i++)
+						{
+							if (params->renderTargets[i].id != renderTargets[i].id)
+							{
+								rebind = true;
+								break;
+							}
+						}
+					}
+
+					if (rebind)
+					{
+						ID3D11RenderTargetView* rtvs[kMaxRenderTargetBindings] = {};
+						ID3D11DepthStencilView* dsv = nullptr;
+
+						for (uint32_t i = 0; i < kMaxRenderTargetBindings; i++)
+						{
+							renderTargets[i] = params->renderTargets[i];
+							if (renderTargets[i])
+							{
+								Texture& tex = textures[renderTargets[i].id];
+								if (nullptr == tex.rtv || !(tex.bindingFlags & kBindingRenderTarget))
+									return kErrUnknown;
+
+								rtvs[i] = tex.rtv;
+							}
+						}
+
+						depthRenderTarget = params->depthRenderTarget;
+						if (depthRenderTarget)
+						{
+							Texture& tex = textures[depthRenderTarget.id];
+							if (nullptr == tex.dsv || !(tex.bindingFlags & kBindingDepthStencil))
+								return kErrUnknown;
+
+							dsv = tex.dsv;
+						}
+
+						context->OMSetRenderTargets(kMaxRenderTargetBindings, rtvs, dsv);
+					}
 				}
 
 				// vertex shader resource binding

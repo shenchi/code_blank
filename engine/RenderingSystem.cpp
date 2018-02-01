@@ -244,6 +244,25 @@ namespace tofu
 		builtinCube = CreateModel("assets/cube.model");
 		assert(nullptr != builtinCube);
 
+		/*{
+			testRT = textureHandleAlloc.Allocate();
+			if (!testRT)
+				return kErrUnknown;
+
+			CreateTextureParams* params = MemoryAllocator::Allocate<CreateTextureParams>(allocNo);
+			params->handle = testRT;
+			params->format = kFormatR8g8b8a8Unorm;
+			params->arraySize = 1;
+			params->bindingFlags = kBindingShaderResource | kBindingRenderTarget;
+			
+			int32_t w, h;
+			renderer->GetFrameBufferSize(w, h);
+			params->width = w;
+			params->height = h;
+
+			cmdBuf->Add(RendererCommand::kCommandCreateTexture, params);
+		}*/
+
 		return kOK;
 	}
 
@@ -481,6 +500,7 @@ namespace tofu
 			if (anim.model != r->model)
 			{
 				anim.model = r->model;
+				
 				int32_t err = ReallocAnimationResources(anim);
 				if (kOK != err)
 				{
@@ -562,6 +582,7 @@ namespace tofu
 					break;
 				}
 
+				//params->renderTargets[0] = testRT;
 
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
@@ -707,6 +728,14 @@ namespace tofu
 				model.animations = reinterpret_cast<model::ModelAnimation*>(
 					model.bones + header->NumBones
 					);
+
+				for (uint16_t i = 0; i < header->NumAnimations; i++) {
+					model.animationTable[model.animations[i].name] = i;
+				}
+
+				// FIXME: Test only
+				model.animationTable["idle"] = 0;
+				model.animationTable["walk"] = 1;
 
 				model.channels = reinterpret_cast<model::ModelAnimChannel*>(
 					model.animations + header->NumAnimations
@@ -889,10 +918,8 @@ namespace tofu
 			// TODO dealloc
 		}
 
-		if (c.caches) {
-			// TODO dealloc
-			free(c.caches);
-		}
+		// TODO:
+		c.ReallocResources();
 
 		Model* model = c.model;
 		if (nullptr == model || nullptr == model->header || !model->HasAnimation() || 0 == model->header->NumBones)
@@ -917,10 +944,6 @@ namespace tofu
 		params->dynamic = 1;
 
 		cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
-
-		// TODO: buffer
-		c.caches = (AnimationFrameCache*)malloc(c.model->header->NumBones * sizeof(AnimationFrameCache));
-		c.ResetCaches();
 
 		return kOK;
 	}

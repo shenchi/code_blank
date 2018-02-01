@@ -10,7 +10,7 @@
 namespace tofu {
 	namespace compression {
 
-		void CompressQuaternion(const math::quat & orientation, uint32_t & compressed_orientation)
+		TF_INLINE void CompressQuaternion(const math::quat & orientation, uint32_t & compressed_orientation)
 		{
 			uint32_t largest = 0;
 			float a, b, c;
@@ -125,9 +125,9 @@ namespace tofu {
 			const float normal_b = (b - minimum) / (maximum - minimum);
 			const float normal_c = (c - minimum) / (maximum - minimum);
 
-			uint32_t integer_a = floor(normal_a * 1024.0f + 0.5f);
-			uint32_t integer_b = floor(normal_b * 1024.0f + 0.5f);
-			uint32_t integer_c = floor(normal_c * 1024.0f + 0.5f);
+			uint32_t integer_a = static_cast<uint32_t>(floor(normal_a * 1024.0f + 0.5f));
+			uint32_t integer_b = static_cast<uint32_t>(floor(normal_b * 1024.0f + 0.5f));
+			uint32_t integer_c = static_cast<uint32_t>(floor(normal_c * 1024.0f + 0.5f));
 
 			//		printf( "integer: a = %d, b = %d, c = %d, largest = %d\n", 
 			//			integer_a, integer_b, integer_c, largest );
@@ -135,7 +135,7 @@ namespace tofu {
 			compressed_orientation = (largest << 30) | (integer_a << 20) | (integer_b << 10) | integer_c;
 		}
 
-		void DecompressQuaternion(uint32_t compressed_orientation, math::quat & orientation)
+		TF_INLINE void DecompressQuaternion(uint32_t compressed_orientation, math::quat & orientation)
 		{
 			uint32_t largest = compressed_orientation >> 30;
 			uint32_t integer_a = (compressed_orientation >> 20) & ((1 << 10) - 1);

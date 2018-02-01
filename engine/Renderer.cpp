@@ -6,6 +6,8 @@
 
 namespace tofu
 {
+	const TextureHandle DrawParams::DefaultRenderTarget(0xfffffffeu);
+
 	RendererCommandBuffer * RendererCommandBuffer::Create(uint32_t capacity, uint32_t allocNo)
 	{
 		MemoryAllocator& alloc = MemoryAllocator::Allocators[allocNo];
