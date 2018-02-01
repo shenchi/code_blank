@@ -291,9 +291,9 @@
             "Path": "textures/Wall2_Halfblock_Bump",
             "GUID": "cd43279f80e31604e86e8208bdea472b",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "trilinear",
-            "MipmapCount": 10,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -309,9 +309,9 @@
             "Path": "textures/Floor1_Bump",
             "GUID": "d4953f7c4b5211a4d880b0889f5e31b4",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "trilinear",
-            "MipmapCount": 11,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -327,9 +327,9 @@
             "Path": "textures/Floor3_Bump",
             "GUID": "26dee1916efb09d449d76fb70fac9713",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "trilinear",
-            "MipmapCount": 10,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -345,9 +345,9 @@
             "Path": "textures/Wall1_Bump",
             "GUID": "f7f8e34c49bb0d24593f5a03458f330b",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "trilinear",
-            "MipmapCount": 10,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -363,9 +363,9 @@
             "Path": "textures/Wall1_Halfblock_Bump",
             "GUID": "60ccac5034367c44f8cb9ac8d4d81288",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "trilinear",
-            "MipmapCount": 10,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -399,9 +399,9 @@
             "Path": "textures/PlaticTile_Bump",
             "GUID": "79d910e099a945747942bc01afdb8f93",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "trilinear",
-            "MipmapCount": 9,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -435,9 +435,9 @@
             "Path": "textures/Floor2_Bump",
             "GUID": "7ec7bf88fd7bd624c81862e975cb4077",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "trilinear",
-            "MipmapCount": 11,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -453,9 +453,9 @@
             "Path": "textures/Wall3_Bump",
             "GUID": "671d66de0327e994e8905c503d1a9f21",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "trilinear",
-            "MipmapCount": 10,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -471,9 +471,9 @@
             "Path": "textures/Roof1_Bump",
             "GUID": "9193748617ff2c240ba1e79fd522b6d8",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "trilinear",
-            "MipmapCount": 10,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         }
     ]

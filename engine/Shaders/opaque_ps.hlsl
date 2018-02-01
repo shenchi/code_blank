@@ -53,7 +53,7 @@ float4 main(V2F input) : SV_TARGET
 	float4 sunLightColor = lightColor * sunLightAmount;
 
 	float3 color = diffuseTex.Sample(samp, input.uv).rgb;
-	color = sunLightColor * color;// *0.8 + cubeMap.Sample(samp, refl).rgb * 0.2;
+	color = sunLightColor * color *0.8 + cubeMap.Sample(samp, refl).rgb * 0.2;
 	//color =  color * 0.8 + cubeMap.Sample(samp, refl).rgb * 0.2;
 
 	//color = sunLightColor * color;
