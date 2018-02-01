@@ -50,7 +50,7 @@ namespace tofu
 
 				if (HasTangent == 1)
 				{
-					vertexSize += sizeof(float) * 3;
+					vertexSize += sizeof(float) * 4;
 				}
 
 				if (HasAnimation == 1)
@@ -78,7 +78,7 @@ namespace tofu
 		// order of channels :
 		// position		: float3
 		// normal		: float3
-		// [tangent]	: float3	- if HasTangent
+		// [tangent]	: float4	- if HasTangent
 		// [bone_id]	: int4		- if HasAnimation
 		// [weight]		: float4	- if HasAnimation
 		// [texcoord1]	: float2	- depending on NumTexcoordChannels

@@ -317,9 +317,12 @@ struct ModelFile
 					if (header.HasTangent == 1)
 					{
 						aiVector3D& tan = mesh->mTangents[j];
+						aiVector3D& bitan = mesh->mBitangents[j];
 
-						*reinterpret_cast<float3*>(ptr) = float3{ tan.x, tan.y, tan.z };
-						ptr += sizeof(float3);
+						float handedness = (nor ^ tan) * bitan < 0.0f ? -1.0f : 1.0f;
+
+						*reinterpret_cast<float4*>(ptr) = float4{ tan.x, tan.y, tan.z, handedness };
+						ptr += sizeof(float4);
 					}
 
 					if (header.HasAnimation)
@@ -383,7 +386,7 @@ struct ModelFile
 
 						uint4* boneIds = reinterpret_cast<uint4*>(meshBaseAddr
 							+ vertexSize * vertexId
-							+ sizeof(float3) * (header.HasTangent ? 3 : 2));
+							+ sizeof(float) * (header.HasTangent ? 10 : 6));
 
 						float4* weights = reinterpret_cast<float4*>(boneIds + 1);
 
@@ -820,35 +823,35 @@ struct ModelFile
 
 int main(int argc, char* argv[])
 {
-	argc = 4;
+	//argc = 4;
 
-	char* tempArgv[6] =
-	{
-		"",
-		"../../archer.model",
-		"../../assets/archer_idle.fbx",
-		//"../../assets/archer_jump.fbx",
-		//"../../assets/archer_running.fbx",
-		"../../assets/archer_walking.fbx"
-	};
+	//char* tempArgv[6] =
+	//{
+	//	"",
+	//	"../../archer.model",
+	//	"../../assets/archer_idle.fbx",
+	//	//"../../assets/archer_jump.fbx",
+	//	//"../../assets/archer_running.fbx",
+	//	"../../assets/archer_walking.fbx"
+	//};
 
-	////argc = 3;
-	//
-	////char* tempArgv[6] =
-	////{
-	////	"",
-	////	"../../cube.model",
-	////	"../../assets/cube.fbx",
-	////};
+	//////argc = 3;
+	////
+	//////char* tempArgv[6] =
+	//////{
+	//////	"",
+	//////	"../../cube.model",
+	//////	"../../assets/cube.fbx",
+	//////};
 
-	////char* tempArgv[6] =
-	////{
-	////	"",
-	////	"../../ground.model",
-	////	"../../assets/ground.fbx",
-	////};
+	//////char* tempArgv[6] =
+	//////{
+	//////	"",
+	//////	"../../ground.model",
+	//////	"../../assets/ground.fbx",
+	//////};
 
-	argv = tempArgv;
+	//argv = tempArgv;
 
 	if (argc < 3)
 	{
