@@ -27,7 +27,7 @@ namespace
 		float					padding3[4 * 15];	// 15 shader constants
 	};
 
-	struct DirectionalLightingConstants {                      // 16 shader constants in total
+	struct LightingConstants {                      // 16 shader constants in total
 		tofu::math::float4	    lightColor[256];			// 1 shader constants
 		tofu::math::float4	    lightDirection[256];	    // float4 for alignment, actually it's float3, 1 shader constants
 		float                   count;
@@ -167,7 +167,7 @@ namespace tofu
 				assert(nullptr != params);
 				params->handle = LightingConstantBuffer;
 				params->bindingFlags = kBindingConstantBuffer;
-				params->size = sizeof(DirectionalLightingConstants);
+				params->size = sizeof(LightingConstants);
 				params->dynamic = 1;
 
 				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
@@ -346,17 +346,19 @@ namespace tofu
 		
 		LightComponentData* lights = LightComponent::GetAllComponents();
 		uint32_t lightsCount = LightComponent::GetNumComponents();
-		
+		TextureHandle * depthMap = new TextureHandle[lightsCount];
 		// Light constant buffer data
 		{
-			DirectionalLightingConstants* data = reinterpret_cast<DirectionalLightingConstants*>(
-					MemoryAllocator::Allocators[allocNo].Allocate(sizeof(DirectionalLightingConstants), 16 * lightsCount)
+			LightingConstants* data = reinterpret_cast<LightingConstants*>(
+					MemoryAllocator::Allocators[allocNo].Allocate(sizeof(LightingConstants), 16 * lightsCount)
 					);
 				assert(nullptr != data);
 				
 				for (uint32_t i = 0; i < lightsCount; ++i)
 				{
 					LightComponentData& comp = lights[i];
+
+					depthMap[i] = comp.CreateDepthMap();
 					TransformComponent transform = comp.entity.GetComponent<TransformComponent>();
 					assert(transform);
 
@@ -386,7 +388,7 @@ namespace tofu
 				assert(nullptr != params);
 				params->handle = LightingConstantBuffer;
 				params->data = data;
-				params->size = sizeof(DirectionalLightingConstants);
+				params->size = sizeof(LightingConstants);
 
 				cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
 		}
@@ -849,6 +851,31 @@ namespace tofu
 		mat->handle = handle;
 
 		return mat;
+	}
+
+	TextureHandle RenderingSystem::CreateDepthMap(uint32_t width, uint32_t height)
+	{
+
+		testRT = textureHandleAlloc.Allocate();
+		if (!testRT)
+			return kErrUnknown;
+
+		CreateTextureParams* params = MemoryAllocator::Allocate<CreateTextureParams>(allocNo);
+		params->handle = testRT;
+		params->format = kFormatR8g8b8a8Unorm;
+		params->arraySize = 1;
+		params->bindingFlags = kBindingShaderResource | kBindingRenderTarget;
+
+		int32_t w, h;
+		renderer->GetFrameBufferSize(w, h);
+		params->width = w;
+		params->height = h;
+
+		cmdBuf->Add(RendererCommand::kCommandCreateTexture, params);
+
+
+
+		return TextureHandle();
 	}
 
 	int32_t RenderingSystem::InitBuiltinShader(MaterialType matType, const char * vsFile, const char * psFile)
