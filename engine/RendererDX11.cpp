@@ -886,7 +886,7 @@ namespace tofu
 				DXCHECKED(device->CreateBlendState(&blendState, &(pipelineStates[id].blendState)));
 
 				assert(true == params->vertexShader && nullptr != vertexShaders[params->vertexShader.id].shader);
-				assert(true == params->pixelShader && nullptr != pixelShaders[params->vertexShader.id].shader);
+				//assert(true == params->pixelShader && nullptr != pixelShaders[params->vertexShader.id].shader);
 
 				DXCHECKED(device->CreateInputLayout(
 					InputElemDescTable[params->vertexFormat],
@@ -971,7 +971,7 @@ namespace tofu
 
 					context->IASetInputLayout(pso.inputLayout);
 					context->VSSetShader(vertexShaders[pso.vertexShader.id].shader, nullptr, 0);
-					context->PSSetShader(pixelShaders[pso.pixelShader.id].shader, nullptr, 0);
+					context->PSSetShader((pso.pixelShader ? pixelShaders[pso.pixelShader.id].shader : nullptr), nullptr, 0);
 					context->RSSetState(pso.rasterizerState);
 					context->RSSetViewports(1, &(pso.viewport));
 					context->OMSetDepthStencilState(pso.depthStencilState, 0u);

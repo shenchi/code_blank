@@ -83,7 +83,7 @@ int32_t SceneLoadingDemo::Init()
 
 		tSun = e.AddComponent<TransformComponent>();
 		tSun->SetLocalPosition(math::float3{ 5, 5, -5 });
-		tSun->SetLocalRotation(math::angleAxis(3.14f / 2, math::float3{ 1.0f, 0.0f, 0.0f }));
+		tSun->SetLocalRotation(math::angleAxis(3.14f / 3, math::float3{ 1.0f, 0.0f, 0.0f }));
 
 		lSun = e.AddComponent<LightComponent>();
 		lSun->SetType(LightType::kLightTypeDirectional);
