@@ -202,16 +202,20 @@ namespace tofu
 	struct ClearParams
 	{
 		TextureHandle		renderTargets[kMaxRenderTargetBindings];
+		uint32_t			renderTargetSubIds[kMaxRenderTargetBindings];
 		float				clearColor[4];
 		TextureHandle		depthRenderTarget;
+		uint32_t			depthRenderTargetSubId;
 		float				clearDepth;
 		uint8_t				clearStencil;
 
 		inline ClearParams()
 			:
 			renderTargets(),
+			renderTargetSubIds(),
 			clearColor(),
 			depthRenderTarget(kMaxTextures),
+			depthRenderTargetSubId(0),
 			clearDepth(1.0f),
 			clearStencil(0u)
 		{
@@ -249,7 +253,9 @@ namespace tofu
 		SamplerHandle			vsSamplers[kMaxSamplerBindings];
 		SamplerHandle			psSamplers[kMaxSamplerBindings];
 		TextureHandle			renderTargets[kMaxRenderTargetBindings];
+		uint32_t				renderTargetSubIds[kMaxRenderTargetBindings];
 		TextureHandle			depthRenderTarget;
+		uint32_t				depthRenderTargetSubId;
 
 		static const TextureHandle DefaultRenderTarget;
 
@@ -268,7 +274,9 @@ namespace tofu
 			vsSamplers(),
 			psSamplers(),
 			renderTargets(),
-			depthRenderTarget(DefaultRenderTarget)
+			renderTargetSubIds(),
+			depthRenderTarget(DefaultRenderTarget),
+			depthRenderTargetSubId(0)
 		{
 			renderTargets[0] = DefaultRenderTarget;
 		}
