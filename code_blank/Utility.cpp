@@ -96,8 +96,6 @@ namespace Utility
 
 		math::quat camRot = math::euler(pitch, yaw, 0.0f);
 		transform->SetLocalRotation(camRot);
-		//math::float3 camTgt = tPlayer->GetLocalPosition() + math::float3{ 0.0f, 2.0f, 0.0f };
-		//math::float3 camPos = camTgt + camRot * (math::float3{ 0.0f, 0.0f, -5.0f });
 
 		float maxSpeed = WalkSpeed;
 		if (input->IsButtonDown(kKeyLeftShift))
@@ -112,9 +110,7 @@ namespace Utility
 				transform->GetRightVector() * inputDir.x +
 				transform->GetUpVector() * inputDir.y;
 
-			//moveDir.y = 0.0f;
 			moveDir = math::normalize(moveDir);
-			//tPlayer->FaceTo(-moveDir);
 
 			speed += Time::DeltaTime * Accelerate;
 			if (speed > maxSpeed)
