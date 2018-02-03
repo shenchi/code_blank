@@ -31,7 +31,8 @@ int32_t SceneLoadingDemo::Init()
 
 		RenderingComponent r = e.AddComponent<RenderingComponent>();
 
-		Model* model = RenderingSystem::instance()->CreateModel("assets/archer.model");
+		//Model* model = RenderingSystem::instance()->CreateModel("assets/archer.model");
+		Model* model = RenderingSystem::instance()->CreateModel("assets/soldier.model");
 
 		anim = e.AddComponent<AnimationComponent>();
 
@@ -43,8 +44,12 @@ int32_t SceneLoadingDemo::Init()
 		walk->animationName = "walk";
 
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaqueSkinned);
+
 		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");
 		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/archer_1.texture");
+
+	/*	TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/Paint_lambert11_DiffuseColor.png");
+		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/Paint_lambert11_Normal.png");*/
 
 		material->SetTexture(diffuse);
 		material->SetNormalMap(normalMap);
