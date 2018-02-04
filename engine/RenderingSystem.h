@@ -55,7 +55,7 @@ namespace tofu
 
 		Material* CreateMaterial(MaterialType type);
 
-		TextureHandle CreateDepthMap(uint32_t width, uint32_t height);
+		//TextureHandle CreateDepthMap(uint32_t width, uint32_t height);
 	private:
 
 		int32_t InitBuiltinShader(MaterialType matType, const char* vsFile, const char* psFile);

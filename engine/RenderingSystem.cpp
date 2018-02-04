@@ -358,7 +358,7 @@ namespace tofu
 				{
 					LightComponentData& comp = lights[i];
 
-					depthMap[i] = comp.CreateDepthMap();
+				//	depthMap[i] = comp.CreateDepthMap();
 					TransformComponent transform = comp.entity.GetComponent<TransformComponent>();
 					assert(transform);
 
@@ -851,31 +851,6 @@ namespace tofu
 		mat->handle = handle;
 
 		return mat;
-	}
-
-	TextureHandle RenderingSystem::CreateDepthMap(uint32_t width, uint32_t height)
-	{
-
-		testRT = textureHandleAlloc.Allocate();
-		if (!testRT)
-			return kErrUnknown;
-
-		CreateTextureParams* params = MemoryAllocator::Allocate<CreateTextureParams>(allocNo);
-		params->handle = testRT;
-		params->format = kFormatR8g8b8a8Unorm;
-		params->arraySize = 1;
-		params->bindingFlags = kBindingShaderResource | kBindingRenderTarget;
-
-		int32_t w, h;
-		renderer->GetFrameBufferSize(w, h);
-		params->width = w;
-		params->height = h;
-
-		cmdBuf->Add(RendererCommand::kCommandCreateTexture, params);
-
-
-
-		return TextureHandle();
 	}
 
 	int32_t RenderingSystem::InitBuiltinShader(MaterialType matType, const char * vsFile, const char * psFile)
