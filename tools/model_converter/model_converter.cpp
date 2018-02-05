@@ -828,7 +828,7 @@ int main(int argc, char* argv[])
 	char* tempArgv[6] =
 	{
 		"",
-		"../../soldier.fbx",
+		"../../assets/soldier.model",
 		"../../assets/Soilder_LSJ.fbx"
 		//"../../assets/KB_Hits.fbx",
 		//"../../assets/archer_jump.fbx",
@@ -852,7 +852,7 @@ int main(int argc, char* argv[])
 	//////	"../../assets/ground.fbx",
 	//////};
 
-	//argv = tempArgv;
+	argv = tempArgv;
 
 	if (argc < 3)
 	{

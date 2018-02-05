@@ -48,11 +48,11 @@ int32_t SceneLoadingDemo::Init()
 		//Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaqueSkinned);
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
 
-		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");
-		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/archer_1.texture");
+		/*TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");
+		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/archer_1.texture");*/
 
-	/*	TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/Paint_lambert11_DiffuseColor.png");
-		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/Paint_lambert11_Normal.png");*/
+		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/Paint_lambert11_DiffuseColor.texture");
+		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/Paint_lambert11_Normal.texture");
 
 		material->SetTexture(diffuse);
 		material->SetNormalMap(normalMap);
@@ -63,8 +63,8 @@ int32_t SceneLoadingDemo::Init()
 		pPlayer = e.AddComponent<PhysicsComponent>();
 
 		pPlayer->LockRotation(true, false, true);
-		pPlayer->SetCapsuleCollider(50.0f, 100.0f);
-		pPlayer->SetColliderOrigin(math::float3{ 0.0f, 100.0f, 0.0f });
+		pPlayer->SetCapsuleCollider(2.5f, 5.0f);
+		pPlayer->SetColliderOrigin(math::float3{ 0.0f, 5.0f, 0.0f });
 	}
 
 	// camera
