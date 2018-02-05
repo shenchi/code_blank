@@ -336,15 +336,17 @@ namespace tofu
 			}
 			else if (comp.isKinematic)
 			{
+				math::float3 scale = t->GetWorldScale();
 				math::quat rot = t->GetWorldRotation();
 				math::float3 pos = t->GetWorldPosition() +
-					rot * (comp.colliderDesc.origin);
+					rot * (comp.colliderDesc.origin * scale);
 
 				btTransform btTrans(btQuat(rot), btVec3(pos));
 				comp.rigidbody->getMotionState()->setWorldTransform(btTrans);
 			}
 			else if (!comp.isStatic) // normal dynamic rigid bodies
 			{
+				math::float3 entityScale = t->GetWorldScale();
 				math::quat entityRot = t->GetWorldRotation();
 				math::float3 entityPos = t->GetWorldPosition();
 
@@ -360,7 +362,7 @@ namespace tofu
 					comp.rigidbody->activate();
 
 					math::float3 pos = entityPos +
-						entityRot * (comp.colliderDesc.origin);
+						entityRot * (comp.colliderDesc.origin * entityScale);
 
 					btTransform btTrans(btQuat(entityRot), btVec3(pos));
 					comp.rigidbody->setWorldTransform(btTrans);
@@ -396,9 +398,10 @@ namespace tofu
 			btVector3 btPos = btTrans.getOrigin();
 			btQuaternion btRot = btTrans.getRotation();
 
+			math::float3 scale = t->GetWorldScale();
 			math::float3 pos{ float(btPos.x()), float(btPos.y()), float(btPos.z()) };
 			math::quat rot(float(btRot.w()), float(btRot.x()), float(btRot.y()), float(btRot.z()));
-			pos -= rot * (comp.colliderDesc.origin);
+			pos -= rot * (comp.colliderDesc.origin * scale);
 
 			// TODO world position & rotation actually
 			t->SetLocalPosition(pos);

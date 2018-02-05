@@ -56,7 +56,7 @@ int32_t SceneLoadingDemo::Init()
 
 		pPlayer->LockRotation(true, false, true);
 		pPlayer->SetCapsuleCollider(50.0f, 100.0f);
-		pPlayer->SetColliderOrigin(math::float3{ 0.0f, 1.0f, 0.0f });
+		pPlayer->SetColliderOrigin(math::float3{ 0.0f, 100.0f, 0.0f });
 	}
 
 	// camera
