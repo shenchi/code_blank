@@ -278,8 +278,8 @@ namespace tofu
 
 	// AnimationStateMachine
 
-	AnimationStateMachine::AnimationStateMachine(std::string name) : 
-		AnimNodeBase(name),	previous(nullptr)
+	AnimationStateMachine::AnimationStateMachine(std::string name) :
+		AnimNodeBase(name), previous(nullptr), transitionDuration(0.f), elapsedTime(0.f)
 	{
 		states.push_back(std::move(new AnimNodeBase("entry")));
 		current = states.back();
