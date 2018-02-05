@@ -20,12 +20,14 @@ int32_t SceneLoadingDemo::Init()
 	CHECKED(sceneMgr.Init());
 
 	CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial.json"));
+	//CHECKED(sceneMgr.LoadScene("assets/scenes/test6.json"));
 
 	{
 		Entity e = Entity::Create();
 
 		tPlayer = e.AddComponent<TransformComponent>();
-		tPlayer->SetLocalPosition(math::float3{ -5.0f, 8.0f, -5.0f });
+		//tPlayer->SetLocalPosition(math::float3{ -5.0f, 8.0f, -5.0f });
+		tPlayer->SetLocalPosition(math::float3{ 53.0f, 8.0f, -38.0f });
 		//tPlayer->SetLocalPosition(math::float3{ 0.0f, 8.0f, 0.0f });
 		tPlayer->SetLocalScale(math::float3{ 0.01f, 0.01f, 0.01f });
 
