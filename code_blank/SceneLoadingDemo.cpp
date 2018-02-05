@@ -27,23 +27,24 @@ int32_t SceneLoadingDemo::Init()
 		tPlayer = e.AddComponent<TransformComponent>();
 		tPlayer->SetLocalPosition(math::float3{ -5.0f, 8.0f, -5.0f });
 		//tPlayer->SetLocalPosition(math::float3{ 0.0f, 8.0f, 0.0f });
-		tPlayer->SetLocalScale(math::float3{ 0.01f, 0.01f, 0.01f });
+		tPlayer->SetLocalScale(math::float3{ 0.2f, 0.2f, 0.2f });
 
 		RenderingComponent r = e.AddComponent<RenderingComponent>();
 
 		//Model* model = RenderingSystem::instance()->CreateModel("assets/archer.model");
 		Model* model = RenderingSystem::instance()->CreateModel("assets/soldier.model");
 
-		anim = e.AddComponent<AnimationComponent>();
+		//anim = e.AddComponent<AnimationComponent>();
 
-		AnimationStateMachine *stateMachine = anim->GetStateMachine();
+		//AnimationStateMachine *stateMachine = anim->GetStateMachine();
 
-		AnimationState *idle = stateMachine->AddState("idle");
-		idle->animationName = "idle";
-		AnimationState *walk = stateMachine->AddState("walk");
-		walk->animationName = "walk";
+		//AnimationState *idle = stateMachine->AddState("idle");
+		//idle->animationName = "idle";
+		//AnimationState *walk = stateMachine->AddState("walk");
+		//walk->animationName = "walk";
 
-		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaqueSkinned);
+		//Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaqueSkinned);
+		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
 
 		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");
 		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/archer_1.texture");
@@ -184,7 +185,7 @@ int32_t SceneLoadingDemo::Update()
 
 		tPlayer->Translate(moveDir * Time::DeltaTime * speed);
 
-		anim->CrossFade(1, 0.3f);
+		//anim->CrossFade(1, 0.3f);
 	}
 	else
 	{
@@ -192,7 +193,7 @@ int32_t SceneLoadingDemo::Update()
 		if (speed < 0.0f) speed = 0.0f;
 		tPlayer->Translate(tPlayer->GetForwardVector() * Time::DeltaTime * speed);
 
-		anim->CrossFade(0, 0.1f);
+		//anim->CrossFade(0, 0.1f);
 	}
 
 	return kOK;
