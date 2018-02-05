@@ -19,7 +19,7 @@ int32_t SceneLoadingDemo::Init()
 {
 	CHECKED(sceneMgr.Init());
 
-	CHECKED(sceneMgr.LoadScene("assets/scenes/test.json"));
+	CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial.json"));
 
 	{
 		Entity e = Entity::Create();
