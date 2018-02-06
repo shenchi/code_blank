@@ -1,12 +1,9 @@
-#include <Engine.h>
 #include "Game.h"
 
-#include <RenderingSystem.h>
-#include <RenderingComponent.h>
-#include <PhysicsComponent.h>
-#include <InputSystem.h>
 
 using namespace tofu;
+
+typedef const rapidjson::Value& value_t;
 
 InputSystem* input;
 
@@ -14,9 +11,9 @@ Game::~Game()
 {
 	//*********************************************************************************************
 	//temp for test
-	delete enemy01;
+	/*delete enemy01;
 	delete enemy02;
-	delete enemy03;
+	delete enemy03;*/
 	//*********************************************************************************************
 
 	delete comp;
@@ -73,11 +70,11 @@ int32_t Game::Update()
 	// should pause?
 	if (pControl->GetPause())
 	{
-		// Temp for Testing
+		//Temp for Testing
 		Engine::instance()->Quit();
 
-		// TODO
-		// Pause the game and load the pasue menu
+		 //TODO
+		 //Pause the game and load the pasue menu
 	}
 
 	// Switch for game state
@@ -179,22 +176,22 @@ int32_t Game::Update()
 		
 		timePassed = Time::TotalTime - startTime;
 		
-		if (timePassed > 0 && timePassed <= 10)	// Move Forward
-		{
-			enemy01->Move(Time::DeltaTime, false, math::float3{0, 0, 1});
-		}
-		else if (timePassed > 10 && timePassed <= 20) // Move Left
-		{
-			enemy01->Move(Time::DeltaTime, false, math::float3{-1, 0, 0 });
-		}
-		else if (timePassed > 20 && timePassed <= 30) // Move Backward
-		{
-			enemy01->Move(Time::DeltaTime, false, math::float3{0, 0, -1});
-		}
-		else if (timePassed > 30 && timePassed <= 40) // Move Right
-		{
-			enemy01->Move(Time::DeltaTime, false, math::float3{1, 0, 0});
-		}
+		//if (timePassed > 0 && timePassed <= 10)	// Move Forward
+		//{
+		//	enemy01->Move(Time::DeltaTime, false, math::float3{0, 0, 1});
+		//}
+		//else if (timePassed > 10 && timePassed <= 20) // Move Left
+		//{
+		//	enemy01->Move(Time::DeltaTime, false, math::float3{-1, 0, 0 });
+		//}
+		//else if (timePassed > 20 && timePassed <= 30) // Move Backward
+		//{
+		//	enemy01->Move(Time::DeltaTime, false, math::float3{0, 0, -1});
+		//}
+		//else if (timePassed > 30 && timePassed <= 40) // Move Right
+		//{
+		//	enemy01->Move(Time::DeltaTime, false, math::float3{1, 0, 0});
+		//}
 
 		if (timePassed > 40)
 		{
@@ -301,15 +298,15 @@ bool Game::LoadScene(sceneType num)
 		}
 		case 6:
 		{
-			{
+			/*{
 				Material* skyboxMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeSkybox);
 				TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/craterlake.texture");
 				skyboxMat->SetTexture(tex);
 
 				cam->SetSkybox(skyboxMat);
 				cam->SetClearColor(math::float4{ 0.0f, 0.0f, 0.0f, 1.0f });
-			}
-			{
+			}*/
+			/*{
 				Entity e = Entity::Create();
 
 				tBox6 = e.AddComponent<TransformComponent>();
@@ -328,12 +325,13 @@ bool Game::LoadScene(sceneType num)
 
 				tBox6->SetLocalPosition(math::float3{ -2.0f, 1.0f, 0.0f });
 				PhysicsComponent ph = e.AddComponent<PhysicsComponent>();
-			}
-			{
+			}*/
+			/*{
 				Entity e = Entity::Create();
 
 				tBox7 = e.AddComponent<TransformComponent>();
-				tBox7->SetLocalPosition(math::float3{ 0, 10, 10 });
+				tBox7->SetLocalScale(math::float3{ 25, .5, 25 });
+				//tBox7->SetLocalPosition(math::float3{ 0, 10, 10 });
 
 				RenderingComponent r = e.AddComponent<RenderingComponent>();
 
@@ -349,33 +347,18 @@ bool Game::LoadScene(sceneType num)
 				r->SetMaterial(material);
 				r->SetModel(model);
 
-				tBox7->SetLocalPosition(math::float3{ 2.0f, 1.0f, 0.0f });
-				PhysicsComponent ph = e.AddComponent<PhysicsComponent>();
-			}
-			{
-				Entity e = Entity::Create();
-
-				tGround = e.AddComponent<TransformComponent>();
-
-				RenderingComponent r = e.AddComponent<RenderingComponent>();
-
-				Model* model = RenderingSystem::instance()->CreateModel("assets/ground.model");
-
-				Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
-				TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
-				TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/stone_wall_normalmap.texture");
-
-				material->SetTexture(diffuse);
-				material->SetNormalMap(normalMap);
-
-				r->SetMaterial(material);
-				r->SetModel(model);
+				tBox7->SetLocalPosition(math::float3{ 0.0f, 0.0f, 0.0f });
 
 				PhysicsComponent ph = e.AddComponent<PhysicsComponent>();
 				ph->SetStatic(true);
 				ph->SetBoxCollider(math::float3{ 25.0f, 0.5f, 25.0f });
 				ph->SetColliderOrigin(math::float3{ 0.0f, -0.5f, 0.0f });
-			}
+			}*/
+			
+			// Setup the Scene
+			CHECKED(sceneMgr.Init());
+
+			CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial.json"));
 
 			// Setup the Player
 			if (player == NULL)
@@ -395,9 +378,9 @@ bool Game::LoadScene(sceneType num)
 
 			//*********************************************************************************************
 			//temp for test
-			enemy01 = new Enemy(math::float3{ 10.0f, 1.0f, 0.0f });
+			/*enemy01 = new Enemy(math::float3{ 10.0f, 1.0f, 0.0f });
 			enemy02 = new Enemy(math::float3{ -10.0f, 1.0f, -10.0f });
-			enemy03 = new Enemy(math::float3{ -10.0f, 1.0f, 10.0f });
+			enemy03 = new Enemy(math::float3{ -10.0f, 1.0f, 10.0f });*/
 			//*********************************************************************************************
 
 			break;

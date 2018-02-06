@@ -823,17 +823,17 @@ struct ModelFile
 
 int main(int argc, char* argv[])
 {
-	//argc = 4;
+	argc = 6;
 
-	//char* tempArgv[6] =
-	//{
-	//	"",
-	//	"../../archer.model",
-	//	"../../assets/archer_idle.fbx",
-	//	//"../../assets/archer_jump.fbx",
-	//	//"../../assets/archer_running.fbx",
-	//	"../../assets/archer_walking.fbx"
-	//};
+	char* tempArgv[6] =
+	{
+		"",
+		"../../archer.model",
+		"../../assets/archer_idle.fbx",
+		"../../assets/archer_walking.fbx"
+		"../../assets/archer_jump.fbx",
+		"../../assets/archer_running.fbx",
+	};
 
 	//////argc = 3;
 	////

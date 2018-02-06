@@ -709,6 +709,8 @@ namespace tofu
 				// FIXME: Test only
 				model.animationTable["idle"] = 0;
 				model.animationTable["walk"] = 1;
+				model.animationTable["run"] = 2;
+				model.animationTable["jump"] = 3;
 
 				model.channels = reinterpret_cast<model::ModelAnimChannel*>(
 					model.animations + header->NumAnimations

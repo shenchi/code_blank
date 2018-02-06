@@ -14,6 +14,7 @@ public:
 	void SetCamera(Camera*);
 	void SetCompanion(Companion*);
 	void SetPlayer(Player*);
+	void SetControlMods(int, int, int, int);
 
 	bool GetPause();
 
@@ -30,4 +31,10 @@ private:
 
 	float pitch;
 	float yaw;
+
+	int xAxisMod;
+	int zAxisMod;
+
+	int pitchMod;
+	int yawMod;
 };

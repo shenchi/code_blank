@@ -17,6 +17,9 @@ PController::PController()
 	paused = false;
 	isAiming = false;
 	isHacking = false;
+
+	// Default control scheme: 1, 1, 1, -1
+	SetControlMods(1, 1, 1, -1);
 }
 
 // Destructor
@@ -45,7 +48,7 @@ void PController::UpdateP(float dT)
 
 	if (input->IsGamepadConnected())
 	{
-		inputDir.z = -input->GetLeftStickY();
+		inputDir.z = input->GetLeftStickY();
 		inputDir.x = input->GetLeftStickX();
 	}
 
@@ -87,10 +90,15 @@ void PController::UpdateP(float dT)
 		player->Dodge();
 	}
 
-	if (input->IsButtonDown(kKeyLeftControl) // Dash
-		|| (input->GetRightTrigger() > 0) )
+	if(!input->IsButtonDown(kKeyLeftShift)	// Stop Sprinting
+		&& (input->GetRightTrigger() < 0.0001) )
 	{
-		player->Dash();
+		player->Sprint(false);
+	}
+	else if (input->IsButtonDown(kKeyLeftShift) // Sprint
+		|| (input->GetRightTrigger() > 0))
+	{
+		player->Sprint(true);
 	}
 
 	if (input->IsButtonDown(kKeyE)	// Sword
@@ -138,6 +146,10 @@ void PController::UpdateP(float dT)
 			yaw = input->GetRightStickX();
 		}
 
+		// Camera control modification based on player settings
+		pitch = pitch * pitchMod;
+		yaw = yaw * yawMod;
+
 		cam->Rotate(math::float2{pitch, yaw});
 		cam->UpdateTarget(player->GetPosition());
 	}
@@ -151,6 +163,9 @@ void PController::UpdateP(float dT)
 		cam->UpdateTarget(player->GetPosition());
 	}
 
+	// Final adjustment to movement based on any custom axis changes from player
+	inputDir.x = inputDir.x * xAxisMod;
+	inputDir.z = inputDir.z * zAxisMod;
 
 	if (!isHacking && !isAiming)
 	{
@@ -189,6 +204,16 @@ void PController::SetPlayer(Player* _player)
 {
 	assert(_player != NULL);
 	player = _player;
+}
+
+// Set the custom player axis controls
+// player left/right, player forward/backward, cam up/down, cam left/right
+void PController::SetControlMods(int _xAxisMod, int _zAxisMod, int _pitchMod, int _yawMod)
+{
+	xAxisMod = _xAxisMod;
+	zAxisMod = _zAxisMod;
+	pitchMod = _pitchMod;
+	yawMod = _yawMod;
 }
 
 //-------------------------------------------------------------------------------------------------

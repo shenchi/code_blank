@@ -16,10 +16,10 @@ public:
 
 	void Aim();
 	void Attack();
-	void Dash();
 	void Dodge();
 	void Interact();
 	void Special();
+	void Sprint(bool);
 	void VisionHack();
 
 	bool IsInAir();
@@ -33,15 +33,15 @@ private:
 
 	// Movement
 	float walkSpeed;
-	float dashSpeed;
+	float sprintSpeed;
 	float speed;
 	bool inAir;
-	bool isDashing;
+	bool isSprinting;
 
 	// Player Stats
 	float health;
 
-	const float kMaxSpeed = 5.0f;
+	const float kMaxSpeed = 12.0f;
 	const float kAccelerate = 6.67f;
 	const float kDeaccelerate = 10.0f;
 

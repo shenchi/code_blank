@@ -19,7 +19,7 @@ Camera::Camera()
 
 	distMod = math::float3{ 0.0f, 2.0f, 0.0f };
 
-	SetSensitivity(0.01f);
+	SetSensitivity(0.05f);
 }
 
 // Destructor

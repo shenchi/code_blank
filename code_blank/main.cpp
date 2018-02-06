@@ -8,7 +8,7 @@
 #include <Windows.h>
 #include <cassert>
 
-//#include "TestGame.h"
+#include "Game.h"
 #include "SceneLoadingDemo.h"
 //#include "CubemapProbeDemo.h"
 
@@ -28,6 +28,8 @@ int CALLBACK WinMain(
 
 	tofu::Engine engine;
 	CHECKED(engine.Init("config.lua"));
-	CHECKED(engine.AddModule(new SceneLoadingDemo()));
+	//CHECKED(engine.AddModule(new SceneLoadingDemo()));
+	CHECKED(engine.AddModule(new Game()));
+
 	return engine.Run();
 }

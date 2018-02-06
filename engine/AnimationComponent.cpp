@@ -31,8 +31,12 @@ namespace tofu
 	{
 		if (animId == 0)
 			layers[layerIndex].stateMachine.CrossFade("idle", duration);
-		else
+		else if(animId == 1)
 			layers[layerIndex].stateMachine.CrossFade("walk", duration);
+		else if (animId == 2)
+			layers[layerIndex].stateMachine.CrossFade("run", duration);
+		else
+			layers[layerIndex].stateMachine.CrossFade("jump", duration);
 
 		return kOK;
 	}
