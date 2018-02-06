@@ -80,6 +80,7 @@ namespace tofu
 
 			// TODO: Change offline retarget to online
 			if (frame.GetJointIndex() == kModelMaxJointIndex) {
+				tempCursor++;
 				continue;
 			}
 

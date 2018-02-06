@@ -41,7 +41,7 @@ int32_t SceneLoadingDemo::Init()
 		AnimationStateMachine *stateMachine = anim->GetStateMachine();
 
 		AnimationState *idle = stateMachine->AddState("idle");
-		idle->animationName = "idle";
+		idle->animationName = "Armature|Armature|KB_WalkBwd|KB_WalkBwd:BaseAnimation";
 		AnimationState *walk = stateMachine->AddState("walk");
 		walk->animationName = "walk";
 

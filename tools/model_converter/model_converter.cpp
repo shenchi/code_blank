@@ -568,7 +568,7 @@ struct ModelFile
 		return 0;
 	}
 
-	int MergeAnimation(const ModelFile& other)
+	int MergeAnimation(ModelFile& other)
 	{
 		if (!other.header.HasAnimation
 			|| other.bones.empty()
@@ -584,7 +584,7 @@ struct ModelFile
 		//anims.resize(anims.size() + other.anims.size());
 		anims.insert(anims.end(), other.anims.begin(), other.anims.end());
 
-		for (auto &frame : orderedFrames) {
+		for (auto &frame : other.orderedFrames) {
 			auto iter = boneTable.find(other.bones[frame.GetJointIndex()].name);
 			
 			if (iter != boneTable.end()) {
