@@ -62,8 +62,10 @@ int32_t SceneLoadingDemo::Init()
 		pPlayer = e.AddComponent<PhysicsComponent>();
 
 		pPlayer->LockRotation(true, false, true);
-		pPlayer->SetCapsuleCollider(2.5f, 5.0f);
-		pPlayer->SetColliderOrigin(math::float3{ 0.0f, 5.0f, 0.0f });
+		//pPlayer->SetCapsuleCollider(2.5f, 5.0f);
+		//pPlayer->SetColliderOrigin(math::float3{ 0.0f, 5.0f, 0.0f });
+		pPlayer->SetCapsuleCollider(50.0f, 100.0f);
+		pPlayer->SetColliderOrigin(math::float3{ 0.0f, 100.0f, 0.0f });
 	}
 
 	// camera
