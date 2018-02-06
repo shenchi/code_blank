@@ -17,9 +17,9 @@ namespace
 
 int32_t SceneLoadingDemo::Init()
 {
-	CHECKED(sceneMgr.Init());
+	//CHECKED(sceneMgr.Init());
 
-	CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial.json"));
+	//CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial.json"));
 	//CHECKED(sceneMgr.LoadScene("assets/scenes/test6.json"));
 
 	{
@@ -33,7 +33,7 @@ int32_t SceneLoadingDemo::Init()
 
 		RenderingComponent r = e.AddComponent<RenderingComponent>();
 
-		Model* model = RenderingSystem::instance()->CreateModel("assets/archer.model");
+		Model* model = RenderingSystem::instance()->CreateModel("assets/archer_test.model");
 		//Model* model = RenderingSystem::instance()->CreateModel("assets/soldier.model");
 
 		anim = e.AddComponent<AnimationComponent>();
@@ -41,9 +41,9 @@ int32_t SceneLoadingDemo::Init()
 		AnimationStateMachine *stateMachine = anim->GetStateMachine();
 
 		AnimationState *idle = stateMachine->AddState("idle");
-		idle->animationName = "Armature|Armature|KB_WalkBwd|KB_WalkBwd:BaseAnimation";
+		idle->animationName = "Armature|Armature|KB_Idle_1|KB_Idle_1:BaseAnimation";
 		AnimationState *walk = stateMachine->AddState("walk");
-		walk->animationName = "walk";
+		walk->animationName = "Armature|Armature|KB_WalkBwd|KB_WalkBwd:BaseAnimation";
 
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaqueSkinned);
 

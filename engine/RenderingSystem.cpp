@@ -707,8 +707,8 @@ namespace tofu
 				}
 
 				// FIXME: Test only
-				model.animationTable["idle"] = 0;
-				model.animationTable["walk"] = 1;
+				/*model.animationTable["idle"] = 0;
+				model.animationTable["walk"] = 1;*/
 
 				model.frames = reinterpret_cast<model::ModelAnimFrame*>(
 					model.animations + header->NumAnimations

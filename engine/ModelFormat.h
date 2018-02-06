@@ -58,7 +58,7 @@ namespace tofu
 					vertexSize += sizeof(float) * 4;
 				}
 
-				if (HasAnimation == 1)
+				if (NumBones != 0)
 				{
 					vertexSize += sizeof(float) * 4 + sizeof(uint32_t) * 4; // bone ids + bone weights
 				}

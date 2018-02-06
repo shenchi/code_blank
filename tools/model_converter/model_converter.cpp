@@ -231,12 +231,14 @@ struct ModelFile
 		header.NumAnimations = 0;
 
 		// gathering bone information
-		if (scene->mNumAnimations > 0 && scene->mRootNode->mNumChildren > 0)
-		{
-			// load bone hierarchy
+		if (scene->mRootNode->mNumChildren > 0) {
+			// load bone hierarchy	
 			loadBoneHierarchy(scene->mRootNode, bones, boneTable);
-
 			header.NumBones = static_cast<uint32_t>(bones.size());
+		}
+
+		if (scene->mNumAnimations > 0)
+		{
 			header.NumAnimations = scene->mNumAnimations;
 			header.HasAnimation = 1;
 		}
@@ -321,7 +323,7 @@ struct ModelFile
 						ptr += sizeof(float4);
 					}
 
-					if (header.HasAnimation)
+					if (header.NumBones != 0)
 					{
 						// reserve space for bone Ids and weights
 						*reinterpret_cast<uint4*>(ptr) = uint4();
@@ -344,11 +346,6 @@ struct ModelFile
 							ptr += sizeof(float2);
 						}
 					}
-				}
-
-				if (!header.HasAnimation)
-				{
-					continue;
 				}
 
 				for (uint32_t j = 0; j < mesh->mNumBones; ++j)
@@ -581,6 +578,8 @@ struct ModelFile
 			return __LINE__;
 		}*/
 
+		header.HasAnimation = 1;
+
 		//anims.resize(anims.size() + other.anims.size());
 		anims.insert(anims.end(), other.anims.begin(), other.anims.end());
 
@@ -722,12 +721,14 @@ struct ModelFile
 
 int main(int argc, char* argv[])
 {
-	argc = 5;
+	argc = 4;
 
 	char* tempArgv[6] =
 	{
 		"",
 		"../../assets/archer.model",
+		//"../../assets/archer_test.model",
+		//"../../assets/archer_idle_renamed.fbx",
 		"../../assets/archer_idle.fbx",
 		"../../assets/archer_walking.fbx",
 		//"../../assets/archer_jump.fbx",
@@ -735,7 +736,7 @@ int main(int argc, char* argv[])
 
 		//"../../assets/soldier.model",
 		//"../../assets/Soilder_LSJ.fbx",
-		"../../assets/KB_Movement.fbx",
+		//"../../assets/KB_Movement.fbx",
 		//"../../assets/KB_Hits.fbx",
 	};
 
