@@ -3,6 +3,7 @@
 #include <cstdint>
 #include "TofuMath.h"
 #include <unordered_map>
+#include <assert.h>
 
 namespace tofu
 {
@@ -16,10 +17,13 @@ namespace tofu
 		//constexpr uint32_t kModelFileMaxTexcoordChannels = 4;
 		constexpr uint32_t kModelFileMaxTexcoordChannels = 1;
 
+		constexpr uint16_t kModelMaxJointIndex = 0x1fff;
+
 		struct ModelHeader
 		{
 			uint32_t			Magic;
 			uint32_t			Version;
+			
 			union
 			{
 				uint32_t		Flags;
@@ -38,6 +42,11 @@ namespace tofu
 			uint32_t			NumMeshes;
 			uint16_t			NumBones;
 			uint32_t			NumAnimations;
+			// TODO: Remove following 4 params
+			uint32_t            NumAnimChannels;
+			uint32_t            NumTotalTranslationFrames;
+			uint32_t            NumTotalRotationFrames;
+			uint32_t            NumTotalScaleFrames;
 			uint32_t			NumAnimationFrames;
 
 			inline uint32_t CalculateVertexSize() const
@@ -89,14 +98,6 @@ namespace tofu
 
 		// ... followed by an array of ModelAnimation
 
-		// ... followed by an array of all ModelAnimChannel
-
-		// ... followed by an array of all translation frames (ModelFloat3Frame)
-
-		// ... followed by an array of all rotation frames (ModelQuatFrame)
-
-		// ... followed by an array of all scale frames (ModelFloat3Frame)
-
 		// ... followed by an array of all uniform frames (ModelAnimFrame)
 
 		struct ModelBone
@@ -126,7 +127,6 @@ namespace tofu
 		struct ModelAnimFrame
 		{
 			uint16_t time = 0;
-			uint16_t jointIndex = 0;
 
 			// TODO: float compression
 			// https://github.com/Maratyszcza/FP16/blob/master/third-party/float16-compressor.h
@@ -136,6 +136,11 @@ namespace tofu
 			//uint16_t v[3];
 
 			math::float3 value;
+
+		private:
+			uint16_t jointIndex = 0;
+
+		public:
 
 			bool GetSignedBit() const 
 			{
@@ -153,13 +158,20 @@ namespace tofu
 				// Most significant two bits of this 16bit index contains channel type info.
 				return static_cast<ChannelType>((jointIndex & (0xc000)) >> 14);
 			}
+			
 			void SetChannelType(ChannelType type)
 			{
 				jointIndex |= (static_cast<uint16_t>(type) << 14);
 			}
+			
 			std::uint16_t GetJointIndex() const
 			{
-				return jointIndex & 0x1fff;
+				return jointIndex & kModelMaxJointIndex;
+			}
+
+			void SetJointIndex(uint16_t index) {
+				assert(index <= kModelMaxJointIndex);
+				jointIndex = (jointIndex & 0xE000) + index;
 			}
 		};
 	}

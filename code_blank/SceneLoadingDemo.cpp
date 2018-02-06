@@ -29,7 +29,7 @@ int32_t SceneLoadingDemo::Init()
 		//tPlayer->SetLocalPosition(math::float3{ -5.0f, 8.0f, -5.0f });
 		tPlayer->SetLocalPosition(math::float3{ 53.0f, 8.0f, -38.0f });
 		//tPlayer->SetLocalPosition(math::float3{ 0.0f, 8.0f, 0.0f });
-		tPlayer->SetLocalScale(math::float3{ 0.2f, 0.2f, 0.2f });
+		tPlayer->SetLocalScale(math::float3{ 0.01f, 0.01f, 0.01f });
 
 		RenderingComponent r = e.AddComponent<RenderingComponent>();
 
@@ -188,7 +188,7 @@ int32_t SceneLoadingDemo::Update()
 
 		tPlayer->Translate(moveDir * Time::DeltaTime * speed);
 
-		//anim->CrossFade(1, 0.3f);
+		anim->CrossFade(1, 0.3f);
 	}
 	else
 	{
@@ -196,7 +196,7 @@ int32_t SceneLoadingDemo::Update()
 		if (speed < 0.0f) speed = 0.0f;
 		tPlayer->Translate(tPlayer->GetForwardVector() * Time::DeltaTime * speed);
 
-		//anim->CrossFade(0, 0.1f);
+		anim->CrossFade(0, 0.1f);
 	}
 
 	return kOK;

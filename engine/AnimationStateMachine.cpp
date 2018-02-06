@@ -77,6 +77,12 @@ namespace tofu
 		while (tempCursor < animation->numFrames) {
 			size_t frameIndex = tempCursor + animation->startFrames;
 			ModelAnimFrame &frame = context->model->frames[frameIndex];
+
+			// TODO: Change offline retarget to online
+			if (frame.GetJointIndex() == kModelMaxJointIndex) {
+				continue;
+			}
+
 			AnimationFrameCache &cache = frameCaches[frame.GetJointIndex()];
 
 			size_t cacheIndex = cache.indices[frame.GetChannelType()][2];

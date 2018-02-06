@@ -490,7 +490,7 @@ struct ModelFile
 
 					ModelAnimFrame &frame = temp.frame;
 					frame.time = static_cast<uint16_t>(round(key.mTime));
-					frame.jointIndex = boneId;
+					frame.SetJointIndex(boneId);
 					frame.SetChannelType(kChannelTranslation);
 					frame.value.x = key.mValue.x;
 					frame.value.y = key.mValue.y;
@@ -510,7 +510,7 @@ struct ModelFile
 
 					ModelAnimFrame &frame = temp.frame;
 					frame.time = static_cast<uint16_t>(round(key.mTime));
-					frame.jointIndex = boneId;
+					frame.SetJointIndex(boneId);
 					frame.SetChannelType(kChannelRotation);
 
 					quat q;
@@ -539,7 +539,7 @@ struct ModelFile
 
 					ModelAnimFrame &frame = temp.frame;
 					frame.time = static_cast<uint16_t>(round(key.mTime));
-					frame.jointIndex = boneId;
+					frame.SetJointIndex(boneId);
 					frame.SetChannelType(kChannelScale);
 					frame.value.x = key.mValue.x;
 					frame.value.y = key.mValue.y;
@@ -575,14 +575,26 @@ struct ModelFile
 			|| other.anims.empty())
 			return 0;
 
-		if (header.NumBones != other.header.NumBones)
+		/*if (header.NumBones != other.header.NumBones)
 		{
 			printf("bone count doesn't match.\n");
 			return __LINE__;
-		}
+		}*/
 
 		//anims.resize(anims.size() + other.anims.size());
 		anims.insert(anims.end(), other.anims.begin(), other.anims.end());
+
+		for (auto &frame : orderedFrames) {
+			auto iter = boneTable.find(other.bones[frame.GetJointIndex()].name);
+			
+			if (iter != boneTable.end()) {
+				frame.SetJointIndex(iter->second);
+			}
+			else {
+				frame.SetJointIndex(kModelMaxJointIndex);
+			}
+		}
+
 		orderedFrames.insert(orderedFrames.end(), other.orderedFrames.begin(), other.orderedFrames.end());
 
 		for (uint32_t i = 0; i < other.header.NumAnimations; i++)
@@ -710,31 +722,31 @@ struct ModelFile
 
 int main(int argc, char* argv[])
 {
-	//argc = 4;
+	argc = 5;
 
-	//char* tempArgv[6] =
-	//{
-	//	"",
-	//	"../../assets/archer.model",
-	//	"../../assets/archer_idle.fbx",
-	//	"../../assets/archer_walking.fbx",
-	//	//"../../assets/archer_jump.fbx",
-	//	//"../../assets/archer_running.fbx",
-
-	//	//"../../assets/soldier.model",
-	//	//"../../assets/Soilder_LSJ.fbx",
-	//	//"../../assets/KB_Movement.fbx",
-	//	//"../../assets/KB_Hits.fbx",
-	//};
-
-	argc = 3;
-	
 	char* tempArgv[6] =
 	{
 		"",
-		"../../cube.model",
-		"../../assets/cube.fbx",
+		"../../assets/archer.model",
+		"../../assets/archer_idle.fbx",
+		"../../assets/archer_walking.fbx",
+		//"../../assets/archer_jump.fbx",
+		//"../../assets/archer_running.fbx",
+
+		//"../../assets/soldier.model",
+		//"../../assets/Soilder_LSJ.fbx",
+		"../../assets/KB_Movement.fbx",
+		//"../../assets/KB_Hits.fbx",
 	};
+
+	//argc = 3;
+	//
+	//char* tempArgv[6] =
+	//{
+	//	"",
+	//	"../../cube.model",
+	//	"../../assets/cube.fbx",
+	//};
 
 	//////char* tempArgv[6] =
 	//////{
