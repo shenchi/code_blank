@@ -41,10 +41,6 @@ namespace tofu
 		model::ModelBone*			bones;
 		model::ModelAnimation*		animations;
 		model::AnimationTable		animationTable;
-		model::ModelAnimChannel*	channels;
-		model::ModelFloat3Frame*	translationFrames;
-		model::ModelQuatFrame*		rotationFrames;
-		model::ModelFloat3Frame*	scaleFrames;
 		model::ModelAnimFrame*		frames;
 		float*						vertices[kMaxMeshesPerModel];
 		uint16_t*					indices[kMaxMeshesPerModel];

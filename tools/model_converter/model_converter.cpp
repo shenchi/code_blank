@@ -28,9 +28,6 @@ using tofu::math::int4;
 typedef tofu::model::ModelMesh Mesh;
 typedef tofu::model::ModelBone Bone;
 typedef tofu::model::ModelAnimation Animation;
-typedef tofu::model::ModelAnimChannel Channel;
-typedef tofu::model::ModelFloat3Frame VFrame;
-typedef tofu::model::ModelQuatFrame QFrame;
 
 typedef std::vector<Bone> BoneTree;
 typedef std::unordered_map<std::string, uint16_t> BoneTable;
@@ -133,7 +130,10 @@ uint32_t loadBoneHierarchy(aiNode* node, BoneTree& bones, BoneTable& table, uint
 
 	if (node->mName.length > 0)
 	{
-		table.insert(std::pair<std::string, uint32_t>(node->mName.C_Str(), boneId));
+		strncpy(bone.name, node->mName.C_Str(), 127);
+		bone.name[127] = 0;
+
+		table.insert(std::make_pair(node->mName.C_Str(), boneId));
 	}
 
 	CopyMatrix(bone.transform, node->mTransformation);
@@ -192,10 +192,6 @@ struct ModelFile
 	BoneTree					bones;
 	BoneTable					boneTable;
 	std::vector<Animation>		anims;
-	std::vector<Channel>		channels;
-	std::vector<VFrame>			tFrames;
-	std::vector<QFrame>			rFrames;
-	std::vector<VFrame>			sFrames;
 	std::vector<ForSortingFrame> frames;
 	std::vector<ModelAnimFrame> orderedFrames;
 
@@ -460,9 +456,8 @@ struct ModelFile
 				"",
 				static_cast<float>(anim->mDuration),
 				static_cast<float>(anim->mTicksPerSecond),
-				anim->mNumChannels,
-				static_cast<uint32_t>(channels.size()),
-				frames.size()
+				frames.size(),
+				0
 			};
 
 			strncpy(animation.name, anim->mName.C_Str(), 127);
@@ -483,60 +478,6 @@ struct ModelFile
 				uint32_t numT = chan->mNumPositionKeys;
 				uint32_t numR = chan->mNumRotationKeys;
 				uint32_t numS = chan->mNumScalingKeys;
-				uint32_t startT = (0 == numT) ? UINT32_MAX : static_cast<uint32_t>(tFrames.size());
-				uint32_t startR = (0 == numR) ? UINT32_MAX : static_cast<uint32_t>(rFrames.size());
-				uint32_t startS = (0 == numS) ? UINT32_MAX : static_cast<uint32_t>(sFrames.size());
-
-				channels.push_back(Channel
-				{
-					boneId,
-					startT,
-					numT,
-					startR,
-					numR,
-					startS,
-					numS
-				});
-
-				// translation keys
-				for (uint32_t iFrame = 0; iFrame < numT; iFrame++)
-				{
-					aiVectorKey& key = chan->mPositionKeys[iFrame];
-					VFrame frame;
-					frame.time = static_cast<float>(key.mTime);
-					frame.value.x = key.mValue.x;
-					frame.value.y = key.mValue.y;
-					frame.value.z = key.mValue.z;
-
-					tFrames.push_back(frame);
-				}
-
-				// rotation keys
-				for (uint32_t iFrame = 0; iFrame < numT; iFrame++)
-				{
-					aiQuatKey& key = chan->mRotationKeys[iFrame];
-					QFrame frame;
-					frame.time = static_cast<float>(key.mTime);
-					frame.value.x = key.mValue.x;
-					frame.value.y = key.mValue.y;
-					frame.value.z = key.mValue.z;
-					frame.value.w = key.mValue.w;
-
-					rFrames.push_back(frame);
-				}
-
-				// scale keys
-				for (uint32_t iFrame = 0; iFrame < numT; iFrame++)
-				{
-					aiVectorKey& key = chan->mScalingKeys[iFrame];
-					VFrame frame;
-					frame.time = static_cast<float>(key.mTime);
-					frame.value.x = key.mValue.x;
-					frame.value.y = key.mValue.y;
-					frame.value.z = key.mValue.z;
-
-					sFrames.push_back(frame);
-				}
 
 				// translation keys
 				for (uint32_t iFrame = 0; iFrame < numT; iFrame++)
@@ -622,10 +563,6 @@ struct ModelFile
 
 		frames.resize(0);
 
-		header.NumAnimChannels = static_cast<uint32_t>(channels.size());
-		header.NumTotalTranslationFrames = static_cast<uint32_t>(tFrames.size());
-		header.NumTotalRotationFrames = static_cast<uint32_t>(rFrames.size());
-		header.NumTotalScaleFrames = static_cast<uint32_t>(sFrames.size());
 		header.NumAnimationFrames = static_cast<uint32_t>(orderedFrames.size());
 
 		return 0;
@@ -646,41 +583,15 @@ struct ModelFile
 
 		//anims.resize(anims.size() + other.anims.size());
 		anims.insert(anims.end(), other.anims.begin(), other.anims.end());
-		channels.insert(channels.end(), other.channels.begin(), other.channels.end());
-		tFrames.insert(tFrames.end(), other.tFrames.begin(), other.tFrames.end());
-		rFrames.insert(rFrames.end(), other.rFrames.begin(), other.rFrames.end());
-		sFrames.insert(sFrames.end(), other.sFrames.begin(), other.sFrames.end());
 		orderedFrames.insert(orderedFrames.end(), other.orderedFrames.begin(), other.orderedFrames.end());
 
 		for (uint32_t i = 0; i < other.header.NumAnimations; i++)
 		{
 			Animation& anim = anims[i + header.NumAnimations];
-			anim.startChannelId += header.NumAnimChannels;
-
-			if (anim.startChannelId == 104) {
-				int a = 0;
-			}
 			anim.startFrames += header.NumAnimationFrames;
 		}
 
-		for (uint32_t i = 0; i < other.header.NumAnimChannels; i++)
-		{
-			Channel& chan = channels[i + header.NumAnimChannels];
-			if (chan.startTranslationFrame != UINT32_MAX)
-				chan.startTranslationFrame += header.NumTotalTranslationFrames;
-
-			if (chan.startRotationFrame != UINT32_MAX)
-				chan.startRotationFrame += header.NumTotalRotationFrames;
-
-			if (chan.startScaleFrame != UINT32_MAX)
-				chan.startScaleFrame += header.NumTotalScaleFrames;
-		}
-
 		header.NumAnimations = static_cast<uint32_t>(anims.size());
-		header.NumAnimChannels = static_cast<uint32_t>(channels.size());
-		header.NumTotalTranslationFrames = static_cast<uint32_t>(tFrames.size());
-		header.NumTotalRotationFrames = static_cast<uint32_t>(rFrames.size());
-		header.NumTotalScaleFrames = static_cast<uint32_t>(sFrames.size());
 		header.NumAnimationFrames = static_cast<uint32_t>(orderedFrames.size());
 
 		return 0;
@@ -742,30 +653,6 @@ struct ModelFile
 				return __LINE__;
 			}
 
-			if (1 != fwrite(&(channels[0]), sizeof(Channel) * header.NumAnimChannels, 1, file))
-			{
-				printf("failed to write channel list to the file.\n");
-				return __LINE__;
-			}
-
-			if (1 != fwrite(&(tFrames[0]), sizeof(VFrame) * header.NumTotalTranslationFrames, 1, file))
-			{
-				printf("failed to write translation frame list to the file.\n");
-				return __LINE__;
-			}
-
-			if (1 != fwrite(&(rFrames[0]), sizeof(QFrame) * header.NumTotalRotationFrames, 1, file))
-			{
-				printf("failed to write rotation frame list to the file.\n");
-				return __LINE__;
-			}
-
-			if (1 != fwrite(&(sFrames[0]), sizeof(VFrame) * header.NumTotalScaleFrames, 1, file))
-			{
-				printf("failed to write scale frame list to the file.\n");
-				return __LINE__;
-			}
-
 			if (1 != fwrite(&(orderedFrames[0]), sizeof(ModelAnimFrame) * header.NumAnimationFrames, 1, file))
 			{
 				printf("failed to write frame list to the file.\n");
@@ -823,27 +710,31 @@ struct ModelFile
 
 int main(int argc, char* argv[])
 {
-	argc = 3;
+	//argc = 4;
 
+	//char* tempArgv[6] =
+	//{
+	//	"",
+	//	"../../assets/archer.model",
+	//	"../../assets/archer_idle.fbx",
+	//	"../../assets/archer_walking.fbx",
+	//	//"../../assets/archer_jump.fbx",
+	//	//"../../assets/archer_running.fbx",
+
+	//	//"../../assets/soldier.model",
+	//	//"../../assets/Soilder_LSJ.fbx",
+	//	//"../../assets/KB_Movement.fbx",
+	//	//"../../assets/KB_Hits.fbx",
+	//};
+
+	argc = 3;
+	
 	char* tempArgv[6] =
 	{
 		"",
-		"../../assets/soldier.model",
-		"../../assets/Soilder_LSJ.fbx"
-		//"../../assets/KB_Hits.fbx",
-		//"../../assets/archer_jump.fbx",
-		//"../../assets/archer_running.fbx",
-		//"../../assets/KB_Movement.fbx"
+		"../../cube.model",
+		"../../assets/cube.fbx",
 	};
-
-	//////argc = 3;
-	////
-	//////char* tempArgv[6] =
-	//////{
-	//////	"",
-	//////	"../../cube.model",
-	//////	"../../assets/cube.fbx",
-	//////};
 
 	//////char* tempArgv[6] =
 	//////{

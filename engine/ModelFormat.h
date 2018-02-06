@@ -38,10 +38,6 @@ namespace tofu
 			uint32_t			NumMeshes;
 			uint16_t			NumBones;
 			uint32_t			NumAnimations;
-			uint32_t			NumAnimChannels;
-			uint32_t			NumTotalTranslationFrames;
-			uint32_t			NumTotalRotationFrames;
-			uint32_t			NumTotalScaleFrames;
 			uint32_t			NumAnimationFrames;
 
 			inline uint32_t CalculateVertexSize() const
@@ -105,6 +101,8 @@ namespace tofu
 
 		struct ModelBone
 		{
+			// TODO: Better solution for name? 
+			char			name[128];
 			uint16_t		id;
 			uint16_t		parent;
 			uint16_t		firstChild;
@@ -119,8 +117,6 @@ namespace tofu
 			char			name[128];
 			float			tickCount;
 			float			ticksPerSecond;
-			uint32_t		numChannels;
-			uint32_t		startChannelId;
 			size_t			startFrames;
 			size_t			numFrames;
 		};
@@ -165,29 +161,6 @@ namespace tofu
 			{
 				return jointIndex & 0x1fff;
 			}
-		};
-
-		struct ModelAnimChannel
-		{
-			uint16_t		boneId;
-			uint32_t		startTranslationFrame;
-			uint32_t		numTranslationFrame;
-			uint32_t		startRotationFrame;
-			uint32_t		numRotationFrame;
-			uint32_t		startScaleFrame;
-			uint32_t		numScaleFrame;
-		};
-
-		struct ModelFloat3Frame
-		{
-			float			time;
-			math::float3	value;
-		};
-
-		struct ModelQuatFrame
-		{
-			float			time;
-			math::quat		value;
 		};
 	}
 }

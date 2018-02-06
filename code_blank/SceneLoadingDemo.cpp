@@ -29,7 +29,7 @@ int32_t SceneLoadingDemo::Init()
 		//tPlayer->SetLocalPosition(math::float3{ -5.0f, 8.0f, -5.0f });
 		tPlayer->SetLocalPosition(math::float3{ 53.0f, 8.0f, -38.0f });
 		//tPlayer->SetLocalPosition(math::float3{ 0.0f, 8.0f, 0.0f });
-		tPlayer->SetLocalScale(math::float3{ 0.02f, 0.02f, 0.02f });
+		tPlayer->SetLocalScale(math::float3{ 0.2f, 0.2f, 0.2f });
 
 		RenderingComponent r = e.AddComponent<RenderingComponent>();
 
@@ -46,7 +46,6 @@ int32_t SceneLoadingDemo::Init()
 		walk->animationName = "walk";
 
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaqueSkinned);
-		//Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
 
 		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");
 		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/archer_1.texture");

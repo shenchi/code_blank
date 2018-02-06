@@ -710,24 +710,8 @@ namespace tofu
 				model.animationTable["idle"] = 0;
 				model.animationTable["walk"] = 1;
 
-				model.channels = reinterpret_cast<model::ModelAnimChannel*>(
-					model.animations + header->NumAnimations
-					);
-
-				model.translationFrames = reinterpret_cast<model::ModelFloat3Frame*>(
-					model.channels + header->NumAnimChannels
-					);
-
-				model.rotationFrames = reinterpret_cast<model::ModelQuatFrame*>(
-					model.translationFrames + header->NumTotalTranslationFrames
-					);
-
-				model.scaleFrames = reinterpret_cast<model::ModelFloat3Frame*>(
-					model.rotationFrames + header->NumTotalRotationFrames
-					);
-
 				model.frames = reinterpret_cast<model::ModelAnimFrame*>(
-					model.scaleFrames + header->NumTotalScaleFrames
+					model.animations + header->NumAnimations
 					);
 			}
 		}
