@@ -139,10 +139,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CombatManager.h" />
     <ClInclude Include="Companion.h" />
     <ClInclude Include="CubemapProbeDemo.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameplayAnimationMachine.h" />
+    <ClInclude Include="GameplayDS.h" />
     <ClInclude Include="PController.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SceneLoadingDemo.h" />
@@ -151,10 +154,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CombatManager.cpp" />
     <ClCompile Include="Companion.cpp" />
     <ClCompile Include="CubemapProbeDemo.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameplayAnimationMachine.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PController.cpp" />
     <ClCompile Include="Player.cpp" />

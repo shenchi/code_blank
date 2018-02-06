@@ -3,16 +3,17 @@
 #include <PhysicsComponent.h>
 #include <TransformComponent.h>
 #include <AnimationComponent.h>
+#include "GameplayAnimationMachine.h"
 
 class Player
 {
 public:
-	Player();
+	Player(void*);
 	~Player();
 
 	void MoveReg(float, bool, tofu::math::float3, tofu::math::quat);
 	void MoveAim(float, tofu::math::float3, tofu::math::quat, tofu::math::float3);
-	void Update();
+	void Update(float);
 
 	void Aim();
 	void Attack();
@@ -30,6 +31,9 @@ private:
 	tofu::TransformComponent	tPlayer;
 	tofu::PhysicsComponent		pPlayer;
 	tofu::AnimationComponent	aPlayer;
+	GameplayAnimationMachine*	gPlayer;
+	tofu::PhysicsSystem*		physics;
+	CombatManager*				combatManager;
 
 	// Movement
 	float walkSpeed;

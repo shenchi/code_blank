@@ -1,5 +1,5 @@
 #include "Game.h"
-
+#include "PhysicsSystem.h"
 
 using namespace tofu;
 
@@ -25,7 +25,7 @@ Game::~Game()
 // Intialization of Game components
 int32_t Game::Init()
 {
-	uint32_t ret;
+	uint32_t ret;	
 
 	// Create a camera
 	cam = new Camera();
@@ -202,7 +202,6 @@ int32_t Game::Update()
 		assert(!(timePassed < 0) && timePassed < 50);
 		//*******************************************************************************
 
-
 		break;
 	}
 	case 9: // End of Level
@@ -360,19 +359,19 @@ bool Game::LoadScene(sceneType num)
 
 			CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial.json"));
 
-			// Setup the Player
-			if (player == NULL)
-			{
-				player = new Player();
-				pControl->SetPlayer(player);
-			}
-			assert(player != NULL);
-
 			// Setup the Player's Companion
 			if (comp == NULL)
 			{
 				comp = new Companion(player->GetPosition());
 				pControl->SetCompanion(comp);
+			}
+			assert(player != NULL);
+
+			// Setup the Player
+			if (player == NULL)
+			{
+				player = new Player(comp);
+				pControl->SetPlayer(player);
 			}
 			assert(player != NULL);
 

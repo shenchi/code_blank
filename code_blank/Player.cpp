@@ -1,9 +1,10 @@
 #include "Player.h"
+#include <PhysicsSystem.h>
 #include <RenderingComponent.h>
 
 using namespace tofu;
 
-Player::Player()
+Player::Player(void* comp)
 {
 	{
 		Entity e = Entity::Create();
@@ -29,6 +30,7 @@ Player::Player()
 		jump->animationName = "jump";
 		AnimationState *run = stateMachine->AddState("run");
 		run->animationName = "run";
+		
 
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaqueSkinned);
 		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");
@@ -49,22 +51,41 @@ Player::Player()
 
 	walkSpeed = 5.0f;
 	sprintSpeed = 10.0f;
+	
+	physics = tofu::PhysicsSystem::instance();
+
+	combatManager = new CombatManager(true, comp);
+
+	gPlayer = new GameplayAnimationMachine(aPlayer, combatManager);
 }
 
 Player::~Player(){}
 
-void Player::Update()
+void Player::Update(float dT)
 {
-	inAir = !pPlayer->IsCollided();
+	math::float3 pos{ tPlayer->GetWorldPosition() };
+	pos.y = pos.y + 0.1f;
+	math::float3 end{ pos.x, pos.y - 0.11f, pos.z };
+
+	if (physics->RayTest(pos, end))
+	{
+		inAir = false;
+	}
+	else
+	{
+		inAir = true;
+	}
 
 	// TODO
-	// Handle the reset of dashing here
+	// Handle the reset of sprint here
+
+	combatManager->Update(dt);
 }
 
 // Player Movement
 void Player::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camRot)
 {
-	Update();
+	Update(dT);
 
 	if (math::length(inputDir) > 0.25f && !inAir)
 	{
@@ -90,6 +111,7 @@ void Player::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camR
 			speed = kMaxSpeed;
 
 		tPlayer->Translate(moveDir * dT * speed);
+
 		if (!isSprinting)
 		{
 			aPlayer->CrossFade(1, 0.2f);
@@ -99,12 +121,17 @@ void Player::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camR
 			aPlayer->CrossFade(2, 0.3f);
 		}
 	}
-	else
+	else if(math::length(inputDir) < 0.25f && !inAir)
 	{
 		speed -= dT * kDeaccelerate;
 		if (speed < 0.0f) speed = 0.0f;
-		tPlayer->Translate(-tPlayer->GetForwardVector() * dT * speed);
 
+		tPlayer->Translate(-tPlayer->GetForwardVector() * dT * speed);\
+
+		aPlayer->CrossFade(0, 0.2f);
+	}
+	else
+	{
 		aPlayer->CrossFade(0, 0.2f);
 	}
 
@@ -113,6 +140,11 @@ void Player::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camR
 		inAir = true;
 		aPlayer->CrossFade(3, 0.001f);
 		pPlayer->ApplyImpulse(math::float3{ 0.0f, 4.0f, 0.0f });
+	}
+	else if(inAir)
+	{
+		// Play falling animation here
+		
 	}
 }
 

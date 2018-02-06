@@ -29,7 +29,10 @@ namespace tofu
 			pairCache(nullptr),
 			solver(nullptr),
 			world(nullptr)
-		{}
+		{
+			assert(nullptr == _instance);
+			_instance = this;
+		}
 
 	public:
 		int32_t Init() override;

@@ -447,6 +447,7 @@ namespace tofu
 	bool PhysicsSystem::RayTest(const math::float3& start, const math::float3& end, RayTestResult* result)
 	{
 		btVector3 st(start.x, start.y, start.z), ed(end.x, end.y, end.z);
+
 		btCollisionWorld::ClosestRayResultCallback resultCallback(st, ed);
 		world->rayTest(st, ed, resultCallback);
 
