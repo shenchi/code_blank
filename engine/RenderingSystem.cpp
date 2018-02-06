@@ -346,22 +346,17 @@ namespace tofu
 		
 		LightComponentData* lights = LightComponent::GetAllComponents();
 		uint32_t lightsCount = LightComponent::GetNumComponents();
-		TextureHandle * depthMap = new TextureHandle[lightsCount];
+		//TextureHandle * depthMap = new TextureHandle[lightsCount];
 		// Light constant buffer data
 		{
 			LightingConstants* data = reinterpret_cast<LightingConstants*>(
-					MemoryAllocator::Allocators[allocNo].Allocate(sizeof(LightingConstants), 16 * lightsCount)
+					MemoryAllocator::Allocators[allocNo].Allocate(sizeof(LightingConstants), 16)
 					);
 				assert(nullptr != data);
 				
 				for (uint32_t i = 0; i < lightsCount; ++i)
 				{
 					LightComponentData& comp = lights[i];
-
-				//	depthMap[i] = comp.CreateDepthMap();
-					TransformComponent transform = comp.entity.GetComponent<TransformComponent>();
-					assert(transform);
-
 
 					// TODO culling
                     TransformComponent t = comp.entity.GetComponent<TransformComponent>();
