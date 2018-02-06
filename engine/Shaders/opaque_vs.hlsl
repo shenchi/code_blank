@@ -14,7 +14,7 @@ struct Input
 {
 	float3 position	: POSITION;
 	float3 normal	: NORMAL;
-	float3 tangent	: TANGENT;
+	float4 tangent	: TANGENT;
 	float2 uv		: TEXCOORD0;
 };
 
@@ -23,7 +23,7 @@ struct V2F
 	float4 position	: SV_POSITION;
 	float3 worldPos	: POSITION;
 	float3 normal	: NORMAL;
-	float3 tangent	: TANGENT;
+	float4 tangent	: TANGENT;
 	float2 uv		: TEXCOORD0;
 };
 
@@ -38,7 +38,7 @@ V2F main(Input input)
 	//output.normal = mul(input.normal, (float3x3)matWorld_IT);
 	//output.tangent = mul(input.tangent, (float3x3)matWorld_IT); 
 	output.normal = mul(input.normal, (float3x3)matWorld);
-	output.tangent = mul(input.tangent, (float3x3)matWorld);
+	output.tangent = float4(mul(input.tangent.xyz, (float3x3)matWorld), input.tangent.w);
 	output.uv = input.uv;
 
 	return output;

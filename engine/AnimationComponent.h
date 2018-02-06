@@ -17,17 +17,16 @@ namespace tofu
 			entity(e),
 			model(nullptr),
 			boneMatricesBuffer(),
-			boneMatricesBufferSize(),
-			stateMachine("default")
-		{}
+			boneMatricesBufferSize()
+			{ layers.push_back(std::move(AnimationLayer("Base"))); }
 
-		AnimationStateMachine* GetStateMachine() { return &stateMachine; }
+		AnimationStateMachine* GetStateMachine(size_t layer = 0);
 
 		// switch to an animation
-		int32_t Play(uint32_t animId);
+		int32_t Play(uint32_t animId, size_t layerIndex = 0);
 
 		// cross fade to an animation in 'duration' time
-		int32_t CrossFade(uint32_t animId, float duration);
+		int32_t CrossFade(uint32_t animId, float duration, size_t layerIndex = 0);
 
 	private:
 		Entity					entity;
@@ -37,7 +36,7 @@ namespace tofu
 		BufferHandle			boneMatricesBuffer;
 		uint32_t				boneMatricesBufferSize;
 
-		AnimationStateMachine	stateMachine;
+		std::vector<AnimationLayer> layers;
 
 	private:
 		// update play back time and cross fade parameters

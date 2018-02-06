@@ -19,13 +19,15 @@ int32_t SceneLoadingDemo::Init()
 {
 	CHECKED(sceneMgr.Init());
 
-	CHECKED(sceneMgr.LoadScene("assets/scenes/test.json"));
+	CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial.json"));
+	//CHECKED(sceneMgr.LoadScene("assets/scenes/test6.json"));
 
 	{
 		Entity e = Entity::Create();
 
 		tPlayer = e.AddComponent<TransformComponent>();
-		tPlayer->SetLocalPosition(math::float3{ -5.0f, 8.0f, -5.0f });
+		//tPlayer->SetLocalPosition(math::float3{ -5.0f, 8.0f, -5.0f });
+		tPlayer->SetLocalPosition(math::float3{ 53.0f, 8.0f, -38.0f });
 		//tPlayer->SetLocalPosition(math::float3{ 0.0f, 8.0f, 0.0f });
 		tPlayer->SetLocalScale(math::float3{ 0.01f, 0.01f, 0.01f });
 
@@ -56,7 +58,7 @@ int32_t SceneLoadingDemo::Init()
 
 		pPlayer->LockRotation(true, false, true);
 		pPlayer->SetCapsuleCollider(50.0f, 100.0f);
-		pPlayer->SetColliderOrigin(math::float3{ 0.0f, 1.0f, 0.0f });
+		pPlayer->SetColliderOrigin(math::float3{ 0.0f, 100.0f, 0.0f });
 	}
 
 	// camera
@@ -83,7 +85,7 @@ int32_t SceneLoadingDemo::Init()
 
 		tSun = e.AddComponent<TransformComponent>();
 		tSun->SetLocalPosition(math::float3{ 5, 5, -5 });
-		tSun->SetLocalRotation(math::angleAxis(3.14f / 2, math::float3{ 1.0f, 0.0f, 0.0f }));
+		tSun->SetLocalRotation(math::angleAxis(3.14f / 3, math::float3{ 1.0f, 0.0f, 0.0f }));
 
 		lSun = e.AddComponent<LightComponent>();
 		lSun->SetType(LightType::kLightTypeDirectional);

@@ -200,9 +200,34 @@ namespace tofu
 			}
 		
 			auto pad = gamepad->GetState(0);
+			states->gamepad.isConnected = pad.IsConnected();
 			if (pad.IsConnected())
 			{
+				states->gamepad.SetButtonState(kGamepadFaceDown, pad.buttons.a ? 1u : 0u);
+				states->gamepad.SetButtonState(kGamepadFaceRight, pad.buttons.b ? 1u : 0u);
+				states->gamepad.SetButtonState(kGamepadFaceLeft, pad.buttons.x ? 1u : 0u);
+				states->gamepad.SetButtonState(kGamepadFaceUp, pad.buttons.y ? 1u : 0u);
 
+				states->gamepad.SetButtonState(kGamepadL3, pad.buttons.leftStick ? 1u : 0u);
+				states->gamepad.SetButtonState(kGamepadR3, pad.buttons.rightStick ? 1u : 0u);
+
+				states->gamepad.SetButtonState(kGamepadL1, pad.buttons.leftShoulder ? 1u : 0u);
+				states->gamepad.SetButtonState(kGamepadR1, pad.buttons.rightShoulder ? 1u : 0u);
+
+				states->gamepad.SetButtonState(kGamepadView, pad.buttons.view ? 1u : 0u);
+				states->gamepad.SetButtonState(kGamepadMenu, pad.buttons.menu ? 1u : 0u);
+
+				states->gamepad.SetButtonState(kGamepadDPadUp, pad.dpad.up ? 1u : 0u);
+				states->gamepad.SetButtonState(kGamepadDPadDown, pad.dpad.down ? 1u : 0u);
+				states->gamepad.SetButtonState(kGamepadDPadRight, pad.dpad.right ? 1u : 0u);
+				states->gamepad.SetButtonState(kGamepadDPadLeft, pad.dpad.left ? 1u : 0u);
+
+				states->gamepad.leftStickX = pad.thumbSticks.leftX;
+				states->gamepad.leftStickY = pad.thumbSticks.leftY;
+				states->gamepad.rightStickX = pad.thumbSticks.rightX;
+				states->gamepad.rightStickY = pad.thumbSticks.rightY;
+				states->gamepad.leftTrigger = pad.triggers.left;
+				states->gamepad.rightTrigger = pad.triggers.right;
 			}
 		}
 	};

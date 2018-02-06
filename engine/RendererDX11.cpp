@@ -40,7 +40,7 @@ namespace
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
@@ -48,7 +48,7 @@ namespace
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "BLENDINDICES", 0, DXGI_FORMAT_R32G32B32A32_UINT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
@@ -72,8 +72,8 @@ namespace
 	{
 		ID3D11Texture2D*			tex;
 		ID3D11ShaderResourceView*	srv;
-		ID3D11RenderTargetView*		rtv;
-		ID3D11DepthStencilView*		dsv;
+		ID3D11RenderTargetView*		rtv[6];
+		ID3D11DepthStencilView*		dsv[6];
 		uint32_t					dynamic : 1;
 		uint32_t					cubeMap : 1;
 		uint32_t					_padding : 6;
@@ -172,14 +172,20 @@ namespace tofu
 				{
 					Texture& rt = textures[kMaxTextures + 1];
 					RELEASE(rt.srv);
-					RELEASE(rt.rtv);
-					RELEASE(rt.dsv);
+					for (uint32_t i = 0; i < 6; i++)
+					{
+						RELEASE(rt.rtv[i]);
+						RELEASE(rt.dsv[i]);
+					}
 					RELEASE(rt.tex);
 
 					Texture& ds = textures[kMaxTextures];
 					RELEASE(ds.srv);
-					RELEASE(ds.rtv);
-					RELEASE(ds.dsv);
+					for (uint32_t i = 0; i < 6; i++)
+					{
+						RELEASE(ds.rtv[i]);
+						RELEASE(ds.dsv[i]);
+					}
 					RELEASE(ds.tex);
 				}
 
@@ -243,7 +249,9 @@ namespace tofu
 
 			PipelineStateHandle			currentPipelineState;
 			TextureHandle				renderTargets[kMaxRenderTargetBindings];
+			uint32_t					renderTargetSubIds[kMaxRenderTargetBindings];
 			TextureHandle				depthRenderTarget;
+			uint32_t					depthRenderTargetSubId;
 
 			typedef int32_t(RendererDX11::*cmd_callback_t)(void*);
 
@@ -387,7 +395,7 @@ namespace tofu
 				rt.arraySize = 1;
 				rt.bindingFlags = kBindingRenderTarget;
 
-				if (S_OK != (hr = device->CreateRenderTargetView(backbufferTex, nullptr, &(rt.rtv))))
+				if (S_OK != (hr = device->CreateRenderTargetView(backbufferTex, nullptr, &(rt.rtv[0]))))
 				{
 					return -1;
 				}
@@ -419,14 +427,14 @@ namespace tofu
 					return -1;
 				}
 
-				if (S_OK != (hr = device->CreateDepthStencilView(depthStencilTex, nullptr, &(ds.dsv))))
+				if (S_OK != (hr = device->CreateDepthStencilView(depthStencilTex, nullptr, &(ds.dsv[0]))))
 				{
 					return -1;
 				}
 				ds.tex = depthStencilTex;
 
 				// set render targets
-				context->OMSetRenderTargets(1, &(rt.rtv), ds.dsv);
+				context->OMSetRenderTargets(1, &(rt.rtv[0]), ds.dsv[0]);
 
 				for (uint32_t i = 0; i < kMaxRenderTargetBindings; i++)
 				{
@@ -656,12 +664,45 @@ namespace tofu
 
 				if (params->bindingFlags & kBindingRenderTarget)
 				{
-					DXCHECKED(device->CreateRenderTargetView(textures[id].tex, nullptr, &(textures[id].rtv)));
+					if (params->cubeMap == 1)
+					{
+						CD3D11_RENDER_TARGET_VIEW_DESC rtvDesc(textures[id].tex,
+							D3D11_RTV_DIMENSION_TEXTURE2DARRAY, 
+							PixelFormatTable[params->format],
+							0, 0, 1);
+
+						for (uint32_t i = 0; i < 6; i++)
+						{
+							rtvDesc.Texture2DArray.FirstArraySlice = i;
+							DXCHECKED(device->CreateRenderTargetView(textures[id].tex, &rtvDesc, &(textures[id].rtv[i])));
+						}
+					}
+					else
+					{
+						DXCHECKED(device->CreateRenderTargetView(textures[id].tex, nullptr, &(textures[id].rtv[0])));
+					}
 				}
 
 				if (params->bindingFlags & kBindingDepthStencil)
 				{
-					DXCHECKED(device->CreateDepthStencilView(textures[id].tex, nullptr, &(textures[id].dsv)));
+					if (params->cubeMap == 1)
+					{
+						CD3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc(textures[id].tex,
+							D3D11_DSV_DIMENSION_TEXTURE2DARRAY,
+							PixelFormatTable[params->format],
+							0, 0, 1);
+
+						for (uint32_t i = 0; i < 6; i++)
+						{
+							dsvDesc.Texture2DArray.FirstArraySlice = i;
+							DXCHECKED(device->CreateDepthStencilView(textures[id].tex, &dsvDesc, &(textures[id].dsv[i])));
+						}
+					}
+					else
+					{
+						DXCHECKED(device->CreateDepthStencilView(textures[id].tex, nullptr, &(textures[id].dsv[0])));
+					}
+					//DXCHECKED(device->CreateDepthStencilView(textures[id].tex, nullptr, &(textures[id].dsv)));
 				}
 
 				D3D11_TEXTURE2D_DESC desc = {};
@@ -726,19 +767,16 @@ namespace tofu
 
 				assert(nullptr != textures[id].tex);
 
-				textures[id].tex->Release();
-				if (nullptr != textures[id].srv)
+				RELEASE(textures[id].srv);
+				for (uint32_t i = 0; i < 6; i++)
 				{
-					textures[id].srv->Release();
+					RELEASE(textures[id].rtv[i]);
 				}
-				if (nullptr != textures[id].rtv)
+				for (uint32_t i = 0; i < 6; i++)
 				{
-					textures[id].rtv->Release();
+					RELEASE(textures[id].dsv[i]);
 				}
-				if (nullptr != textures[id].dsv)
-				{
-					textures[id].dsv->Release();
-				}
+				RELEASE(textures[id].tex);
 
 				textures[id] = {};
 
@@ -886,7 +924,7 @@ namespace tofu
 				DXCHECKED(device->CreateBlendState(&blendState, &(pipelineStates[id].blendState)));
 
 				assert(true == params->vertexShader && nullptr != vertexShaders[params->vertexShader.id].shader);
-				assert(true == params->pixelShader && nullptr != pixelShaders[params->vertexShader.id].shader);
+				//assert(true == params->pixelShader && nullptr != pixelShaders[params->vertexShader.id].shader);
 
 				DXCHECKED(device->CreateInputLayout(
 					InputElemDescTable[params->vertexFormat],
@@ -938,18 +976,20 @@ namespace tofu
 					}
 
 					uint32_t id = params->renderTargets[i].id;
-					assert(nullptr != textures[id].rtv);
+					uint32_t subId = params->renderTargetSubIds[i];
+					assert(nullptr != textures[id].rtv[subId]);
 
-					context->ClearRenderTargetView(textures[id].rtv, params->clearColor);
+					context->ClearRenderTargetView(textures[id].rtv[subId], params->clearColor);
 				}
 
 				if (params->depthRenderTarget)
 				{
 					uint32_t id = params->depthRenderTarget.id;
-					assert(nullptr != textures[id].dsv);
+					uint32_t subId = params->depthRenderTargetSubId;
+					assert(nullptr != textures[id].dsv[subId]);
 
 					context->ClearDepthStencilView(
-						textures[id].dsv,
+						textures[id].dsv[subId],
 						D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
 						params->clearDepth,
 						params->clearStencil);
@@ -971,7 +1011,7 @@ namespace tofu
 
 					context->IASetInputLayout(pso.inputLayout);
 					context->VSSetShader(vertexShaders[pso.vertexShader.id].shader, nullptr, 0);
-					context->PSSetShader(pixelShaders[pso.pixelShader.id].shader, nullptr, 0);
+					context->PSSetShader((pso.pixelShader ? pixelShaders[pso.pixelShader.id].shader : nullptr), nullptr, 0);
 					context->RSSetState(pso.rasterizerState);
 					context->RSSetViewports(1, &(pso.viewport));
 					context->OMSetDepthStencilState(pso.depthStencilState, 0u);
@@ -990,7 +1030,8 @@ namespace tofu
 
 					bool rebind = false;
 
-					if (params->depthRenderTarget.id != depthRenderTarget.id)
+					if (params->depthRenderTarget.id != depthRenderTarget.id ||
+						params->depthRenderTargetSubId != depthRenderTargetSubId)
 					{
 						rebind = true;
 					}
@@ -998,7 +1039,8 @@ namespace tofu
 					{
 						for (uint32_t i = 0; i < kMaxRenderTargetBindings; i++)
 						{
-							if (params->renderTargets[i].id != renderTargets[i].id)
+							if (params->renderTargets[i].id != renderTargets[i].id ||
+								params->renderTargetSubIds[i] != renderTargetSubIds[i])
 							{
 								rebind = true;
 								break;
@@ -1014,24 +1056,29 @@ namespace tofu
 						for (uint32_t i = 0; i < kMaxRenderTargetBindings; i++)
 						{
 							renderTargets[i] = params->renderTargets[i];
+							renderTargetSubIds[i] = params->renderTargetSubIds[i];
 							if (renderTargets[i])
 							{
 								Texture& tex = textures[renderTargets[i].id];
-								if (nullptr == tex.rtv || !(tex.bindingFlags & kBindingRenderTarget))
+								uint32_t subId = renderTargetSubIds[i];
+								if (nullptr == tex.rtv[subId] || 
+									!(tex.bindingFlags & kBindingRenderTarget))
 									return kErrUnknown;
 
-								rtvs[i] = tex.rtv;
+								rtvs[i] = tex.rtv[subId];
 							}
 						}
 
 						depthRenderTarget = params->depthRenderTarget;
+						depthRenderTargetSubId = params->depthRenderTargetSubId;
 						if (depthRenderTarget)
 						{
 							Texture& tex = textures[depthRenderTarget.id];
-							if (nullptr == tex.dsv || !(tex.bindingFlags & kBindingDepthStencil))
+							if (nullptr == tex.dsv[depthRenderTargetSubId] || 
+								!(tex.bindingFlags & kBindingDepthStencil))
 								return kErrUnknown;
 
-							dsv = tex.dsv;
+							dsv = tex.dsv[depthRenderTargetSubId];
 						}
 
 						context->OMSetRenderTargets(kMaxRenderTargetBindings, rtvs, dsv);

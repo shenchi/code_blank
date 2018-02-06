@@ -107,22 +107,22 @@ namespace tofu
 		BeginFrame();
 
 		// Create Built-in Shaders
-		CHECKED(InitBuiltinShader(kMaterialTypeTest,
+		CHECKED(InitBuiltinMaterial(kMaterialTypeTest,
 			"assets/test_vs.shader",
 			"assets/test_ps.shader"
 		));
 
-		CHECKED(InitBuiltinShader(kMaterialTypeSkybox,
+		CHECKED(InitBuiltinMaterial(kMaterialTypeSkybox,
 			"assets/skybox_vs.shader",
 			"assets/skybox_ps.shader"
 		));
 
-		CHECKED(InitBuiltinShader(kMaterialTypeOpaque,
+		CHECKED(InitBuiltinMaterial(kMaterialTypeOpaque,
 			"assets/opaque_vs.shader",
 			"assets/opaque_ps.shader"
 		));
 
-		CHECKED(InitBuiltinShader(kMaterialTypeOpaqueSkinned,
+		CHECKED(InitBuiltinMaterial(kMaterialTypeOpaqueSkinned,
 			"assets/opaque_skinned_vs.shader",
 			"assets/opaque_ps.shader"
 		));
@@ -853,14 +853,21 @@ namespace tofu
 		return mat;
 	}
 
-	int32_t RenderingSystem::InitBuiltinShader(MaterialType matType, const char * vsFile, const char * psFile)
+	int32_t RenderingSystem::InitBuiltinMaterial(MaterialType matType, const char * vsFile, const char * psFile)
 	{
 		if (materialVSs[matType] || materialPSs[matType])
 			return kErrUnknown;
 		
-		materialVSs[matType] = vertexShaderHandleAlloc.Allocate();
-		materialPSs[matType] = pixelShaderHandleAlloc.Allocate();
-		if (!materialVSs[matType] || !materialPSs[matType])
+		CHECKED(LoadVertexShader(vsFile, materialVSs[matType]));
+		CHECKED(LoadPixelShader(psFile, materialPSs[matType]));
+
+		return kOK;
+	}
+
+	int32_t RenderingSystem::LoadVertexShader(const char * filename, VertexShaderHandle & handle)
+	{
+		handle = vertexShaderHandleAlloc.Allocate();
+		if (!handle)
 		{
 			return kErrUnknown;
 		}
@@ -868,10 +875,10 @@ namespace tofu
 		{
 			CreateVertexShaderParams* params = MemoryAllocator::Allocate<CreateVertexShaderParams>(allocNo);
 			assert(nullptr != params);
-			params->handle = materialVSs[matType];
+			params->handle = handle;
 
 			int32_t err = FileIO::ReadFile(
-				vsFile,
+				filename,
 				false,
 				4,
 				allocNo,
@@ -886,13 +893,24 @@ namespace tofu
 			cmdBuf->Add(RendererCommand::kCommandCreateVertexShader, params);
 		}
 
+		return kOK;
+	}
+
+	int32_t RenderingSystem::LoadPixelShader(const char * filename, PixelShaderHandle & handle)
+	{
+		handle = pixelShaderHandleAlloc.Allocate();
+		if (!handle)
+		{
+			return kErrUnknown;
+		}
+
 		{
 			CreatePixelShaderParams* params = MemoryAllocator::Allocate<CreatePixelShaderParams>(allocNo);
 			assert(nullptr != params);
-			params->handle = materialPSs[matType];
+			params->handle = handle;
 
 			int32_t err = FileIO::ReadFile(
-				psFile,
+				filename,
 				false,
 				4,
 				allocNo,
@@ -906,6 +924,7 @@ namespace tofu
 
 			cmdBuf->Add(RendererCommand::kCommandCreatePixelShader, params);
 		}
+
 		return kOK;
 	}
 

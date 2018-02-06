@@ -23,7 +23,7 @@ namespace tofu
 
 	void AnimationFrameCache::Reset()
 	{
-		// Assume channel numbers = 3
+		// Assume channel numbers SQT = 3
 		for (int i = 0; i < 3; i++) {
 			indices[i][0] = SIZE_MAX;
 			indices[i][1] = SIZE_MAX;
@@ -118,6 +118,8 @@ namespace tofu
 		}
 
 		cache->Update(&context, anim);
+
+		// TODO: Add exitTime & transition
 	}
 
 	void AnimationState::Evaluate(EvaluateContext & context, float weight)
@@ -276,9 +278,10 @@ namespace tofu
 
 	// AnimationStateMachine
 
-	AnimationStateMachine::AnimationStateMachine(std::string name) : AnimNodeBase(name)
+	AnimationStateMachine::AnimationStateMachine(std::string name) : 
+		AnimNodeBase(name),	previous(nullptr)
 	{
-		states.push_back(new AnimNodeBase("entry"));
+		states.push_back(std::move(new AnimNodeBase("entry")));
 		current = states.back();
 	}
 
@@ -289,10 +292,41 @@ namespace tofu
 		}
 	}
 
+	/** Move constructor */
+	AnimationStateMachine::AnimationStateMachine(AnimationStateMachine&& other) noexcept : /* noexcept needed to enable optimizations in containers */
+	AnimNodeBase(other.name), previous(other.previous), current(other.current), elapsedTime(other.elapsedTime), transitionDuration(other.transitionDuration)
+	{
+		states = std::move(other.states);
+		stateIndexTable = std::move(other.stateIndexTable);
+		transitions = std::move(other.transitions);
+	}
+
+	///** Copy assignment operator */
+	//Foo& operator= (const Foo& other)
+	//{
+	//	Foo tmp(other);         // re-use copy-constructor
+	//	*this = std::move(tmp); // re-use move-assignment
+	//	return *this;
+	//}
+
+	///** Move assignment operator */
+	//Foo& operator= (Foo&& other) noexcept
+	//{
+	//	if (this == &other)
+	//	{
+	//		// take precautions against `foo = std::move(foo)`
+	//		return *this;
+	//	}
+	//	delete[] data;
+	//	data = other.data;
+	//	other.data = nullptr;
+	//	return *this;
+	//}
+
 	AnimationState* AnimationStateMachine::AddState(std::string name)
 	{
 		stateIndexTable[name] = static_cast<uint16_t>(states.size());
-		states.push_back(new AnimationState(name));
+		states.push_back(std::move(new AnimationState(name)));
 
 		return static_cast<AnimationState*>(states.back());
 	}
@@ -370,7 +404,6 @@ namespace tofu
 			float alpha = elapsedTime / transitionDuration;
 
 			if (weight == 1.0f) {
-				// TODO: Prevent previous transition;
 				previous->Evaluate(context, 1.0f);
 				current->Evaluate(context, alpha);
 			}
@@ -396,6 +429,23 @@ namespace tofu
 	float AnimationStateMachine::GetDurationInSecond(Model * model)
 	{
 		return current->GetDurationInSecond(model);
+	}
+
+	AnimationLayer::AnimationLayer(std::string name, float weight)
+		:name(name), weight(weight), stateMachine(std::move(AnimationStateMachine("default")))
+	{
+	}
+
+	void AnimationLayer::Update(Model *model)
+	{ 
+		// TODO: Add transition parameter
+		UpdateContext context{ model };
+		stateMachine.Update(context);
+	}
+
+	void AnimationLayer::Evaluate(EvaluateContext & context)
+	{
+		stateMachine.Evaluate(context, weight);
 	}
 }
 

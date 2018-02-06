@@ -1,208 +1,64 @@
 {
     "models": [
         {
-            "name": "Decor_Doorframe_Single",
-            "guid": "0e0ca3c62a03d644da2187399aab477a"
+            "name": "Unity_Builtin_Quad",
+            "guid": "0000000000000000e000000000000000"
         },
         {
             "name": "FloorTile_Slab_10x10",
             "guid": "ea2f01651cae4b54988d1b3f8b7a17e7"
         },
         {
-            "name": "Room_Mid_Ramp1",
-            "guid": "7fb34cb24a7127349b2aa02721871bcd"
+            "name": "Building1_CFT_wholeBuilding",
+            "guid": "6849c45d1922e334aa13443b0b8ecb15"
         },
         {
-            "name": "Room_Mid_Roof",
-            "guid": "add0984f21a946c4d9076c476e68d2c4"
+            "name": "Unity_Builtin_Plane",
+            "guid": "0000000000000000e000000000000000"
         },
         {
-            "name": "Room_Mid_Roof_Stair1",
-            "guid": "4a694ceae68c87c4b9ff048b5f51f4f7"
+            "name": "Building1_ZLJ_Main",
+            "guid": "7093e350d83b98947ad131f89c0838c1"
         },
         {
-            "name": "Room_Mid_Wall",
-            "guid": "24dcadf81b775fe47bd5e0685eb372a5"
+            "name": "OfficeBuilding1_PZY",
+            "guid": "231721c4f1004fd468b8cf3631e855c0"
         },
         {
-            "name": "Room_Mid_Wall_Door",
-            "guid": "7efa42e69f158b3418712c3d27a67c8e"
+            "name": "Bulidng2_CFT_wholeBuilding",
+            "guid": "7220ba33e003b174eb833b7d9f94b94e"
         },
         {
-            "name": "Room_Mid_Wall_Window",
-            "guid": "05aad97317c124741a2520a9881a1afd"
+            "name": "Building1_LSJ_SecondFloor3",
+            "guid": "4e505f4e83baeaa428944b9d9b47a439"
         },
         {
-            "name": "Room_Mid_Window1",
-            "guid": "256054a64dbafae469c7e161d7f5379d"
+            "name": "Building1_LSJ_SecondFloor1",
+            "guid": "efa2aee1c086f884da7ba6bbf75b0b41"
         },
         {
-            "name": "Fence_Railing_Corner",
-            "guid": "5deeca04b5e1b914996f077a48b2340a"
+            "name": "Building1_LSJ_SecondFloor2",
+            "guid": "295a40cb3d48ea24084a7a1d354aa125"
         },
         {
-            "name": "Fence_Railing_Straight",
-            "guid": "389dfb449917000478517808837b9e11"
+            "name": "Sundries1_LJ_TrashBox1",
+            "guid": "c5d5025a13b2ddb40adec41836283ea7"
         },
         {
-            "name": "Room_Mid_Balcony",
-            "guid": "251586e8f30c01e41852227b71ef083a"
+            "name": "Sundries1_LJ_TrashBox2",
+            "guid": "4cced8b4d5bf3b643a47190276c921f6"
         },
         {
-            "name": "Room_Mid_Balcony_Support",
-            "guid": "c2d82ef1bd132164099578a5b3a125f6"
-        },
-        {
-            "name": "Room_Mid_Balcony_Support_Fullfloor",
-            "guid": "24e51249154074a44b3e2a28b246caff"
-        },
-        {
-            "name": "FloorTile_Slab_5x5",
-            "guid": "41f9009996b13d741a929bf8897f6562"
-        },
-        {
-            "name": "Room_Small_Roof",
-            "guid": "4060e90e81e5f3941952e1490b7c8416"
-        },
-        {
-            "name": "Room_Small_Wall",
-            "guid": "cbe7367095aabc549b381adcce3388e7"
-        },
-        {
-            "name": "Room_Small_Wall_Door",
-            "guid": "4df189844fc7de24c85535a1d82edd4e"
-        },
-        {
-            "name": "Room_Mid_Floorspacer",
-            "guid": "250e1e97305dc7f49af4ddb02bb6cc90"
-        },
-        {
-            "name": "Compound_Wall_Ramp_Single",
-            "guid": "f03a3adbd7c5f9a4e80da240aca821f2"
-        },
-        {
-            "name": "Room_Mid_Window3",
-            "guid": "abf11fa860a64c54f9e58180cf349dfb"
-        },
-        {
-            "name": "Decor_Doorframe_Double",
-            "guid": "0aff4e501e24bc54a9e8a22b5283ea8b"
-        },
-        {
-            "name": "Room_Mid_Wall_Door_Double",
-            "guid": "16d43a060a133804f9d85c55ae463f4e"
-        },
-        {
-            "name": "Decor_StreetLight",
-            "guid": "51ca5f5e3e57516479e9bee60de9ea28"
-        },
-        {
-            "name": "Decor_Light_Box",
-            "guid": "3eb24026d8a20d64c94cd1789bb9eb04"
-        },
-        {
-            "name": "Decor_Table_Corner",
-            "guid": "005a13e160530f043bd8665887913f50"
-        },
-        {
-            "name": "Decor_Screen3",
-            "guid": "bf0b15e831a443047852b2bb141a985c"
-        },
-        {
-            "name": "Decor_Computer",
-            "guid": "ca3272ca330bb744283476020253fdc1"
-        },
-        {
-            "name": "Decor_Table",
-            "guid": "53cb93b4d9c2e4a469bbe837f089f018"
-        },
-        {
-            "name": "Decor_Keyboard",
-            "guid": "d3d70a208d4501b4898c8a855d76891a"
-        },
-        {
-            "name": "Decor_Screen1",
-            "guid": "33ee62d20d872f54e9177c0633a877da"
-        },
-        {
-            "name": "Decor_Light_Strip",
-            "guid": "7d3f246c2e276094b9e9187f49540feb"
-        },
-        {
-            "name": "Decor_Screen2",
-            "guid": "6464896be035b774593b21248f3dfa58"
-        },
-        {
-            "name": "Fence_Railing_Straight_End",
-            "guid": "ba34419429c468b4faaa7d00e00522c5"
-        },
-        {
-            "name": "Filler_5x3_Wall",
-            "guid": "485d5fe32aede3548bcfcc1e4b885786"
-        },
-        {
-            "name": "Filler_3x1_Wall",
-            "guid": "21205b0884ab4e5458c1f7cfe7187cc5"
-        },
-        {
-            "name": "Filler_5x2_Wall",
-            "guid": "5b91d52bd1d0bb94280a8127c044c93e"
-        },
-        {
-            "name": "Filler_5x1_Wall",
-            "guid": "130d368fe5312ce408ad2d7a9f2a25ec"
-        },
-        {
-            "name": "Road_Straight",
-            "guid": "1cdfad9e430dfe547950e09bec1496ac"
-        },
-        {
-            "name": "Road_Box_Filler_Panel",
-            "guid": "bd5d95e913641394b8144b79966eba1c"
-        },
-        {
-            "name": "Road_Corner",
-            "guid": "0e8455119ac7b6640b7cc2c619cbad3f"
-        },
-        {
-            "name": "Road_Ramp",
-            "guid": "d4d93c91ddefa1a429556ad9589b5898"
-        },
-        {
-            "name": "Road_End",
-            "guid": "e8a5600f4bf412a4c9ebcf62f6db5d2c"
-        },
-        {
-            "name": "Road_X",
-            "guid": "dc63be736e67dd642850bf74e4ddca25"
-        },
-        {
-            "name": "Road_T",
-            "guid": "c7da215bc0f1d7b438f44bb1f1544b48"
-        },
-        {
-            "name": "Road_Tunnel_Entrance_Exit",
-            "guid": "5bdbf15f19e66e147820d8b487cbd80c"
-        },
-        {
-            "name": "City_Wall_Corner",
-            "guid": "f6683efd485bed64c92ad9243948dbd8"
-        },
-        {
-            "name": "City_Wall_Straight1",
-            "guid": "26389347e8ebb82449e38b151d7a1058"
-        },
-        {
-            "name": "City_Wall_Strut1",
-            "guid": "c209b7dc231071b43b333881e2284f6d"
+            "name": "Unity_Builtin_Sphere",
+            "guid": "0000000000000000e000000000000000"
         }
     ],
     "materials": [
         {
-            "Name": "Wall2",
-            "GUID": "107eee8dc45625b44a144a214d8d7b31",
-            "AlbedoMap": "textures/Wall2_Halfblock_Diff+Spec",
-            "NormalMap": "textures/Wall2_Halfblock_Bump"
+            "Name": "icn_back01",
+            "GUID": "585d1bdccdfa97d45a4da24f8dd046c7",
+            "AlbedoMap": "textures/icn_back01",
+            "NormalMap": ""
         },
         {
             "Name": "Floor1",
@@ -211,89 +67,248 @@
             "NormalMap": "textures/Floor1_Bump"
         },
         {
-            "Name": "Floor3",
-            "GUID": "5a92d152b0a4b8f41a4e549b3a63a4e7",
-            "AlbedoMap": "textures/Floor3_Diff+Spec",
-            "NormalMap": "textures/Floor3_Bump"
+            "Name": "123",
+            "GUID": "855e219e032cb0447964bca6857cf03f",
+            "AlbedoMap": "textures/Building1_CFT_D",
+            "NormalMap": "textures/Building1_CFT_N"
         },
         {
-            "Name": "Wall1",
-            "GUID": "b7540bbafd5d39341ab34852c651160d",
-            "AlbedoMap": "textures/Wall1_Diff+Spec",
-            "NormalMap": "textures/Wall1_Bump"
-        },
-        {
-            "Name": "Wall1_Halfblock",
-            "GUID": "545cf3d8cf1375b4395aa95b6022bca9",
-            "AlbedoMap": "textures/Wall1_Halfblock_Diff+Spec",
-            "NormalMap": "textures/Wall1_Halfblock_Bump"
-        },
-        {
-            "Name": "Glass",
-            "GUID": "8000864a8a175df468a93306d9605197",
-            "AlbedoMap": "textures/Glass_Diff+Spec",
+            "Name": "New Material",
+            "GUID": "2379478269ddd904b9b61c457688bdc3",
+            "AlbedoMap": "",
             "NormalMap": ""
         },
         {
-            "Name": "Light_Fittings",
-            "GUID": "6197e67528e0bb5448572d0105335293",
-            "AlbedoMap": "textures/Light_Fittings_Diff",
+            "Name": "BuildingLongji_pCube558Shape",
+            "GUID": "0602e1544b7b85b438d7c04de92004f5",
+            "AlbedoMap": "textures/Building1_ZLJ_D",
             "NormalMap": ""
         },
         {
-            "Name": "PlaticTile",
-            "GUID": "9cf38d08ee26404479b06e4808f3cfc9",
-            "AlbedoMap": "textures/PlaticTile_Diff",
-            "NormalMap": "textures/PlaticTile_Bump"
+            "Name": "lambert1",
+            "GUID": "fcc18fa35a4162b42b07a546622342cb",
+            "AlbedoMap": "textures/OfficeBuilding1_PZY_D",
+            "NormalMap": "textures/OfficeBuilding1_PZY_N"
         },
         {
-            "Name": "Decor",
-            "GUID": "4948955c1cc7dd14fba3c0f923e6ffc9",
-            "AlbedoMap": "textures/Decor_Diff",
+            "Name": "typeBlinn",
+            "GUID": "f599901ccc885b24e848004d352c709f",
+            "AlbedoMap": "",
             "NormalMap": ""
         },
         {
-            "Name": "Decor2",
-            "GUID": "494100ee648661f4b926d4cb719b35f8",
-            "AlbedoMap": "textures/Decor2_Diff",
+            "Name": "ID3",
+            "GUID": "452c1534d236c984f9756aba8ba7f8f1",
+            "AlbedoMap": "textures/Building2_CFT_D",
+            "NormalMap": "textures/Building2_CFT_N"
+        },
+        {
+            "Name": "building1_Texture",
+            "GUID": "a462b6aae0285a3439a947c4e22c8b16",
+            "AlbedoMap": "textures/building1_LSJ_D",
             "NormalMap": ""
         },
         {
-            "Name": "Floor2",
-            "GUID": "49a47c5825dfd2e40ad48b13a608b1c2",
-            "AlbedoMap": "textures/Floor2_Diff+Spec",
-            "NormalMap": "textures/Floor2_Bump"
+            "Name": "trash_Base_Color",
+            "GUID": "885a9133670b8f2448cf3ef6ee3980df",
+            "AlbedoMap": "textures/Sundries1_LJ_D",
+            "NormalMap": ""
         },
         {
-            "Name": "Wall3",
-            "GUID": "5aaf6b5ee7e06a245a4ad3ba6a0ed917",
-            "AlbedoMap": "textures/Wall3_Diff+Spec",
-            "NormalMap": "textures/Wall3_Bump"
+            "Name": "Arrow",
+            "GUID": "390501efc93bf4040b222b69e8095777",
+            "AlbedoMap": "textures/Arrow",
+            "NormalMap": ""
         },
         {
-            "Name": "Roof1",
-            "GUID": "1e99526875e475247b475b85e863e82a",
-            "AlbedoMap": "textures/Roof1_Diff+Spec",
-            "NormalMap": "textures/Roof1_Bump"
+            "Name": "Arrow2",
+            "GUID": "63d36547b831e184ab92ef27b8ce7afc",
+            "AlbedoMap": "textures/Arrow2",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Tut00",
+            "GUID": "127503d4b636a0040ab43506a5292549",
+            "AlbedoMap": "textures/Tut00",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Tut05A",
+            "GUID": "6298d74d023d62e40bed7fc4f94494f4",
+            "AlbedoMap": "textures/Tut05A",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Tut01",
+            "GUID": "94bfeadd3a24d7a469dd57077b1cbfd3",
+            "AlbedoMap": "textures/Tut01",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Tut02",
+            "GUID": "fa0838bc760bef44ebcccf8f8f84fa5f",
+            "AlbedoMap": "textures/Tut02",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Tut03",
+            "GUID": "cd58defb383496f419e5d6ce99a91318",
+            "AlbedoMap": "textures/Tut03",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Tut03A",
+            "GUID": "a808525e91fa7df42b5100537cc7f294",
+            "AlbedoMap": "textures/Tut03A",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Tut04",
+            "GUID": "707cb3dcedd51a242affb7c2b77c3a8b",
+            "AlbedoMap": "textures/Tut04",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Tut04A",
+            "GUID": "1e0361aeb1433a94992f430f9f2ac41b",
+            "AlbedoMap": "textures/Tut04A",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Tut05",
+            "GUID": "1ff8ef8455f121346b41a2b549c4cca9",
+            "AlbedoMap": "textures/Tut05",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Tut06",
+            "GUID": "96efafdd0583f9a45b76255f5045269c",
+            "AlbedoMap": "textures/Tut06",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Tut06A",
+            "GUID": "e962c269e91cbb54fbeea4739dc18c35",
+            "AlbedoMap": "textures/Tut06A",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Tut06B",
+            "GUID": "2494f9aa0ce423a43bbbff30c0e847e6",
+            "AlbedoMap": "textures/Tut06B",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Tut06C",
+            "GUID": "86e8c5c5fdf228d45be45c0790f26ca0",
+            "AlbedoMap": "textures/Tut06C",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Tut06D",
+            "GUID": "934651716a784664a8400fe2b5082b0a",
+            "AlbedoMap": "textures/Tut06D",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Tut06E",
+            "GUID": "219b12168a30e6144b794930ccb720f7",
+            "AlbedoMap": "textures/Tut06E",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Tut06F",
+            "GUID": "ccac11483c0220c469eabd056d7dad1c",
+            "AlbedoMap": "textures/Tut06F",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Tut06G",
+            "GUID": "47d183ac7807bc94bad524ec1fde4b3a",
+            "AlbedoMap": "textures/Tut06G",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Tut07",
+            "GUID": "b586efeeb5506a84086a677aaf32bcc4",
+            "AlbedoMap": "textures/Tut07",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Tut07A 1",
+            "GUID": "bb716238352b6014b823b292a393abb0",
+            "AlbedoMap": "textures/Tut07A",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Tut07B",
+            "GUID": "e6425c4ecf367fd4b9944c2924f596c1",
+            "AlbedoMap": "textures/Tut07B",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Tut07C",
+            "GUID": "fcb5c30ff9d7bdd41bc3d1790063400e",
+            "AlbedoMap": "textures/Tut07C",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Texture_3",
+            "GUID": "61d04e4673d5eee4db4b4a56100bc2bd",
+            "AlbedoMap": "textures/Texture_3_Diffuse",
+            "NormalMap": "textures/Texture_3_Normal"
+        },
+        {
+            "Name": "Tut08",
+            "GUID": "cf1f80a00e32b5e42b9c11aabfd32502",
+            "AlbedoMap": "textures/Tut08",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Tut08A",
+            "GUID": "8b2c91c1a24fadf4e89904b6a2bf6a64",
+            "AlbedoMap": "textures/Tut08A",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Tut08B",
+            "GUID": "8f6ccc488ef37b24c9d06430fca07142",
+            "AlbedoMap": "textures/Tut08B",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Tut08C",
+            "GUID": "ec1b7c1e95164044d8addfd6b82642ce",
+            "AlbedoMap": "textures/Tut08C",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Tut09",
+            "GUID": "15f9acff693642e459a2a12ac48f5b77",
+            "AlbedoMap": "textures/Tut09",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Tut09A",
+            "GUID": "0f29824036156bc40a6c3ef5691b18e5",
+            "AlbedoMap": "textures/Tut09A",
+            "NormalMap": ""
+        },
+        {
+            "Name": "Tut09B",
+            "GUID": "cc6d16f023d1505469d0e0b261c58ffc",
+            "AlbedoMap": "textures/Tut09B",
+            "NormalMap": ""
         }
     ],
     "textures": [
         {
-            "Path": "textures/Wall2_Halfblock_Diff+Spec",
-            "GUID": "6604aaacb9f1558449abfc0c6d2e0570",
+            "Path": "textures/icn_back01",
+            "GUID": "b741c0d2eb916de40982ae97b859174c",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
-            "MipmapCount": 10,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Wall2_Halfblock_Bump",
-            "GUID": "cd43279f80e31604e86e8208bdea472b",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "trilinear",
-            "MipmapCount": 10,
+            "MipmapCount": 7,
             "MipmapBias": 0.0
         },
         {
@@ -309,68 +324,95 @@
             "Path": "textures/Floor1_Bump",
             "GUID": "d4953f7c4b5211a4d880b0889f5e31b4",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "trilinear",
-            "MipmapCount": 11,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Floor3_Diff+Spec",
-            "GUID": "65cacb3b8f364b24eb7ea5b180888e56",
+            "Path": "textures/Building1_CFT_D",
+            "GUID": "4d281d6482c94ac4b9770fd9915af37c",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
-            "MipmapCount": 10,
+            "MipmapCount": 12,
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Floor3_Bump",
-            "GUID": "26dee1916efb09d449d76fb70fac9713",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "trilinear",
-            "MipmapCount": 10,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Wall1_Diff+Spec",
-            "GUID": "2b3b7bc7498198b4d996d8c918eaf453",
+            "Path": "textures/Building1_CFT_N",
+            "GUID": "cf58f4f8d6894084f9213bdb0005b8d5",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
-            "MipmapCount": 10,
+            "MipmapCount": 12,
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Wall1_Bump",
-            "GUID": "f7f8e34c49bb0d24593f5a03458f330b",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "trilinear",
-            "MipmapCount": 10,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Wall1_Halfblock_Diff+Spec",
-            "GUID": "bfc299e710cbe2641ad50610fef623f6",
+            "Path": "textures/Building1_ZLJ_D",
+            "GUID": "bba78fb9b94aa9f43bea977507e394d3",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
-            "MipmapCount": 10,
+            "MipmapCount": 12,
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Wall1_Halfblock_Bump",
-            "GUID": "60ccac5034367c44f8cb9ac8d4d81288",
+            "Path": "textures/OfficeBuilding1_PZY_D",
+            "GUID": "a294a6b69a171e44fbc4c071cd9e0f88",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
-            "FilterMode": "trilinear",
-            "MipmapCount": 10,
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Glass_Diff+Spec",
-            "GUID": "a7487e05b56a4a445983027338aef12d",
+            "Path": "textures/OfficeBuilding1_PZY_N",
+            "GUID": "473b8d3f4549b6d45ac39183565f4271",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Building2_CFT_D",
+            "GUID": "4820ac2c2fc83df459f0db2b3b0e0c32",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Building2_CFT_N",
+            "GUID": "fc66245a39874c84ba76d3f3facdf40f",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/building1_LSJ_D",
+            "GUID": "dd7d3c02005d99a48bd37254537abc52",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Sundries1_LJ_D",
+            "GUID": "1bbb4474bffd52c45b5c9d3171bde100",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Arrow",
+            "GUID": "87c379e0434c34848a9e1a516c99eb7e",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
@@ -378,8 +420,8 @@
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Light_Fittings_Diff",
-            "GUID": "4369cdd42219eb642a05d8ebc504bc78",
+            "Path": "textures/Arrow2",
+            "GUID": "9102272b74170504eb184de7688d09a8",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
@@ -387,44 +429,8 @@
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/PlaticTile_Diff",
-            "GUID": "342d6a4b579b28c46a2375b80c0c2904",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 9,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/PlaticTile_Bump",
-            "GUID": "79d910e099a945747942bc01afdb8f93",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "trilinear",
-            "MipmapCount": 9,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Decor_Diff",
-            "GUID": "44b57bcf0dc320f4cb47b148fc3f0666",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 10,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Decor2_Diff",
-            "GUID": "2a6d42e3dd9da5d4fafddd90a9f4d9cb",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 10,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Floor2_Diff+Spec",
-            "GUID": "54297a8e0a24e21458e8aea40fef21de",
+            "Path": "textures/Tut00",
+            "GUID": "fdc0fac5a0fe1dd45ad2a6a9696c8e13",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
@@ -432,48 +438,264 @@
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Floor2_Bump",
-            "GUID": "7ec7bf88fd7bd624c81862e975cb4077",
+            "Path": "textures/Tut05A",
+            "GUID": "400bf18ad2a29d64b8e5d591343a0993",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
-            "FilterMode": "trilinear",
+            "FilterMode": "bilinear",
             "MipmapCount": 11,
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Wall3_Diff+Spec",
-            "GUID": "185513efb9a9c084b972d64f9bd20d46",
+            "Path": "textures/Tut01",
+            "GUID": "2e31b85d9e33b824b86f26e6365b57cf",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
-            "MipmapCount": 10,
+            "MipmapCount": 11,
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Wall3_Bump",
-            "GUID": "671d66de0327e994e8905c503d1a9f21",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "trilinear",
-            "MipmapCount": 10,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Roof1_Diff+Spec",
-            "GUID": "a75e8d74afd55ce4a87445c821c70b39",
+            "Path": "textures/Tut02",
+            "GUID": "d4008d53465872743b04d45229a75410",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
-            "MipmapCount": 10,
+            "MipmapCount": 11,
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Roof1_Bump",
-            "GUID": "9193748617ff2c240ba1e79fd522b6d8",
+            "Path": "textures/Tut03",
+            "GUID": "4542733ee71cd60498f16cf51d74bdee",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
-            "FilterMode": "trilinear",
-            "MipmapCount": 10,
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Tut03A",
+            "GUID": "9529732b08d065a469e30f2ff2ad37aa",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Tut04",
+            "GUID": "ca02d6d783db1614a85dc2a5312695e4",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Tut04A",
+            "GUID": "d8be5e718431f92478123f1c6795edf2",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Tut05",
+            "GUID": "0befe9465d94e004aa9748327d612a44",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Tut06",
+            "GUID": "65201b3c04e59dc45882640e02ce8a87",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Tut06A",
+            "GUID": "30b286b71ac21f449854508eb7aa0c0d",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Tut06B",
+            "GUID": "eac6d83e0fcaf7e4c82d2732d10fd347",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Tut06C",
+            "GUID": "4cdcbe221ef12994aa7ca5791156f076",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Tut06D",
+            "GUID": "8f0a8359322f86540ad16cb6591c3c9e",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Tut06E",
+            "GUID": "915a5c1755ee80942a923b277c4ecba8",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Tut06F",
+            "GUID": "b983fd21ced42104c83120e75c7eaa99",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Tut06G",
+            "GUID": "55bdd2b661dffa541be31be2e68a4276",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Tut07",
+            "GUID": "28c19758bcc76ca419f9c53403008f10",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Tut07A",
+            "GUID": "80cca47338366c5459c670f2b1f513b1",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Tut07B",
+            "GUID": "aa40b4e2ef7242043af065b1e7d71340",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Tut07C",
+            "GUID": "af32f6738deeadb439405e21fb1f3a48",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Texture_3_Diffuse",
+            "GUID": "a9b9afdc8b980b3489d42061c898b42a",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Texture_3_Normal",
+            "GUID": "e2b3f903a09e3d346bdf3462343109bd",
+            "Dimension": "tex2d",
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Tut08",
+            "GUID": "5c492154a2be96a49b67bbe261ab6644",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Tut08A",
+            "GUID": "44f01c89e0aaef844bfc6b8c4da0d52d",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Tut08B",
+            "GUID": "50a4c395b455eb9489eb848af3083014",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Tut08C",
+            "GUID": "2505928f6a2bb4e4fbd4ffa90ab7744c",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Tut09",
+            "GUID": "a19e4fb5803867d4cb8288fac9f9998a",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Tut09A",
+            "GUID": "2c674f511f74b5b4f98bc6f75c7fa139",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Tut09B",
+            "GUID": "b0f992a45ceaf134b830092eb8cdb198",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
             "MipmapBias": 0.0
         }
     ]

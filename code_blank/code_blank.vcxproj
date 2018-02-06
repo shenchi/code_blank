@@ -138,13 +138,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CubemapProbeDemo.h" />
     <ClInclude Include="SceneLoadingDemo.h" />
     <ClInclude Include="TestGame.h" />
+    <ClInclude Include="Utility.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CubemapProbeDemo.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SceneLoadingDemo.cpp" />
     <ClCompile Include="TestGame.cpp" />
+    <ClCompile Include="Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\engine\engine.vcxproj">

@@ -10,31 +10,38 @@ using namespace tofu::model;
 
 namespace tofu
 {
-	int32_t AnimationComponentData::Play(uint32_t animId)
+	AnimationStateMachine * AnimationComponentData::GetStateMachine(size_t layer)
+	{
+		return &layers[layer].stateMachine;
+	}
+
+	// FIXME: id
+	int32_t AnimationComponentData::Play(uint32_t animId, size_t layerIndex)
 	{
 		if (animId == 0)
-			stateMachine.Play("idle");
+			layers[layerIndex].stateMachine.Play("idle");
 		else
-			stateMachine.Play("walk");
+			layers[layerIndex].stateMachine.Play("walk");
 
 		return kOK;
 	}
 
-	int32_t AnimationComponentData::CrossFade(uint32_t animId, float duration)
+	// FIXME: id
+	int32_t AnimationComponentData::CrossFade(uint32_t animId, float duration, size_t layerIndex)
 	{
 		if (animId == 0)
-			stateMachine.CrossFade("idle", duration);
+			layers[layerIndex].stateMachine.CrossFade("idle", duration);
 		else
-			stateMachine.CrossFade("walk", duration);
+			layers[layerIndex].stateMachine.CrossFade("walk", duration);
 
 		return kOK;
 	}
 
 	void AnimationComponentData::UpdateTiming()
 	{
-		// FIXME: Transition
-		UpdateContext context{ model };
-		stateMachine.Update(context);
+		for (AnimationLayer &layer : layers) {
+			layer.Update(model);
+		}
 	}
 
 	int32_t AnimationComponentData::FillInBoneMatrices(void* buffer, uint32_t bufferSize)
@@ -57,9 +64,14 @@ namespace tofu
 			matrices[i] = model->bones[i].transform;
 		}
 
+		// evaluate animation result
 		EvaluateContext context(model);
-		stateMachine.Evaluate(context, 1.0f);
 
+		for (AnimationLayer &layer : layers) {
+			layer.Evaluate(context);
+		}
+
+		// apply result
 		for (auto i = 0; i < model->header->NumBones; i++) {
 			if (context.transforms[i].isDirty) {
 				matrices[i] = context.transforms[i].GetMatrix();
