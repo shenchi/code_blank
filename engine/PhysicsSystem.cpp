@@ -19,6 +19,16 @@ namespace
 		return btQuaternion(q.x, q.y, q.z, q.w);
 	}
 
+	TF_INLINE tofu::math::float3 tfVec3(const btVector3& v)
+	{
+		return tofu::math::float3(v.x(), v.y(), v.z());
+	}
+
+	TF_INLINE tofu::math::quat tfQuat(const btQuaternion& q)
+	{
+		return tofu::math::quat(q.w(), q.x(), q.y(), q.z());
+	}
+
 	void AddToBulletTriangleMesh(btTriangleMesh* mesh, tofu::Model* model)
 	{
 		uint32_t numSubMesh = model->GetNumMeshes();
@@ -432,6 +442,25 @@ namespace tofu
 	void PhysicsSystem::SetGravity(const math::float3 & g)
 	{
 		world->setGravity(btVector3(g.x, g.y, g.z));
+	}
+
+	bool PhysicsSystem::RayTest(const math::float3& start, const math::float3& end, RayTestResult* result)
+	{
+		btVector3 st(start.x, start.y, start.z), ed(end.x, end.y, end.z);
+		btCollisionWorld::ClosestRayResultCallback resultCallback(st, ed);
+		world->rayTest(st, ed, resultCallback);
+
+		if (resultCallback.hasHit())
+		{
+			if (nullptr != result)
+			{
+				result->hitWorldPosition = tfVec3(resultCallback.m_hitPointWorld);
+				result->hitWorldNormal = tfVec3(resultCallback.m_hitNormalWorld);
+			}
+			return true;
+		}
+
+		return false;
 	}
 
 }
