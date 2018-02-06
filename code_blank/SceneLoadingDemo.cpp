@@ -187,7 +187,7 @@ int32_t SceneLoadingDemo::Update()
 	{
 		speed -= Time::DeltaTime * Deaccelerate;
 		if (speed < 0.0f) speed = 0.0f;
-		tPlayer->Translate(tPlayer->GetForwardVector() * Time::DeltaTime * speed);
+		tPlayer->Translate(-tPlayer->GetForwardVector() * Time::DeltaTime * speed);
 
 		anim->CrossFade(0, 0.1f);
 	}
