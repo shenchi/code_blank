@@ -66,7 +66,7 @@ void Player::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camR
 {
 	Update();
 
-	if (math::length(inputDir) > 0.25f)
+	if (math::length(inputDir) > 0.25f && !inAir)
 	{
 		math::float3 moveDir = camRot * inputDir;
 		moveDir.y = 0.0f;
@@ -92,7 +92,7 @@ void Player::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camR
 		tPlayer->Translate(moveDir * dT * speed);
 		if (!isSprinting)
 		{
-			aPlayer->CrossFade(1, 0.3f);
+			aPlayer->CrossFade(1, 0.2f);
 		}
 		else if (isSprinting)
 		{
@@ -110,7 +110,9 @@ void Player::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camR
 
 	if (jump && !inAir)
 	{
-		pPlayer->ApplyImpulse(math::float3{ 0.0f, 2.0f, 0.0f });
+		inAir = true;
+		aPlayer->CrossFade(3, 0.001f);
+		pPlayer->ApplyImpulse(math::float3{ 0.0f, 4.0f, 0.0f });
 	}
 }
 
