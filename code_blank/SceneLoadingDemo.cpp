@@ -85,14 +85,38 @@ int32_t SceneLoadingDemo::Init()
 
 		tSun = e.AddComponent<TransformComponent>();
 		tSun->SetLocalPosition(math::float3{ 5, 5, -5 });
-		tSun->SetLocalRotation(math::angleAxis(3.14f / 3, math::float3{ 1.0f, 0.0f, 0.0f }));
+		tSun->SetLocalRotation(math::angleAxis(3.14f / 2, math::float3{ 0.0f, 1.0f, 0.0f }));
 
 		lSun = e.AddComponent<LightComponent>();
 		lSun->SetType(LightType::kLightTypeDirectional);
-		math::float4 sunColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
+		math::float4 sunColor = math::float4{ 1.0f, 0.0f, 0.0f, 1.0f };
 		lSun->SetColor(sunColor);
 	}
+	// Moon light 
+	{
+		Entity e = Entity::Create();
 
+		tMoon = e.AddComponent<TransformComponent>();
+
+		tMoon->SetLocalRotation(math::angleAxis(3.14f / 2.0f, math::float3{ 1.0f,0.0f, 0.0f }));
+
+		lMoon = e.AddComponent<LightComponent>();
+		lMoon->SetType(LightType::kLightTypeDirectional);
+		math::float4 moonColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
+		lMoon->SetColor(moonColor);
+	}
+	// Point light
+	{
+		Entity e = Entity::Create();
+
+		tBulb = e.AddComponent<TransformComponent>();
+		tBulb->SetLocalPosition(math::float3{ -5, 5, -4 });
+
+		lBulb = e.AddComponent<LightComponent>();
+		lBulb->SetType(LightType::kLightTypePoint);
+		math::float4 bulbColor = math::float4{ 0.0f, 1.0f, 0.0f, 1.0f };
+		lBulb->SetColor(bulbColor);
+	}
 	pitch = InitPitch;
 	yaw = 0.0f;
 
