@@ -702,13 +702,15 @@ namespace tofu
 					model.bones + header->NumBones
 					);
 
-				for (uint16_t i = 0; i < header->NumAnimations; i++) {
+				for (auto i = 0u; i < header->NumAnimations; i++) {
 					model.animationTable[model.animations[i].name] = i;
 				}
 
 				// FIXME: Test only
-				/*model.animationTable["idle"] = 0;
-				model.animationTable["walk"] = 1;*/
+				model.animationTable["idle"] = 0;
+				model.animationTable["walk"] = 1;
+				model.animationTable["jump"] = 2;
+				model.animationTable["run"] = 3;
 
 				model.frames = reinterpret_cast<model::ModelAnimFrame*>(
 					model.animations + header->NumAnimations

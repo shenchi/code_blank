@@ -145,7 +145,7 @@ namespace tofu
 			bool GetSignedBit() const 
 			{
 				// Most significant two bits of this 16bit index contains channel type info.
-				return static_cast<bool>((jointIndex & (0x2000)) >> 13);
+				return ((jointIndex & 0x2000) >> 13) == 1;
 			}
 
 			void SetSignedBit(bool s)

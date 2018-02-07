@@ -53,6 +53,11 @@ namespace tofu
 		Model() :animationTable(model::AnimationTable()) {}
 		TF_INLINE bool HasAnimation() const { return header->HasAnimation; }
 
-		TF_INLINE model::ModelAnimation* GetAnimation(std::string name) { return &animations[animationTable[name]]; }
+		TF_INLINE model::ModelAnimation* GetAnimation(std::string name) { 
+			if (animationTable.find(name) == animationTable.end()) {
+				return nullptr;
+			}
+			return &animations[animationTable[name]]; 
+		}
 	};
 }

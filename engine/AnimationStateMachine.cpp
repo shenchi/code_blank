@@ -108,10 +108,15 @@ namespace tofu
 	{
 		model::ModelAnimation *anim = context.model->GetAnimation(animationName);
 
+		// no animation for the state
+		if (anim == nullptr)
+			return;
+
 		// TODO: scale time || uint_16 ticks
 		// convert time in seconds to ticks
 		cache->ticks += Time::DeltaTime * playbackSpeed * anim->ticksPerSecond;
 
+		//if (cache->ticks > 46) {
 		if (cache->ticks > anim->tickCount) {
 			if (isLoop) {
 				cache->ticks = std::fmodf(cache->ticks, anim->tickCount);
@@ -179,10 +184,10 @@ namespace tofu
 			}
 			else if (indices[3] != SIZE_MAX) {
 				math::quat q;
-				math::float3 &compress = model->frames[frameCache.indices[kChannelTranslation][3]].value;
+				ModelAnimFrame &f = model->frames[frameCache.indices[kChannelTranslation][3]];
 
-				tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&compress.x), q);
-
+				//tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&f.value.x), q);
+				tofu::compression::DecompressQuaternion(q, f.value, f.GetSignedBit());
 				trans.SetRotation(q);
 			}
 
@@ -213,6 +218,11 @@ namespace tofu
 	float AnimationState::GetDurationInSecond(Model * model)
 	{
 		auto anim = model->GetAnimation(animationName);
+
+		// state without animation
+		if (anim == nullptr)
+			return 0.f;
+
 		return anim->tickCount / anim->ticksPerSecond;
 	}
 
@@ -277,8 +287,11 @@ namespace tofu
 
 		math::quat a, b;
 
-		tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&fa.value.x), a);
-		tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&fb.value.x), b);
+		//tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&fa.value.x), a);
+		//tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&fb.value.x), b);
+
+		tofu::compression::DecompressQuaternion(a, fa.value, fa.GetSignedBit());
+		tofu::compression::DecompressQuaternion(b, fb.value, fb.GetSignedBit());
 
 		return math::slerp(a, b, t);
 	}
@@ -367,6 +380,7 @@ namespace tofu
 		// check transition
 		for (AnimationTransitionEntry &entry : transitions) {
 
+			// same state
 			if (entry.name.compare(current->name) == 0)
 				continue;
 
