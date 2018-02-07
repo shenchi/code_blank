@@ -2,15 +2,92 @@
 #include "Companion.h"
 #include "GameplayDS.h"
 #include "Enemy.h"
+#include "Player.h"
 
 class CombatManager
 {
 public:
-	CombatManager(bool, void*);
+	CombatManager(bool, void*, void*);
 	~CombatManager();
 
 	void Update(float);
+	bool UpdateState(float, float);
+	void Hit(HitPosition, HitDirection, HitPower, float, float, float, bool);
+	void BasicCombo();
+	void SpecialCombat();
+	void GunShot();
+	void SwordCombo();
+	void SwordSpecialCombat();
+	void Attack();
+	void Shoot();
+	void Effect();
+	bool CheckTarget();
+	bool CheckRangeTarget();
+	void Adjust();
+	void Dodge(int);
+	void Roll();
+	void AimMove(int);
+	void PerformAction(Combat);
+	void NextCombat();
+	void NextSpecial();
+	void NextSwordCombat();
+	void NextSwordSpecial();
 
+	// Setters
+	void SetComboTimer(float);
+	void SetAimTarget(Character*);
+	void SetCurrentTarget(Character*);
+	void SetCurrentHitPos(HitPosition);
+	void SetHitTime(float);
+	void SetIsAdjusting(bool);
+	void SetIsAimming(bool);
+	void SetIsAttacking(bool);
+	void SetIsDodging(bool);
+	void SetIsJumping(bool);
+	void SetIsMoving(bool);
+	void SetIsRolling(bool);
+	void SetIsSprinting(bool);
+	void SetMoveDir(int _moveDir);
+	void SetResetAttack(bool);
+
+	// Getters
+	float GetAdjustAngle();
+	float GetAdjustMinDistance();
+	float GetAdjustMaxDistance();
+	float GetAdjustSpeed();
+	Character* GetAimTarget();
+	bool GetCanAttack();
+	bool GetCanDodge();
+	bool GetCanJump();
+	bool GetCanMove();
+	bool GetCanRoll();
+	bool GetCanSetNextAttack();
+	float GetComboTimer();
+	float GetCurrentAttackTime();
+	Combat GetCurrentCombat();
+	float GetCurrentEffectTime();
+	HitPosition GetCurrentHitPos();
+	Character* GetCurrentTarget();
+	int GetDodgeDirection();
+	float GetDodgeTime();
+	float GetHitTime();
+	bool GetInCombat();
+	bool GetIsAdjusting();
+	bool GetIsAimming();
+	bool GetIsAttacking();
+	bool GetIsDodging();
+	bool GetIsHit();
+	bool GetIsJumping();
+	bool GetIsMoving();
+	bool GetIsRolling();
+	bool GetIsSprinting();
+	float GetJumpAirTime();
+	float GetJumpDownTime();
+	float GetJumpUpTime();
+	int GetMoveDir();
+	bool GetResetAttack();
+	float GetRollSpeed();
+	float GetRollTime();
 	
 	// A List with all the Actions and their parameters. ( Dictionary has to made serializable manually by writing a new class and stuff ).
 	// The index is the enum value of the combat. (The evaluated integer)  
@@ -35,15 +112,17 @@ private:
 	//GameObject gun;
 	//GameObject sword;
 	//GameObject wrist;
+	Enemy* enemy;
+	Player* player;
 	Companion* companion;
 	tofu::math::float3 compPos;
 
 	Combat combat;
 
 	//target parameters
-	tofu::math::float3 currentTarget;
+	Character* currentTarget;
 
-	tofu::math::float3 aimTarget;
+	Character* aimTarget;
 	
 	int moveDir;
 
@@ -56,13 +135,26 @@ private:
 	//aimming parameters
 	bool isAimming;
 	
-	
+	Combat currentCombat;
+
+	float comboTimer;
+
+	float maxComboTime;
+
+	bool swordGunAttack;
+
+	bool canAim;
+
+	bool canShoot;
+
+	int listCounter;	
+
 	float maxShotDistance;
 	float minShotDistance;
 
 	//move parameters
 	bool isMoving;
-	bool isDashing;
+	bool isSprinting;
 	
 
 	//jump parameters
@@ -99,216 +191,22 @@ private:
 
 	//roll parameters
 	bool isRolling;
-
 	float rollTime;
-
 	float rollSpeed;
 	
 
 	//hit parameters
 	bool isHit;
 	bool resetHit;
-
 	float hitTime;
-
 	float hitMaxWalkSpeed;
 	int hitAnimationInfo;
 	
 
 	//adjust parameters
 	bool isAdjusting;
-
 	float adjustSpeed;
-
 	float adjustMinDistance;
-	
-
 	float adjustMaxDistance;
-
 	float adjustAgle;
-
-	Combat currentCombat;
-	
-	float comboTimer;
-
-	float maxComboTime;
-
-	bool swordGunAttack;
-
-	bool canAim;
-
-	bool canShoot;
-
-	int listCounter;
 };
-
-/* Make into functions
-
-int MoveDir;
-
-public Character CurrentTarget
-{ get{ return currentTarget; } set{ currentTarget = value; } }
-
-public Character AimTarget
-{ get{ return aimTarget; } set{ aimTarget = value; } }
-
-public bool InCombat
-{ get{ return inCombat; } }
-
-HitPosition CurrentHitPos;
-
-public bool IsAimming
-{
-get{ return isAimming; }
-set{ isAimming = value; }
-}
-
-
-public bool IsMoving
-{ get{ return isMoving; }
-set{ isMoving = value; }
-}
-public bool IsDashing
-{ get{ return isDashing; }
-set{ isDashing = value; }
-}
-
-public bool IsJumping
-{
-get{ return isJumping; }
-set{ isJumping = value; }
-}
-public float JumpUpTime
-{ get{ return jumpUpTime; } }
-public float JumpAirTime
-{ get{ return jumpAirTime; } }
-public float JumpDownTime
-{ get{ return jumpDownTime; } }
-
-public bool IsAttacking
-{
-get{ return isAttacking; }
-set{ isAttacking = value; }
-}
-public float CurrentAttackTime
-{
-get{ return currentAttackTime; }
-}
-public float CurrentEffectTime
-{
-get{ return currentEffectTime; }
-}
-public bool ResetAttack
-{
-get{ return resetAttack; }
-set{ resetAttack = value; }
-}
-
-public bool IsDodging
-{ get{ return isDodging; }
-set{ isDodging = value; }
-}
-public float DodgeTime
-{ get{ return dodgeTime; } }
-public int DodgeDirection
-{ get{ return dodgeDirection; } }
-
-public bool IsRolling
-{ get{ return isRolling; }
-set{ isRolling = value; }
-}
-public float RollTime
-{ get{ return rollTime; } }
-public float RollSpeed
-{ get{ return rollSpeed; } }
-
-public bool IsHit
-{
-get{ return isHit; }
-}
-public float HitTime
-{
-get{ return hitTime; }
-set{ hitTime = value; }
-}
-
-public bool IsAdjusting
-{
-get{ return isAdjusting; }
-set{ isAdjusting = value; }
-}
-public float AdjustSpeed
-{ get{ return adjustSpeed; } }
-
-public float GetAdjustMinDistance()
-{
-return adjustMinDistance;
-}
-
-public float GetAdjustMaxDistance()
-{
-return adjustMaxDistance;
-}
-
-public float GetAdjustAngle()
-{
-return adjustAgle;
-}
-
-public Combat CurrentCombat
-{ get{ return currentCombat; } }
-
-public float ComboTimer
-{
-get{ return comboTimer; }
-set{ comboTimer = value; }
-}
-
-public bool canMove
-{
-get
-{
-return !(isRolling || isHit || isAttacking || isDodging || isAdjusting);
-}
-}
-
-public bool canJump
-{
-get
-{
-return !(isRolling || isJumping || isAimming || isAttacking || isDodging || isAdjusting);
-}
-}
-
-public bool canAttack
-{
-get
-{
-return !(isRolling || isJumping || isAttacking || isDodging || isAdjusting);
-}
-}
-
-public bool canSetNextAttack
-{
-get
-{
-return isAttacking;
-}
-}
-
-public bool canDodge
-{
-get
-{
-return !(isRolling || isJumping || isAttacking || isDodging || isAdjusting);
-}
-}
-
-public bool canRoll
-{
-get
-{
-return !(isRolling || isJumping || isAimming || isAttacking || isDodging || isAdjusting);
-}
-}
-*/

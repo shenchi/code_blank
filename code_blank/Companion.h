@@ -16,7 +16,11 @@ public:
 	void Update(float, tofu::math::float3, tofu::math::float3);
 
 	void SetInUse(bool);
+	void SetActive(bool);
 	void SetTarget(tofu::math::float3);
+
+	bool ActiveSelf();
+	tofu::math::float3 GetPosition();
 
 private:
 	tofu::TransformComponent	tComp;
@@ -24,6 +28,7 @@ private:
 
 	bool inUse;
 	bool targetSet;
+	bool isActive;
 
 	tofu::math::float3 target;
 	tofu::math::float3 targetLastPos;

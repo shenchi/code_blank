@@ -1,31 +1,47 @@
 #pragma once
+#include "Character.h"
 
-#include <PhysicsComponent.h>
-#include <TransformComponent.h>
-#include <AnimationComponent.h>
-#include "GameplayAnimationMachine.h"
-
-class Player
+class Player : Character
 {
 public:
-	Player(void*);
+	Player(CharacterDetails, void*);
 	~Player();
 
 	void MoveReg(float, bool, tofu::math::float3, tofu::math::quat);
 	void MoveAim(float, tofu::math::float3, tofu::math::quat, tofu::math::float3);
 	void Update(float);
+	void UpdateState(float);
 
 	void Aim();
+	void AnimationParameter(int _animationParameter);
 	void Attack();
+	void CheckGroundStatus();
+	void CurrentState(CharacterState _currentState);
 	void Dodge();
+	void ForceMove(float, float, int);
+	void ForceMove(float, float, tofu::math::float3);
+	void HasEffect(bool _hasEffect);
+	void HandleAirborneMovement(tofu::math::float3);
+	void HandleGroundedMovement(bool);
 	void Interact();
+	void LastState(CharacterState _lastState);
 	void Special();
 	void Sprint(bool);
+	void StateTimer(float _stateTimer);
 	void VisionHack();
 
+	bool HasEffect();
+	bool IsDead();
+	bool IsGrounded();
 	bool IsInAir();
+
+	float StateTimer();
+
 	tofu::math::float3 GetPosition();
 	tofu::math::float3 GetForward();
+
+	CharacterState CurrentState();
+	CharacterState LastState();
 
 private:
 	tofu::TransformComponent	tPlayer;
@@ -33,21 +49,28 @@ private:
 	tofu::AnimationComponent	aPlayer;
 	GameplayAnimationMachine*	gPlayer;
 	tofu::PhysicsSystem*		physics;
-	CombatManager*				combatManager;
+	
+	tofu::math::quat camRotation;
 
-	// Movement
-	float walkSpeed;
-	float sprintSpeed;
-	float speed;
-	bool inAir;
-	bool isSprinting;
+	//GameObject charBody;
+	//GameObject camera;
 
-	// Player Stats
-	float health;
+	//Humanoid humanoid;
+	
+	//CapstoneAnimation animator;
 
-	const float kMaxSpeed = 12.0f;
-	const float kAccelerate = 6.67f;
-	const float kDeaccelerate = 10.0f;
+	//Rigidbody rigidbody;
 
-	//void Move();
+
+	// Audio
+	/*
+	AudioSource charAudio;
+	AudioSource charCombatAudio;
+	AudioClip footsteps1;
+	AudioClip footsteps2;
+	AudioClip footsteps3;
+	AudioClip footsteps4;
+	AudioClip jumpFX;
+	AudioClip landFX;
+	*/
 };

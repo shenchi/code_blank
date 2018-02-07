@@ -118,3 +118,17 @@ void Companion::SetTarget(tofu::math::float3 _target)
 	target = _target;
 	targetSet = true;
 }
+
+//-------------------------------------------------------------------------------------------------
+// Getters
+
+// Returns Companion's active state
+bool Companion::ActiveSelf()
+{
+	return isActive;
+}
+
+tofu::math::float3 Companion::GetPosition()
+{
+	return tComp->GetLocalPosition();
+}

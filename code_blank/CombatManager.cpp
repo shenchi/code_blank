@@ -2,8 +2,11 @@
 
 using namespace tofu;
 
-CombatManager::CombatManager(bool _isPlayer, void* _companion)
+CombatManager::CombatManager(bool _isPlayer, void* _companion, void* owner)
 {
+	player = nullptr;
+	enemy = nullptr;
+
 	isPlayer = _isPlayer;
 
 	inCombatTimer = 0;
@@ -18,6 +21,7 @@ CombatManager::CombatManager(bool _isPlayer, void* _companion)
 		//gun.SetActive(false);
 
 		companion = static_cast<Companion*>(_companion);
+		player = static_cast<Player*>(owner);
 
 		// Make a list of enemies in the scene
 		/*enemyList = new List<GameObject>();
@@ -28,6 +32,12 @@ CombatManager::CombatManager(bool _isPlayer, void* _companion)
 		}
 		*/
 	}
+	else
+	{
+		enemy = static_cast<Enemy*>(owner);
+	}
+
+	assert(player != nullptr || enemy != nullptr);
 }
 
 CombatManager::~CombatManager()
@@ -84,14 +94,14 @@ void CombatManager::Update(float dT)
 			}
 		}*/
 
-		if (isAimming && companion.activeSelf)
+		if (isAimming && companion->ActiveSelf)
 		{
-			compPos = companion.transform.position;
-			companion.SetActive(false);
+			compPos = companion->GetPosition();
+			companion->SetActive(false);
 		}
-		else if (!isAimming && !companion.activeSelf && !swordGunAttack)
+		else if (!isAimming && !companion->ActiveSelf && !swordGunAttack)
 		{
-			companion.SetActive(true);
+			companion->SetActive(true);
 		}
 
 
@@ -99,12 +109,15 @@ void CombatManager::Update(float dT)
 	//*******************************************************************
 }
 
+/*
 public void SetChar(Character _char)
 {
 	m_char = _char;
-}
+}*/
 
-public bool UpdateState(float stateTimer)
+
+// Update the character's state
+bool CombatManager::UpdateState(float stateTimer, float dT)
 {
 	int animationParameter = 0;
 
@@ -119,11 +132,11 @@ public bool UpdateState(float stateTimer)
 
 	if (comboTimer >= 0 && !(isAttacking || isAdjusting))
 	{
-		comboTimer += Time:: .deltaTime;
+		comboTimer += dT;
 		if (comboTimer > maxComboTime)
 		{
 			comboTimer = -1;
-			currentCombat = Combat.none;
+			currentCombat = kNone;
 		}
 	}
 
@@ -132,10 +145,10 @@ public bool UpdateState(float stateTimer)
 	{
 		if (stateTimer < hitTime)
 		{
-			m_char.CurrentState = Character.CharacterState.hit;
+			player->CurrentState(kHit);
 			animationParameter = hitAnimationInfo;
 			int power = hitAnimationInfo % 10;
-			if ((HitPower)power == HitPower.powerful)
+			if ((HitPower)power == kPowerful)
 			{
 				int hitDirection = (hitAnimationInfo / 10) % 10;
 				if (hitDirection >= 2)
@@ -147,7 +160,7 @@ public bool UpdateState(float stateTimer)
 					m_char.ForceMove(hitMaxWalkSpeed, hitDirection);
 				}
 			}
-			else if ((HitPower)power == HitPower.ko)
+			else if ((HitPower)power == kKO)
 			{
 
 			}
@@ -174,8 +187,8 @@ public bool UpdateState(float stateTimer)
 	return false;
 }
 
-
-public void Hit(HitPosition pos, HitDirection dir, HitPower power, float hitTime, float dmg, float delay = 0, bool dmgDelay = false)
+// Hit a character with an attack
+void CombatManager::Hit(HitPosition pos, HitDirection dir, HitPower power, float hitTime, float dmg, float delay = 0, bool dmgDelay = false)
 {
 	//
 	isHit = true;
@@ -207,7 +220,7 @@ public void Hit(HitPosition pos, HitDirection dir, HitPower power, float hitTime
 }
 
 // Basic Attack Combos
-public void BasicCombo()
+void CombatManager::BasicCombo()
 {
 	//if can attack
 	//if with in combat timer
@@ -227,7 +240,7 @@ public void BasicCombo()
 	}
 }
 
-public void SpecialCombat()
+void CombatManager::SpecialCombat()
 {
 	if (!canAttack)
 	{
@@ -246,7 +259,7 @@ public void SpecialCombat()
 }
 
 // Gun Shooting
-public void GunShot()
+void CombatManager::GunShot()
 {
 	if (!canAttack || !isAimming || aimTarget == null)
 	{
@@ -282,7 +295,7 @@ public void GunShot()
 }
 
 // Sword Attack Combos
-public void SwordCombo()
+void CombatManager::SwordCombo()
 {
 	//if can attack
 	//if with in combat timer
@@ -303,7 +316,7 @@ public void SwordCombo()
 	}
 }
 
-public void SwordSpecialCombat()
+void CombatManager::SwordSpecialCombat()
 {
 	if (!canAttack)
 	{
@@ -323,7 +336,7 @@ public void SwordSpecialCombat()
 }
 
 // Melee Attacks
-public void Attack()
+void CombatManager::Attack()
 {
 	inCombat = true;
 	inCombatTimer = inCombatDuration;
@@ -333,7 +346,7 @@ public void Attack()
 }
 
 // Ranged Attack
-public void Shoot()
+void CombatManager::Shoot()
 {
 	inCombat = true;
 	inCombatTimer = inCombatDuration;
@@ -345,7 +358,7 @@ public void Shoot()
 	m_char.GetComponent<PC>().Shoot();
 }
 
-public void Effect()
+void CombatManager::Effect()
 {
 
 	if (currentTarget != null && currentTarget.tag != "Ghost")
@@ -438,7 +451,7 @@ public void Effect()
 	}
 }
 
-public bool CheckTarget()
+bool CombatManager::CheckTarget()
 {
 	if (currentTarget == null)
 	{
@@ -466,7 +479,7 @@ public bool CheckTarget()
 }
 
 // Check to see if the player has a valid ranged target
-public bool CheckRangeTarget()
+bool CombatManager::CheckRangeTarget()
 {
 	if (aimTarget == null)
 	{
@@ -492,12 +505,12 @@ public bool CheckRangeTarget()
 	}
 }
 
-void Adjust()
+void CombatManager::Adjust()
 {
 	isAdjusting = true;
 }
 
-public void Dodge(int dir)
+void Dodge(int dir)
 {
 	if (!canDodge)
 	{
@@ -508,7 +521,7 @@ public void Dodge(int dir)
 	isDodging = true;
 }
 
-public void Roll()
+void CombatManager::Roll()
 {
 	if (!canRoll)
 	{
@@ -518,7 +531,7 @@ public void Roll()
 	isRolling = true;
 }
 
-public void AimMove(int dir)
+void CombatManager::AimMove(int dir)
 {
 	if (!canMove)
 	{
@@ -528,7 +541,7 @@ public void AimMove(int dir)
 }
 
 // Function to perform the combat that was passed.
-public void PerformAction(Combat _input)
+void CombatManager::PerformAction(Combat _input)
 {
 	currentCombat = _input;
 	// TODO: A Variable for the Sound in the CombatMoveDetails Struct.
@@ -550,7 +563,7 @@ public void PerformAction(Combat _input)
 
 }
 
-void NextCombat()
+void CombatManager::NextCombat()
 {
 	if (currentCombat == Combat.none)
 	{
@@ -602,7 +615,7 @@ void NextCombat()
 
 }
 
-void NextSpecial()
+void CombatManager::NextSpecial()
 {
 	if (currentCombat == Combat.none)
 	{
@@ -655,7 +668,7 @@ void NextSpecial()
 
 // --------------------------------------------------------------------------------------------
 // Sword Attack
-void NextSwordCombat()
+void CombatManager::NextSwordCombat()
 {
 	if (currentCombat == Combat.none)
 	{
@@ -692,7 +705,7 @@ void NextSwordCombat()
 	attackDuration = currentAttackTime;
 }
 
-void NextSwordSpecial()
+void CombatManager::NextSwordSpecial()
 {
 	if (currentCombat == Combat.none)
 	{
@@ -755,10 +768,324 @@ void NextSwordSpecial()
 }
 // --------------------------------------------------------------------------------------------
 
-
+/*
 IEnumerator DelayBeforeDamage(float delay, float dmg)
 {
 	yield return new WaitForSeconds(delay);
 
 	this.GetComponent<Humanoid>().TakeDamag(dmg);
+}*/
+
+// Setters
+// Set the Move Direction
+void CombatManager::SetMoveDir(int _moveDir)
+{
+	moveDir = _moveDir;
+}
+
+// Set the current target
+void CombatManager::SetCurrentTarget(Character* _currentTarget)
+{
+	currentTarget = _currentTarget;
+}
+
+// Set the current aim target
+void CombatManager::SetAimTarget(Character* _aimTarget)
+{
+	aimTarget = _aimTarget;
+}
+
+// Set the current hit position
+void CombatManager::SetCurrentHitPos(HitPosition _currentHitPos)
+{
+	currentHitPos = _currentHitPos;
+}
+
+// Set if is aiming
+void CombatManager::SetIsAimming(bool _isAimming)
+{
+	isAimming = _isAimming;
+}
+
+// Set if is moving
+void CombatManager::SetIsMoving(bool _isMoving)
+{
+	isMoving = _isMoving;
+}
+
+// Set if is sprinting
+void CombatManager::SetIsSprinting(bool _isSprinting)
+{
+	isSprinting = _isSprinting;
+}
+
+// Set if is jumping
+void CombatManager::SetIsJumping(bool _isJumping)
+{
+	isJumping = _isJumping;
+}
+
+// Set if is attacking
+void CombatManager::SetIsAttacking(bool _isAttacking)
+{
+	isAttacking = _isAttacking;
+}
+
+// Reset attack
+void CombatManager::SetResetAttack(bool _resetAttack)
+{
+	resetAttack = _resetAttack;
+}
+
+// Set if is rolling
+void CombatManager::SetIsRolling(bool _isRolling)
+{
+	isRolling = _isRolling;
+}
+
+// Set if is dodging
+void CombatManager::SetIsDodging(bool _isDodging)
+{
+	isDodging = _isDodging;
+}
+
+// Set the hit time
+void CombatManager::SetHitTime(float _hitTime)
+{
+	hitTime = _hitTime;
+}
+
+// Set if is adjusting
+void CombatManager::SetIsAdjusting(bool _isAdjusting)
+{
+	isAdjusting = _isAdjusting;
+}
+
+// Set the combo timer
+void CombatManager::SetComboTimer(float _comboTimer)
+{
+	comboTimer = _comboTimer;
+}
+
+// Getters
+// Return if the character can move
+bool CombatManager::GetCanMove()
+{
+	return !(isRolling || isHit || isAttacking || isDodging || isAdjusting);
+}
+
+// Return if the character can jump
+bool CombatManager::GetCanJump()
+{
+	return !(isRolling || isJumping || isAimming || isAttacking || isDodging || isAdjusting);
+}
+
+// Return if the character can attack
+bool CombatManager::GetCanAttack()
+{
+	return !(isRolling || isJumping || isAttacking || isDodging || isAdjusting);
+}
+
+// Return if can set the next attack
+bool CombatManager::GetCanSetNextAttack()
+{
+	return isAttacking;
+}
+
+// Return if the character can dodge
+bool CombatManager::GetCanDodge()
+{
+	return !(isRolling || isJumping || isAttacking || isDodging || isAdjusting);
+}
+
+// Return if the character can roll
+bool CombatManager::GetCanRoll()
+{
+	return !(isRolling || isJumping || isAimming || isAttacking || isDodging || isAdjusting);
+}
+
+// Return the move direction
+int CombatManager::GetMoveDir()
+{
+	return moveDir;
+}
+
+// Return the current target
+Character* CombatManager::GetCurrentTarget()
+{
+	return currentTarget;
+}
+
+// Return the current aim target
+Character* CombatManager::GetAimTarget()
+{
+	return aimTarget;
+}
+
+// Return if the character is in combat
+bool CombatManager::GetInCombat()
+{
+	return inCombat;
+}
+
+// Return the current hit position
+HitPosition CombatManager::GetCurrentHitPos()
+{
+	return currentHitPos;
+}
+
+// Return if the character is aiming
+bool CombatManager::GetIsAimming()
+{
+	return isAimming;
+}
+
+// Return if the character is moving
+bool CombatManager::GetIsMoving()
+{
+	return isMoving;
+}
+
+// Return if the character is sprinting
+bool CombatManager::GetIsSprinting()
+{
+	return isSprinting;
+}
+
+// Return if the character is jumping
+bool CombatManager::GetIsJumping()
+{
+	return isJumping;
+}
+
+// Return the jump up time
+float CombatManager::GetJumpUpTime()
+{
+	return jumpUpTime;
+}
+
+// Return the jump air time
+float CombatManager::GetJumpAirTime()
+{
+	return jumpAirTime;
+}
+
+// Return the jump down time
+float CombatManager::GetJumpDownTime()
+{
+	return jumpDownTime;
+}
+
+// Return if the character is attacking
+bool CombatManager::GetIsAttacking()
+{
+	return isAttacking;
+}
+
+// Return the current attack time
+float CombatManager::GetCurrentAttackTime()
+{
+	return currentAttackTime;
+}
+
+// Return the current effect time
+float CombatManager::GetCurrentEffectTime()
+{
+	return currentEffectTime;
+}
+
+// Return if reset attack
+bool CombatManager::GetResetAttack()
+{
+	return resetAttack;
+}
+
+// Return if the character is dodging
+bool CombatManager::GetIsDodging()
+{
+	return isDodging;
+}
+
+// Return the dodge time
+float CombatManager::GetDodgeTime()
+{
+	return dodgeTime;
+}
+
+// Return the dodge direction
+int CombatManager::GetDodgeDirection()
+{
+	return dodgeDirection;
+}
+
+// Return if the character is rolling
+bool CombatManager::GetIsRolling()
+{
+	return isRolling;
+}
+
+// Return the roll time
+float CombatManager::GetRollTime()
+{
+	return rollTime;
+}
+
+// Return the roll speed
+float CombatManager::GetRollSpeed()
+{
+	return rollSpeed;
+}
+
+// Return if the character is hit
+bool CombatManager::GetIsHit()
+{
+	return isHit;
+}
+
+// Return the hit time
+float CombatManager::GetHitTime()
+{
+	return hitTime;
+}
+
+// Return if the character is adjusting
+bool CombatManager::GetIsAdjusting()
+{
+	return isAdjusting;
+}
+
+// Return the adjust speed
+float CombatManager::GetAdjustSpeed()
+{
+	return adjustSpeed;
+}
+
+// Return the adjust minimum distance
+float CombatManager::GetAdjustMinDistance()
+{
+	return adjustMinDistance;
+}
+
+// Return the adjust maximum distance
+float CombatManager::GetAdjustMaxDistance()
+{
+	return adjustMaxDistance;
+}
+
+// Return the adjust angle
+float CombatManager::GetAdjustAngle()
+{
+	return adjustAgle;
+}
+
+// Return the current combat
+Combat CombatManager::GetCurrentCombat()
+{
+	return currentCombat;
+}
+
+// Return the combo timer
+float CombatManager::GetComboTimer()
+{
+	return comboTimer;
 }

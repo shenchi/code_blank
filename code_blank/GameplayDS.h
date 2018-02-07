@@ -3,7 +3,7 @@
 
 enum CharacterState
 {
-	kNone,
+	kNoState,
 	kIdleOutCombat,
 	kIdleInCombat,
 	kRun,
@@ -90,4 +90,9 @@ struct CombatMoveDetails
 	HitPosition pos;
 	CombatDirection dir;
 	HitPower power;
+};
+
+struct CharacterDetails
+{
+
 };
