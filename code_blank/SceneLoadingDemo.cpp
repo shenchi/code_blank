@@ -41,10 +41,10 @@ int32_t SceneLoadingDemo::Init()
 		AnimationStateMachine *stateMachine = anim->GetStateMachine();
 
 		AnimationState *idle = stateMachine->AddState("idle");
-		idle->animationName = "Armature|Armature|KB_WalkFwd1|KB_WalkFwd1:BaseAnimation";
-		//idle->animationName = "Armature|Armature|KB_Idle_2|KB_Idle_2:BaseAnimation";
+		idle->animationName = "Armature|Armature|KB_Idle_2|KB_Idle_2:BaseAnimation";
 		AnimationState *walk = stateMachine->AddState("walk");
 		walk->animationName = "Armature|Armature|KB_WalkFwd1|KB_WalkFwd1:BaseAnimation";
+		walk->animationName = "Armature|Armature|KB_p_DoubleHooks|KB_p_DoubleHooks:BaseAnimation";
 
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaqueSkinned);
 

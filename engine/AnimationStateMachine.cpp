@@ -116,7 +116,6 @@ namespace tofu
 		// convert time in seconds to ticks
 		cache->ticks += Time::DeltaTime * playbackSpeed * anim->ticksPerSecond;
 
-		//if (cache->ticks > 46) {
 		if (cache->ticks > anim->tickCount) {
 			if (isLoop) {
 				cache->ticks = std::fmodf(cache->ticks, anim->tickCount);
@@ -262,8 +261,9 @@ namespace tofu
 		float t = (cache->ticks - f2.time) / (f3.time - f2.time);
 		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
 
-		//return math::slerp(q2, q3, t);
-		return squad(q2, q3, intermediate(q1, q2, q3), intermediate(q2, q3, q4), t);
+		// FIXME: change after cruve fitting
+		return math::slerp(q2, q3, t);
+		//return squad(q2, q3, intermediate(q1, q2, q3), intermediate(q2, q3, q4), t);
 	}
 
 	math::float3 AnimationState::LerpFromFrameIndex(Model *model, size_t lhs, size_t rhs) const

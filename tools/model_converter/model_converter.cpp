@@ -721,14 +721,14 @@ struct ModelFile
 
 int main(int argc, char* argv[])
 {
-	argc = 3;
+	argc = 5;
 
 	char* tempArgv[6] =
 	{
 		"",
 		//"../../assets/archer.model",
 		"../../assets/archer_test.model",
-		//"../../assets/archer_idle_renamed.fbx",
+		"../../assets/archer_idle_renamed.fbx",
 		//"../../assets/archer_idle.fbx",
 		//"../../assets/archer_walking.fbx",
 		//"../../assets/archer_jump.fbx",
@@ -737,7 +737,7 @@ int main(int argc, char* argv[])
 		//"../../assets/soldier.model",
 		//"../../assets/Soilder_LSJ.fbx",
 		"../../assets/KB_Movement.fbx",
-		//"../../assets/KB_Hits.fbx",
+		"../../assets/KB_Punches.fbx",
 	};
 
 	//argc = 3;
