@@ -16,6 +16,10 @@ Game::~Game()
 	delete enemy03;*/
 	//*********************************************************************************************
 
+	if (enemyList != nullptr)
+	{
+		delete enemyList;
+	}
 	delete comp;
 	delete cam;
 	delete player;
@@ -36,6 +40,7 @@ int32_t Game::Init()
 
 	comp = NULL;
 	player = NULL;
+	enemyList = nullptr;
 
 	// Load the initial scene (Defalut is Intro)
 	// Load other scenes here for fast testing
@@ -305,75 +310,43 @@ bool Game::LoadScene(sceneType num)
 				cam->SetSkybox(skyboxMat);
 				cam->SetClearColor(math::float4{ 0.0f, 0.0f, 0.0f, 1.0f });
 			}*/
-			/*{
-				Entity e = Entity::Create();
 
-				tBox6 = e.AddComponent<TransformComponent>();
-
-				RenderingComponent r = e.AddComponent<RenderingComponent>();
-
-				Model* cubeModel = RenderingSystem::instance()->CreateModel("assets/cube.model");
-
-				Material* cubeMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
-				TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
-
-				cubeMat->SetTexture(diffuse);
-
-				r->SetMaterial(cubeMat);
-				r->SetModel(cubeModel);
-
-				tBox6->SetLocalPosition(math::float3{ -2.0f, 1.0f, 0.0f });
-				PhysicsComponent ph = e.AddComponent<PhysicsComponent>();
-			}*/
-			/*{
-				Entity e = Entity::Create();
-
-				tBox7 = e.AddComponent<TransformComponent>();
-				tBox7->SetLocalScale(math::float3{ 25, .5, 25 });
-				//tBox7->SetLocalPosition(math::float3{ 0, 10, 10 });
-
-				RenderingComponent r = e.AddComponent<RenderingComponent>();
-
-				Model* model = RenderingSystem::instance()->CreateModel("assets/cube.model");
-
-				Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
-				TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
-				TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/stone_wall_normalmap.texture");
-
-				material->SetTexture(diffuse);
-				material->SetNormalMap(normalMap);
-
-				r->SetMaterial(material);
-				r->SetModel(model);
-
-				tBox7->SetLocalPosition(math::float3{ 0.0f, 0.0f, 0.0f });
-
-				PhysicsComponent ph = e.AddComponent<PhysicsComponent>();
-				ph->SetStatic(true);
-				ph->SetBoxCollider(math::float3{ 25.0f, 0.5f, 25.0f });
-				ph->SetColliderOrigin(math::float3{ 0.0f, -0.5f, 0.0f });
-			}*/
 			
 			// Setup the Scene
 			CHECKED(sceneMgr.Init());
 
 			CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial.json"));
 
+			CharacterDetails playerDetails;
+			playerDetails.capsuleColliderSize = { 50.0f, 100.0f };
+			playerDetails.colliderOrigin = { 0.0f, 100.0f, 0.0f };
+			playerDetails.health = 200.0f;
+			playerDetails.jumpPower = 4.0f;
+			playerDetails.position = { 53.0f, 3.0f, -38.0f };
+			playerDetails.scale = { 0.01f, 0.01f, 0.01f };
+			playerDetails.sprintSpeed = 10.0f;
+			playerDetails.tag = "player";
+			playerDetails.walkSpeed = 5.0f;
+
+
 			// Setup the Player's Companion
 			if (comp == NULL)
 			{
-				comp = new Companion(player->GetPosition());
+				comp = new Companion(playerDetails.position);
 				pControl->SetCompanion(comp);
 			}
-			assert(player != NULL);
 
 			// Setup the Player
 			if (player == NULL)
 			{
-				player = new Player(comp);
+				player = new Player(playerDetails, comp);
 				pControl->SetPlayer(player);
 			}
 			assert(player != NULL);
+
+			
+
+			
 
 			//*********************************************************************************************
 			//temp for test
@@ -381,6 +354,12 @@ bool Game::LoadScene(sceneType num)
 			enemy02 = new Enemy(math::float3{ -10.0f, 1.0f, -10.0f });
 			enemy03 = new Enemy(math::float3{ -10.0f, 1.0f, 10.0f });*/
 			//*********************************************************************************************
+
+			// Add each enemy to the enemy list
+			// enemyList = new std::vector<Character*>();
+			// enemyList.pushback(enemy01);
+
+			player->GetCombatManager()->SetEnemyList(enemyList);
 
 			break;
 		}

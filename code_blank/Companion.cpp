@@ -33,6 +33,7 @@ Companion::Companion(tofu::math::float3 _target)
 
 	targetSet = false;
 	inUse = false;
+	isActive = true;
 
 	SetTarget(_target);
 	targetLastPos = _target;
@@ -105,6 +106,11 @@ void Companion::Update(float dT, tofu::math::float3 _target, tofu::math::float3 
 
 //-------------------------------------------------------------------------------------------------
 // Setters
+
+void Companion::SetActive(bool _isActive)
+{
+	isActive = _isActive;
+}
 
 // 
 void Companion::SetInUse(bool _inUse)

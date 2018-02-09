@@ -388,7 +388,10 @@ namespace tofu
 				transitionDuration = 0.f;
 			}
 			else {
-				previous->Update(context);
+				if (previous != nullptr)
+				{
+					previous->Update(context);
+				}
 			}
 		}
 
@@ -404,7 +407,7 @@ namespace tofu
 			float alpha = elapsedTime / transitionDuration;
 
 			if (weight == 1.0f) {
-				previous->Evaluate(context, 1.0f);
+				if (previous != nullptr) { previous->Evaluate(context, 1.0f); }
 				current->Evaluate(context, alpha);
 			}
 			else {

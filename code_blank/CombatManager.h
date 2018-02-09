@@ -1,8 +1,10 @@
 #pragma once
 #include "Companion.h"
 #include "GameplayDS.h"
-#include "Enemy.h"
-#include "Player.h"
+
+class Character;
+class Player;
+class Enemy;
 
 class CombatManager
 {
@@ -12,7 +14,7 @@ public:
 
 	void Update(float);
 	bool UpdateState(float, float);
-	void Hit(HitPosition, HitDirection, HitPower, float, float, float, bool);
+	void Hit(HitPosition, HitDirection, HitPower, float, float);
 	void BasicCombo();
 	void SpecialCombat();
 	void GunShot();
@@ -49,6 +51,7 @@ public:
 	void SetIsSprinting(bool);
 	void SetMoveDir(int _moveDir);
 	void SetResetAttack(bool);
+	void SetEnemyList(std::vector<Character*>*);
 
 	// Getters
 	float GetAdjustAngle();
@@ -92,10 +95,11 @@ public:
 	// A List with all the Actions and their parameters. ( Dictionary has to made serializable manually by writing a new class and stuff ).
 	// The index is the enum value of the combat. (The evaluated integer)  
 	//List<CombatMoveDetails> allMoves;
+	std::vector<CombatMoveDetails> allMoves;
 
 private:
 
-	//List<GameObject> enemyList;
+	std::vector<Character*>* enemyList;
 	//GameObject[] enemyArray;
 	bool isPlayer;
 	//*******************************************************************
@@ -114,56 +118,46 @@ private:
 	//GameObject wrist;
 	Enemy* enemy;
 	Player* player;
+	Character* character;
+
 	Companion* companion;
 	tofu::math::float3 compPos;
 
 	Combat combat;
+	Combat currentCombat;
 
-	//target parameters
+	// target parameters
 	Character* currentTarget;
-
 	Character* aimTarget;
 	
 	int moveDir;
 
-	//in combat parameters
+	int listCounter;
+
+	// in combat parameters
 	bool inCombat;
-	float inCombatTimer;
-
-	float inCombatDuration;
-
-	//aimming parameters
-	bool isAimming;
-	
-	Combat currentCombat;
-
-	float comboTimer;
-
-	float maxComboTime;
-
 	bool swordGunAttack;
+	float inCombatTimer;
+	float inCombatDuration;
+	float comboTimer;
+	float maxComboTime;
+	
 
+	// Aiming 
+	bool isAimming;
 	bool canAim;
-
 	bool canShoot;
-
-	int listCounter;	
-
 	float maxShotDistance;
 	float minShotDistance;
 
-	//move parameters
+	// move parameters
 	bool isMoving;
 	bool isSprinting;
 	
-
 	//jump parameters
 	bool isJumping;
-
 	float jumpUpTime;
-
 	float jumpAirTime;
-
 	float jumpDownTime;
 	
 
@@ -183,17 +177,13 @@ private:
 
 	//dodge parameters
 	bool isDodging;
-
 	float dodgeTime;
 	int dodgeDirection;
-	
-
 
 	//roll parameters
 	bool isRolling;
 	float rollTime;
 	float rollSpeed;
-	
 
 	//hit parameters
 	bool isHit;
@@ -201,7 +191,6 @@ private:
 	float hitTime;
 	float hitMaxWalkSpeed;
 	int hitAnimationInfo;
-	
 
 	//adjust parameters
 	bool isAdjusting;

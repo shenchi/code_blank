@@ -1,7 +1,8 @@
 #pragma once
+
 #include "Character.h"
 
-class Player : Character
+class Player : public Character
 {
 public:
 	Player(CharacterDetails, void*);
@@ -9,39 +10,51 @@ public:
 
 	void MoveReg(float, bool, tofu::math::float3, tofu::math::quat);
 	void MoveAim(float, tofu::math::float3, tofu::math::quat, tofu::math::float3);
+	//void MoveEnemy(float, bool, tofu::math::float3);
 	void Update(float);
 	void UpdateState(float);
 
+
 	void Aim();
-	void AnimationParameter(int _animationParameter);
 	void Attack();
+	void Dodge();
+	void Die();
+	void Interact();
+	void Special();
+	void VisionHack();
+
+
+	/*void Aim();
+	void AnimationParameter(int _animationParameter);
+	
 	void CheckGroundStatus();
 	void CurrentState(CharacterState _currentState);
-	void Dodge();
+	
+	
 	void ForceMove(float, float, int);
 	void ForceMove(float, float, tofu::math::float3);
 	void HasEffect(bool _hasEffect);
 	void HandleAirborneMovement(tofu::math::float3);
 	void HandleGroundedMovement(bool);
-	void Interact();
+	
 	void LastState(CharacterState _lastState);
-	void Special();
+	
 	void Sprint(bool);
 	void StateTimer(float _stateTimer);
-	void VisionHack();
+	
 
 	bool HasEffect();
 	bool IsDead();
 	bool IsGrounded();
-	bool IsInAir();
 
-	float StateTimer();
+	float StateTimer();*/
 
-	tofu::math::float3 GetPosition();
+	/*tofu::math::float3 GetPosition();
 	tofu::math::float3 GetForward();
+	tofu::math::float3 GetRight();*/
 
-	CharacterState CurrentState();
-	CharacterState LastState();
+	//CharacterState CurrentState();
+	//CharacterState LastState();
 
 private:
 	tofu::TransformComponent	tPlayer;
@@ -55,7 +68,6 @@ private:
 	//GameObject charBody;
 	//GameObject camera;
 
-	//Humanoid humanoid;
 	
 	//CapstoneAnimation animator;
 

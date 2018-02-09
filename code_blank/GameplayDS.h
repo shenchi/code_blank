@@ -32,17 +32,17 @@ enum HitPosition
 
 enum HitDirection
 {
-	kForward,
-	kBackward,
-	kLeft,
-	kRight
+	kHitForward,
+	kHitBackward,
+	kHitLeft,
+	kHitRight
 };
 
 enum CombatDirection
 {
-	kForward,
-	kLeft,
-	kRight
+	kDirForward,
+	kDirLeft,
+	kDirRight
 };
 
 enum HitPower
@@ -66,7 +66,7 @@ enum Combat
 	kKickHorseKick,
 	kSwordAttackR,
 	kSwordAttackRL,
-	kSwordAttackSp_U,
+	kSwordAttackSpU,
 	kSwordAttackComboLL,
 	kGunShoot,
 	kNumberOfItems
@@ -94,5 +94,14 @@ struct CombatMoveDetails
 
 struct CharacterDetails
 {
-
+	std::string			tag;
+	tofu::math::float3	position;
+	tofu::math::float3	scale;
+	float				health;
+	float				walkSpeed;
+	float				sprintSpeed;
+	float				jumpPower;
+	tofu::math::float2	capsuleColliderSize;
+	tofu::math::float3	colliderOrigin;
+	// Add more as needed
 };

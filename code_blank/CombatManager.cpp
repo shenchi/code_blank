@@ -1,12 +1,10 @@
 #include "CombatManager.h"
+#include "Character.h"
 
 using namespace tofu;
 
 CombatManager::CombatManager(bool _isPlayer, void* _companion, void* owner)
 {
-	player = nullptr;
-	enemy = nullptr;
-
 	isPlayer = _isPlayer;
 
 	inCombatTimer = 0;
@@ -21,23 +19,20 @@ CombatManager::CombatManager(bool _isPlayer, void* _companion, void* owner)
 		//gun.SetActive(false);
 
 		companion = static_cast<Companion*>(_companion);
-		player = static_cast<Player*>(owner);
-
-		// Make a list of enemies in the scene
-		/*enemyList = new List<GameObject>();
-		enemyArray = GameObject.FindGameObjectsWithTag("Enemy");
-		for (int i = 0; i < enemyArray.Length; i++)
-		{
-			enemyList.Add(enemyArray[i]);
-		}
-		*/
+		//player = static_cast<Player*>(owner);
+		//character = static_cast<Character*>(owner);
 	}
 	else
 	{
-		enemy = static_cast<Enemy*>(owner);
+		//enemy = static_cast<Enemy*>(owner);
+		//character = enemy;
 	}
 
-	assert(player != nullptr || enemy != nullptr);
+	character = static_cast<Character*>(owner);
+	//assert(player != nullptr || enemy != nullptr);
+
+	// Populate allMoves
+	//allMoves
 }
 
 CombatManager::~CombatManager()
@@ -94,12 +89,13 @@ void CombatManager::Update(float dT)
 			}
 		}*/
 
-		if (isAimming && companion->ActiveSelf)
+		if (isAimming && companion->ActiveSelf())
 		{
 			compPos = companion->GetPosition();
 			companion->SetActive(false);
 		}
-		else if (!isAimming && !companion->ActiveSelf && !swordGunAttack)
+		else if (isAimming == false && companion->ActiveSelf() == false 
+			&& swordGunAttack == false)
 		{
 			companion->SetActive(true);
 		}
@@ -109,11 +105,11 @@ void CombatManager::Update(float dT)
 	//*******************************************************************
 }
 
-/*
-public void SetChar(Character _char)
+
+void  CombatManager::SetEnemyList(std::vector<Character*>* _enemyList)
 {
-	m_char = _char;
-}*/
+	enemyList = _enemyList;
+}
 
 
 // Update the character's state
@@ -145,7 +141,7 @@ bool CombatManager::UpdateState(float stateTimer, float dT)
 	{
 		if (stateTimer < hitTime)
 		{
-			player->CurrentState(kHit);
+			character->CurrentState(kHit);
 			animationParameter = hitAnimationInfo;
 			int power = hitAnimationInfo % 10;
 			if ((HitPower)power == kPowerful)
@@ -153,11 +149,11 @@ bool CombatManager::UpdateState(float stateTimer, float dT)
 				int hitDirection = (hitAnimationInfo / 10) % 10;
 				if (hitDirection >= 2)
 				{
-					m_char.ForceMove(hitMaxWalkSpeed * 0.5f, hitDirection);
+					character->ForceMove(hitMaxWalkSpeed * 0.5f, dT, hitDirection);
 				}
 				else
 				{
-					m_char.ForceMove(hitMaxWalkSpeed, hitDirection);
+					character->ForceMove(hitMaxWalkSpeed, dT, hitDirection);
 				}
 			}
 			else if ((HitPower)power == kKO)
@@ -166,10 +162,10 @@ bool CombatManager::UpdateState(float stateTimer, float dT)
 			}
 			if (resetHit)
 			{
-				m_char.LastState = Character.CharacterState.none;
+				character->LastState(kNoState);
 				resetHit = false;
 			}
-			m_char.AnimationParameter = animationParameter;
+			character->AnimationParameter(animationParameter);
 		}
 		else
 		{
@@ -177,7 +173,7 @@ bool CombatManager::UpdateState(float stateTimer, float dT)
 			stateTimer = -1;
 
 			isAttacking = false;
-			m_char.HasEffect = false;
+			character->HasEffect(false);
 			comboTimer = 0;
 		}
 
@@ -188,28 +184,18 @@ bool CombatManager::UpdateState(float stateTimer, float dT)
 }
 
 // Hit a character with an attack
-void CombatManager::Hit(HitPosition pos, HitDirection dir, HitPower power, float hitTime, float dmg, float delay = 0, bool dmgDelay = false)
+void CombatManager::Hit(HitPosition pos, HitDirection dir, HitPower power, float _hitTime, float dmg)
 {
-	//
 	isHit = true;
-	m_char.StateTimer = 0;
+	character->StateTimer(0);
 	inCombat = true;
 	inCombatTimer = inCombatDuration;
 	hitAnimationInfo = (int)pos * 100 + (int)dir * 10 + (int)power;
-	HitTime = hitTime;
+	hitTime = _hitTime;
 	resetHit = true;
 
 	// Does damage based on what attack
-	if (!dmgDelay)
-	{
-		this.GetComponent<Humanoid>().TakeDamag(dmg);
-	}
-	else
-	{
-		StartCoroutine(DelayBeforeDamage(delay, dmg));
-	}
-
-	//Debug.Log(gameObject.name + ": Takes " + dmg + " damage");
+	character->TakeDamage(dmg);
 
 	isAttacking = false;
 	isRolling = false;
@@ -225,7 +211,7 @@ void CombatManager::BasicCombo()
 	//if can attack
 	//if with in combat timer
 	//NextCombat()
-	if (!canAttack)
+	if (!GetCanAttack())
 	{
 		return;
 	}
@@ -242,7 +228,7 @@ void CombatManager::BasicCombo()
 
 void CombatManager::SpecialCombat()
 {
-	if (!canAttack)
+	if (!GetCanAttack())
 	{
 		return;
 	}
@@ -261,7 +247,7 @@ void CombatManager::SpecialCombat()
 // Gun Shooting
 void CombatManager::GunShot()
 {
-	if (!canAttack || !isAimming || aimTarget == null)
+	if (!GetCanAttack() || !isAimming || aimTarget == nullptr)
 	{
 		return;
 	}
@@ -270,9 +256,9 @@ void CombatManager::GunShot()
 	{
 		swordGunAttack = true;
 		//gun.SetActive(true);
-		combatAudio.clip = gunShotFX;
-		combatAudio.PlayDelayed(0.5f);
-		currentCombat = Combat.Gun_Shoot;
+		//combatAudio.clip = gunShotFX;
+		//combatAudio.PlayDelayed(0.5f);
+		currentCombat = kGunShoot;
 
 		// Because of None in the Enum, subtract by 1.
 		CombatMoveDetails currentMoveDetails = allMoves[(int)currentCombat - 1];
@@ -281,16 +267,16 @@ void CombatManager::GunShot()
 		currentEffectTime = currentMoveDetails.ET;
 		currentEffetDistance = currentMoveDetails.ED;
 		currentDmgAmount = currentMoveDetails.Dmg;
-		currentDirection = currentMoveDetails.Dir;
-		currentPower = currentMoveDetails.Power;
-		currentHitPos = currentMoveDetails.Pos;
+		currentDirection = currentMoveDetails.dir;
+		currentPower = currentMoveDetails.power;
+		currentHitPos = currentMoveDetails.pos;
 		currentHitTime = currentMoveDetails.HT;
 
 		attackDuration = currentAttackTime;
 		Shoot();
 
 		// TODO Modify hit dir later
-		aimTarget.m_combat.Hit(aimTarget.m_combat.currentHitPos, HitDirection.backward, currentPower, currentHitTime, currentDmgAmount, 0.5f, true);
+		aimTarget->GetCombatManager()->Hit(aimTarget->GetCombatManager()->GetCurrentHitPos(), kHitBackward, currentPower, currentHitTime, currentDmgAmount);
 	}
 }
 
@@ -300,7 +286,7 @@ void CombatManager::SwordCombo()
 	//if can attack
 	//if with in combat timer
 	//NextCombat()
-	if (!canAttack)
+	if (!GetCanAttack())
 	{
 		return;
 	}
@@ -308,7 +294,7 @@ void CombatManager::SwordCombo()
 	if (CheckTarget())
 	{
 		Attack();
-		m_char.GetComponent<PC>().UseSpecial(25, true);
+		character->UseSpecial(25, true, false);
 	}
 	else
 	{
@@ -318,7 +304,7 @@ void CombatManager::SwordCombo()
 
 void CombatManager::SwordSpecialCombat()
 {
-	if (!canAttack)
+	if (!GetCanAttack())
 	{
 		return;
 	}
@@ -326,7 +312,7 @@ void CombatManager::SwordSpecialCombat()
 	if (CheckTarget())
 	{
 		Attack();
-		m_char.GetComponent<PC>().UseSpecial(50, true);
+		character->UseSpecial(50, true, false);
 	}
 	else
 	{
@@ -341,7 +327,7 @@ void CombatManager::Attack()
 	inCombat = true;
 	inCombatTimer = inCombatDuration;
 	isAttacking = true;
-	m_char.StateTimer = 0;
+	character->StateTimer(0);
 	resetAttack = true;
 }
 
@@ -351,116 +337,120 @@ void CombatManager::Shoot()
 	inCombat = true;
 	inCombatTimer = inCombatDuration;
 	isAttacking = true;
-	m_char.StateTimer = 0;
+	character->StateTimer(0);
 	resetAttack = true;
 
 	// Update UI
-	m_char.GetComponent<PC>().Shoot();
+	character->UseSpecial(33, false, true);
+
 }
 
 void CombatManager::Effect()
 {
-
-	if (currentTarget != null && currentTarget.tag != "Ghost")
+	// TODO change to a char[] comp later, maybe?
+	if (currentTarget != nullptr &&  currentTarget->GetTag() != "Ghost")
 	{
-
-		float distance = Vector3.Distance(m_char.charBody.transform.position, currentTarget.charBody.transform.position);
-		HitDirection dir = HitDirection.forward;
+		float distance = math::distance(character->GetPosition(), currentTarget->GetPosition());
+		HitDirection dir = kHitForward;
 
 		if (distance <= currentEffetDistance)
 		{
-			float angleFB = Vector3.Angle(currentTarget.charBody.transform.position - m_char.charBody.transform.position, currentTarget.charBody.transform.forward);
-			float angleLR = Vector3.Angle(currentTarget.charBody.transform.position - m_char.charBody.transform.position, currentTarget.charBody.transform.right);
+			//float angleFB = Vector3.Angle(currentTarget.charBody.transform.position - character->charBody.transform.position, currentTarget.charBody.transform.forward);
+			//float angleLR = Vector3.Angle(currentTarget.charBody.transform.position - character->charBody.transform.position, currentTarget.charBody.transform.right);
+
+			float angleFB = math::angleBetween(currentTarget->GetPosition() - character->GetPosition(), currentTarget->GetForward());
+			float angleLR = math::angleBetween(currentTarget->GetPosition() - character->GetPosition(), currentTarget->GetRight());
 			if (angleFB <= 45)
 			{
-				dir = HitDirection.backward;
+				dir = kHitBackward;
 			}
 			else if (angleFB >= 135)
 			{
-				dir = HitDirection.forward;
+				dir = kHitForward;
 			}
 			else
 			{
 				if (angleLR <= 45)
 				{
-					dir = HitDirection.left;
+					dir = kHitLeft;
 				}
 				else if (angleLR >= 135)
 				{
-					dir = HitDirection.right;
+					dir = kHitRight;
 				}
 			}
-			if (currentDirection == CombatDirection.right)
+			if (currentDirection == kDirRight)
 			{
-				if (dir == HitDirection.forward)
+				if (dir == kHitForward)
 				{
-					dir = HitDirection.left;
+					dir = kHitLeft;
 				}
-				else if (dir == HitDirection.backward)
+				else if (dir == kHitBackward)
 				{
-					dir = HitDirection.right;
+					dir = kHitRight;
 				}
-				else if (dir == HitDirection.left)
+				else if (dir == kHitLeft)
 				{
-					dir = HitDirection.backward;
+					dir = kHitBackward;
 				}
-				else if (dir == HitDirection.right)
+				else if (dir == kHitRight)
 				{
-					dir = HitDirection.forward;
+					dir = kHitForward;
 				}
 			}
-			else if (currentDirection == CombatDirection.left)
+			else if (currentDirection == kDirLeft)
 			{
-				if (dir == HitDirection.forward)
+				if (dir == kHitForward)
 				{
-					dir = HitDirection.right;
+					dir = kHitRight;
 				}
-				else if (dir == HitDirection.backward)
+				else if (dir == kHitBackward)
 				{
-					dir = HitDirection.left;
+					dir = kHitLeft;
 				}
-				else if (dir == HitDirection.left)
+				else if (dir == kHitLeft)
 				{
-					dir = HitDirection.forward;
+					dir = kHitForward;
 				}
-				else if (dir == HitDirection.right)
+				else if (dir == kHitRight)
 				{
-					dir = HitDirection.backward;
+					dir = kHitBackward;
 				}
 			}
 
 			// If attack is a sword attack, hit multiple enemies
-			if (currentCombat == Combat.Sword_Attack_R || currentCombat == Combat.Sword_Attack_RL ||
-				currentCombat == Combat.Sword_Attack_Combo_LL)
+			if (currentCombat == kSwordAttackR || currentCombat == kSwordAttackRL ||
+				currentCombat == kSwordAttackComboLL)
 			{
-				foreach(GameObject obj in enemyList)
+				for (uint32_t i = 0; i < enemyList->size(); i++)
 				{
-					if (Vector3.Distance(obj.transform.position, gameObject.transform.position) <
+					if (math::distance(enemyList->at(i)->GetPosition() , character->GetPosition()) <
 						allMoves[(int)currentCombat - 1].ED)
 					{
-						obj.GetComponent<CombatManager>().Hit(currentTarget.m_combat.currentHitPos, dir, currentPower, currentHitTime, currentDmgAmount, 0.5f, true);
+						enemyList->at(i)->GetCombatManager()->Hit(enemyList->at(i)->GetCombatManager()->GetCurrentHitPos(), dir, currentPower, currentHitTime, currentDmgAmount);
 					}
 				}
 			}
 			else
 			{
-				currentTarget.m_combat.Hit(currentTarget.m_combat.currentHitPos, dir, currentPower, currentHitTime, currentDmgAmount, 0.5f, true);
+				currentTarget->GetCombatManager()->Hit(currentTarget->GetCombatManager()->GetCurrentHitPos(), dir, currentPower, currentHitTime, currentDmgAmount);
 			}
 		}
 
 	}
 }
 
+// Check the target
 bool CombatManager::CheckTarget()
 {
-	if (currentTarget == null)
+	if (currentTarget == nullptr)
 	{
 		return true;
 	}
 	else
 	{
-		float distance = Vector3.Distance(m_char.charBody.transform.position, currentTarget.charBody.transform.position);
-		float angle = Vector3.Angle(currentTarget.charBody.transform.position - m_char.charBody.transform.position, m_char.charBody.transform.forward);
+		float distance = math::distance(character->GetPosition(), currentTarget->GetPosition());
+		float angle = math::angleBetween(currentTarget->GetPosition() - character->GetPosition(), character->GetForward());
 
 		if (distance < adjustMinDistance && angle < adjustAgle)
 		{
@@ -481,14 +471,14 @@ bool CombatManager::CheckTarget()
 // Check to see if the player has a valid ranged target
 bool CombatManager::CheckRangeTarget()
 {
-	if (aimTarget == null)
+	if (aimTarget == nullptr)
 	{
 		return false;
 	}
 	else
 	{
-		float distance = Vector3.Distance(m_char.charBody.transform.position, aimTarget.charBody.transform.position);
-		//float angle = Vector3.Angle(currentTarget.charBody.transform.position - m_char.charBody.transform.position, m_char.charBody.transform.forward);
+		float distance = math::distance(character->GetPosition(), aimTarget->GetPosition());
+		//float angle = Vector3.Angle(currentTarget.charBody.transform.position - character->charBody.transform.position, character->charBody.transform.forward);
 
 		if (distance < minShotDistance)
 		{
@@ -510,30 +500,30 @@ void CombatManager::Adjust()
 	isAdjusting = true;
 }
 
-void Dodge(int dir)
+void CombatManager::Dodge(int dir)
 {
-	if (!canDodge)
+	if (!GetCanDodge())
 	{
 		return;
 	}
 	dodgeDirection = dir;
-	m_char.StateTimer = 0;
+	character->StateTimer(0);
 	isDodging = true;
 }
 
 void CombatManager::Roll()
 {
-	if (!canRoll)
+	if (!GetCanRoll())
 	{
 		return;
 	}
-	m_char.StateTimer = 0;
+	character->StateTimer(0);
 	isRolling = true;
 }
 
 void CombatManager::AimMove(int dir)
 {
-	if (!canMove)
+	if (!GetCanMove())
 	{
 		return;
 	}
@@ -545,18 +535,17 @@ void CombatManager::PerformAction(Combat _input)
 {
 	currentCombat = _input;
 	// TODO: A Variable for the Sound in the CombatMoveDetails Struct.
-	combatAudio.PlayOneShot(punchFX);
+	//combatAudio.PlayOneShot(punchFX);
 
 	// Remove 1 from the current combat because of the None in the Enum.
 	CombatMoveDetails currentMoveDetails = allMoves[(int)currentCombat - 1];
-	Debug.Log(currentCombat + " " + currentMoveDetails.name);
 	currentAttackTime = currentMoveDetails.AT;
 	currentEffectTime = currentMoveDetails.ET;
 	currentEffetDistance = currentMoveDetails.ED;
 	currentDmgAmount = currentMoveDetails.Dmg;
-	currentDirection = currentMoveDetails.Dir;
-	currentPower = currentMoveDetails.Power;
-	currentHitPos = currentMoveDetails.Pos;
+	currentDirection = currentMoveDetails.dir;
+	currentPower = currentMoveDetails.power;
+	currentHitPos = currentMoveDetails.pos;
 	currentHitTime = currentMoveDetails.HT;
 
 	Attack();
@@ -565,92 +554,91 @@ void CombatManager::PerformAction(Combat _input)
 
 void CombatManager::NextCombat()
 {
-	if (currentCombat == Combat.none)
+	if (currentCombat == kNone)
 	{
-		combatAudio.PlayOneShot(punchFX);
-		currentCombat = Combat.punch_Jab_L;
+		//combatAudio.PlayOneShot(punchFX);
+		currentCombat = kPunchJabL;
 	}
-	else if (currentCombat == Combat.punch_Jab_L)
+	else if (currentCombat == kPunchJabL)
 	{
-		combatAudio.PlayOneShot(punchFX);
-		currentCombat = Combat.punch_Jab_R;
+		//combatAudio.PlayOneShot(punchFX);
+		currentCombat = kPunchJabR;
 	}
-	else if (currentCombat == Combat.punch_Jab_R)
+	else if (currentCombat == kPunchJabR)
 	{
-		combatAudio.PlayOneShot(punchFX);
-		currentCombat = Combat.punch_Hook_L;
+		//combatAudio.PlayOneShot(punchFX);
+		currentCombat = kPunchHookL;
 	}
-	else if (currentCombat == Combat.punch_Hook_L)
+	else if (currentCombat == kPunchHookL)
 	{
-		combatAudio.PlayOneShot(punchFX);
-		currentCombat = Combat.punch_Hook_R;
+		//combatAudio.PlayOneShot(punchFX);
+		currentCombat = kPunchHookR;
 	}
-	else if (currentCombat == Combat.punch_Hook_R)
+	else if (currentCombat == kPunchHookR)
 	{
-		combatAudio.PlayOneShot(punchFX);
-		currentCombat = Combat.kick_Straight_Mid_R;
+		//combatAudio.PlayOneShot(punchFX);
+		currentCombat = kKickStraightMidR;
 	}
-	else if (currentCombat == Combat.kick_Straight_Mid_R)
+	else if (currentCombat == kKickStraightMidR)
 	{
-		combatAudio.PlayOneShot(kickFX);
-		currentCombat = Combat.punch_Jab_L;
+		//combatAudio.PlayOneShot(kickFX);
+		currentCombat = kPunchJabL;
 	}
 	else
 	{
-		combatAudio.PlayOneShot(punchFX);
-		currentCombat = Combat.punch_Jab_L;
+		//combatAudio.PlayOneShot(punchFX);
+		currentCombat = kPunchJabL;
 	}
 
 	// Because of None in the Enum, subtract by 1.
 	CombatMoveDetails currentMoveDetails = allMoves[(int)currentCombat - 1];
-	//Debug.Log(currentCombat + " " + currentMoveDetails.name);
 	currentAttackTime = currentMoveDetails.AT;
 	currentEffectTime = currentMoveDetails.ET;
 	currentEffetDistance = currentMoveDetails.ED;
 	currentDmgAmount = currentMoveDetails.Dmg;
-	currentDirection = currentMoveDetails.Dir;
-	currentPower = currentMoveDetails.Power;
-	currentHitPos = currentMoveDetails.Pos;
+	currentDirection = currentMoveDetails.dir;
+	currentPower = currentMoveDetails.power;
+	currentHitPos = currentMoveDetails.pos;
 	currentHitTime = currentMoveDetails.HT;
 
 }
 
 void CombatManager::NextSpecial()
 {
-	if (currentCombat == Combat.none)
+	if (currentCombat == kNone)
 	{
-		combatAudio.PlayOneShot(kickFX);
-		currentCombat = Combat.kick_AxeKick;
+		//combatAudio.PlayOneShot(kickFX);
+		currentCombat = kKickAxeKick;
 	}
-	else if (currentCombat == Combat.punch_Jab_L)
+	else if (currentCombat == kPunchJabL)
 	{
-		combatAudio.PlayOneShot(kickFX);
-		currentCombat = Combat.kick_AxeKick;
+		//combatAudio.PlayOneShot(kickFX);
+		currentCombat = kKickAxeKick;
 	}
-	else if (currentCombat == Combat.punch_Jab_R)
+	else if (currentCombat == kPunchJabR)
 	{
-		combatAudio.PlayOneShot(kickFX);
-		currentCombat = Combat.kick_AxeKick;
+		//combatAudio.PlayOneShot(kickFX);
+		currentCombat = kKickAxeKick;
 	}
-	else if (currentCombat == Combat.punch_Hook_L)
+	else if (currentCombat == kPunchHookL)
 	{
-		combatAudio.PlayOneShot(kickFX);
-		currentCombat = Combat.kick_AxeKick;
+		//combatAudio.PlayOneShot(kickFX);
+		currentCombat = kKickAxeKick;
 	}
-	else if (currentCombat == Combat.punch_Hook_R)
+	else if (currentCombat == kPunchHookR)
 	{
-		combatAudio.PlayOneShot(kickFX);
-		currentCombat = Combat.kick_AxeKick;
+		//combatAudio.PlayOneShot(kickFX);
+		currentCombat = kKickAxeKick;
 	}
-	else if (currentCombat == Combat.kick_Straight_Mid_R)
+	else if (currentCombat == kKickStraightMidR)
 	{
-		combatAudio.PlayOneShot(kickFX);
-		currentCombat = Combat.kick_HorseKick;
+		//combatAudio.PlayOneShot(kickFX);
+		currentCombat = kKickHorseKick;
 	}
 	else
 	{
-		combatAudio.PlayOneShot(kickFX);
-		currentCombat = Combat.kick_AxeKick;
+		//combatAudio.PlayOneShot(kickFX);
+		currentCombat = kKickAxeKick;
 	}
 
 	// Again reduce by 1 because of enum definition.
@@ -660,9 +648,9 @@ void CombatManager::NextSpecial()
 	currentEffectTime = currentMoveDetails.ET;
 	currentEffetDistance = currentMoveDetails.ED;
 	currentDmgAmount = currentMoveDetails.Dmg;
-	currentDirection = currentMoveDetails.Dir;
-	currentPower = currentMoveDetails.Power;
-	currentHitPos = currentMoveDetails.Pos;
+	currentDirection = currentMoveDetails.dir;
+	currentPower = currentMoveDetails.power;
+	currentHitPos = currentMoveDetails.pos;
 	currentHitTime = currentMoveDetails.HT;
 }
 
@@ -670,20 +658,20 @@ void CombatManager::NextSpecial()
 // Sword Attack
 void CombatManager::NextSwordCombat()
 {
-	if (currentCombat == Combat.none)
+	if (currentCombat == kNone)
 	{
-		combatAudio.PlayOneShot(swordFX);
-		currentCombat = Combat.Sword_Attack_R;
+		//combatAudio.PlayOneShot(swordFX);
+		currentCombat = kSwordAttackR;
 	}
-	else if (currentCombat == Combat.Sword_Attack_R)
+	else if (currentCombat == kSwordAttackR)
 	{
-		combatAudio.PlayOneShot(swordFX);
-		currentCombat = Combat.Sword_Attack_RL;
+		//combatAudio.PlayOneShot(swordFX);
+		currentCombat = kSwordAttackRL;
 	}
 	else
 	{
-		combatAudio.PlayOneShot(swordFX);
-		currentCombat = Combat.Sword_Attack_R;
+		//combatAudio.PlayOneShot(swordFX);
+		currentCombat = kSwordAttackR;
 	}
 
 	// Reduce by 1 because of enum.
@@ -693,59 +681,60 @@ void CombatManager::NextSwordCombat()
 	currentEffectTime = currentMoveDetails.ET;
 	currentEffetDistance = currentMoveDetails.ED;
 	currentDmgAmount = currentMoveDetails.Dmg;
-	currentDirection = currentMoveDetails.Dir;
-	currentPower = currentMoveDetails.Power;
-	currentHitPos = currentMoveDetails.Pos;
+	currentDirection = currentMoveDetails.dir;
+	currentPower = currentMoveDetails.power;
+	currentHitPos = currentMoveDetails.pos;
 	currentHitTime = currentMoveDetails.HT;
 
-	sword.SetActive(true);
-	compPos = companion.transform.position;
-	companion.SetActive(false);
+	// TODO
+	//sword.SetActive(true);
+	compPos = companion->GetPosition();
+	//companion.SetActive(false);
 	swordGunAttack = true;
 	attackDuration = currentAttackTime;
 }
 
 void CombatManager::NextSwordSpecial()
 {
-	if (currentCombat == Combat.none)
+	if (currentCombat == kNone)
 	{
-		combatAudio.PlayOneShot(swordFX);
-		currentCombat = Combat.Sword_Attack_Combo_LL;
+		//combatAudio.PlayOneShot(swordFX);
+		currentCombat = kSwordAttackComboLL;
 	}
-	else if (currentCombat == Combat.punch_Jab_L)
+	else if (currentCombat == kPunchJabL)
 	{
-		combatAudio.PlayOneShot(swordFX);
-		currentCombat = Combat.Sword_Attack_Sp_U;
+		//combatAudio.PlayOneShot(swordFX);
+		currentCombat = kSwordAttackSpU;
 	}
-	else if (currentCombat == Combat.punch_Jab_R)
+	else if (currentCombat == kPunchJabR)
 	{
-		combatAudio.PlayOneShot(swordFX);
-		currentCombat = Combat.Sword_Attack_Sp_U;
+		//combatAudio.PlayOneShot(swordFX);
+		currentCombat = kSwordAttackSpU;
 	}
-	else if (currentCombat == Combat.punch_Hook_L)
+	else if (currentCombat == kPunchHookL)
 	{
-		combatAudio.PlayOneShot(swordFX);
-		currentCombat = Combat.Sword_Attack_Sp_U;
+		//combatAudio.PlayOneShot(swordFX);
+		currentCombat = kSwordAttackSpU;
 	}
-	else if (currentCombat == Combat.punch_Hook_R)
+	else if (currentCombat == kPunchHookR)
 	{
-		combatAudio.PlayOneShot(swordFX);
-		currentCombat = Combat.Sword_Attack_Sp_U;
+		//combatAudio.PlayOneShot(swordFX);
+		currentCombat = kSwordAttackSpU;
 	}
-	else if (currentCombat == Combat.kick_Straight_Mid_R)
+	else if (currentCombat == kKickStraightMidR)
 	{
-		combatAudio.PlayOneShot(swordFX);
-		currentCombat = Combat.Sword_Attack_Sp_U;
+		//combatAudio.PlayOneShot(swordFX);
+		currentCombat = kSwordAttackSpU;
 	}
-	else if (currentCombat == Combat.Sword_Attack_RL)
+	else if (currentCombat == kSwordAttackRL)
 	{
-		combatAudio.PlayOneShot(swordFX);
-		currentCombat = Combat.Sword_Attack_Sp_U;
+		//combatAudio.PlayOneShot(swordFX);
+		currentCombat = kSwordAttackSpU;
 	}
 	else
 	{
-		combatAudio.PlayOneShot(swordFX);
-		currentCombat = Combat.Sword_Attack_Combo_LL;
+		//combatAudio.PlayOneShot(swordFX);
+		currentCombat = kSwordAttackComboLL;
 	}
 
 	// 
@@ -755,14 +744,15 @@ void CombatManager::NextSwordSpecial()
 	currentEffectTime = currentMoveDetails.ET;
 	currentEffetDistance = currentMoveDetails.ED;
 	currentDmgAmount = currentMoveDetails.Dmg;
-	currentDirection = currentMoveDetails.Dir;
-	currentPower = currentMoveDetails.Power;
-	currentHitPos = currentMoveDetails.Pos;
+	currentDirection = currentMoveDetails.dir;
+	currentPower = currentMoveDetails.power;
+	currentHitPos = currentMoveDetails.pos;
 	currentHitTime = currentMoveDetails.HT;
 
-	sword.SetActive(true);
-	compPos = companion.transform.position;
-	companion.SetActive(false);
+	// TODO
+	//sword.SetActive(true);
+	compPos = companion->GetPosition();
+	//companion.SetActive(false);
 	swordGunAttack = true;
 	attackDuration = currentAttackTime;
 }

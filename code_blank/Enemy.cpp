@@ -1,15 +1,20 @@
 #include "Enemy.h"
+#include <PhysicsSystem.h>
 #include <RenderingComponent.h>
 
 using namespace tofu;
 
-Enemy::Enemy(tofu::math::float3 pos)
+Enemy::Enemy(CharacterDetails details, void* comp)
 {
+	Init(false, nullptr);
+
+	tag = details.tag;
+
 	{
 		Entity e = Entity::Create();
 
 		tEnemy = e.AddComponent<TransformComponent>();
-		tEnemy->SetLocalPosition(pos);
+		tEnemy->SetLocalPosition(details.position);
 		tEnemy->SetLocalScale(math::float3{ 0.01f, 0.01f, 0.01f });
 
 		RenderingComponent r = e.AddComponent<RenderingComponent>();
@@ -24,6 +29,10 @@ Enemy::Enemy(tofu::math::float3 pos)
 		idle->animationName = "idle";
 		AnimationState *walk = stateMachine->AddState("walk");
 		walk->animationName = "walk";
+		AnimationState *jump = stateMachine->AddState("jump");
+		jump->animationName = "jump";
+		AnimationState *run = stateMachine->AddState("run");
+		run->animationName = "run";
 
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaqueSkinned);
 		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");
@@ -40,28 +49,55 @@ Enemy::Enemy(tofu::math::float3 pos)
 		pEnemy->LockRotation(true, false, true);
 		pEnemy->SetCapsuleCollider(0.5f, 1.0f);
 		pEnemy->SetColliderOrigin(math::float3{ 0.0f, 1.0f, 0.0f });
+
+		SetComponents(tEnemy, pEnemy, aEnemy);
 	}
 
 	walkSpeed = 2.0f;
 	dashSpeed = 4.0f;
+
+	jumpPower = 4.0f;
+
+	stateTimer = 0;
+
+	physics = tofu::PhysicsSystem::instance();
+
+	//combatManager = new CombatManager(true, comp, this);
+
+	gEnemy = new GameplayAnimationMachine(aEnemy, combatManager);
+
+
+	//rigidbody = GetComponent<Rigidbody>();
+	//rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
+	origGroundCheckDistance = groundCheckDistance;
+	charBodyRotation = tEnemy->GetWorldRotation(); //charBody.transform.rotation;
+	rotation = charBodyRotation; //m_Rigidbody.transform.rotation;
+	turnMod = 90.0f / 200.0f;
 }
 
 Enemy::~Enemy() {}
 
-void Enemy::Update()
+void Enemy::Update(float dT)
 {
-	inAir = !pEnemy->IsCollided();
-
-	// TODO
-	// Handle the reset of dashing here
+	Character::Update(dT);
+	//combatManager->Update(dT);
 }
+
+void Enemy::UpdateState(float dT)
+{
+
+}
+
+
+
+
 
 // TODO
 // Change as needed, this is really only a temp function for testing
 // Enemy Movement
-void Enemy::Move(float dT, bool jump, math::float3 inputDir)
+void Enemy::MoveEnemy(float dT, bool jump, math::float3 inputDir)
 {
-	Update();
+	Update(dT);
 
 	if (math::length(inputDir) > 0.25f)
 	{
@@ -111,30 +147,23 @@ void Enemy::Move(float dT, bool jump, math::float3 inputDir)
 //-------------------------------------------------------------------------------------------------
 // Enemy Actions
 
+// Aim at Player
+void Enemy::Aim()
+{
+
+}
+
+
 // Attack (Uses a combo system)
 void Enemy::Attack()
 {
 	// TODO
 }
 
-// Dash forward (move faster)
-void Enemy::Dash()
+// Kill off the enmey by turning it off and hiding it
+void Enemy::Die()
 {
-	// TODO
-	// Set dashing to true if cool allows
-	isDashing = true;
-}
 
-// Dodge, in the current Enemy direction
-void Enemy::Dodge()
-{
-	// TODO
-}
-
-// Combo Special move (Sword/Gun)
-void Enemy::Special()
-{
-	// TODO
 }
 
 
@@ -146,20 +175,3 @@ void Enemy::Special()
 //-------------------------------------------------------------------------------------------------
 // Getters
 
-// Is the Enemy in air
-bool Enemy::IsInAir()
-{
-	return inAir;
-}
-
-// Return Enemy Position
-tofu::math::float3 Enemy::GetPosition()
-{
-	return tEnemy->GetLocalPosition();
-}
-
-// Return Enemy Forward
-tofu::math::float3 Enemy::GetForward()
-{
-	return tEnemy->GetForwardVector();
-}

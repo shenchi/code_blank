@@ -1,7 +1,8 @@
 #pragma once
 #include <AnimationComponent.h>
 #include "GameplayDS.h"
-#include "CombatManager.h"
+
+class CombatManager;
 
 class GameplayAnimationMachine
 {

@@ -123,6 +123,12 @@ namespace tofu
 			};
 		}
 
+		TF_INLINE float angleBetween(const float3& a, const float3& b)
+		{
+			glm::vec3 origin = { 0,0,0 };
+			return glm::acos(glm::dot(glm::normalize(a - origin), glm::normalize(b - origin)));
+		}
+
 #else
 
 		template<typename T>

@@ -3,6 +3,7 @@
 #include <PhysicsComponent.h>
 #include <TransformComponent.h>
 #include <AnimationComponent.h>
+#include "CombatManager.h"
 #include "GameplayAnimationMachine.h"
 
 class Character
@@ -12,41 +13,68 @@ public:
 	Character();
 	~Character();
 
-	virtual void MoveReg(float, bool, tofu::math::float3, tofu::math::quat);
-	virtual void MoveAim(float, tofu::math::float3, tofu::math::quat, tofu::math::float3);
+	void Init(bool, void*);
+
+	// Virtual Functions
+	//virtual void MoveReg(float, bool, tofu::math::float3, tofu::math::quat);
+	//virtual void MoveAim(float, tofu::math::float3, tofu::math::quat, tofu::math::float3);
+	//virtual void MoveEnemy(float, bool, tofu::math::float3);
 	virtual void Update(float);
-	virtual void UpdateState();
+	virtual void UpdateState(float);
 
 	virtual void Aim();
-	virtual void AnimationParameter(int _animationParameter);
 	virtual void Attack();
-	virtual void CheckGroundStatus();
-	virtual void CurrentState(CharacterState _currentState);
 	virtual void Dodge();
-	virtual void ForceMove(float, float, int);
-	virtual void ForceMove(float, float, tofu::math::float3);
-	virtual void HasEffect(bool _hasEffect);
-	virtual void HandleAirborneMovement(float, float);
-	virtual void HandleGroundedMovement(bool);
-	virtual void LastState(CharacterState _lastState);
-	virtual void Special();
-	virtual void Sprint(bool);
-	virtual void StateTimer(float _stateTimer);
+	virtual void Die();
 
-	virtual bool HasEffect();
+	void AnimationParameter(int _animationParameter);
+	
+	void CheckGroundStatus();
+	void CurrentState(CharacterState _currentState);
+	
+	void HasEffect(bool _hasEffect);
+	void HandleAirborneMovement(tofu::math::float3);
+	void HandleGroundedMovement(bool);
+	void LastState(CharacterState _lastState);
+	virtual void Special(float, bool, bool);
+	void Sprint(bool);
+	void StateTimer(float _stateTimer);
+
+	bool HasEffect();
 	virtual bool IsDead();
 	virtual bool IsGrounded();
-	virtual bool IsInAir();
 
-	virtual float StateTimer();
+	float StateTimer();
 
-	virtual tofu::math::float3 GetPosition();
-	virtual tofu::math::float3 GetForward();
+	CharacterState CurrentState();
+	CharacterState LastState();
 
-	virtual CharacterState CurrentState();
-	virtual CharacterState LastState();
+	// Shared Functions
+
+	void ForceMove(float, float, int);
+	void ForceMove(float, float, tofu::math::float3);
+
+	void TakeDamage(float);
+
+	void UseSpecial(float, bool, bool);
+
+	CombatManager* GetCombatManager();
+	std::string GetTag();
+	tofu::math::float3 GetPosition();
+	tofu::math::float3 GetForward();
+	tofu::math::float3 GetRight();
+
+
+	void SetComponents(tofu::TransformComponent, tofu::PhysicsComponent, tofu::AnimationComponent);
 
 protected:
+
+	std::string tag;
+
+	tofu::TransformComponent	tCharacter;
+	tofu::PhysicsComponent		pCharacter;
+	tofu::AnimationComponent	aCharacter;
+	tofu::PhysicsSystem*		physics;
 
 	CombatManager*				combatManager;
 
@@ -56,7 +84,6 @@ protected:
 
 	// Movement
 	float speed;
-	bool inAir;
 	bool isSprinting;
 
 	// Player Stats

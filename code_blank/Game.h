@@ -1,8 +1,9 @@
 #pragma once
 
 #include <Tofu.h>
-#include "Camera.h"
+#include "Character.h"
 #include "PController.h"
+#include "Camera.h"
 #include "Enemy.h"
 
 // Game: The main game loop.
@@ -37,6 +38,8 @@ private:
 	Player* player;
 	Companion* comp;
 	PController* pControl;
+
+	std::vector<Character*>* enemyList;
 
 	enum sceneType
 	{
