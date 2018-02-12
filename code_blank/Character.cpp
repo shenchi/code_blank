@@ -11,9 +11,9 @@ Character::~Character()
 {
 }
 
-void Character::Init(bool isPlayer, void* comp)
+void Character::Init(bool isPlayer, void* comp, CombatManagerDetails combatDetails)
 {
-	combatManager = new CombatManager(isPlayer, comp, this);
+	combatManager = new CombatManager(isPlayer, comp, this, combatDetails);
 	physics = tofu::PhysicsSystem::instance();
 }
 
@@ -30,7 +30,7 @@ void Character::UpdateState(float dT)
 
 
 // Handle movement on the ground
-void Character::HandleGroundedMovement(bool _jump)
+void Character::HandleGroundedMovement(bool _jump, math::float3 move, float dT)
 {
 	// check whether conditions are right to allow a jump:
 	if (_jump && isGrounded)
@@ -43,9 +43,12 @@ void Character::HandleGroundedMovement(bool _jump)
 
 		// TODO
 		// Current jump mechanic
-		aCharacter->CrossFade(3, 0.001f);
+		//aCharacter->CrossFade(3, 0.001f);
 		pCharacter->ApplyImpulse(math::float3{ 0.0f, 4.0f, 0.0f });
 
+		//move.y = jumpPower * dT * move.y;
+
+		//tCharacter->Translate(math::float3{ move.x, 1.0f, move.z });
 		isGrounded = false;
 
 		//jump state
@@ -53,20 +56,41 @@ void Character::HandleGroundedMovement(bool _jump)
 		jump = true;
 		stateTimer = 0;
 	}
+
+	tCharacter->Translate(move);
 }//end ground movement
 
  // TODO
  // Needs fixing in the Unity version and then updated here
  // Handle airborne movement
-void Character::HandleAirborneMovement(math::float3 inputDir)
+void Character::HandleAirborneMovement(math::float3 move, float dT)
 {
+	move += 10.0f * dT * move;
+	tCharacter->Translate(move);
+
 	// apply extra gravity from multiplier:
 	//math::float3 extraGravityForce = (Physics.gravity * gravityMultiplier) - Physics.gravity;
 	//rigidbody.AddForce(extraGravityForce);
 	//rigidbody.velocity = math::float3(rigidbody.velocity.x - (inputDir.z / 10), rigidbody.velocity.y, rigidbody.velocity.z + (inputDir.x / 10));
 
 	//groundCheckDistance = m_Rigidbody.velocity.y < 0 ? origGroundCheckDistance : 0.01f;
+	
+	/*
+	math::float3 vel = pCharacter->GetVelocity();
 
+	tofu::math::float3 move;
+	if (inputDir.length > 0)
+	{
+		move = inputDir * dT * moveSpeedMultiplier;
+	}
+	else
+	{
+		move = -tCharacter->GetForwardVector() * dT * moveSpeedMultiplier;
+	}
+
+	pCharacter->SetVelocity(vel);
+	*/
+	//tCharacter->Translate(math::float3{ vel.x, 0.0f, vel.z });
 
 }//end airborne movement
 

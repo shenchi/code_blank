@@ -65,6 +65,9 @@ private:
 	
 	tofu::math::quat camRotation;
 
+	tofu::math::float3 move;
+	tofu::math::float3 lastMove;
+
 	//GameObject charBody;
 	//GameObject camera;
 

@@ -15,21 +15,26 @@ void GameplayAnimationMachine::Play(CharacterState state, uint32_t parameter, si
 	{
 	case kIdleOutCombat:
 		//aComp->CrossFade("Idle_OutCombat", 0.2f, layerMask);
+		aComp->CrossFade(0, 0.2f);
 		break;
 	case kIdleInCombat:
 		//aComp->CrossFade("Idle_InCombat", 0.2f, layerMask);
+		aComp->CrossFade(0, 0.2f); // Temp, is wrong animation
 		break;
 	case kRun:
 		if (parameter == 0)
 		{
 			//aComp->CrossFade("Run", 0.1f, layerMask);
+			aComp->CrossFade(1, 0.2f);
 		}
 		else {
 			//aComp->Play("Sprint", layerMask);
+			aComp->CrossFade(2, 0.3f);
 		}
 		break;
 	case kJumpUp:
 		//aComp->Play("Jump_Up", layerMask);
+		aComp->CrossFade(3, 0.5f);
 		break;
 	case kJumpAir:
 		//aComp->Play("Jump_Air", layerMask);

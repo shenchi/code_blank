@@ -6,7 +6,28 @@ using namespace tofu;
 
 Enemy::Enemy(CharacterDetails details, void* comp)
 {
-	Init(false, nullptr);
+
+	CombatManagerDetails combatDetails = {};
+	combatDetails.moveDir = 0;
+	combatDetails.inCombatDuration = 4.0f;
+	combatDetails.maxShotDistance = 20.0f;
+	combatDetails.minShotDistance = 2.0f;
+	combatDetails.jumpUpTime = 0.5f;
+	combatDetails.jumpAirTime = 0.3f;
+	combatDetails.jumpDownTime = 0.35f;
+	combatDetails.comboTimer = 0.0f;
+	combatDetails.maxComboTime = 2.0f;
+	combatDetails.dodgeTime = 0.0f;
+	combatDetails.rollTime = 0.5f;
+	combatDetails.rollSpeed = 3.0f;
+	combatDetails.hitTime = 1.0f;
+	combatDetails.hitMaxWalkSpeed = 1.0f;
+	combatDetails.adjustSpeed = 2.0f;
+	combatDetails.adjustMinDistance = 0.75f;
+	combatDetails.adjustMaxDistance = 2.5f;
+	combatDetails.adjustAgle = 5.0f;
+
+	Init(false, nullptr, combatDetails);
 
 	tag = details.tag;
 

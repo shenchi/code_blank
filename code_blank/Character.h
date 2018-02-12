@@ -13,7 +13,7 @@ public:
 	Character();
 	~Character();
 
-	void Init(bool, void*);
+	void Init(bool, void*, CombatManagerDetails);
 
 	// Virtual Functions
 	//virtual void MoveReg(float, bool, tofu::math::float3, tofu::math::quat);
@@ -33,8 +33,8 @@ public:
 	void CurrentState(CharacterState _currentState);
 	
 	void HasEffect(bool _hasEffect);
-	void HandleAirborneMovement(tofu::math::float3);
-	void HandleGroundedMovement(bool);
+	void HandleAirborneMovement(tofu::math::float3, float);
+	void HandleGroundedMovement(bool, tofu::math::float3, float);
 	void LastState(CharacterState _lastState);
 	virtual void Special(float, bool, bool);
 	void Sprint(bool);
@@ -125,4 +125,5 @@ protected:
 	const float kMaxSpeed = 12.0f;
 	const float kAccelerate = 6.67f;
 	const float kDeaccelerate = 10.0f;
+	const float kAirDeaccelerate = 2.0f;
 };

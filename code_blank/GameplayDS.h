@@ -105,3 +105,26 @@ struct CharacterDetails
 	tofu::math::float3	colliderOrigin;
 	// Add more as needed
 };
+
+
+struct CombatManagerDetails
+{
+	int moveDir;
+	float inCombatDuration;
+	float maxShotDistance;
+	float minShotDistance;
+	float jumpUpTime;
+	float jumpAirTime;
+	float jumpDownTime;
+	float comboTimer;
+	float maxComboTime;
+	float dodgeTime;
+	float rollTime;
+	float rollSpeed;
+	float hitTime;
+	float hitMaxWalkSpeed;
+	float adjustSpeed;
+	float adjustMinDistance;
+	float adjustMaxDistance;
+	float adjustAgle;
+};

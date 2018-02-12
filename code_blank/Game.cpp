@@ -302,27 +302,17 @@ bool Game::LoadScene(sceneType num)
 		}
 		case 6:
 		{
-			/*{
-				Material* skyboxMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeSkybox);
-				TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/craterlake.texture");
-				skyboxMat->SetTexture(tex);
-
-				cam->SetSkybox(skyboxMat);
-				cam->SetClearColor(math::float4{ 0.0f, 0.0f, 0.0f, 1.0f });
-			}*/
-
-			
 			// Setup the Scene
 			CHECKED(sceneMgr.Init());
 
 			CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial.json"));
 
-			CharacterDetails playerDetails;
+			CharacterDetails playerDetails = {};
 			playerDetails.capsuleColliderSize = { 50.0f, 100.0f };
 			playerDetails.colliderOrigin = { 0.0f, 100.0f, 0.0f };
 			playerDetails.health = 200.0f;
 			playerDetails.jumpPower = 4.0f;
-			playerDetails.position = { 53.0f, 3.0f, -38.0f };
+			playerDetails.position = { 53.0f, 1.0f, -38.0f };
 			playerDetails.scale = { 0.01f, 0.01f, 0.01f };
 			playerDetails.sprintSpeed = 10.0f;
 			playerDetails.tag = "player";
@@ -344,9 +334,6 @@ bool Game::LoadScene(sceneType num)
 			}
 			assert(player != NULL);
 
-			
-
-			
 
 			//*********************************************************************************************
 			//temp for test

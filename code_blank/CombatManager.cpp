@@ -3,9 +3,32 @@
 
 using namespace tofu;
 
-CombatManager::CombatManager(bool _isPlayer, void* _companion, void* owner)
+CombatManager::CombatManager(bool _isPlayer, void* _companion, void* owner, CombatManagerDetails details)
 {
 	isPlayer = _isPlayer;
+
+
+	moveDir = details.moveDir;
+	inCombatDuration = details.inCombatDuration;
+	maxShotDistance = details.maxShotDistance;
+	minShotDistance = details.minShotDistance;
+	jumpUpTime = details.jumpUpTime;
+	jumpAirTime = details.jumpAirTime;
+	jumpDownTime = details.jumpDownTime;
+	comboTimer = details.comboTimer;
+	maxComboTime = details.maxComboTime;
+	dodgeTime = details.dodgeTime;
+	rollTime = details.rollTime;
+	rollSpeed = details.rollSpeed;
+	hitTime = details.hitTime;
+	hitMaxWalkSpeed = details.hitMaxWalkSpeed;
+	adjustSpeed = details.adjustSpeed;
+	adjustMinDistance = details.adjustMinDistance;
+	adjustMaxDistance = details.adjustMaxDistance;
+	adjustAgle = details.adjustAgle;
+
+
+
 
 	inCombatTimer = 0;
 

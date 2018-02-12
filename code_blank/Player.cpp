@@ -6,7 +6,27 @@ using namespace tofu;
 
 Player::Player(CharacterDetails details, void* comp)
 {
-	Init(true, comp);
+	CombatManagerDetails combatDetails = {};
+	combatDetails.moveDir = 0;
+	combatDetails.inCombatDuration = 4.0f;
+	combatDetails.maxShotDistance = 20.0f;
+	combatDetails.minShotDistance = 2.0f;
+	combatDetails.jumpUpTime = 0.5f;
+	combatDetails.jumpAirTime = 0.3f;
+	combatDetails.jumpDownTime = 0.35f;
+	combatDetails.comboTimer = 0.0f;
+	combatDetails.maxComboTime = 2.0f;
+	combatDetails.dodgeTime = 0.0f;
+	combatDetails.rollTime = 0.5f;
+	combatDetails.rollSpeed = 3.0f;
+	combatDetails.hitTime = 1.0f;
+	combatDetails.hitMaxWalkSpeed = 1.0f;
+	combatDetails.adjustSpeed = 2.0f;
+	combatDetails.adjustMinDistance = 0.75f;
+	combatDetails.adjustMaxDistance = 2.5f;
+	combatDetails.adjustAgle = 5.0f;
+
+	Init(true, comp, combatDetails);
 
 	tag = details.tag;
 	{
@@ -54,7 +74,8 @@ Player::Player(CharacterDetails details, void* comp)
 		SetComponents(tPlayer, pPlayer, aPlayer);
 	}
 
-	moveSpeedMultiplier = details.walkSpeed;
+	baseSpeedMultiplier = details.walkSpeed;
+	moveSpeedMultiplier = baseSpeedMultiplier;
 	sprintSpeedMultiplier = details.sprintSpeed;
 
 	jumpPower = details.jumpPower;
@@ -72,6 +93,9 @@ Player::Player(CharacterDetails details, void* comp)
 	charBodyRotation = tPlayer->GetWorldRotation(); //charBody.transform.rotation;
 	rotation = charBodyRotation; //m_Rigidbody.transform.rotation;
 	turnMod = 90.0f / 200.0f;
+
+	move = { 0.0f, 0.0f, 0.0f };
+	lastMove = { 0.0f, 0.0f, 0.0f };
 }
 
 Player::~Player(){}
@@ -79,6 +103,7 @@ Player::~Player(){}
 void Player::Update(float dT)
 {
 	Character::Update(dT);
+	UpdateState(dT);
 	//combatManager->Update(dT);
 }
 
@@ -154,9 +179,11 @@ void Player::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camR
 void Player::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camRot)
 //void Player::MoveReg(float vert, float hori, Quaternion camRot, bool jump, bool running, bool dash, bool aiming)
 {
-
+	
 	//*****************************************************************************************
-	Update(dT);
+	//Update(dT);
+
+	move = { 0.0f, 0.0f, 0.0f };
 
 	combatManager->SetIsMoving(false);
 	moving = false;
@@ -168,8 +195,12 @@ void Player::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camR
 		return;
 	}
 
-	combatManager->SetIsMoving(true);
-	moving = true;
+
+	if (isGrounded && jump)
+	{
+		HandleGroundedMovement(jump, lastMove, dT);
+	}
+
 	/*
 	if (!charAudio.isPlaying && m_IsGrounded)
 	{
@@ -179,37 +210,31 @@ void Player::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camR
 	//calculate initial movement direction and force
 	//move = (vert * m_Rigidbody.transform.forward) + (hori * m_Rigidbody.transform.right);
 
-	//check to see if the character is running or dashing and adjust modifier
-	if (!isSprinting)
-	{
-		moveSpeedMultiplier = baseSpeedMultiplier;
-	}
-	else
-	{
-		moveSpeedMultiplier = sprintSpeedMultiplier;
-		combatManager->SetIsSprinting(true);
-	}
+	
 
 	CheckGroundStatus();
 	//move = Vector3.ProjectOnPlane(move, m_GroundNormal);
 
 	//m_Rigidbody.transform.RotateAround(m_Rigidbody.transform.position, m_Rigidbody.transform.up, charRotation);
 
-	// control and velocity handling is different when grounded and airborne:
-	if (isGrounded)
-	{
-		HandleGroundedMovement(jump);
-	}
-	else
-	{
-		HandleAirborneMovement(inputDir);
-	}
-
 	//move the character
 	if (isGrounded && dT > 0)
 	{
 		if (math::length(inputDir) > 0.25f)
 		{
+			combatManager->SetIsMoving(true);
+			moving = true;
+			//check to see if the character is running or dashing and adjust modifier
+			if (!isSprinting)
+			{
+				moveSpeedMultiplier = baseSpeedMultiplier;
+			}
+			else
+			{
+				moveSpeedMultiplier = sprintSpeedMultiplier;
+				combatManager->SetIsSprinting(true);
+			}
+
 			math::float3 moveDir = camRot * inputDir;
 			moveDir.y = 0.0f;
 			moveDir = math::normalize(moveDir);
@@ -220,31 +245,59 @@ void Player::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camR
 			if (moveSpeedMultiplier > kMaxSpeed)
 				moveSpeedMultiplier = kMaxSpeed;
 
-			tPlayer->Translate(moveDir * dT * moveSpeedMultiplier);
+			move = moveDir * dT * moveSpeedMultiplier;
+
+			//tPlayer->Translate(move);
+			//pPlayer->SetVelocity(move);
 
 			if (!isSprinting)
 			{
-				aPlayer->CrossFade(1, 0.2f);
+				//aPlayer->CrossFade(1, 0.2f);
 			}
 			else if (isSprinting)
 			{
-				aPlayer->CrossFade(2, 0.3f);
+				//aPlayer->CrossFade(2, 0.3f);
 			}
 		}
-		else if (math::length(inputDir) < 0.25f)
+		else if (math::length(inputDir) < 0.25f && dT > 0)
 		{
+			//combatManager->SetIsMoving(true);
+			//moving = true;
 			moveSpeedMultiplier -= dT * kDeaccelerate;
 			if (moveSpeedMultiplier < 0.0f) moveSpeedMultiplier = 0.0f;
 
-			tPlayer->Translate(-tPlayer->GetForwardVector() * dT * moveSpeedMultiplier); \
+			move = -tPlayer->GetForwardVector() * dT * moveSpeedMultiplier;
 
-				aPlayer->CrossFade(0, 0.2f);
+			//tPlayer->Translate(move);
+			//pPlayer->SetVelocity(move);
+
+			//aPlayer->CrossFade(0, 0.2f);
 		}
-		else
-		{
-			aPlayer->CrossFade(0, 0.2f);
-		}
+	}// End if Grounded
+	
+	else
+	{
+		moveSpeedMultiplier -= dT * kAirDeaccelerate;
+		if (moveSpeedMultiplier < 0.0f) moveSpeedMultiplier = 0.0f;
+
+		move = -tPlayer->GetForwardVector() * dT * moveSpeedMultiplier;
 	}
+
+
+	Update(dT);
+	
+
+	 // control and velocity handling is different when grounded and airborne:
+	if (isGrounded && !jump)
+	{
+		HandleGroundedMovement(jump, move, dT);
+	}
+	else
+	{
+		HandleAirborneMovement(lastMove, dT);
+	}
+
+	lastMove = move;
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Debug lines for character movement
@@ -286,17 +339,17 @@ void Player::MoveAim(float dT, tofu::math::float3 inputDir, math::quat camRot, t
 		if (speed > kMaxSpeed)
 			speed = kMaxSpeed;
 
-		tPlayer->Translate(moveDir * dT * speed);
+		//tPlayer->Translate(moveDir * dT * speed);
 
-		aPlayer->CrossFade(1, 0.3f);
+		//aPlayer->CrossFade(1, 0.3f);
 	}
 	else
 	{
 		speed -= dT * kDeaccelerate;
 		if (speed < 0.0f) speed = 0.0f;
-		tPlayer->Translate(tPlayer->GetForwardVector() * dT * speed);
+		//tPlayer->Translate(tPlayer->GetForwardVector() * dT * speed);
 
-		aPlayer->CrossFade(0, 0.2f);
+		//aPlayer->CrossFade(0, 0.2f);
 	}
 }
 
@@ -458,7 +511,7 @@ void Player::UpdateState(float dT)
 	if (lastState != currentState)
 	{
 		gPlayer->Play(currentState, animationParameter, 0);
-		aPlayer->CrossFade(0, 0.2f);
+		//aPlayer->CrossFade(0, 0.2f);
 	}
 
 

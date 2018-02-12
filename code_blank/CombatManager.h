@@ -9,7 +9,7 @@ class Enemy;
 class CombatManager
 {
 public:
-	CombatManager(bool, void*, void*);
+	CombatManager(bool, void*, void*, CombatManagerDetails);
 	~CombatManager();
 
 	void Update(float);
