@@ -961,16 +961,11 @@ namespace tofu
 
 		CreateTextureParams* params = MemoryAllocator::Allocate<CreateTextureParams>(allocNo);
 		params->handle = handle;
-		params->format = kFormatR16Uint;
+		params->format = kFormatD24UnormS8Uint;
  		params->arraySize = 1;
-		params->bindingFlags = kBindingShaderResource | kBindingRenderTarget;
-
-		int32_t w = (int32_t)width;
-		int32_t h = (int32_t)height;
-
-		
-		params->width = w;
-		params->height = h;
+		params->bindingFlags = kBindingShaderResource | kBindingDepthStencil;
+		params->width = width;
+		params->height = height;
 
 		cmdBuf->Add(RendererCommand::kCommandCreateTexture, params);
 		
