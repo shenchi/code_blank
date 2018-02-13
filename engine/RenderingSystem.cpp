@@ -610,8 +610,6 @@ namespace tofu
 			
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
-
-
 		}
 
 		lights[0].CreateDepthMap();
