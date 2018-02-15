@@ -580,9 +580,23 @@ struct ModelFile
 
 		header.HasAnimation = 1;
 
+		// override bone offset
+		for (uint16_t i = 0; i < other.header.NumBones; i++)
+		{
+			ModelBone &bone = other.bones[i];
+			std::string boneName(bone.name);
+
+			auto iter = boneTable.find(boneName);
+			if (iter != boneTable.end()) {
+				uint16_t boneId = iter->second;
+				bones[boneId].offsetMatrix = other.bones[i].offsetMatrix;
+			}
+		}
+
 		//anims.resize(anims.size() + other.anims.size());
 		anims.insert(anims.end(), other.anims.begin(), other.anims.end());
 
+		// change frame id
 		for (auto &frame : other.orderedFrames) {
 			auto iter = boneTable.find(other.bones[frame.GetJointIndex()].name);
 			

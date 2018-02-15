@@ -17,10 +17,10 @@ namespace
 
 int32_t SceneLoadingDemo::Init()
 {
-	//CHECKED(sceneMgr.Init());
+	CHECKED(sceneMgr.Init());
 
-	//CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial.json"));
-	//CHECKED(sceneMgr.LoadScene("assets/scenes/test6.json"));
+	CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial.json"));
+	CHECKED(sceneMgr.LoadScene("assets/scenes/test6.json"));
 
 	{
 		Entity e = Entity::Create();
@@ -43,7 +43,6 @@ int32_t SceneLoadingDemo::Init()
 		AnimationState *idle = stateMachine->AddState("idle");
 		idle->animationName = "Armature|Armature|KB_Idle_2|KB_Idle_2:BaseAnimation";
 		AnimationState *walk = stateMachine->AddState("walk");
-		walk->animationName = "Armature|Armature|KB_WalkFwd1|KB_WalkFwd1:BaseAnimation";
 		walk->animationName = "Armature|Armature|KB_p_DoubleHooks|KB_p_DoubleHooks:BaseAnimation";
 
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaqueSkinned);
