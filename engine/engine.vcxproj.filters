@@ -241,6 +241,9 @@
     <FxCompile Include="Shaders\shadow_vs.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="opaque_skinned_ps.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

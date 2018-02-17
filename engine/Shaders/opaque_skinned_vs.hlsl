@@ -10,6 +10,7 @@ cbuffer FrameConstants : register (b1)
 	matrix	matProj;
 };
 
+
 cbuffer BoneMatrices : register (b2)
 {
 	matrix bones[1024];

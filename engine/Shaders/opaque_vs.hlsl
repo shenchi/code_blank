@@ -10,6 +10,11 @@ cbuffer FrameConstants : register (b1)
 	matrix	matProj;
 };
 
+cbuffer FrameConstants : register (b2) {
+	matrix lightView;
+	matrix lightProjection;
+}
+
 struct Input
 {
 	float3 position	: POSITION;
@@ -25,6 +30,7 @@ struct V2F
 	float3 normal	: NORMAL;
 	float4 tangent	: TANGENT;
 	float2 uv		: TEXCOORD0;
+	float4 posForShadow : POSITION1;
 };
 
 V2F main(Input input)
@@ -40,6 +46,10 @@ V2F main(Input input)
 	output.normal = mul(input.normal, (float3x3)matWorld);
 	output.tangent = float4(mul(input.tangent.xyz, (float3x3)matWorld), input.tangent.w);
 	output.uv = input.uv;
+
+	// Calculate the position of this vertex relative to the shadow-casting light
+	matrix shadowWVP = mul(mul(matWorld, lightView), lightProjection);
+	output.posForShadow = mul(float4(input.position, 1.0f), shadowWVP);
 
 	return output;
 }

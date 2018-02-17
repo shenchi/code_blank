@@ -69,6 +69,7 @@ namespace tofu
 		materialVSs(),
 		materialPSs(),
 		defaultSampler(),
+		//shadowSampler(),
 		builtinCube(),
 		cmdBuf(nullptr)
 	{
@@ -124,7 +125,8 @@ namespace tofu
 
 		CHECKED(InitBuiltinMaterial(kMaterialTypeOpaqueSkinned,
 			"assets/opaque_skinned_vs.shader",
-			"assets/opaque_ps.shader"
+			//"assets/opaque_ps.shader"
+			"assets/opaque_skinned_ps.shader"
 		));
 
 		
@@ -268,6 +270,18 @@ namespace tofu
 				cmdBuf->Add(RendererCommand::kCommandCreateSampler, params);
 			}
 		}
+		// Create shadow sampler
+		/*{
+			shadowSampler = samplerHandleAlloc.Allocate();
+			assert(shadowSampler);
+
+			{
+				CreateSamplerParams* params = MemoryAllocator::Allocate<CreateSamplerParams>(allocNo);
+				params->handle = shadowSampler;
+
+				cmdBuf->Add(RendererCommand::kCommandCreateSampler, params);
+			}
+		}*/
 
 		builtinCube = CreateModel("assets/cube.model");
 		assert(nullptr != builtinCube);
@@ -545,6 +559,7 @@ namespace tofu
 			cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
 		}
 
+
 		// Generate shadow map
 		// So far one light
 		for (uint32_t i = 0; i < 1; ++i) {
@@ -579,7 +594,7 @@ namespace tofu
 			cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
 		}
 
-		for (uint32_t i = 0; i < numActiveRenderables; ++i)
+		for (uint32_t i = numActiveRenderables - 1; i < numActiveRenderables; ++i)
 		{
 			RenderingComponentData& comp = renderables[activeRenderables[i]];
 
@@ -612,7 +627,7 @@ namespace tofu
 			}
 		}
 
-		lights[0].CreateDepthMap();
+	//	lights[0].CreateDepthMap();
 
 
 
@@ -666,10 +681,12 @@ namespace tofu
 				case kMaterialTypeOpaque:
 					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
 					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
+					params->vsConstantBuffers[2] = { shadowDepthBuffer, 0, 16 };
 					params->psConstantBuffers[0] = { lightingConstantBuffer,0, 4096 };
 					params->psTextures[0] = skyboxTex;
 					params->psTextures[1] = mat->mainTex;
 					params->psTextures[2] = mat->normalMap;
+			     	params->psTextures[3] = lights[0].depthMap;
 					params->psSamplers[0] = defaultSampler;
 					break;
 				default:
@@ -677,12 +694,9 @@ namespace tofu
 					break;
 				}
 
-				//params->renderTargets[0] = testRT;
-
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
 		}
-		//cmdBuf->Add(RendererCommand::kCommandDraw, params);
 
 		return kOK;
 	}
