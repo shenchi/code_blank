@@ -114,9 +114,9 @@ inline bool IsEqual(const float4x4& a, const aiMatrix4x4& b)
 	return true;
 }
 
-uint32_t loadBoneHierarchy(aiNode* node, BoneTree& bones, BoneTable& table, uint32_t parentId = UINT16_MAX, uint32_t lastSibling = UINT16_MAX)
+uint16_t loadBoneHierarchy(aiNode* node, BoneTree& bones, BoneTable& table, uint16_t parentId = UINT16_MAX, uint16_t lastSibling = UINT16_MAX)
 {
-	uint32_t boneId = static_cast<uint32_t>(bones.size());
+	uint16_t boneId = static_cast<uint16_t>(bones.size());
 	bones.push_back(Bone());
 	Bone& bone = bones[boneId];
 	bone.id = boneId;
@@ -130,20 +130,18 @@ uint32_t loadBoneHierarchy(aiNode* node, BoneTree& bones, BoneTable& table, uint
 
 	if (node->mName.length > 0)
 	{
-		strncpy(bone.name, node->mName.C_Str(), 127);
-		bone.name[127] = 0;
-
+		strncpy_s(bone.name, 128, node->mName.C_Str(), _TRUNCATE);
 		table.insert(std::make_pair(node->mName.C_Str(), boneId));
 	}
 
 	CopyMatrix(bone.transform, node->mTransformation);
 	bone.offsetMatrix = tofu::math::identity();
 
-	uint32_t firstChild = UINT16_MAX;
-	uint32_t lastChild = UINT16_MAX;
-	for (uint32_t i = 0; i < node->mNumChildren; i++)
+	uint16_t firstChild = UINT16_MAX;
+	uint16_t lastChild = UINT16_MAX;
+	for (uint16_t i = 0; i < node->mNumChildren; i++)
 	{
-		uint32_t id = loadBoneHierarchy(node->mChildren[i], bones, table, boneId, lastChild);
+		uint16_t id = loadBoneHierarchy(node->mChildren[i], bones, table, boneId, lastChild);
 		if (firstChild == UINT16_MAX)
 		{
 			firstChild = id;
@@ -234,7 +232,7 @@ struct ModelFile
 		if (scene->mRootNode->mNumChildren > 0) {
 			// load bone hierarchy	
 			loadBoneHierarchy(scene->mRootNode, bones, boneTable);
-			header.NumBones = static_cast<uint32_t>(bones.size());
+			header.NumBones = static_cast<uint16_t>(bones.size());
 		}
 
 		if (scene->mNumAnimations > 0)
@@ -348,7 +346,12 @@ struct ModelFile
 					}
 				}
 
-				for (uint32_t j = 0; j < mesh->mNumBones; ++j)
+				if (mesh->mNumBones > kModelMaxJointIndex) {
+					printf("too many bones.");
+					return __LINE__;
+				}
+
+				for (uint16_t j = 0; j < mesh->mNumBones; ++j)
 				{
 					aiBone* bone = mesh->mBones[j];
 					std::string boneName(bone->mName.C_Str());
@@ -457,8 +460,7 @@ struct ModelFile
 				0
 			};
 
-			strncpy(animation.name, anim->mName.C_Str(), 127);
-			animation.name[127] = 0;
+			strncpy_s(animation.name, 128, anim->mName.C_Str(), _TRUNCATE);
 
 			for (uint32_t iChan = 0; iChan < anim->mNumChannels; iChan++)
 			{
