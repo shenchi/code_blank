@@ -53,6 +53,10 @@ namespace tofu
 
 		// calculate bone matrices and fill in the buffer
 		int32_t FillInBoneMatrices(void* buffer, uint32_t bufferSize);
+
+		void Backward(uint16_t boneID, math::float3 target, Transform * transforms);
+
+		void Solve(uint16_t boneID, math::float3 target, Transform * transforms);
 	
 		void ReallocResources() {}
 	};
