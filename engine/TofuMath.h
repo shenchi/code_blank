@@ -57,6 +57,7 @@ namespace tofu
 		typedef glm::ivec3 int3;
 		typedef glm::ivec4 int4;
 
+		typedef glm::mat3 float3x3;
 		typedef glm::mat4 float4x4;
 
 		using namespace glm;

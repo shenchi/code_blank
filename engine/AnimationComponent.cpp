@@ -15,26 +15,21 @@ namespace tofu
 		return &layers[layer].stateMachine;
 	}
 
-	// FIXME: id
-	int32_t AnimationComponentData::Play(uint32_t animId, size_t layerIndex)
+	int32_t AnimationComponentData::Play(std::string name, size_t layerIndex)
 	{
-		if (animId == 0)
-			layers[layerIndex].stateMachine.Play("idle");
-		else
-			layers[layerIndex].stateMachine.Play("walk");
-
+		layers[layerIndex].stateMachine.Play(name);
 		return kOK;
 	}
 
-	// FIXME: id
-	int32_t AnimationComponentData::CrossFade(uint32_t animId, float duration, size_t layerIndex)
+	int32_t AnimationComponentData::CrossFade(std::string name, float duration, size_t layerIndex)
 	{
-		if (animId == 0)
-			layers[layerIndex].stateMachine.CrossFade("idle", duration);
-		else
-			layers[layerIndex].stateMachine.CrossFade("walk", duration);
-
+		layers[layerIndex].stateMachine.CrossFade(name, duration);
 		return kOK;
+	}
+
+	bool AnimationComponentData::SetIKPosition(AvatarIKGoal goal, math::float3 position)
+	{
+		
 	}
 
 	void AnimationComponentData::UpdateTiming()
@@ -78,18 +73,18 @@ namespace tofu
 			}
 		}
 
-		// convert to world space 
+		// matrix to convert bone local space to model space 
 		for (uint16_t i = 1; i < model->header->NumBones; i++)
 		{
 			uint16_t p = model->bones[i].parent;
 			matrices[i] = matrices[p] * matrices[i];
 		}
 
+
+
 		// append the offset matrices ( convert vertices from model space to bone local space )
 		for (uint16_t i = 0; i < model->header->NumBones; i++)
 		{
-			float* p = reinterpret_cast<float*>(&(model->bones[i].offsetMatrix));
-
 #ifdef TOFU_USE_GLM
 			matrices[i] = math::transpose(matrices[i] * model->bones[i].offsetMatrix);
 #else
