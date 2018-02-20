@@ -101,7 +101,7 @@ namespace tofu
 			transforms.emplace_back(translation, rotation, scale);
 		}
 
-		//Solve(30, math::float3(500, 100, 500), &transforms[0]);
+		Solve(10, math::float3(500, 100, 500), &transforms[0]);
 
 		for (uint16_t i = 0; i < model->header->NumBones; i++)
 		{
@@ -195,18 +195,6 @@ namespace tofu
 			totalLength += length;
 		}
 
-		//float lengths[2];
-		//float totalLength = 0;
-
-		//ModelBone *bones[3];
-		//bones[2] = &model->bones[boneID];
-
-		/*for (int i = 2 - 1; i >= 0; i--) {
-			bones[i] = &model->bones[bones[i + 1]->parent];
-			lengths[i] = (transforms[bones[i]->id].GetTranslation() - transforms[bones[i+1]->id].GetTranslation()).length();
-			totalLength += lengths[i];
-		}*/
-
 		// convert to local position
 		target = entity.GetComponent<TransformComponent>()->WorldToLocalPosition(target);
 
@@ -216,7 +204,7 @@ namespace tofu
 			// forward
 			for (int i = bones.size() - 2; i >= 0; i--) {
 				float l = lengths[i] / glm::length(target - transforms[bones[i + 1]].GetTranslation());
-				math::float3 position = (1 - l) * transforms[i].GetTranslation() + l * target;
+				math::float3 position = (1 - l) * transforms[bones[i + 1]].GetTranslation() + l * target;
 				transforms[bones[i]].SetTranslation(position);
 			}
 		}
