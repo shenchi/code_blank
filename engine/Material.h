@@ -13,6 +13,7 @@ namespace tofu
 		kMaterialTypeOpaque,
 		kMaterialTypeOpaqueSkinned,
 		kMaterialTypeDepth,
+		kMaterialTypeDepthSkinned,
 		kMaxMaterialTypes
 	};
 

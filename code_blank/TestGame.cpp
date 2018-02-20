@@ -24,10 +24,11 @@ int32_t TestGame::Init()
 		Entity e = Entity::Create();
 
 		tGround = e.AddComponent<TransformComponent>();
-
+		tGround->SetLocalScale(math::float3{ 20.01f, 0.1f, 20.01f });
 		RenderingComponent r = e.AddComponent<RenderingComponent>();
 
-		Model* model = RenderingSystem::instance()->CreateModel("assets/ground.model");
+		//Model* model = RenderingSystem::instance()->CreateModel("assets/ground.model");
+		Model* model = RenderingSystem::instance()->CreateModel("assets/cube.model");
 
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
 		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
@@ -45,11 +46,11 @@ int32_t TestGame::Init()
 		ph->SetColliderOrigin(math::float3{ 0.0f, -0.5f, 0.0f });
 	}
 
-	{
+	/*{
 		Entity e = Entity::Create();
 
 		tBox = e.AddComponent<TransformComponent>();
-		tBox->SetLocalPosition(math::float3{ 0, 10, 10 });
+		tBox->SetLocalPosition(math::float3{ -1.0, 1, 0 });
 
 		RenderingComponent r = e.AddComponent<RenderingComponent>();
 
@@ -66,7 +67,7 @@ int32_t TestGame::Init()
 		r->SetModel(model);
 
 		PhysicsComponent ph = e.AddComponent<PhysicsComponent>();
-	}
+	}*/
 
 	{
 		Entity e = Entity::Create();
@@ -101,20 +102,21 @@ int32_t TestGame::Init()
 
 		pPlayer->LockRotation(true, false, true);
 		pPlayer->SetCapsuleCollider(50.0f, 100.0f);
-		pPlayer->SetColliderOrigin(math::float3{ 0.0f, 1.0f, 0.0f });
+		pPlayer->SetColliderOrigin(math::float3{ 0.0f, 100.0f, 0.0f });
 	}
 	// Sun light 
 	{
 		Entity e = Entity::Create();
 
 		tSun = e.AddComponent<TransformComponent>();
-		
-		tSun->SetLocalRotation(math::angleAxis(3.14f / 2.0f, math::float3{ 0.0f, 1.0f, 0.0f }));
+		tSun->SetLocalPosition(math::float3(0.0f, 5.0f, -5.0f));
+		tSun->SetLocalRotation(math::angleAxis(3.14f / 4.0f, math::float3{ 1.0f, 0.0f, 0.0f }));
 
 		lSun = e.AddComponent<LightComponent>();
 		lSun->SetType(LightType::kLightTypeDirectional);
 		math::float4 sunColor = math::float4{ 1.0f, 0.0f, 0.0f, 1.0f };
 		lSun->SetColor(sunColor);
+		lSun->CreateDepthMap();
 	}
 	// Moon light 
 	{

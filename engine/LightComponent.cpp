@@ -8,10 +8,8 @@ namespace tofu {
 
 	void LightComponentData::CreateDepthMap()
 	{
-		uint32_t width = 1024, height = 1024;
+		uint32_t width = 1600, height = 900;
 		TextureHandle ret = RenderingSystem::instance()->CreateDepthMap(width, height);
-		shadowMat = RenderingSystem::instance()->CreateMaterial(kMaterialTypeDepth);
-		shadowMat->SetTexture(ret);
 		depthMap = ret;
 	}
 }

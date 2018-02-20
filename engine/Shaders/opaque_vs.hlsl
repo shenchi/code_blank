@@ -29,8 +29,9 @@ struct V2F
 	float3 worldPos	: POSITION;
 	float3 normal	: NORMAL;
 	float4 tangent	: TANGENT;
-	float2 uv		: TEXCOORD0;
 	float4 posForShadow : POSITION1;
+	float2 uv		: TEXCOORD0;
+	
 };
 
 V2F main(Input input)

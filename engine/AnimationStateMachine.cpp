@@ -172,7 +172,7 @@ namespace tofu
 			}
 			else if (indices[3] != SIZE_MAX) {
 				math::quat q;
-				math::float3 &compress = model->frames[frameCache.indices[kChannelTranslation][3]].value;
+				math::float3 &compress = model->frames[frameCache.indices[kChannelRotation][3]].value;
 
 				tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&compress.x), q);
 

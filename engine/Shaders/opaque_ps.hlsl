@@ -21,8 +21,9 @@ struct V2F
 	float3 worldPos	: POSITION;
 	float3 normal	: NORMAL;
 	float4 tangent	: TANGENT;
-	float2 uv		: TEXCOORD0;
 	float4 posForShadow : POSITION1;
+	float2 uv		: TEXCOORD0;
+	
 };
 
 TextureCube cubeMap : register(t0);
@@ -69,8 +70,7 @@ float4 main(V2F input) : SV_TARGET
 		}
 
 	}
-		
-
+	
 
 	float3 color = diffuseTex.Sample(samp, input.uv).rgb;
 	color = (allDiLightColor
@@ -79,33 +79,34 @@ float4 main(V2F input) : SV_TARGET
 
 
 	//
-	//float width, height;
-	//shadowMap.GetDimensions(width, height);
-	//float2 textureSize = float2(width, height);
-	//float2 texelSize = 1 / textureSize;
-	//float bias = 0.001f;         //  Set the bias value for fixing the floating point precision issues.
-	//float3 projCoords = input.posForShadow.xyz / input.posForShadow.w;
-	//projCoords.xy = projCoords.xy * 0.5 + 0.5;
-	//projCoords.y = 1 - projCoords.y;
+	float width, height;
+	shadowMap.GetDimensions(width, height);
+	float2 textureSize = float2(width, height);
+	float2 texelSize = 1 / textureSize;
+	float bias = 0.001f;         //  Set the bias value for fixing the floating point precision issues.
+	float3 projCoords = input.posForShadow.xyz / input.posForShadow.w;
+	projCoords.xy = projCoords.xy * 0.5 + 0.5;
+	projCoords.y = 1 - projCoords.y;
 
 
-	//if ((saturate(projCoords.x) == projCoords.x) && (saturate(projCoords.y) == projCoords.y)) {
+	if ((saturate(projCoords.x) == projCoords.x) && (saturate(projCoords.y) == projCoords.y)) {
 
-	//	float currentDepth = projCoords.z;
-	//	currentDepth -= bias;
-	//	float shadow = 0;
-	//	for (int i = -3; i < 4; i++) {
-	//		for (int j = -3; j < 4; j++) {
-	//			float cloestDepth = shadowMap.Sample(samp, projCoords.xy + float2(i, j) * texelSize).r;
-	//			shadow += currentDepth > cloestDepth ? 1 : 0;
-	//		}
-	//	}
-	//	shadow /= 25;
-	//	color = (color) * (1 - shadow);
-	//}
-	//else {
-	//	//color = ambient + Lo;
-	//}
+		float currentDepth = projCoords.z;
+		currentDepth -= bias;
+		float shadow = 0;
+		for (int i = -3; i < 4; i++) {
+			for (int j = -3; j < 4; j++) {
+				float cloestDepth = shadowMap.Sample(shadowSampler, projCoords.xy + float2(i, j) * texelSize).r;
+			//	float cloestDepth = shadowMap.Sample(shadowSampler, projCoords.xy * texelSize).r;
+				shadow += (currentDepth > cloestDepth ? 1 : 0);
+			}
+		}
+		shadow /= 25;
+		color = (color) * (1 - shadow);
+	}
+	else {
+		//color = ambient + Lo;
+	}
 
 
 

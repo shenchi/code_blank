@@ -142,6 +142,17 @@ namespace tofu
 	{
 		SamplerHandle		handle;
 		// TODO
+		union
+		{
+			struct
+			{
+				uint32_t			textureAddressU : 2;
+				uint32_t			textureAddressV : 2;
+				uint32_t            textureAddressW : 2;
+				uint32_t			_reserved1 : 26;
+			};
+			uint32_t				textureAddress;
+		};
 	};
 
 	struct CreateVertexShaderParams
@@ -164,6 +175,7 @@ namespace tofu
 		VertexFormat		vertexFormat;
 		VertexShaderHandle	vertexShader;
 		PixelShaderHandle	pixelShader;
+
 		union
 		{
 			struct

@@ -24,7 +24,6 @@ namespace tofu
 			entity(e),
 			type(kLightTypeDirectional),
 			lightColor(),
-			shadowMat(nullptr),
 			depthMap()
 		{}
 		
@@ -34,14 +33,12 @@ namespace tofu
 	
 		void CreateDepthMap();
 
-		void SetDepthMap(Material * m) { shadowMat = m; }
 
 	private:
 		Entity entity;
 		LightType	type;
 		tofu::math::float4	lightColor;
 
-		Material* shadowMat;
 		TextureHandle  depthMap;
         
 	};

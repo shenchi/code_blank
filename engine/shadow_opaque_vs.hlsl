@@ -25,7 +25,6 @@ struct V2F
 V2F main(Input input)
 {
 	V2F output;
-
 	matrix matMVPLightSpace = mul(mul(matWorld, matLightView), matLightProj);
 
 	output.position = mul(float4(input.position, 1), matMVPLightSpace);

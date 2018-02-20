@@ -69,7 +69,7 @@ namespace tofu
 		materialVSs(),
 		materialPSs(),
 		defaultSampler(),
-		//shadowSampler(),
+		shadowSampler(),
 		builtinCube(),
 		cmdBuf(nullptr)
 	{
@@ -130,13 +130,13 @@ namespace tofu
 		));
 
 		
-		CHECKED(LoadVertexShader("assets/shadow_vs.shader", materialVSs[kMaterialTypeDepth]));
+		CHECKED(LoadVertexShader("assets/shadow_opaque_vs.shader", materialVSs[kMaterialTypeDepth]));
+		CHECKED(LoadVertexShader("assets/shadow_opaqueskinned_vs.shader", materialVSs[kMaterialTypeDepthSkinned]));
 
 		// constant buffers
 		{
 			transformBuffer = bufferHandleAlloc.Allocate();
 			assert(transformBuffer);
-
 			transformBufferSize = sizeof(math::float4x4) * 4 * kMaxEntities;
 
 			{
@@ -240,7 +240,20 @@ namespace tofu
 				CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
 				params->handle = materialPSOs[kMaterialTypeDepth];
 				params->vertexShader = materialVSs[kMaterialTypeDepth];
+		
+				params->cullMode = 1;
+				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+			}
 
+			materialPSOs[kMaterialTypeDepthSkinned] = pipelineStateHandleAlloc.Allocate();
+			assert(materialPSOs[kMaterialTypeDepthSkinned]);
+
+			{
+				CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
+				params->handle = materialPSOs[kMaterialTypeDepthSkinned];
+				params->vertexShader = materialVSs[kMaterialTypeDepthSkinned];
+				params->vertexFormat = kVertexFormatSkinned;
+				params->cullMode = 1;
 				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 			}
 
@@ -266,22 +279,29 @@ namespace tofu
 			{
 				CreateSamplerParams* params = MemoryAllocator::Allocate<CreateSamplerParams>(allocNo);
 				params->handle = defaultSampler;
-
+				params->textureAddressU = 1;
+				params->textureAddressV = 1;
+				params->textureAddressW = 1;
 				cmdBuf->Add(RendererCommand::kCommandCreateSampler, params);
 			}
 		}
 		// Create shadow sampler
-		/*{
+		{
 			shadowSampler = samplerHandleAlloc.Allocate();
 			assert(shadowSampler);
 
 			{
 				CreateSamplerParams* params = MemoryAllocator::Allocate<CreateSamplerParams>(allocNo);
 				params->handle = shadowSampler;
+				params->textureAddressU = 3;
+				params->textureAddressV = 3;
+				params->textureAddressW = 3;
 
 				cmdBuf->Add(RendererCommand::kCommandCreateSampler, params);
 			}
-		}*/
+		}
+
+		
 
 		builtinCube = CreateModel("assets/cube.model");
 		assert(nullptr != builtinCube);
@@ -488,6 +508,7 @@ namespace tofu
 
 		// fill in transform matrix for active renderables
 		for (uint32_t i = 0; i < renderableCount; ++i)
+	   // for (uint32_t i = renderableCount - 2; i < renderableCount; ++i)
 		{
 			RenderingComponentData& comp = renderables[i];
 			TransformComponent transform = comp.entity.GetComponent<TransformComponent>();
@@ -568,7 +589,7 @@ namespace tofu
 				MemoryAllocator::Allocators[allocNo].Allocate(sizeof(FrameConstants), 4)
 				);
 			assert(nullptr != data);
-
+			
             TransformComponent t = lights[i].entity.GetComponent<TransformComponent>();
 			data->cameraPos = t->GetWorldPosition();
 
@@ -578,6 +599,7 @@ namespace tofu
 			math::float3 forward = t->GetForwardVector();
 			math::float4x4 lightView = math::lookTo(lightPos, forward, math::float3{ 0, 1, 0 });
 			math::float4x4 lightProject = math::perspective(90.0f * 3.1415f / 180.0f, 1.0f, 0.01f, 100.0f);
+		//	math::float4x4 lightProject = math::orthoLH(0.0f, 100.0f, 0.0f, 100.0f, 0.01f, 100.0f);
 #ifdef TOFU_USE_GLM
 			data->matView = math::transpose(lightView);
 			data->matProj = math::transpose(lightProject);
@@ -588,12 +610,55 @@ namespace tofu
 			UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
 			assert(nullptr != params);
 			params->handle = shadowDepthBuffer;
+		//	params->handle = frameConstantBuffer;
 			params->data = data;
 			params->size = sizeof(FrameConstants);
 
 			cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
 		}
+		{
+			ClearParams* params = MemoryAllocator::Allocate<ClearParams>(allocNo);
+			params->renderTargets[0] = TextureHandle();
+			params->depthRenderTarget = lights[0].depthMap;
+			params->clearDepth = 1.0f;
+			params->clearStencil = 100.0f;
 
+			cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
+		}
+		for (uint32_t i = 0; i < numActiveRenderables - 1; ++i)
+		{
+			RenderingComponentData& comp = renderables[activeRenderables[i]];
+
+			assert(nullptr != comp.model);
+			assert(0 != comp.numMaterials);
+
+			Model& model = *comp.model;
+			//Material* mat = comp.material;
+
+			for (uint32_t iMesh = 0; iMesh < model.numMeshes; ++iMesh)
+			{
+				assert(model.meshes[iMesh]);
+				Mesh& mesh = meshes[model.meshes[iMesh].id];
+				Material* mat = comp.materials[iMesh < comp.numMaterials ? iMesh : (comp.numMaterials - 1)];
+
+				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
+				params->pipelineState = materialPSOs[kMaterialTypeDepth];
+				params->vertexBuffer = mesh.VertexBuffer;
+				params->indexBuffer = mesh.IndexBuffer;
+				params->startIndex = mesh.StartIndex;
+				params->startVertex = mesh.StartVertex;
+				params->indexCount = mesh.NumIndices;
+				params->renderTargets[0] = TextureHandle();
+				params->depthRenderTarget = lights[0].depthMap;
+
+
+				params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
+				params->vsConstantBuffers[1] = { shadowDepthBuffer, 0, 16 };
+				//params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
+
+				cmdBuf->Add(RendererCommand::kCommandDraw, params);
+			}
+		}
 		for (uint32_t i = numActiveRenderables - 1; i < numActiveRenderables; ++i)
 		{
 			RenderingComponentData& comp = renderables[activeRenderables[i]];
@@ -608,10 +673,10 @@ namespace tofu
 			{
 				assert(model.meshes[iMesh]);
 				Mesh& mesh = meshes[model.meshes[iMesh].id];
-				
+				Material* mat = comp.materials[iMesh < comp.numMaterials ? iMesh : (comp.numMaterials - 1)];
 
 				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
-				params->pipelineState = materialPSOs[kMaterialTypeDepth];
+				params->pipelineState = materialPSOs[kMaterialTypeOpaqueSkinned];
 				params->vertexBuffer = mesh.VertexBuffer;
 				params->indexBuffer = mesh.IndexBuffer;
 				params->startIndex = mesh.StartIndex;
@@ -619,22 +684,31 @@ namespace tofu
 				params->indexCount = mesh.NumIndices;
 				params->renderTargets[0] = TextureHandle();
 				params->depthRenderTarget = lights[0].depthMap;
-
+			
 				params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
 				params->vsConstantBuffers[1] = { shadowDepthBuffer, 0, 16 };
-			
+				//params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
+
+				(void*)0;
+				{
+					AnimationComponent anim = comp.entity.GetComponent<AnimationComponent>();
+					if (!anim || !anim->boneMatricesBuffer)
+					{
+						return kErrUnknown;
+					}
+					params->vsConstantBuffers[2] = { anim->boneMatricesBuffer, 0, 0 };
+				}
+
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
 		}
-
-	//	lights[0].CreateDepthMap();
-
-
+		
 
 
 
 		// generate draw call for active renderables in command buffer
 		for (uint32_t i = 0; i < numActiveRenderables; ++i)
+	//	for (uint32_t i = 0; i < 1; ++i)
 		{
 			RenderingComponentData& comp = renderables[activeRenderables[i]];
 
@@ -677,17 +751,29 @@ namespace tofu
 						}
 						params->vsConstantBuffers[2] = { anim->boneMatricesBuffer, 0, 0 };
 					}
+					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
+					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
+				//	params->vsConstantBuffers[1] = { shadowDepthBuffer, 0, 16 };
+					params->psConstantBuffers[0] = { lightingConstantBuffer,0, 4096 };
+					params->psTextures[0] = skyboxTex;
+					params->psTextures[1] = mat->mainTex;
+					params->psTextures[2] = mat->normalMap;
+					params->psSamplers[0] = defaultSampler;
+					
+					break;
 					// fall through
 				case kMaterialTypeOpaque:
 					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
 					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
 					params->vsConstantBuffers[2] = { shadowDepthBuffer, 0, 16 };
+				//	params->vsConstantBuffers[1] = { shadowDepthBuffer, 0, 16 };
 					params->psConstantBuffers[0] = { lightingConstantBuffer,0, 4096 };
 					params->psTextures[0] = skyboxTex;
 					params->psTextures[1] = mat->mainTex;
 					params->psTextures[2] = mat->normalMap;
 			     	params->psTextures[3] = lights[0].depthMap;
 					params->psSamplers[0] = defaultSampler;
+					params->psSamplers[1] = shadowSampler;
 					break;
 				default:
 					assert(false && "this material type is not applicable for entities");
