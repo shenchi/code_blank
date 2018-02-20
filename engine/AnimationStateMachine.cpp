@@ -5,6 +5,7 @@
 #include "Compression.h"
 #include <assert.h>
 #include <algorithm>
+#include <string>
 
 using namespace tofu::model;
 
@@ -279,7 +280,7 @@ namespace tofu
 	// AnimationStateMachine
 
 	AnimationStateMachine::AnimationStateMachine(std::string name) : 
-		AnimNodeBase(name),	previous(nullptr)
+		AnimNodeBase(name),	previous(nullptr), elapsedTime(0.f), transitionDuration(0.f)
 	{
 		states.push_back(std::move(new AnimNodeBase("entry")));
 		current = states.back();
@@ -388,10 +389,7 @@ namespace tofu
 				transitionDuration = 0.f;
 			}
 			else {
-				if (previous != nullptr)
-				{
-					previous->Update(context);
-				}
+				previous->Update(context);
 			}
 		}
 
@@ -407,7 +405,7 @@ namespace tofu
 			float alpha = elapsedTime / transitionDuration;
 
 			if (weight == 1.0f) {
-				if (previous != nullptr) { previous->Evaluate(context, 1.0f); }
+				previous->Evaluate(context, 1.0f);
 				current->Evaluate(context, alpha);
 			}
 			else {
