@@ -625,7 +625,8 @@ namespace tofu
 
 			cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
 		}
-		for (uint32_t i = 0; i < numActiveRenderables - 1; ++i)
+		for (uint32_t i = 0; i < 1; ++i)
+		//for (uint32_t i = 0; i < numActiveRenderables - 1; ++i)
 		{
 			RenderingComponentData& comp = renderables[activeRenderables[i]];
 
@@ -659,6 +660,7 @@ namespace tofu
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
 		}
+
 		for (uint32_t i = numActiveRenderables - 1; i < numActiveRenderables; ++i)
 		{
 			RenderingComponentData& comp = renderables[activeRenderables[i]];

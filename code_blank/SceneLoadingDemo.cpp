@@ -92,6 +92,7 @@ int32_t SceneLoadingDemo::Init()
 		lSun->SetType(LightType::kLightTypeDirectional);
 		math::float4 sunColor = math::float4{ 1.0f, 0.0f, 0.0f, 1.0f };
 		lSun->SetColor(sunColor);
+		lSun->CreateDepthMap();
 	}
 	// Moon light 
 	{
