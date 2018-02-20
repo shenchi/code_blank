@@ -109,7 +109,7 @@ int32_t TestGame::Init()
 		Entity e = Entity::Create();
 
 		tSun = e.AddComponent<TransformComponent>();
-		tSun->SetLocalPosition(math::float3(0.0f, 5.0f, -5.0f));
+		tSun->SetLocalPosition(math::float3(0.0f, 2.0f, -2.0f));
 		tSun->SetLocalRotation(math::angleAxis(3.14f / 4.0f, math::float3{ 1.0f, 0.0f, 0.0f }));
 
 		lSun = e.AddComponent<LightComponent>();

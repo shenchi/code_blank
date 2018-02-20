@@ -85,7 +85,7 @@ int32_t SceneLoadingDemo::Init()
 		Entity e = Entity::Create();
 
 		tSun = e.AddComponent<TransformComponent>();
-		tSun->SetLocalPosition(math::float3{ 58.0f, 100.0f, -40.0f });
+		tSun->SetLocalPosition(math::float3{ 58.0f, 3.0f, -41.0f });
 		tSun->SetLocalRotation(math::angleAxis(3.14f / 4, math::float3{ 1.0f, 0.0f, 0.0f }));
 
 		lSun = e.AddComponent<LightComponent>();

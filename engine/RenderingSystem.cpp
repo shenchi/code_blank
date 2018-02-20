@@ -598,8 +598,8 @@ namespace tofu
 			math::float3 lightPos = t->GetWorldPosition();
 			math::float3 forward = t->GetForwardVector();
 			math::float4x4 lightView = math::lookTo(lightPos, forward, math::float3{ 0, 1, 0 });
-			math::float4x4 lightProject = math::perspective(90.0f * 3.1415f / 180.0f, 1.0f, 0.01f, 100.0f);
-		//	math::float4x4 lightProject = math::orthoLH(0.0f, 100.0f, 0.0f, 100.0f, 0.01f, 100.0f);
+		//	math::float4x4 lightProject = math::perspective(90.0f * 3.1415f / 180.0f, 1.0f, 0.01f, 100.0f);
+			math::float4x4 lightProject = math::orthoLH(-10.0f, 10.0f, -10.0f, 10.0f, 0.01f, 100.0f);
 #ifdef TOFU_USE_GLM
 			data->matView = math::transpose(lightView);
 			data->matProj = math::transpose(lightProject);
@@ -703,8 +703,6 @@ namespace tofu
 			}
 		}
 		
-
-
 
 		// generate draw call for active renderables in command buffer
 		for (uint32_t i = 0; i < numActiveRenderables; ++i)
