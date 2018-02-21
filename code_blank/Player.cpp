@@ -80,6 +80,8 @@ Player::Player(CharacterDetails details, void* comp)
 
 	jumpPower = details.jumpPower;
 
+	rollDodgeCost = details.rollDodgeCost;
+
 	stateTimer = 0;
 	
 	physics = tofu::PhysicsSystem::instance();
@@ -96,9 +98,22 @@ Player::Player(CharacterDetails details, void* comp)
 
 	move = { 0.0f, 0.0f, 0.0f };
 	lastMove = { 0.0f, 0.0f, 0.0f };
+
+	attackButtonDown = false;
+	specialButtonDown = false;
+	attackButtonTimer = 0.0f;
+	specialButtonTimer = 0.0f;
+	minHoldTime = 0.4f;
+	maxHoldTime = 0.6f;
+
+	gun = new Gun();
 }
 
-Player::~Player(){}
+Player::~Player()
+{
+	delete gun;
+	// delete gPlayer;
+}
 
 void Player::Update(float dT)
 {
@@ -498,7 +513,6 @@ void Player::UpdateState(float dT)
 				{
 					currentState = kIdleOutCombat;
 				}
-
 			}
 		}
 	}
@@ -522,15 +536,72 @@ void Player::UpdateState(float dT)
 // Player Actions
 
 // Transistion to Aiming Mode
-void Player::Aim()
+void Player::Aim(bool aim)
 {
-	// TODO
+	if (AimList() && aim)
+	{
+		currentState = kDrawGun;
+		isAiming = true;
+		combatManager->SetIsAimming(true);
+		gun->SetIsActive(true);
+	}
+	else if (!aim)
+	{
+		isAiming = false;
+		combatManager->SetIsAimming(false);
+		//myCarmera.GetComponent<ThirdPCamera>().SetAimState(false);
+		//enemies.Clear(); clear list of enemies or set a flag???
+		currentState = kHolsterGun;
+		gun->SetIsActive(false);
+		//UnHighlightEnemies();
+		//StartCoroutine(GunHolsterDelay());
+	}
 }
 
 // Attack (Uses a combo system)
-void Player::Attack()
+void Player::Attack(bool down, float dT)
 {
 	// TODO
+	if (!isAiming)
+	{
+		// Primary Attack
+		if (attackButtonDown)
+		{
+			attackButtonTimer += dT;
+		}
+		if (!attackButtonDown && down) //Button 2
+		{
+			attackButtonDown = true;
+			attackButtonTimer = 0;
+		}
+		if (attackButtonDown && !down && attackButtonTimer <= minHoldTime)
+		{
+			combatManager->BasicCombo();
+			attackButtonDown = false;
+		}
+		if ((!down && attackButtonDown && attackButtonTimer > minHoldTime) || (attackButtonTimer >= maxHoldTime && attackButtonDown))
+		{
+			combatManager->SpecialCombat();
+			attackButtonDown = false;
+		}
+	}
+	else if (isAiming)	// Gun Attack
+	{
+		if(!gun->GetIsActive())
+		{
+			gun->SetIsActive(true);
+		}
+		if (!attackButtonDown && down) // TODO Add hook into player energy pool: playerCharacter.SpecialBar > 33.9999f
+		{
+			attackButtonDown = true;
+			attackButtonTimer = 0;
+			combatManager->GunShot();
+		}
+		if (attackButtonDown && !down)
+		{
+			attackButtonDown = false;
+		}
+	}
 }
 
 void Player::Die()
@@ -539,28 +610,207 @@ void Player::Die()
 }
 
 // Dodge, in the current player direction
-void Player::Dodge()
+void Player::Dodge(tofu::math::float3 inputDir)
 {
 	// TODO
+	if (!isAiming)
+    {
+        // If can roll
+		if(combatManager->GetCanRoll())
+        {
+			combatManager->Roll();
+            // Remove stamina
+            //playerCharacter.UseStamina(rollDodgeCost);
+        }
+    }
+    else if(combatManager->GetCanDodge())
+    {
+        if (inputDir.x < 0)  // Left
+        {
+			combatManager->Dodge(0);
+        }
+        else if (inputDir.x > 0) // Right
+        {
+			combatManager->Dodge(1);
+        }
+        else if (inputDir.z < 0)  // Back
+        {
+			combatManager->Dodge(2);
+        }
+        else if (inputDir.z > 0)  // Foward
+        {
+			combatManager->Dodge(3);
+        }
+        else
+        {
+			assert(false);
+        }
+
+		//playerCharacter.UseStamina(rollDodgeCost);
+    }
 }
 
 // Interact with interactable object
 void Player::Interact()
 {
 	// TODO
+	// Probably a dead feature
 }
 
 // Combo Special move (Sword)
-void Player::Special()
+void Player::Special(bool down, float dT)
 {
 	// TODO
-	// Use special attack
+	if (!isAiming)
+	{
+		// Primary Attack
+		if (attackButtonDown)
+		{
+			attackButtonTimer += dT;
+		}
+		if (!attackButtonDown && down) //Button 2
+		{
+			attackButtonDown = true;
+			attackButtonTimer = 0;
+		}
+		if (attackButtonDown && !down && attackButtonTimer <= minHoldTime)
+		{
+			combatManager->BasicCombo();
+			attackButtonDown = false;
+		}
+		if ((!down && attackButtonDown && attackButtonTimer > minHoldTime) || (attackButtonTimer >= maxHoldTime && attackButtonDown))
+		{
+			combatManager->SpecialCombat();
+			attackButtonDown = false;
+		}
+
+		// Special (Sword) Attack
+		if (specialButtonDown)
+		{
+			specialButtonTimer += dT;
+		}
+		if (specialButtonDown && down ) // TODO Add energy hook: playerCharacter.SpecialBar > 24.9999f
+		{
+			specialButtonDown = true;
+			specialButtonTimer = 0;
+		}
+		// Button Press Attack
+		if (specialButtonDown && !down && specialButtonTimer <= minHoldTime)	// TODO Add energy hook: playerCharacter.SpecialBar > 24.9999f
+		{
+			combatManager->SwordCombo();
+			specialButtonDown = false;
+		}
+		// Button Hold Attack
+		/*
+		if (((CrossPlatformInputManager.GetButtonUp("Sword") && specialButtonDown && specialButtonTimer > minHoldTime)
+		|| (specialButtonTimer >= maxHoldTime && specialButtonDown)) && playerCharacter.SpecialBar > 49.9999f)
+		*/
+		if (((specialButtonDown && !down && specialButtonTimer > minHoldTime)	// TODO Add energy hook: playerCharacter.SpecialBar > 49.9999f
+			|| (specialButtonTimer >= maxHoldTime && specialButtonDown)) )
+		{
+			combatManager->SwordSpecialCombat();
+			specialButtonDown = false;
+		}
+	}
 }
 
 // Transistion to Vision Hack Mode
 void Player::VisionHack()
 {
 	// TODO
+	/*
+	if (CrossPlatformInputManager.GetButtonDown("Hack")) //Button 4
+        {
+            //if (visionHackCDTimer == visionHackCD)
+            if (playerCharacter.SpecialBar > 20 && !m_hacking)
+            {
+                Debug.Log("Vision Hack");
+                m_hacking = true;
+                StartVisionHack();
+            }
+            else {
+                Debug.Log("Cooling Down");
+            }
+            
+        }
+        else
+        {
+            m_hacking = false;
+        }
+	*/
+}
+
+// Produce an aiming list for the player
+// Return false if no enemies available to aim at
+bool Player::AimList()
+{
+	/*
+	enemies.Clear();
+	bool done = false;
+	enemyArray = GameObject.FindGameObjectsWithTag("Enemy");
+	//GameObject target = null;
+
+	UnHighlightEnemies();
+
+	// Get the enemies in front of me
+	for (int i = 0; i < enemyArray.Length; i++)
+	{
+		float fwdDot = Vector3.Dot((transform.position - enemyArray[i].transform.position), transform.forward);
+		float distance = Vector3.Distance(transform.position, enemyArray[i].transform.position);
+		if (fwdDot < -1 && distance < 20)
+		{
+			enemies.Add(enemyArray[i]);
+		}
+	}
+
+	enemyArray = enemies.ToArray();
+
+	if (enemyArray.Length > 0)
+	{
+		// Sort enemies from left to right
+		while (!done)
+		{
+			done = true;
+			for (int i = 0; i < enemyArray.Length - 1; i++)
+			{
+				float distTo = Vector3.Dot((transform.position - enemyArray[i].transform.position), transform.right);
+				float distTo2 = Vector3.Dot((transform.position - enemyArray[i + 1].transform.position), transform.right);
+
+				if (distTo2 > distTo)
+				{
+					done = false;
+					GameObject temp = enemyArray[i + 1];
+					enemyArray[i + 1] = enemyArray[i];
+					enemyArray[i] = temp;
+				}
+			}
+		}
+
+		float tempDot = 0;
+		// Set the aim target
+		// Use the enemy most centered in the view
+		for (int i = 0; i < enemyArray.Length; i++)
+		{
+
+			float dot = Vector3.Dot((transform.position - enemyArray[i].transform.position), transform.forward);
+			if (dot < tempDot)
+			{
+				tempDot = dot;
+				aimTargetIndex = i;
+				gunTarget = enemyArray[i];
+				aimTarget = gunTarget.transform.GetChild(0).gameObject;
+			}
+		}
+
+
+		myCarmera.GetComponent<ThirdPCamera>().SetAimState(true, aimTarget);
+		m_Character.m_combat.AimTarget = aimTarget.GetComponentInParent<Character>();
+		gunTarget.GetComponentInChildren<SkinnedMeshRenderer>().material = gunTarget.GetComponent<Enemy>().highlightMat;
+
+		return true;
+	} */
+
+	return false;
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -317,6 +317,7 @@ bool Game::LoadScene(sceneType num)
 			playerDetails.sprintSpeed = 10.0f;
 			playerDetails.tag = "player";
 			playerDetails.walkSpeed = 5.0f;
+			playerDetails.rollDodgeCost = 10.0f;
 
 
 			// Setup the Player's Companion

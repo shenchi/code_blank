@@ -198,4 +198,7 @@ private:
 	float adjustMinDistance;
 	float adjustMaxDistance;
 	float adjustAgle;
+
+	// Temp
+	CombatMoveDetails defaultMove;
 };

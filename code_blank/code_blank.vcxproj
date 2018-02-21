@@ -147,6 +147,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameplayAnimationMachine.h" />
     <ClInclude Include="GameplayDS.h" />
+    <ClInclude Include="Gun.h" />
     <ClInclude Include="PController.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SceneLoadingDemo.h" />
@@ -162,6 +163,7 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameplayAnimationMachine.cpp" />
+    <ClCompile Include="Gun.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PController.cpp" />
     <ClCompile Include="Player.cpp" />

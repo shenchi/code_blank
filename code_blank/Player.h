@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Character.h"
+#include "Gun.h"
 
 class Player : public Character
 {
@@ -15,14 +16,15 @@ public:
 	void UpdateState(float);
 
 
-	void Aim();
-	void Attack();
-	void Dodge();
+	void Aim(bool);
+	void Attack(bool, float);
+	void Dodge(tofu::math::float3);
 	void Die();
 	void Interact();
-	void Special();
+	void Special(bool, float);
 	void VisionHack();
 
+	bool AimList();
 
 	/*void Aim();
 	void AnimationParameter(int _animationParameter);
@@ -67,6 +69,17 @@ private:
 
 	tofu::math::float3 move;
 	tofu::math::float3 lastMove;
+
+	Gun* gun;
+
+	bool attackButtonDown;
+	bool specialButtonDown;
+	float attackButtonTimer;
+	float minHoldTime;
+	float maxHoldTime;
+	float specialButtonTimer;
+	float rollDodgeCost;
+
 
 	//GameObject charBody;
 	//GameObject camera;

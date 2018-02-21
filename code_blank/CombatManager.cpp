@@ -56,6 +56,32 @@ CombatManager::CombatManager(bool _isPlayer, void* _companion, void* owner, Comb
 
 	// Populate allMoves
 	//allMoves
+
+	// Temp Stuff
+	defaultMove.AT = 0.7f;
+	defaultMove.ET = 0.2f;
+	defaultMove.ED = 1.0f;
+	defaultMove.HT = 0.2f;
+	defaultMove.Dmg = 3.f;
+	defaultMove.AD = 0.0f;
+	defaultMove.pos = kHigh;
+	defaultMove.dir = kDirForward;
+	defaultMove.power = kWeak;
+
+	allMoves.push_back(defaultMove);
+	allMoves.push_back(defaultMove);
+	allMoves.push_back(defaultMove);
+	allMoves.push_back(defaultMove);
+	allMoves.push_back(defaultMove);
+	allMoves.push_back(defaultMove);
+	allMoves.push_back(defaultMove);
+	allMoves.push_back(defaultMove);
+	allMoves.push_back(defaultMove);
+	allMoves.push_back(defaultMove);
+	allMoves.push_back(defaultMove);
+	allMoves.push_back(defaultMove);
+	allMoves.push_back(defaultMove);
+	allMoves.push_back(defaultMove);
 }
 
 CombatManager::~CombatManager()

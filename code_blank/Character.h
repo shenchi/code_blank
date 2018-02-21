@@ -101,6 +101,7 @@ protected:
 	//void Move();
 
 	// Bools
+	bool isAiming;
 	bool isGrounded;
 	bool jump;
 	bool sprinting;

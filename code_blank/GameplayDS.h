@@ -83,6 +83,7 @@ struct CombatMoveDetails
 
 	std::string name;
 	float AT;
+	float AD;
 	float ET;
 	float ED;
 	float HT;
@@ -101,6 +102,7 @@ struct CharacterDetails
 	float				walkSpeed;
 	float				sprintSpeed;
 	float				jumpPower;
+	float				rollDodgeCost;
 	tofu::math::float2	capsuleColliderSize;
 	tofu::math::float3	colliderOrigin;
 	// Add more as needed

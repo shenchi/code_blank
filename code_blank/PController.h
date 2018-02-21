@@ -37,4 +37,9 @@ private:
 
 	int pitchMod;
 	int yawMod;
+
+	// Buttons
+	bool attackButtonDown;
+	bool dodgeButtonDown;
+	bool specialButtonDown;
 };
