@@ -20,7 +20,7 @@ int32_t SceneLoadingDemo::Init()
 	CHECKED(sceneMgr.Init());
 
 	CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial.json"));
-	//CHECKED(sceneMgr.LoadScene("assets/scenes/test6.json"));
+	CHECKED(sceneMgr.LoadScene("assets/scenes/test6.json"));
 
 	{
 		Entity e = Entity::Create();
@@ -33,20 +33,25 @@ int32_t SceneLoadingDemo::Init()
 
 		RenderingComponent r = e.AddComponent<RenderingComponent>();
 
-		Model* model = RenderingSystem::instance()->CreateModel("assets/archer.model");
+		Model* model = RenderingSystem::instance()->CreateModel("assets/archer_test.model");
+		//Model* model = RenderingSystem::instance()->CreateModel("assets/soldier.model");
 
 		anim = e.AddComponent<AnimationComponent>();
 
 		AnimationStateMachine *stateMachine = anim->GetStateMachine();
 
 		AnimationState *idle = stateMachine->AddState("idle");
-		idle->animationName = "idle";
+		idle->animationName = "Armature|Armature|KB_Idle_2|KB_Idle_2:BaseAnimation";
 		AnimationState *walk = stateMachine->AddState("walk");
-		walk->animationName = "walk";
+		walk->animationName = "Armature|Armature|KB_p_DoubleHooks|KB_p_DoubleHooks:BaseAnimation";
 
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaqueSkinned);
+
 		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");
 		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/archer_1.texture");
+
+		//TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/Paint_lambert11_DiffuseColor.texture");
+		//TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/Paint_lambert11_Normal.texture");
 
 		material->SetTexture(diffuse);
 		material->SetNormalMap(normalMap);
@@ -57,6 +62,8 @@ int32_t SceneLoadingDemo::Init()
 		pPlayer = e.AddComponent<PhysicsComponent>();
 
 		pPlayer->LockRotation(true, false, true);
+		//pPlayer->SetCapsuleCollider(2.5f, 5.0f);
+		//pPlayer->SetColliderOrigin(math::float3{ 0.0f, 5.0f, 0.0f });
 		pPlayer->SetCapsuleCollider(50.0f, 100.0f);
 		pPlayer->SetColliderOrigin(math::float3{ 0.0f, 100.0f, 0.0f });
 	}

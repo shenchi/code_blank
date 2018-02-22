@@ -77,6 +77,13 @@ namespace tofu
 		while (tempCursor < animation->numFrames) {
 			size_t frameIndex = tempCursor + animation->startFrames;
 			ModelAnimFrame &frame = context->model->frames[frameIndex];
+
+			// TODO: Change offline retarget to online
+			if (frame.GetJointIndex() == kModelMaxJointIndex) {
+				tempCursor++;
+				continue;
+			}
+
 			AnimationFrameCache &cache = frameCaches[frame.GetJointIndex()];
 
 			size_t cacheIndex = cache.indices[frame.GetChannelType()][2];
@@ -100,6 +107,10 @@ namespace tofu
 	void AnimationState::Update(UpdateContext& context)
 	{
 		model::ModelAnimation *anim = context.model->GetAnimation(animationName);
+
+		// no animation for the state
+		if (anim == nullptr)
+			return;
 
 		// TODO: scale time || uint_16 ticks
 		// convert time in seconds to ticks
@@ -172,10 +183,10 @@ namespace tofu
 			}
 			else if (indices[3] != SIZE_MAX) {
 				math::quat q;
-				math::float3 &compress = model->frames[frameCache.indices[kChannelRotation][3]].value;
+				ModelAnimFrame &f = model->frames[frameCache.indices[kChannelRotation][3]];
 
-				tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&compress.x), q);
-
+				//tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&f.value.x), q);
+				tofu::compression::DecompressQuaternion(q, f.value, f.GetSignedBit());
 				trans.SetRotation(q);
 			}
 
@@ -206,6 +217,11 @@ namespace tofu
 	float AnimationState::GetDurationInSecond(Model * model)
 	{
 		auto anim = model->GetAnimation(animationName);
+
+		// state without animation
+		if (anim == nullptr)
+			return 0.f;
+
 		return anim->tickCount / anim->ticksPerSecond;
 	}
 
@@ -245,8 +261,9 @@ namespace tofu
 		float t = (cache->ticks - f2.time) / (f3.time - f2.time);
 		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
 
-		//return math::slerp(q2, q3, t);
-		return squad(q2, q3, intermediate(q1, q2, q3), intermediate(q2, q3, q4), t);
+		// FIXME: change after cruve fitting
+		return math::slerp(q2, q3, t);
+		//return squad(q2, q3, intermediate(q1, q2, q3), intermediate(q2, q3, q4), t);
 	}
 
 	math::float3 AnimationState::LerpFromFrameIndex(Model *model, size_t lhs, size_t rhs) const
@@ -270,16 +287,19 @@ namespace tofu
 
 		math::quat a, b;
 
-		tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&fa.value.x), a);
-		tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&fb.value.x), b);
+		//tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&fa.value.x), a);
+		//tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&fb.value.x), b);
+
+		tofu::compression::DecompressQuaternion(a, fa.value, fa.GetSignedBit());
+		tofu::compression::DecompressQuaternion(b, fb.value, fb.GetSignedBit());
 
 		return math::slerp(a, b, t);
 	}
 
 	// AnimationStateMachine
 
-	AnimationStateMachine::AnimationStateMachine(std::string name) : 
-		AnimNodeBase(name),	previous(nullptr)
+	AnimationStateMachine::AnimationStateMachine(std::string name) :
+		AnimNodeBase(name), previous(nullptr), transitionDuration(0.f), elapsedTime(0.f)
 	{
 		states.push_back(std::move(new AnimNodeBase("entry")));
 		current = states.back();
@@ -360,6 +380,7 @@ namespace tofu
 		// check transition
 		for (AnimationTransitionEntry &entry : transitions) {
 
+			// same state
 			if (entry.name.compare(current->name) == 0)
 				continue;
 

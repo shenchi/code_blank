@@ -591,11 +591,11 @@ namespace tofu
 			assert(nullptr != data);
 			
             TransformComponent t = lights[i].entity.GetComponent<TransformComponent>();
-			data->cameraPos = t->GetWorldPosition();
+			data->cameraPos = camPos;
 
 			
-
-			math::float3 lightPos = t->GetWorldPosition();
+			math::float3 lightPos = camPos;
+			//math::float3 lightPos = t->GetWorldPosition();
 			math::float3 forward = t->GetForwardVector();
 			math::float4x4 lightView = math::lookTo(lightPos, forward, math::float3{ 0, 1, 0 });
 		//	math::float4x4 lightProject = math::perspective(90.0f * 3.1415f / 180.0f, 1.0f, 0.01f, 100.0f);
@@ -626,7 +626,6 @@ namespace tofu
 			cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
 		}
 		for (uint32_t i = 0; i < 1; ++i)
-		//for (uint32_t i = 0; i < numActiveRenderables - 1; ++i)
 		{
 			RenderingComponentData& comp = renderables[activeRenderables[i]];
 
@@ -925,32 +924,18 @@ namespace tofu
 					model.bones + header->NumBones
 					);
 
-				for (uint16_t i = 0; i < header->NumAnimations; i++) {
+				for (auto i = 0u; i < header->NumAnimations; i++) {
 					model.animationTable[model.animations[i].name] = i;
 				}
 
 				// FIXME: Test only
 				model.animationTable["idle"] = 0;
 				model.animationTable["walk"] = 1;
-
-				model.channels = reinterpret_cast<model::ModelAnimChannel*>(
-					model.animations + header->NumAnimations
-					);
-
-				model.translationFrames = reinterpret_cast<model::ModelFloat3Frame*>(
-					model.channels + header->NumAnimChannels
-					);
-
-				model.rotationFrames = reinterpret_cast<model::ModelQuatFrame*>(
-					model.translationFrames + header->NumTotalTranslationFrames
-					);
-
-				model.scaleFrames = reinterpret_cast<model::ModelFloat3Frame*>(
-					model.rotationFrames + header->NumTotalRotationFrames
-					);
+				model.animationTable["jump"] = 2;
+				model.animationTable["run"] = 3;
 
 				model.frames = reinterpret_cast<model::ModelAnimFrame*>(
-					model.scaleFrames + header->NumTotalScaleFrames
+					model.animations + header->NumAnimations
 					);
 			}
 		}

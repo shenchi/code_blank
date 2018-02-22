@@ -97,7 +97,6 @@ float4 main(V2F input) : SV_TARGET
 		for (int i = -3; i < 4; i++) {
 			for (int j = -3; j < 4; j++) {
 				float cloestDepth = shadowMap.Sample(shadowSampler, projCoords.xy + float2(i, j) * texelSize).r;
-			//	float cloestDepth = shadowMap.Sample(shadowSampler, projCoords.xy * texelSize).r;
 				shadow += (currentDepth > cloestDepth ? 1 : 0);
 			}
 		}

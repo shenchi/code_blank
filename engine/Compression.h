@@ -219,12 +219,15 @@ namespace tofu {
 			float3.y = quat.y;
 			float3.z = quat.z;
 
-			if (quat.w < 0) {
+			if (quat.w > 0) {
+				negativeW = false;
+			}
+			else {
 				negativeW = true;
 			}
 		}
 
-		void DecompressQuaternion(math::quat &quat, const math::float3& float3, const bool &negativeW) {
+		void DecompressQuaternion(math::quat &quat, const math::float3& float3, const bool negativeW) {
 			quat.x = float3.x;
 			quat.y = float3.y;
 			quat.z = float3.z;
