@@ -25,6 +25,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/spline.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 
 #else // TOFU_USE_GLM
 
@@ -123,6 +124,13 @@ namespace tofu
 			};
 		}
 
+		void decompose(const float4x4& m, float3& t, quat& r, float3& s)
+		{
+			float3 skew; float4 persp;
+			decompose(m, s, r, t, skew, persp);
+			r = conjugate(r);
+			identity();
+		}
 #else
 
 		template<typename T>

@@ -1,0 +1,22 @@
+[
+	{
+		"target": "archer.model",
+		"source": "archer.fbx",
+		"avatar": "archer_avatar.json",
+		"animations":
+		[
+			{
+				"name": "idle",
+				"source": "xxx.fbx",
+				"avatar": "archer_avatar.json",
+				"clip": "mixamo.com"
+			},
+			{
+				"name": "walking",
+				"source": "xxx.fbx",
+				"avatar": "KB_avatar.json",
+				"clip": "mixamo.com"
+			}
+		]
+	}
+]
