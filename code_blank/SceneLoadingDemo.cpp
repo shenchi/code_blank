@@ -97,7 +97,7 @@ int32_t SceneLoadingDemo::Init()
 
 		lSun = e.AddComponent<LightComponent>();
 		lSun->SetType(LightType::kLightTypeDirectional);
-		math::float4 sunColor = math::float4{ 1.0f, 0.0f, 0.0f, 1.0f };
+		math::float4 sunColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
 		lSun->SetColor(sunColor);
 		lSun->CreateDepthMap();
 	}
@@ -123,7 +123,7 @@ int32_t SceneLoadingDemo::Init()
 
 		lBulb = e.AddComponent<LightComponent>();
 		lBulb->SetType(LightType::kLightTypePoint);
-		math::float4 bulbColor = math::float4{ 0.0f, 1.0f, 0.0f, 1.0f };
+		math::float4 bulbColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
 		lBulb->SetColor(bulbColor);
 	}
 	pitch = InitPitch;
