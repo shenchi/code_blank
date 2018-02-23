@@ -125,7 +125,6 @@ int32_t SceneLoadingDemo::Init()
 		lBulb->SetType(LightType::kLightTypePoint);
 		math::float4 bulbColor = math::float4{ 0.0f, 1.0f, 0.0f, 1.0f };
 		lBulb->SetColor(bulbColor);
-		lBulb->CreateDepthMap();
 	}
 	pitch = InitPitch;
 	yaw = 0.0f;

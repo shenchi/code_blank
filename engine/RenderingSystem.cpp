@@ -62,7 +62,6 @@ namespace tofu
 		transformBufferSize(0),
 		frameConstantBuffer(),
 		lightingConstantBuffer(),
-		shadowDepthBuffer(),
 		meshes(),
 		models(),
 		materials(),
@@ -165,20 +164,20 @@ namespace tofu
 				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
 			}
 
-			for (int i = 0; i < kMaxLights; i++) {
-				shadowDepthBuffer[i] = bufferHandleAlloc.Allocate();
-				assert(shadowDepthBuffer);
-				{
-					CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
-					assert(nullptr != params);
-					params->handle = shadowDepthBuffer[i];
-					params->bindingFlags = kBindingConstantBuffer;
-					params->size = sizeof(FrameConstants);
-					params->dynamic = 1;
+			shadowDepthBuffer = bufferHandleAlloc.Allocate();
+			assert(shadowDepthBuffer);
 
-					cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
-				}
+			{
+				CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
+				assert(nullptr != params);
+				params->handle = shadowDepthBuffer;
+				params->bindingFlags = kBindingConstantBuffer;
+				params->size = sizeof(FrameConstants);
+				params->dynamic = 1;
+
+				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
 			}
+
 
 			lightingConstantBuffer = bufferHandleAlloc.Allocate();
 			assert(lightingConstantBuffer);
@@ -409,7 +408,7 @@ namespace tofu
 		
 		LightComponentData* lights = LightComponent::GetAllComponents();
 		uint32_t lightsCount = LightComponent::GetNumComponents();
-		uint32_t numActiveLights = 0;
+		//TextureHandle * depthMap = new TextureHandle[lightsCount];
 		// Light constant buffer data
 		{
 			LightingConstants* data = reinterpret_cast<LightingConstants*>(
@@ -437,64 +436,6 @@ namespace tofu
 						data->type[i].x = 3.0f;
 					}
 	                data->lightColor[i] = comp.lightColor;
-
-
-					if (lights[i].castShadow) {
-						// Calculate shadow matrices and pass them to buffer
-						FrameConstants* dataShadow = reinterpret_cast<FrameConstants*>(
-							MemoryAllocator::Allocators[allocNo].Allocate(sizeof(FrameConstants), 4)
-							);
-						assert(nullptr != dataShadow);
-                       
-						TransformComponent t = lights[i].entity.GetComponent<TransformComponent>();
-						dataShadow->cameraPos = camPos;
-						math::float4x4 lightView;
-						math::float4x4 lightProject;
-						switch (lights[i].type) {
-						case(kLightTypeDirectional):
-                           math::float3 lightPos = camPos;
-						   math::float3 forward = t->GetForwardVector();
-						   lightView = math::lookTo(lightPos, forward, math::float3{ 0, 1, 0 });
-						   lightProject = math::orthoLH(-10.0f, 10.0f, -10.0f, 10.0f, 0.01f, 100.0f);
-						   break;
-						case(kLightTypePoint):
-							math::float3 lightPos = t->GetWorldPosition();
-							math::float3 forward = t->GetForwardVector();
-							lightView = math::lookTo(lightPos, forward, math::float3{ 0, 1, 0 });
-							lightProject = math::perspective(90.0f * 3.1415f / 180.0f, 1.0f, 0.01f, 100.0f);
-							break;
-						}
-
-						// Culling
-
-						uint32_t idx = numActiveLights++;
-						activeLights[idx] = i;
-
-#ifdef TOFU_USE_GLM
-						shadowInfoArray[idx * 4] = math::transpose(lightView);
-						
-#else
-						transformArray[idx * 4] = transform->GetWorldTransform().GetMatrix();
-#endif
-					}
-
-#ifdef TOFU_USE_GLM
-						dataShadow->matView = math::transpose(lightView);
-						dataShadow->matProj = math::transpose(lightProject);
-#else
-						data->matView = camera.CalcViewMatrix();
-						data->matProj = camera.CalcProjectionMatrix();
-#endif
-						UpdateBufferParams* paramsShadow = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
-						assert(nullptr != paramsShadow);
-						paramsShadow->handle = shadowDepthBuffer;
-						//	params->handle = frameConstantBuffer;
-						paramsShadow->data = data;
-						paramsShadow->size = sizeof(FrameConstants);
-
-						cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, paramsShadow);
-					}
-
 				}
 				data->count = lightsCount;
 				data->camPos = camPos;
@@ -641,16 +582,51 @@ namespace tofu
 
 
 		// Generate shadow map
-	
-		for (uint32_t i = 0; i < lights; ++i)
+		// So far one light
+		for (uint32_t i = 0; i < 1; ++i) {
+
+			FrameConstants* data = reinterpret_cast<FrameConstants*>(
+				MemoryAllocator::Allocators[allocNo].Allocate(sizeof(FrameConstants), 4)
+				);
+			assert(nullptr != data);
+			
+            TransformComponent t = lights[i].entity.GetComponent<TransformComponent>();
+			data->cameraPos = camPos;
+
+			
+			math::float3 lightPos = camPos;
+			//math::float3 lightPos = t->GetWorldPosition();
+			math::float3 forward = t->GetForwardVector();
+			math::float4x4 lightView = math::lookTo(lightPos, forward, math::float3{ 0, 1, 0 });
+		//	math::float4x4 lightProject = math::perspective(90.0f * 3.1415f / 180.0f, 1.0f, 0.01f, 100.0f);
+			math::float4x4 lightProject = math::orthoLH(-10.0f, 10.0f, -10.0f, 10.0f, 0.01f, 100.0f);
+#ifdef TOFU_USE_GLM
+			data->matView = math::transpose(lightView);
+			data->matProj = math::transpose(lightProject);
+#else
+			data->matView = camera.CalcViewMatrix();
+			data->matProj = camera.CalcProjectionMatrix();
+#endif
+			UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
+			assert(nullptr != params);
+			params->handle = shadowDepthBuffer;
+		//	params->handle = frameConstantBuffer;
+			params->data = data;
+			params->size = sizeof(FrameConstants);
+
+			cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
+		}
 		{
 			ClearParams* params = MemoryAllocator::Allocate<ClearParams>(allocNo);
 			params->renderTargets[0] = TextureHandle();
-			params->depthRenderTarget = lights[i].depthMap;
+			params->depthRenderTarget = lights[0].depthMap;
 			params->clearDepth = 1.0f;
 			params->clearStencil = 100.0f;
 
 			cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
+		}
+		for (uint32_t i = 0; i < 1; ++i)
+		{
 			RenderingComponentData& comp = renderables[activeRenderables[i]];
 
 			assert(nullptr != comp.model);

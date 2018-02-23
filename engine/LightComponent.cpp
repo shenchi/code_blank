@@ -8,7 +8,6 @@ namespace tofu {
 
 	void LightComponentData::CreateDepthMap()
 	{
-		castShadow = true;
 		uint32_t width = 1600, height = 900;
 		TextureHandle ret = RenderingSystem::instance()->CreateDepthMap(width, height);
 		depthMap = ret;
