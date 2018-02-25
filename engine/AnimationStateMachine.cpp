@@ -183,7 +183,7 @@ namespace tofu
 			}
 			else if (indices[3] != SIZE_MAX) {
 				math::quat q;
-				ModelAnimFrame &f = model->frames[frameCache.indices[kChannelTranslation][3]];
+				ModelAnimFrame &f = model->frames[frameCache.indices[kChannelRotation][3]];
 
 				//tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&f.value.x), q);
 				tofu::compression::DecompressQuaternion(q, f.value, f.GetSignedBit());

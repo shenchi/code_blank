@@ -50,7 +50,7 @@ namespace tofu
 	{
 		if (isDirty && other.isDirty) {
 			translation = mix(translation, other.translation, weight);
-			rotation = mix(rotation, other.rotation, weight);
+			rotation = slerp(rotation, other.rotation, weight);
 			scale = mix(scale, other.scale, weight);
 		}
 		else if (!isDirty) {
