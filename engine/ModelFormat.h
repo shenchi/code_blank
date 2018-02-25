@@ -126,8 +126,6 @@ namespace tofu
 
 		struct ModelAnimFrame
 		{
-			uint16_t time = 0;
-
 			// TODO: float compression
 			// https://github.com/Maratyszcza/FP16/blob/master/third-party/float16-compressor.h
 			// https://github.com/guillaumeblanc/ozz-animation/blob/71f622e1480bf76d3cc0da5fe90900dc247234c3/include/ozz/base/maths/internal/simd_math_sse-inl.h
@@ -137,8 +135,11 @@ namespace tofu
 
 			math::float3 value;
 
+			uint16_t time = 0;
+
 		private:
 			uint16_t jointIndex = 0;
+
 
 		public:
 

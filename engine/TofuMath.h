@@ -52,11 +52,15 @@ namespace tofu
 		typedef glm::vec2 float2;
 		typedef glm::vec3 float3;
 		typedef glm::vec4 float4;
-		typedef glm::quat quat;
+		//typedef glm::quat quat;
 
 		typedef glm::ivec2 int2;
 		typedef glm::ivec3 int3;
 		typedef glm::ivec4 int4;
+
+		typedef glm::tvec2<uint32_t, glm::highp> uint2;
+		typedef glm::tvec3<uint32_t, glm::highp> uint3;
+		typedef glm::tvec4<uint32_t, glm::highp> uint4;
 
 		typedef glm::mat4 float4x4;
 
@@ -124,12 +128,11 @@ namespace tofu
 			};
 		}
 
-		void decompose(const float4x4& m, float3& t, quat& r, float3& s)
+		TF_INLINE void decompose(const float4x4& m, float3& t, quat& r, float3& s)
 		{
 			float3 skew; float4 persp;
 			decompose(m, s, r, t, skew, persp);
 			r = conjugate(r);
-			identity();
 		}
 #else
 

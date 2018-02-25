@@ -20,12 +20,13 @@
 #include "../../engine/TofuMath.h"
 #include "../../engine/Compression.h"
 
-using tofu::math::float2;
-using tofu::math::float3;
-using tofu::math::float4;
-using tofu::math::quat;
-using tofu::math::float4x4;
-using tofu::math::int4;
+//using tofu::math::float2;
+//using tofu::math::float3;
+//using tofu::math::float4;
+//using tofu::math::quat;
+//using tofu::math::float4x4;
+//using tofu::math::int4;
+//using tofu::math::uint4;
 
 typedef tofu::model::ModelMesh Mesh;
 typedef tofu::model::ModelBone Bone;
@@ -422,6 +423,9 @@ const char* HumanBone::name(uint32_t id)
 	return HumanBoneNames[id];
 }
 
+struct ModelFile;
+bool CorrectHumanBoneRotation(const ModelFile & dstModel, const ModelFile & srcModel, quat& rotation, uint32_t humanBoneId);
+
 void Basename(char* buf, size_t bufSize, const char* path)
 {
 	size_t start = 0;
@@ -470,6 +474,19 @@ void Directory(char* buf, size_t bufSize, const char* path)
 	{
 		strncpy_s(buf, bufSize, path + start, end - start + 1);
 	}
+}
+
+bool EndWith(const char* str1, const char* str2)
+{
+	size_t len1 = strlen(str1), len2 = strlen(str2);
+	if (len1 < len2) return false;
+
+	for (size_t i = 0; i < len2; i++)
+	{
+		if (str1[len1 - len2 + i] != str2[i]) return false;
+	}
+
+	return true;
 }
 
 inline void CopyMatrix(float4x4& dstMatrix, const aiMatrix4x4& srcMatrix)
@@ -523,7 +540,7 @@ uint32_t loadBoneHierarchy(aiNode* node, BoneTree& bones, BoneTable& table, uint
 	}
 
 	CopyMatrix(bone.transform, node->mTransformation);
-	bone.offsetMatrix = tofu::math::identity();
+	bone.offsetMatrix = float4x4(1.0f);
 
 	uint32_t firstChild = UINT16_MAX;
 	uint32_t lastChild = UINT16_MAX;
@@ -546,7 +563,7 @@ struct ForSortingFrame {
 	ModelAnimFrame frame;
 };
 
-bool SortingFrameComp(ForSortingFrame i, ForSortingFrame j) { 
+bool SortingFrameComp(ForSortingFrame i, ForSortingFrame j) {
 	if (i.usedTime == j.usedTime) {
 		if (i.frame.GetJointIndex() == j.frame.GetJointIndex()) {
 			if (i.frame.GetChannelType() == j.frame.GetChannelType()) {
@@ -581,12 +598,15 @@ struct ModelFile
 	std::vector<ForSortingFrame>	frames;
 	std::vector<ModelAnimFrame>		orderedFrames;
 
-
 	std::vector<uint32_t>			humanBoneBindings;
 	std::vector<quat>				humanBoneWorldR;
 	std::vector<quat>				humanBoneLocalR;
 	std::vector<quat>				humanBoneCorrectionLocalR;
 	std::vector<float3>				humanBoneLocalT;
+	std::vector<uint32_t>			bonesHumanBoneIds;
+	std::vector<bool>				boneHasOffsetMatrices;
+	float3							rootOffset;
+	float							hipsHeight;
 
 
 	int Init(const char* filename, bool withAnim = true)
@@ -629,6 +649,7 @@ struct ModelFile
 			// load bone hierarchy	
 			loadBoneHierarchy(scene->mRootNode, bones, boneTable);
 			header.NumBones = static_cast<uint32_t>(bones.size());
+			boneHasOffsetMatrices.resize(bones.size(), false);
 		}
 
 		if (scene->mNumAnimations > 0 && withAnim)
@@ -759,6 +780,7 @@ struct ModelFile
 					if (IsIdentity(bones[boneId].offsetMatrix))
 					{
 						CopyMatrix(bones[boneId].offsetMatrix, bone->mOffsetMatrix);
+						boneHasOffsetMatrices[boneId] = true;
 					}
 					else if (!IsEqual(bones[boneId].offsetMatrix, bone->mOffsetMatrix))
 					{
@@ -961,6 +983,9 @@ struct ModelFile
 
 	int LoadAvatar(const char* filename)
 	{
+		if (bones.empty())
+			return __LINE__;
+
 		FILE* fp = fopen(filename, "rb");
 		if (!fp) return 0;
 
@@ -987,6 +1012,7 @@ struct ModelFile
 		humanBoneWorldR.resize(HumanBone::NumHumanBones, quat(1, 0, 0, 0));
 		humanBoneLocalR.resize(HumanBone::NumHumanBones, quat(1, 0, 0, 0));
 		humanBoneBindings.resize(HumanBone::NumHumanBones, UINT32_MAX);
+		bonesHumanBoneIds.resize(bones.size(), UINT32_MAX);
 
 		for (uint32_t i = 0; i < HumanBone::NumHumanBones; i++)
 		{
@@ -1002,12 +1028,12 @@ struct ModelFile
 				if (iter != boneTable.end())
 				{
 					humanBoneBindings[i] = iter->second;
-					bones[iter->second].humanBoneId = i;
+					bonesHumanBoneIds[iter->second] = i;
 
 					quat rot;
-					vec3 scale, trans;
+					float3 scale, trans;
 
-					if (bones[iter->second].hasOffsetMatrix)
+					if (boneHasOffsetMatrices[iter->second])
 					{
 						humanBoneWorldMatrices[i] = inverse(transpose(bones[iter->second].offsetMatrix));
 					}
@@ -1050,7 +1076,7 @@ struct ModelFile
 				}
 			}
 		}
-
+		
 		// get local rotation for each bone in human skeleton
 		for (uint32_t i = 0; i < HumanBone::NumHumanBones; i++)
 		{
@@ -1071,9 +1097,17 @@ struct ModelFile
 			}
 		}
 
+		// get rootOffset and hipsHeight
+		{
+			quat r; float3 t, s;
+			decompose(humanBoneWorldMatrices[HumanBone::Root], rootOffset, r, s);
+			decompose(humanBoneLocalMatrices[HumanBone::Hips], t, r, s);
+			hipsHeight = t.y;
+		}
+
 		humanBoneCorrectionLocalR.resize(HumanBone::NumHumanBones, quat(1, 0, 0, 0));
 
-		fp = fopen("debug.log", "w");
+		//fp = fopen((std::string(filename) + ".txt").c_str(), "w");
 
 		// adjust 
 		for (uint32_t i = HumanBone::Hips; i < HumanBone::NumHumanBones; i++)
@@ -1109,33 +1143,27 @@ struct ModelFile
 				humanBoneCorrectionLocalR[i] = angleAxis(delta, rotateAxis);
 			}
 
-			/*if (humanBoneBindings[t] == UINT32_MAX)
-			{
-			boneDir = stdBoneDir;
-			humanBoneCorrectionR[i] = quat(1, 0, 0, 0);
-			}*/
-
 			quat rot;
 			vec3 trans, scale;
 			decompose(humanBoneLocalMatrices[i], trans, rot, scale);
 			rot = humanBoneCorrectionLocalR[i] * rot;
-			humanBoneLocalMatrices[i] = compose(trans, rot, scale);
+			humanBoneLocalMatrices[i] = transform(trans, rot, scale);
 			humanBoneWorldMatrices[i] = humanBoneWorldMatrices[p] * humanBoneLocalMatrices[i];
 
-			{
-				quat q = humanBoneCorrectionLocalR[i];
-				vec3 v = degrees(eulerAngles(q));
-				fprintf(fp, "%20s: (%10.6f, %10.6f, %10.6f) <> (%10.6f, %10.6f, %10.6f)\n                      (%10.6f, %10.6f, %10.6f, %10.6f) = [%7.2f, %7.2f, %7.2f]\n",
-					HumanBone::name(i),
-					boneDir.x, boneDir.y, boneDir.z,
-					stdBoneDir.x, stdBoneDir.y, stdBoneDir.z,
-					q.w, q.x, q.y, q.z,
-					v.x, v.y, v.z
-				);
-			}
+			//{
+			//	quat q = humanBoneCorrectionLocalR[i];
+			//	vec3 v = degrees(eulerAngles(q));
+			//	fprintf(fp, "%20s: (%10.6f, %10.6f, %10.6f) <> (%10.6f, %10.6f, %10.6f)\n                      (%10.6f, %10.6f, %10.6f, %10.6f) = [%7.2f, %7.2f, %7.2f]\n",
+			//		HumanBone::name(i),
+			//		boneDir.x, boneDir.y, boneDir.z,
+			//		stdBoneDir.x, stdBoneDir.y, stdBoneDir.z,
+			//		q.w, q.x, q.y, q.z,
+			//		v.x, v.y, v.z
+			//	);
+			//}
 		}
 
-		fclose(fp);
+		//fclose(fp);
 
 		return 0;
 	}
@@ -1174,7 +1202,7 @@ struct ModelFile
 		// change frame id
 		for (auto &frame : other.orderedFrames) {
 			auto iter = boneTable.find(other.bones[frame.GetJointIndex()].name);
-			
+
 			if (iter != boneTable.end()) {
 				frame.SetJointIndex(iter->second);
 			}
@@ -1190,6 +1218,122 @@ struct ModelFile
 			Animation& anim = anims[i + header.NumAnimations];
 			anim.startFrames += header.NumAnimationFrames;
 		}
+
+		header.NumAnimations = static_cast<uint32_t>(anims.size());
+		header.NumAnimationFrames = static_cast<uint32_t>(orderedFrames.size());
+
+		return 0;
+	}
+
+	int RetargetAnimation(ModelFile& other)
+	{
+		if (humanBoneBindings.empty() || other.humanBoneBindings.empty() || other.anims.empty())
+			return __LINE__;
+
+		for (uint32_t i = 0; i < other.anims.size(); i++)
+		{
+			RetargetAnimation(other, i);
+		}
+
+		return 0;
+	}
+
+	int RetargetAnimation(ModelFile& other, const char* clip, const char* name = nullptr)
+	{
+		if (humanBoneBindings.empty() || other.humanBoneBindings.empty() || other.anims.empty())
+			return __LINE__;
+
+		for (uint32_t i = 0; i < other.anims.size(); i++)
+		{
+			if (strncmp(other.anims[i].name, clip, 127) == 0)
+			{
+				return RetargetAnimation(other, i, name);
+			}
+		}
+
+		return __LINE__;
+	}
+
+	int RetargetAnimation(ModelFile& other, uint32_t animId, const char* name = nullptr)
+	{
+		if (humanBoneBindings.empty() || other.humanBoneBindings.empty() || other.anims.empty())
+			return __LINE__;
+
+		Animation& srcAnim = other.anims[animId];
+		Animation dstAnim = {};
+
+		if (nullptr == name)
+		{
+			name = srcAnim.name;
+		}
+
+		strcpy(dstAnim.name, name);
+
+		dstAnim.tickCount = srcAnim.tickCount;
+		dstAnim.ticksPerSecond = srcAnim.ticksPerSecond;
+
+		header.HasAnimation = 1;
+
+		std::vector<ModelAnimFrame> frames;
+		frames.reserve(srcAnim.numFrames);
+
+		for (uint32_t i = 0; i < srcAnim.numFrames; i++)
+		{
+			ModelAnimFrame frame = other.orderedFrames[srcAnim.startFrames + i];
+
+			uint32_t srcBoneId = frame.GetJointIndex();
+			uint32_t humanBoneId = other.bonesHumanBoneIds[srcBoneId];
+			if (humanBoneId == UINT32_MAX) continue;
+
+			uint32_t dstBoneId = humanBoneBindings[humanBoneId];
+			if (dstBoneId == UINT32_MAX) continue;
+
+			frame.SetJointIndex(dstBoneId);
+
+			auto type = frame.GetChannelType();
+			if (type == tofu::model::kChannelRotation)
+			{
+				quat q(1, 0, 0, 0);
+				DecompressQuaternion(q, frame.value, frame.GetSignedBit());
+
+				if (!CorrectHumanBoneRotation(*this, other, q, humanBoneId))
+				{
+					return __LINE__;
+				}
+
+				bool sign;
+				CompressQuaternion(q, frame.value, sign);
+				frame.SetSignedBit(sign);
+			}
+			else if (type == tofu::model::kChannelTranslation)
+			{
+				// apply t from dest T-pose except Hips and Root
+				if (humanBoneId == HumanBone::Root)
+				{
+					frame.value = frame.value - other.rootOffset + rootOffset;
+				}
+				else if (humanBoneId == HumanBone::Hips)
+				{
+					frame.value.y = frame.value.y - other.hipsHeight + hipsHeight;
+				}
+				else
+				{
+					frame.value = humanBoneLocalT[humanBoneId];
+				}
+			}
+			else if (type == tofu::model::kChannelScale)
+			{
+				//
+			}
+
+			frames.push_back(frame);
+		}
+
+		dstAnim.startFrames = orderedFrames.size();
+		dstAnim.numFrames = frames.size();
+		orderedFrames.insert(orderedFrames.end(), frames.begin(), frames.end());
+
+		anims.push_back(dstAnim);
 
 		header.NumAnimations = static_cast<uint32_t>(anims.size());
 		header.NumAnimationFrames = static_cast<uint32_t>(orderedFrames.size());
@@ -1308,6 +1452,137 @@ struct ModelFile
 	}
 };
 
+bool CorrectHumanBoneRotation(const ModelFile & dstModel, const ModelFile & srcModel, quat& rotation, uint32_t humanBoneId)
+{
+	uint32_t srcBoneId = srcModel.humanBoneBindings[humanBoneId];
+	if (srcBoneId == UINT32_MAX) return false;
+
+	uint32_t dstBoneId = dstModel.humanBoneBindings[humanBoneId];
+	if (dstBoneId == UINT32_MAX) return false;
+
+	uint32_t parentId = srcModel.bones[srcBoneId].parent;
+	uint32_t parentHumanBoneId = srcModel.bonesHumanBoneIds[parentId];
+	if (parentHumanBoneId != UINT32_MAX)
+	{
+		quat TPoseLocalR = srcModel.humanBoneCorrectionLocalR[humanBoneId] * srcModel.humanBoneLocalR[humanBoneId];
+
+		//quat deltaR = inverse(TPoseLocalR) * r;
+		quat deltaR = rotation *  inverse(TPoseLocalR);
+
+		quat srcParentWorldR = srcModel.humanBoneWorldR[parentHumanBoneId];
+		deltaR = srcParentWorldR * deltaR * inverse(srcParentWorldR);
+		//r = inverse(srcParentWorldR) * deltaR * srcParentWorldR;
+
+		quat dstParentWorldR = dstModel.humanBoneWorldR[parentHumanBoneId];
+		deltaR = inverse(dstParentWorldR) * deltaR * dstParentWorldR;
+		//r = dstParentWorldR * r * inverse(dstParentWorldR);
+
+		quat modelStdTPoseR = dstModel.humanBoneCorrectionLocalR[humanBoneId] * dstModel.humanBoneLocalR[humanBoneId];
+
+		//r = model.humanBoneLocalR[humanBoneId] * r;
+		rotation = deltaR * modelStdTPoseR;
+
+	}
+	return true;
+}
+
+int execute_config(const char* configFilename)
+{
+	FILE* configFile = fopen(configFilename, "rb");
+	if (nullptr == configFile)
+		return __LINE__;
+
+	fseek(configFile, 0, SEEK_END);
+	size_t fileSize = ftell(configFile);
+	rewind(configFile);
+
+	char* buffer = new char[fileSize + 1];
+	if (1 != fread(buffer, fileSize, 1, configFile))
+		return __LINE__;
+
+	buffer[fileSize] = 0;
+
+	rapidjson::Document config;
+	config.Parse(buffer);
+	delete[] buffer;
+
+	if (config.HasParseError() || !config.IsArray())
+	{
+		printf("not valid config file\n");
+		return __LINE__;
+	}
+
+	for (rapidjson::SizeType iTarget = 0; iTarget < config.Size(); iTarget++)
+	{
+		rapidjson::Value& target = config[iTarget];
+		const char* outputFilename = target["target"].GetString();
+		const char* meshFilename = target["source"].GetString();
+
+		ModelFile model = {};
+		int err = model.Init(meshFilename, false);
+		if (err) return err;
+
+		model.LoadAvatar(target["avatar"].GetString());
+
+		if (target.HasMember("animations") && target["animations"].IsArray())
+		{
+			rapidjson::Value& animations = target["animations"];
+			for (rapidjson::SizeType iAnim = 0; iAnim < animations.Size(); iAnim++)
+			{
+				rapidjson::Value& animation = animations[iAnim];
+				ModelFile model2 = {};
+				err = model2.Init(animation["source"].GetString());
+				if (err) return err;
+
+				model2.LoadAvatar(animation["avatar"].GetString());
+
+				if (model.RetargetAnimation(model2, animation["clip"].GetString(), animation["name"].GetString()))
+					return __LINE__;
+			}
+		}
+
+		// write
+		err = model.Write(outputFilename);
+		if (err) return err;
+
+		if (model.HasTextures())
+		{
+			char directory[1024] = {};
+			char basename[1024] = {};
+
+			Directory(directory, 1024, outputFilename);
+			Basename(basename, 1024, outputFilename);
+
+			strcat_s(directory, 1024, basename);
+
+			err = model.WriteTextures(directory);
+			if (err) return err;
+		}
+	}
+
+	return 0;
+}
+
+int list_animations(const char* filename)
+{
+	Assimp::Importer importer;
+	const aiScene* scene = importer.ReadFile(filename, 0);
+
+	if (nullptr == scene)
+	{
+		printf("%s\n", importer.GetErrorString());
+		return __LINE__;
+	}
+
+	printf("contains %d animations:\n");
+	for (uint32_t i = 0; i < scene->mNumAnimations; i++)
+	{
+		printf("[%5d] %s\n", i, scene->mAnimations[i]->mName.C_Str());
+	}
+
+	return 0;
+}
+
 int main(int argc, char* argv[])
 {
 	//argc = 5;
@@ -1356,73 +1631,13 @@ int main(int argc, char* argv[])
 
 	if (argc == 2)
 	{
-		FILE* configFile = fopen(argv[1], "r");
-		if (nullptr == configFile)
-			return __LINE__;
-
-		fseek(configFile, 0, SEEK_END);
-		size_t fileSize = ftell(configFile);
-		fseek(configFile, 0, SEEK_SET);
-
-		char* buffer = new char[fileSize + 1];
-		if (1 != fread(buffer, fileSize, 1, configFile))
-			return __LINE__;
-
-		buffer[fileSize] = 0;
-
-		rapidjson::Document config;
-		config.Parse(buffer);
-		delete[] buffer;
-
-		if (config.HasParseError() || !config.IsArray())
+		if (EndWith(argv[1], ".json"))
 		{
-			printf("not valid config file\n");
-			return __LINE__;
+			return execute_config(argv[1]);
 		}
-		
-		for (rapidjson::SizeType iTarget = 0; iTarget < config.Size(); iTarget++)
+		else
 		{
-			rapidjson::Value& target = config[iTarget];
-			const char* outputFilename = target["target"].GetString();
-			const char* meshFilename = target["source"].GetString();
-
-			ModelFile model = {};
-			int err = model.Init(meshFilename, false);
-			if (err) return err;
-
-
-
-			if (target.HasMember("animations") && target["animations"].IsArray())
-			{
-				rapidjson::Value& animations = target["animations"];
-				for (rapidjson::SizeType iAnim = 0; iAnim < animations.Size(); iAnim++)
-				{
-					rapidjson::Value& animation = animations[iAnim];
-					ModelFile model2 = {};
-					err = model2.Init(animation["source"].GetString());
-					if (err) return err;
-
-					model.MergeAnimation(model2);
-				}
-			}
-
-			// write
-			err = model.Write(argv[1]);
-			if (err) return err;
-
-			if (model.HasTextures())
-			{
-				char directory[1024] = {};
-				char basename[1024] = {};
-
-				Directory(directory, 1024, argv[1]);
-				Basename(basename, 1024, argv[1]);
-
-				strcat_s(directory, 1024, basename);
-
-				err = model.WriteTextures(directory);
-				if (err) return err;
-			}
+			return list_animations(argv[1]);
 		}
 	}
 	else
