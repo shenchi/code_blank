@@ -70,6 +70,7 @@ namespace tofu
 		materialPSs(),
 		defaultSampler(),
 		shadowSampler(),
+		lutSampler(),
 		builtinCube(),
 		cmdBuf(nullptr)
 	{
@@ -300,7 +301,20 @@ namespace tofu
 				cmdBuf->Add(RendererCommand::kCommandCreateSampler, params);
 			}
 		}
+		// Create lut sampler
+		{
+			lutSampler = samplerHandleAlloc.Allocate();
+			assert(lutSampler);
 
+			{
+				CreateSamplerParams* params = MemoryAllocator::Allocate<CreateSamplerParams>(allocNo);
+				params->handle = lutSampler;
+				params->textureAddressU = 3;
+				params->textureAddressV = 3;
+				params->textureAddressW = 3;
+				cmdBuf->Add(RendererCommand::kCommandCreateSampler, params);
+			}
+		}
 		
 
 		builtinCube = CreateModel("assets/cube.model");
@@ -408,7 +422,7 @@ namespace tofu
 		
 		LightComponentData* lights = LightComponent::GetAllComponents();
 		uint32_t lightsCount = LightComponent::GetNumComponents();
-		//TextureHandle * depthMap = new TextureHandle[lightsCount];
+
 		// Light constant buffer data
 		{
 			LightingConstants* data = reinterpret_cast<LightingConstants*>(
@@ -508,7 +522,6 @@ namespace tofu
 
 		// fill in transform matrix for active renderables
 		for (uint32_t i = 0; i < renderableCount; ++i)
-	   // for (uint32_t i = renderableCount - 2; i < renderableCount; ++i)
 		{
 			RenderingComponentData& comp = renderables[i];
 			TransformComponent transform = comp.entity.GetComponent<TransformComponent>();
@@ -765,14 +778,20 @@ namespace tofu
 					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
 					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
 					params->vsConstantBuffers[2] = { shadowDepthBuffer, 0, 16 };
-				//	params->vsConstantBuffers[1] = { shadowDepthBuffer, 0, 16 };
 					params->psConstantBuffers[0] = { lightingConstantBuffer,0, 4096 };
 					params->psTextures[0] = skyboxTex;
 					params->psTextures[1] = mat->mainTex;
 					params->psTextures[2] = mat->normalMap;
 			     	params->psTextures[3] = lights[0].depthMap;
+					params->psTextures[4] = mat->roughnessMap;
+					params->psTextures[5] = mat->metallicMap;
+					params->psTextures[6] = mat->aoMap;
+					params->psTextures[7] = camera.skybox->skyboxDiffMap;
+					params->psTextures[8] = camera.skybox->skyboxSpecMap;
+					params->psTextures[9] = camera.skybox->lutMap;
 					params->psSamplers[0] = defaultSampler;
 					params->psSamplers[1] = shadowSampler;
+					params->psSamplers[2] = lutSampler;
 					break;
 				default:
 					assert(false && "this material type is not applicable for entities");

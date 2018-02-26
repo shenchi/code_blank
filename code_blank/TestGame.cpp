@@ -31,11 +31,23 @@ int32_t TestGame::Init()
 		Model* model = RenderingSystem::instance()->CreateModel("assets/cube.model");
 
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
-		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
+		/*TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
 		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/stone_wall_normalmap.texture");
 
 		material->SetTexture(diffuse);
+		material->SetNormalMap(normalMap);*/
+		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-albedo2.texture");
+		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-normal3-UE4-Copy.texture");
+		TextureHandle   metallicMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-metalness-Copy.texture");
+		TextureHandle   roughnessMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-rough-Copy.texture");
+		TextureHandle   aoMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-ao-Copy.texture");
+
+		material->SetTexture(diffuse);
 		material->SetNormalMap(normalMap);
+		material->SetMetallicMap(metallicMap);
+		material->SetAoMap(aoMap);
+		material->SetRoughnessMap(roughnessMap);
+
 
 		r->SetMaterial(material);
 		r->SetModel(model);
@@ -57,11 +69,17 @@ int32_t TestGame::Init()
 		Model* model = RenderingSystem::instance()->CreateModel("assets/cube.model");
 
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
-		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
-		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/stone_wall_normalmap.texture");
+		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-albedo2.texture");
+		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-normal3-UE4 - Copy.texture");
+		TextureHandle   metallicMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-metalness - Copy.texture");
+		TextureHandle   roughnessMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-rough - Copy.texture");
+		TextureHandle   aoMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-ao - Copy.texture");
 
 		material->SetTexture(diffuse);
 		material->SetNormalMap(normalMap);
+		material->SetMetallicMap(metallicMap);
+		material->SetAoMap(aoMap);
+		material->SetRoughnessMap(roughnessMap);
 
 		r->SetMaterial(material);
 		r->SetModel(model);
@@ -155,8 +173,14 @@ int32_t TestGame::Init()
 
 		Material* skyboxMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeSkybox);
 		TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/craterlake.texture");
+		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/textures/test/diffuseIrradianceMap-Copy.texture");
+		TextureHandle specular = RenderingSystem::instance()->CreateTexture("assets/textures/test/prefilteredMap-Copy.texture");
+		TextureHandle lut = RenderingSystem::instance()->CreateTexture("assets/textures/test/BrdfLUT-Copy.texture");		
 		skyboxMat->SetTexture(tex);
-
+		skyboxMat->SetSkyboxDiff(diffuse);
+		skyboxMat->SetSkyboxSpecMap(specular);
+		skyboxMat->SetLUTMap(lut);
+		
 		cam->SetSkybox(skyboxMat);
 	}
 

@@ -102,6 +102,7 @@ namespace tofu
 		PixelShaderHandle		materialPSs[kMaxMaterialTypes];
 		SamplerHandle			defaultSampler;
 		SamplerHandle           shadowSampler;
+		SamplerHandle           lutSampler;
 
 		Model*					builtinCube;
 

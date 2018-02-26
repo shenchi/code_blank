@@ -25,6 +25,16 @@ namespace tofu
 		void SetTexture(TextureHandle t) { mainTex = t; }
 
 		void SetNormalMap(TextureHandle t) { normalMap = t; }
+		void SetMetallicMap(TextureHandle t) { metallicMap = t; }
+
+		void SetRoughnessMap(TextureHandle t) { roughnessMap = t; }
+
+		void SetAoMap(TextureHandle t) { aoMap = t; }
+		void SetSkyboxDiff(TextureHandle t) { skyboxDiffMap = t; }
+
+		void SetSkyboxSpecMap(TextureHandle t) { skyboxSpecMap = t; }
+
+		void SetLUTMap(TextureHandle t) { lutMap = t; }
 
 	private:
 		Material(MaterialType type = MaterialType::kMaterialTypeTest) 
@@ -32,7 +42,10 @@ namespace tofu
 			type(type),
 			handle(),
 			mainTex(),
-			normalMap()
+			normalMap(),
+			metallicMap(),
+			roughnessMap(),
+			aoMap()
 		{}
 
 	private:
@@ -40,5 +53,11 @@ namespace tofu
 		MaterialHandle	handle;
 		TextureHandle	mainTex;
 		TextureHandle	normalMap;
+		TextureHandle   metallicMap;
+		TextureHandle   roughnessMap;
+		TextureHandle   aoMap;
+		TextureHandle   skyboxDiffMap;
+		TextureHandle   skyboxSpecMap;
+		TextureHandle   lutMap;
 	};
 }
