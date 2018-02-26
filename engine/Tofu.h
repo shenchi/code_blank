@@ -8,6 +8,7 @@
 #include "RenderingComponent.h"
 #include "AnimationComponent.h"
 #include "PhysicsComponent.h"
+#include "LightComponent.h"
 
 #include "Engine.h"
 #include "RenderingSystem.h"

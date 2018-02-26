@@ -299,6 +299,12 @@
             "GUID": "cc6d16f023d1505469d0e0b261c58ffc",
             "AlbedoMap": "textures/Tut09B",
             "NormalMap": ""
+        },
+        {
+            "Name": "unity_builtin_extra",
+            "GUID": "0000000000000000f000000000000000",
+            "AlbedoMap": "",
+            "NormalMap": ""
         }
     ],
     "textures": [

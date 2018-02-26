@@ -5,6 +5,7 @@
 #include "RenderingSystem.h"
 #include "RenderingComponent.h"
 #include "PhysicsComponent.h"
+#include "LightComponent.h"
 
 namespace
 {
@@ -191,6 +192,30 @@ namespace tofu
 						center["z"].GetFloat()
 					});
 				}
+			}
+			else if (strcmp(typeStr, "light") == 0)
+			{
+				auto l = e.AddComponent<LightComponent>();
+				const char* lightTypeStr = comp["lightType"].GetString();
+				if (strcmp(lightTypeStr, "directional"))
+				{
+					l->SetType(LightType::kLightTypeDirectional);
+				}
+				else if (strcmp(lightTypeStr, "point"))
+				{
+					l->SetType(LightType::kLightTypePoint);
+				}
+				else if (strcmp(lightTypeStr, "spot"))
+				{
+					l->SetType(LightType::kLightTypeSpot);
+				}
+				value_t color = comp["color"];
+				l->SetColor(math::float4{
+					color["x"].GetFloat(),
+					color["y"].GetFloat(),
+					color["z"].GetFloat(),
+					color["w"].GetFloat()
+				});
 			}
 		}
 

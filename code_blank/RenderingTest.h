@@ -2,7 +2,7 @@
 
 #include <Tofu.h>
 
-class SceneLoadingDemo : public tofu::Module
+class RenderingTest : public tofu::Module
 {
 public:
 	virtual int32_t Init() override;
@@ -20,7 +20,7 @@ private:
 	tofu::TransformComponent	tCamera;
 	tofu::PhysicsComponent		pPlayer;
 	// Dummy light
-	tofu::TransformComponent    tSun;   
+	tofu::TransformComponent    tSun;
 	tofu::LightComponent        lSun;
 	tofu::TransformComponent    tMoon;
 	tofu::TransformComponent    tBulb;

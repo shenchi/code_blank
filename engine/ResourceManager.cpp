@@ -16,21 +16,28 @@ namespace tofu
 		CHECKED(LoadConfig());
 
 		{
-			void* data1 = MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(16, 4);
-			void* data2 = MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(16, 4);
+			math::float4* data1 = reinterpret_cast<math::float4*>(
+				MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(
+					sizeof(math::float4), sizeof(math::float4)));
+
+			math::float4* data2 = reinterpret_cast<math::float4*>(
+				MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(
+					sizeof(math::float4), sizeof(math::float4)));
+
 			if (nullptr == data1 || nullptr == data2)
 			{
 				return kErrUnknown;
 			}
 
-			*reinterpret_cast<math::float4*>(data1) = math::float4{ 1, 1, 1, 1 };
-			*reinterpret_cast<math::float4*>(data2) = math::float4{ 0, 0, 1, 1 };
+			*(data1) = math::float4{ 1, 1, 1, 1 };
 
-			TextureHandle defaultAlbedoTex = RenderingSystem::instance()->CreateTexture(kFormatR8g8b8a8Unorm, 1, 1, 16, data1);
+			*(data2) = math::float4{ 0, 0, 1, 1 };
+
+			TextureHandle defaultAlbedoTex = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 16, data1);
 			if (!defaultAlbedoTex)
 				return kErrUnknown;
 
-			TextureHandle defaultNormalMap = RenderingSystem::instance()->CreateTexture(kFormatR8g8b8a8Unorm, 1, 1, 16, data2);
+			TextureHandle defaultNormalMap = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 16, data2);
 			if (!defaultNormalMap)
 				return kErrUnknown;
 
