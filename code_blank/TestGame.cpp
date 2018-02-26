@@ -173,8 +173,8 @@ int32_t TestGame::Init()
 
 		Material* skyboxMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeSkybox);
 		TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/craterlake.texture");
-		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/textures/test/diffuseIrradianceMap-Copy.texture");
-		TextureHandle specular = RenderingSystem::instance()->CreateTexture("assets/textures/test/prefilteredMap-Copy.texture");
+		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/textures/test/diffuseIrradianceMap.texture");
+		TextureHandle specular = RenderingSystem::instance()->CreateTexture("assets/textures/test/prefilteredMap.texture");
 		TextureHandle lut = RenderingSystem::instance()->CreateTexture("assets/textures/test/BrdfLUT-Copy.texture");		
 		skyboxMat->SetTexture(tex);
 		skyboxMat->SetSkyboxDiff(diffuse);
