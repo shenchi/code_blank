@@ -1,15 +1,13 @@
 cbuffer InstanceConstants : register (b0)
 {
 	matrix	matWorld;
-	//matrix	matWorld_IT;
 };
 
 cbuffer FrameConstants : register (b1)
 {
-	matrix	matView;
-	matrix	matProj;
+	matrix	matLightView;
+	matrix	matLightProj;
 };
-
 
 cbuffer BoneMatrices : register (b2)
 {
@@ -29,10 +27,6 @@ struct Input
 struct V2F
 {
 	float4 position	: SV_POSITION;
-	float3 worldPos	: POSITION;
-	float3 normal	: NORMAL;
-	float4 tangent	: TANGENT;
-	float2 uv		: TEXCOORD0;
 };
 
 V2F main(Input input)
@@ -45,17 +39,10 @@ V2F main(Input input)
 	bone += bones[input.boneIds.w] * input.weights.w;
 
 	matrix matM = mul(bone, matWorld);
-	//matrix matM = matWorld;
 
-	matrix matMVP = mul(mul(matM, matView), matProj);
+	matrix matMVPLightSpace = mul(mul(matM, matLightView), matLightProj);
+	//matrix matMVPLightSpace = mul(mul(matWorld, matLightView), matLightProj);
 
-	output.position = mul(float4(input.position, 1), matMVP);
-	output.worldPos = mul(float4(input.position, 1), matM).xyz;
-	//output.normal = mul(input.normal, (float3x3)matWorld_IT);
-	//output.tangent = mul(input.tangent, (float3x3)matWorld_IT); 
-	output.normal = mul(input.normal, (float3x3)matWorld);
-	output.tangent = float4(mul(input.tangent.xyz, (float3x3)matWorld), input.tangent.w);
-	output.uv = input.uv;
-
+	output.position = mul(float4(input.position, 1), matMVPLightSpace);
 	return output;
 }

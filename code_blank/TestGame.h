@@ -25,10 +25,14 @@ private:
 	tofu::TransformComponent	tPlayer;
 	tofu::TransformComponent	tCamera;
 	tofu::TransformComponent    tSun;
+	tofu::TransformComponent    tMoon;
+	tofu::TransformComponent    tBulb;
 	tofu::PhysicsComponent		pPlayer;
 	tofu::AnimationComponent	anim;
 	tofu::CameraComponent		cam;
 	tofu::LightComponent        lSun;
+	tofu::LightComponent        lMoon;
+	tofu::LightComponent        lBulb;
 	float pitch;
 	float yaw;
 	float speed;

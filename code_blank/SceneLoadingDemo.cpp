@@ -79,6 +79,7 @@ int32_t SceneLoadingDemo::Init()
 
 		cam->SetFOV(60.0f);
 		tCamera->SetLocalPosition(math::float3{ 0, 0, -2 });
+	//	tCamera->SetLocalPosition(math::float3{ 0, 100, -2 });
 
 		Material* skyboxMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeSkybox);
 		TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/craterlake.texture");
@@ -92,15 +93,40 @@ int32_t SceneLoadingDemo::Init()
 		Entity e = Entity::Create();
 
 		tSun = e.AddComponent<TransformComponent>();
-		tSun->SetLocalPosition(math::float3{ 5, 5, -5 });
-		tSun->SetLocalRotation(math::angleAxis(3.14f / 3, math::float3{ 1.0f, 0.0f, 0.0f }));
+		tSun->SetLocalPosition(math::float3{ 58.0f, 3.0f, -41.0f });
+		tSun->SetLocalRotation(math::angleAxis(3.14f / 4, math::float3{ 1.0f, 0.0f, 0.0f }));
 
 		lSun = e.AddComponent<LightComponent>();
 		lSun->SetType(LightType::kLightTypeDirectional);
 		math::float4 sunColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
 		lSun->SetColor(sunColor);
+		lSun->CreateDepthMap();
 	}
+	// Moon light 
+	{
+		Entity e = Entity::Create();
 
+		tMoon = e.AddComponent<TransformComponent>();
+
+		tMoon->SetLocalRotation(math::angleAxis(3.14f / 2.0f, math::float3{ 1.0f,0.0f, 0.0f }));
+
+		lMoon = e.AddComponent<LightComponent>();
+		lMoon->SetType(LightType::kLightTypeDirectional);
+		math::float4 moonColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
+		lMoon->SetColor(moonColor);
+	}
+	// Point light
+	{
+		Entity e = Entity::Create();
+
+		tBulb = e.AddComponent<TransformComponent>();
+		tBulb->SetLocalPosition(math::float3{ -5, 5, -4 });
+
+		lBulb = e.AddComponent<LightComponent>();
+		lBulb->SetType(LightType::kLightTypePoint);
+		math::float4 bulbColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
+		lBulb->SetColor(bulbColor);
+	}
 	pitch = InitPitch;
 	yaw = 0.0f;
 
