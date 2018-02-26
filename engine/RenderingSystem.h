@@ -51,7 +51,7 @@ namespace tofu
 
 		TextureHandle CreateTexture(const char* filename);
 
-		TextureHandle CreateTexture(PixelFormat format, uint32_t width, uint32_t height, uint32_t pitch, void* data);
+		TextureHandle CreateTexture(PixelFormat format, uint32_t width, uint32_t height, uint32_t pitch, void* data = nullptr, uint32_t binding = kBindingShaderResource);
 
 		Material* CreateMaterial(MaterialType type);
 
@@ -65,6 +65,8 @@ namespace tofu
 		int32_t LoadPixelShader(const char* filename, PixelShaderHandle& handle);
 
 		int32_t ReallocAnimationResources(AnimationComponentData& c);
+
+		int32_t DeferredPipeline();
 
 	private:
 		Renderer*	renderer;
@@ -106,6 +108,12 @@ namespace tofu
 		Model*					builtinCube;
 
 		RendererCommandBuffer*	cmdBuf;
+
+		// resources for deferred shading
+		TextureHandle			gBufferPosition;
+		TextureHandle			gBufferNormal;
+		TextureHandle			gBufferAlbedo;
+		TextureHandle			gBufferDepth;
 	};
 
 }
