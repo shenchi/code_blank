@@ -146,7 +146,7 @@ float4 main(V2F input) : SV_TARGET
 			float3 H = normalize(L + V);
 			float distance = 1;
 			float attenuation = 1 / (distance*distance);
-			float3 radiance = 1 * attenuation;
+			float3 radiance = lightColor[i].xyz * attenuation;
 
 			//cook-torrance BRDF
 			float NDF = DistributionGGX(N, H, roughness);
@@ -171,7 +171,7 @@ float4 main(V2F input) : SV_TARGET
 			float3 H = normalize(L + V);
 			float distance = length(position - input.worldPos);
 			float attenuation = 1 / (distance*distance);
-			float3 radiance = position*attenuation;
+			float3 radiance = lightColor[i].xyz*attenuation;
 
 			//cook-torrance BRDF
 			float NDF = DistributionGGX(N, H, roughness);
@@ -218,43 +218,39 @@ float4 main(V2F input) : SV_TARGET
 
 	float3 color = float3(0, 0, 0);
 
-	/*float3 color = diffuseTex.Sample(samp, input.uv).rgb;
-	color = (allDiLightColor
-		+ allPoLightColor)
-		* color * 0.8 + cubeMap.Sample(samp, refl).rgb * 0.2;*/
 
 
-	
+	//
 
 
-	float width, height;
-	shadowMap.GetDimensions(width, height);
-	float2 textureSize = float2(width, height);
-	float2 texelSize = 1 / textureSize;
-	float bias = 0.001f;         //  Set the bias value for fixing the floating point precision issues.
-	float3 projCoords = input.posForShadow.xyz / input.posForShadow.w;
-	projCoords.xy = projCoords.xy * 0.5 + 0.5;
-	projCoords.y = 1 - projCoords.y;
+	//float width, height;
+	//shadowMap.GetDimensions(width, height);
+	//float2 textureSize = float2(width, height);
+	//float2 texelSize = 1 / textureSize;
+	//float bias = 0.001f;         //  Set the bias value for fixing the floating point precision issues.
+	//float3 projCoords = input.posForShadow.xyz / input.posForShadow.w;
+	//projCoords.xy = projCoords.xy * 0.5 + 0.5;
+	//projCoords.y = 1 - projCoords.y;
 
 
-	if ((saturate(projCoords.x) == projCoords.x) && (saturate(projCoords.y) == projCoords.y)) {
+	//if ((saturate(projCoords.x) == projCoords.x) && (saturate(projCoords.y) == projCoords.y)) {
 
-		float currentDepth = projCoords.z;
-		currentDepth -= bias;
-		float shadow = 0;
-		for (int i = -3; i < 4; i++) {
-			for (int j = -3; j < 4; j++) {
-				float cloestDepth = shadowMap.Sample(shadowSampler, projCoords.xy + float2(i, j) * texelSize).r;
-				shadow += (currentDepth > cloestDepth ? 1 : 0);
-			}
-		}
-		shadow /= 25;
-		color = (ambient + Lo) * (1 - shadow);
-	}
-	else {
-		color = ambient + Lo;
-	}
-
+	//	float currentDepth = projCoords.z;
+	//	currentDepth -= bias;
+	//	float shadow = 0;
+	//	for (int i = -3; i < 4; i++) {
+	//		for (int j = -3; j < 4; j++) {
+	//			float cloestDepth = shadowMap.Sample(shadowSampler, projCoords.xy + float2(i, j) * texelSize).r;
+	//			shadow += (currentDepth > cloestDepth ? 1 : 0);
+	//		}
+	//	}
+	//	shadow /= 25;
+	//	color = (ambient + Lo) * (1 - shadow);
+	//}
+	//else {
+	//	color = ambient + Lo;
+	//}
+	color = ambient + Lo;
 	// HDR
 	color = color / (color + float3(1, 1, 1));
 	// Gamma correction
