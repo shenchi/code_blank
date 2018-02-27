@@ -6,6 +6,13 @@
 
 namespace tofu
 {
+	enum AvatarIKGoal {
+		kIKGoalLeftFoot,
+		kIKGoalRightFoot,
+		kIKGoalLeftHand,
+		kIKGoalRightHand
+	};
+
 	class AnimationComponentData
 	{
 		friend class RenderingSystem;
@@ -23,10 +30,12 @@ namespace tofu
 		AnimationStateMachine* GetStateMachine(size_t layer = 0);
 
 		// switch to an animation
-		int32_t Play(uint32_t animId, size_t layerIndex = 0);
+		int32_t Play(std::string name, size_t layerIndex = 0);
 
 		// cross fade to an animation in 'duration' time
-		int32_t CrossFade(uint32_t animId, float duration, size_t layerIndex = 0);
+		int32_t CrossFade(std::string name, float duration, size_t layerIndex = 0);
+
+		bool SetIKPosition(AvatarIKGoal goal, math::float3 position);
 
 	private:
 		Entity					entity;
@@ -44,6 +53,8 @@ namespace tofu
 
 		// calculate bone matrices and fill in the buffer
 		int32_t FillInBoneMatrices(void* buffer, uint32_t bufferSize);
+
+		void FABRIKSolve(uint16_t boneID, uint16_t limit, math::float3 target, math::float4x4 * matrices);
 	
 		void ReallocResources() {}
 	};

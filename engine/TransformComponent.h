@@ -69,6 +69,11 @@ namespace tofu
 			return GetWorldTransform().TransformPosition(math::float3());
 		}
 
+		TF_INLINE math::float3			WorldToLocalPosition(math::float3 world) const
+		{
+			return inverse((math::float3x3)GetWorldTransform().GetMatrix()) * world;
+		}
+
 		TF_INLINE math::float3			GetLocalScale() const
 		{
 			return localTransform.GetScale();
@@ -138,5 +143,4 @@ namespace tofu
 		Transform						worldTransform;
 		uint32_t						dirty : 1;
 	};
-
 }

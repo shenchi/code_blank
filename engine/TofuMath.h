@@ -62,6 +62,7 @@ namespace tofu
 		typedef glm::tvec3<uint32_t, glm::highp> uint3;
 		typedef glm::tvec4<uint32_t, glm::highp> uint4;
 
+		typedef glm::mat3 float3x3;
 		typedef glm::mat4 float4x4;
 
 		using namespace glm;

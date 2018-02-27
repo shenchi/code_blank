@@ -42,8 +42,10 @@ int32_t SceneLoadingDemo::Init()
 		AnimationStateMachine *stateMachine = anim->GetStateMachine();
 
 		AnimationState *idle = stateMachine->AddState("idle");
+		idle->animationName = "Armature|Armature|KB_Idle_2|KB_Idle_2:BaseAnimation";
 		idle->animationName = "idle";
 		AnimationState *walk = stateMachine->AddState("walk");
+		walk->animationName = "Armature|Armature|KB_p_DoubleHooks|KB_p_DoubleHooks:BaseAnimation";
 		walk->animationName = "walk";
 
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaqueSkinned);
@@ -215,7 +217,7 @@ int32_t SceneLoadingDemo::Update()
 
 		tPlayer->Translate(moveDir * Time::DeltaTime * speed);
 
-		anim->CrossFade(1, 0.3f);
+		anim->CrossFade("walk", 0.3f);
 	}
 	else
 	{
@@ -223,7 +225,7 @@ int32_t SceneLoadingDemo::Update()
 		if (speed < 0.0f) speed = 0.0f;
 		tPlayer->Translate(tPlayer->GetForwardVector() * Time::DeltaTime * speed);
 
-		anim->CrossFade(0, 0.1f);
+		anim->CrossFade("idle", 0.1f);
 	}
 
 	return kOK;

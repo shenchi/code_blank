@@ -9,9 +9,17 @@ namespace tofu
 	public:
 		Transform()
 			:
-			rotation(),
 			translation(),
+			rotation(),
 			scale({ 1.0f, 1.0f, 1.0f }),
+			isDirty(false)
+		{}
+
+		Transform(math::float3 translation, math::quat rotation, math::float3 scale)
+			:
+			translation(translation),
+			rotation(rotation),
+			scale(scale),
 			isDirty(false)
 		{}
 
@@ -42,7 +50,8 @@ namespace tofu
 		math::float3				TransformPosition(const math::float3& v) const;
 		math::float4				TransformPosition(const math::float4& v) const;
 
-		void						BlendByWeight(Transform other, float weight);
+		void						SetToRelativeTransform(const Transform & parent);
+		void						BlendByWeight(const Transform other, float weight);
 
 	private:
 		math::quat					rotation;
