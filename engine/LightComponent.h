@@ -24,6 +24,7 @@ namespace tofu
 			entity(e),
 			type(kLightTypeDirectional),
 			lightColor(),
+			castShadow(false),
 			depthMap()
 		{}
 		
@@ -38,9 +39,8 @@ namespace tofu
 		Entity entity;
 		LightType	type;
 		tofu::math::float4	lightColor;
-
-		TextureHandle  depthMap;
-        
+		bool castShadow;
+		TextureHandle  depthMap; 
 	};
 
 	typedef Component<LightComponentData> LightComponent;

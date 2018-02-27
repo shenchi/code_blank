@@ -11,7 +11,7 @@ cbuffer DirectionalLightingConstants : register (b0)
 	float   count;
 	float3	cameraPos;
 	float4  lightPosition[256];
-	float4   type[256];
+	float4  type[256];
 	float4  _reserv1[3071];
 }
 
