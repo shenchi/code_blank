@@ -1,100 +1,52 @@
 {
     "models": [
         {
-            "name": "Unity_Builtin_Quad",
-            "guid": "0000000000000000e000000000000000"
-        },
-        {
-            "name": "FloorTile_Slab_10x10",
-            "guid": "ea2f01651cae4b54988d1b3f8b7a17e7"
-        },
-        {
-            "name": "Building1_CFT_wholeBuilding",
-            "guid": "6849c45d1922e334aa13443b0b8ecb15"
-        },
-        {
-            "name": "Unity_Builtin_Plane",
-            "guid": "0000000000000000e000000000000000"
-        },
-        {
-            "name": "Building1_ZLJ_Main",
-            "guid": "7093e350d83b98947ad131f89c0838c1"
-        },
-        {
-            "name": "OfficeBuilding1_PZY",
-            "guid": "231721c4f1004fd468b8cf3631e855c0"
+            "name": "City_Wall_Straight1",
+            "guid": "26389347e8ebb82449e38b151d7a1058"
         },
         {
             "name": "Bulidng2_CFT_wholeBuilding",
             "guid": "7220ba33e003b174eb833b7d9f94b94e"
         },
         {
-            "name": "Building1_LSJ_SecondFloor3",
-            "guid": "4e505f4e83baeaa428944b9d9b47a439"
+            "name": "Building1_ZLJ_Main",
+            "guid": "7093e350d83b98947ad131f89c0838c1"
         },
         {
-            "name": "Building1_LSJ_SecondFloor1",
-            "guid": "efa2aee1c086f884da7ba6bbf75b0b41"
+            "name": "amandaModel",
+            "guid": "52058499a402c8347ab3ae633f683d33"
         },
         {
-            "name": "Building1_LSJ_SecondFloor2",
-            "guid": "295a40cb3d48ea24084a7a1d354aa125"
-        },
-        {
-            "name": "Sundries1_LJ_TrashBox1",
-            "guid": "c5d5025a13b2ddb40adec41836283ea7"
-        },
-        {
-            "name": "Sundries1_LJ_TrashBox2",
-            "guid": "4cced8b4d5bf3b643a47190276c921f6"
+            "name": "Sword_Mesh",
+            "guid": "a9e8b0c84ce4b2749aca0e63a676e439"
         },
         {
             "name": "Unity_Builtin_Sphere",
             "guid": "0000000000000000e000000000000000"
+        },
+        {
+            "name": "FloorTile_Slab_10x10",
+            "guid": "ea2f01651cae4b54988d1b3f8b7a17e7"
         }
     ],
     "materials": [
         {
-            "Name": "icn_back01",
-            "GUID": "585d1bdccdfa97d45a4da24f8dd046c7",
-            "AlbedoMap": "textures/icn_back01",
-            "NormalMap": ""
+            "Name": "Wall3",
+            "GUID": "5aaf6b5ee7e06a245a4ad3ba6a0ed917",
+            "AlbedoMap": "textures/Wall3_Diff+Spec",
+            "NormalMap": "textures/Wall3_Bump"
         },
         {
-            "Name": "Floor1",
-            "GUID": "a279ff533c8c0d1408b26d70a2693428",
-            "AlbedoMap": "textures/Floor1_Diff+Spec",
-            "NormalMap": "textures/Floor1_Bump"
+            "Name": "Floor3",
+            "GUID": "5a92d152b0a4b8f41a4e549b3a63a4e7",
+            "AlbedoMap": "textures/Floor3_Diff+Spec",
+            "NormalMap": "textures/Floor3_Bump"
         },
         {
-            "Name": "123",
-            "GUID": "855e219e032cb0447964bca6857cf03f",
-            "AlbedoMap": "textures/Building1_CFT_D",
-            "NormalMap": "textures/Building1_CFT_N"
-        },
-        {
-            "Name": "New Material",
-            "GUID": "2379478269ddd904b9b61c457688bdc3",
-            "AlbedoMap": "",
-            "NormalMap": ""
-        },
-        {
-            "Name": "BuildingLongji_pCube558Shape",
-            "GUID": "0602e1544b7b85b438d7c04de92004f5",
-            "AlbedoMap": "textures/Building1_ZLJ_D",
-            "NormalMap": ""
-        },
-        {
-            "Name": "lambert1",
-            "GUID": "fcc18fa35a4162b42b07a546622342cb",
-            "AlbedoMap": "textures/OfficeBuilding1_PZY_D",
-            "NormalMap": "textures/OfficeBuilding1_PZY_N"
-        },
-        {
-            "Name": "typeBlinn",
-            "GUID": "f599901ccc885b24e848004d352c709f",
-            "AlbedoMap": "",
-            "NormalMap": ""
+            "Name": "Wall2",
+            "GUID": "107eee8dc45625b44a144a214d8d7b31",
+            "AlbedoMap": "textures/Wall2_Halfblock_Diff+Spec",
+            "NormalMap": "textures/Wall2_Halfblock_Bump"
         },
         {
             "Name": "ID3",
@@ -103,153 +55,27 @@
             "NormalMap": "textures/Building2_CFT_N"
         },
         {
-            "Name": "building1_Texture",
-            "GUID": "a462b6aae0285a3439a947c4e22c8b16",
-            "AlbedoMap": "textures/building1_LSJ_D",
+            "Name": "BuildingLongji_pCube558Shape",
+            "GUID": "0602e1544b7b85b438d7c04de92004f5",
+            "AlbedoMap": "textures/Building1_ZLJ_D",
             "NormalMap": ""
         },
         {
-            "Name": "trash_Base_Color",
-            "GUID": "885a9133670b8f2448cf3ef6ee3980df",
-            "AlbedoMap": "textures/Sundries1_LJ_D",
+            "Name": "EquipmentD",
+            "GUID": "bafe60d5229d9aa4ca81deba47e21f27",
+            "AlbedoMap": "",
             "NormalMap": ""
         },
         {
-            "Name": "Arrow",
-            "GUID": "390501efc93bf4040b222b69e8095777",
-            "AlbedoMap": "textures/Arrow",
+            "Name": "dx11Shader_sword",
+            "GUID": "f00417d4eb2b64a4497130409681ee53",
+            "AlbedoMap": "",
             "NormalMap": ""
         },
         {
-            "Name": "Arrow2",
-            "GUID": "63d36547b831e184ab92ef27b8ce7afc",
-            "AlbedoMap": "textures/Arrow2",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Tut00",
-            "GUID": "127503d4b636a0040ab43506a5292549",
-            "AlbedoMap": "textures/Tut00",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Tut05A",
-            "GUID": "6298d74d023d62e40bed7fc4f94494f4",
-            "AlbedoMap": "textures/Tut05A",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Tut01",
-            "GUID": "94bfeadd3a24d7a469dd57077b1cbfd3",
-            "AlbedoMap": "textures/Tut01",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Tut02",
-            "GUID": "fa0838bc760bef44ebcccf8f8f84fa5f",
-            "AlbedoMap": "textures/Tut02",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Tut03",
-            "GUID": "cd58defb383496f419e5d6ce99a91318",
-            "AlbedoMap": "textures/Tut03",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Tut03A",
-            "GUID": "a808525e91fa7df42b5100537cc7f294",
-            "AlbedoMap": "textures/Tut03A",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Tut04",
-            "GUID": "707cb3dcedd51a242affb7c2b77c3a8b",
-            "AlbedoMap": "textures/Tut04",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Tut04A",
-            "GUID": "1e0361aeb1433a94992f430f9f2ac41b",
-            "AlbedoMap": "textures/Tut04A",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Tut05",
-            "GUID": "1ff8ef8455f121346b41a2b549c4cca9",
-            "AlbedoMap": "textures/Tut05",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Tut06",
-            "GUID": "96efafdd0583f9a45b76255f5045269c",
-            "AlbedoMap": "textures/Tut06",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Tut06A",
-            "GUID": "e962c269e91cbb54fbeea4739dc18c35",
-            "AlbedoMap": "textures/Tut06A",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Tut06B",
-            "GUID": "2494f9aa0ce423a43bbbff30c0e847e6",
-            "AlbedoMap": "textures/Tut06B",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Tut06C",
-            "GUID": "86e8c5c5fdf228d45be45c0790f26ca0",
-            "AlbedoMap": "textures/Tut06C",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Tut06D",
-            "GUID": "934651716a784664a8400fe2b5082b0a",
-            "AlbedoMap": "textures/Tut06D",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Tut06E",
-            "GUID": "219b12168a30e6144b794930ccb720f7",
-            "AlbedoMap": "textures/Tut06E",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Tut06F",
-            "GUID": "ccac11483c0220c469eabd056d7dad1c",
-            "AlbedoMap": "textures/Tut06F",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Tut06G",
-            "GUID": "47d183ac7807bc94bad524ec1fde4b3a",
-            "AlbedoMap": "textures/Tut06G",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Tut07",
-            "GUID": "b586efeeb5506a84086a677aaf32bcc4",
-            "AlbedoMap": "textures/Tut07",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Tut07A 1",
-            "GUID": "bb716238352b6014b823b292a393abb0",
-            "AlbedoMap": "textures/Tut07A",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Tut07B",
-            "GUID": "e6425c4ecf367fd4b9944c2924f596c1",
-            "AlbedoMap": "textures/Tut07B",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Tut07C",
-            "GUID": "fcb5c30ff9d7bdd41bc3d1790063400e",
-            "AlbedoMap": "textures/Tut07C",
+            "Name": "pistolD",
+            "GUID": "f4329007c3dc03545bb66475e9b467f4",
+            "AlbedoMap": "",
             "NormalMap": ""
         },
         {
@@ -259,70 +85,25 @@
             "NormalMap": "textures/Texture_3_Normal"
         },
         {
-            "Name": "Tut08",
-            "GUID": "cf1f80a00e32b5e42b9c11aabfd32502",
-            "AlbedoMap": "textures/Tut08",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Tut08A",
-            "GUID": "8b2c91c1a24fadf4e89904b6a2bf6a64",
-            "AlbedoMap": "textures/Tut08A",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Tut08B",
-            "GUID": "8f6ccc488ef37b24c9d06430fca07142",
-            "AlbedoMap": "textures/Tut08B",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Tut08C",
-            "GUID": "ec1b7c1e95164044d8addfd6b82642ce",
-            "AlbedoMap": "textures/Tut08C",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Tut09",
-            "GUID": "15f9acff693642e459a2a12ac48f5b77",
-            "AlbedoMap": "textures/Tut09",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Tut09A",
-            "GUID": "0f29824036156bc40a6c3ef5691b18e5",
-            "AlbedoMap": "textures/Tut09A",
-            "NormalMap": ""
-        },
-        {
-            "Name": "Tut09B",
-            "GUID": "cc6d16f023d1505469d0e0b261c58ffc",
-            "AlbedoMap": "textures/Tut09B",
-            "NormalMap": ""
+            "Name": "Floor4",
+            "GUID": "60e77cd03775de043ba0f88012917586",
+            "AlbedoMap": "textures/Floor1_Diff+Spec",
+            "NormalMap": "textures/Floor1_Bump"
         }
     ],
     "textures": [
         {
-            "Path": "textures/icn_back01",
-            "GUID": "b741c0d2eb916de40982ae97b859174c",
+            "Path": "textures/Wall3_Diff+Spec",
+            "GUID": "185513efb9a9c084b972d64f9bd20d46",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
-            "MipmapCount": 7,
+            "MipmapCount": 10,
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Floor1_Diff+Spec",
-            "GUID": "cc39a17532b382042b971e892c29aee4",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Floor1_Bump",
-            "GUID": "d4953f7c4b5211a4d880b0889f5e31b4",
+            "Path": "textures/Wall3_Bump",
+            "GUID": "671d66de0327e994e8905c503d1a9f21",
             "Dimension": "tex2d",
             "WrapMode": "",
             "FilterMode": "",
@@ -330,48 +111,39 @@
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Building1_CFT_D",
-            "GUID": "4d281d6482c94ac4b9770fd9915af37c",
+            "Path": "textures/Floor3_Diff+Spec",
+            "GUID": "65cacb3b8f364b24eb7ea5b180888e56",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "MipmapCount": 10,
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Building1_CFT_N",
-            "GUID": "cf58f4f8d6894084f9213bdb0005b8d5",
+            "Path": "textures/Floor3_Bump",
+            "GUID": "26dee1916efb09d449d76fb70fac9713",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Building1_ZLJ_D",
-            "GUID": "bba78fb9b94aa9f43bea977507e394d3",
+            "Path": "textures/Wall2_Halfblock_Diff+Spec",
+            "GUID": "6604aaacb9f1558449abfc0c6d2e0570",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "MipmapCount": 10,
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/OfficeBuilding1_PZY_D",
-            "GUID": "a294a6b69a171e44fbc4c071cd9e0f88",
+            "Path": "textures/Wall2_Halfblock_Bump",
+            "GUID": "cd43279f80e31604e86e8208bdea472b",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/OfficeBuilding1_PZY_N",
-            "GUID": "473b8d3f4549b6d45ac39183565f4271",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -393,228 +165,12 @@
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/building1_LSJ_D",
-            "GUID": "dd7d3c02005d99a48bd37254537abc52",
+            "Path": "textures/Building1_ZLJ_D",
+            "GUID": "bba78fb9b94aa9f43bea977507e394d3",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
             "MipmapCount": 12,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Sundries1_LJ_D",
-            "GUID": "1bbb4474bffd52c45b5c9d3171bde100",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Arrow",
-            "GUID": "87c379e0434c34848a9e1a516c99eb7e",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 9,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Arrow2",
-            "GUID": "9102272b74170504eb184de7688d09a8",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 9,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut00",
-            "GUID": "fdc0fac5a0fe1dd45ad2a6a9696c8e13",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut05A",
-            "GUID": "400bf18ad2a29d64b8e5d591343a0993",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut01",
-            "GUID": "2e31b85d9e33b824b86f26e6365b57cf",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut02",
-            "GUID": "d4008d53465872743b04d45229a75410",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut03",
-            "GUID": "4542733ee71cd60498f16cf51d74bdee",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut03A",
-            "GUID": "9529732b08d065a469e30f2ff2ad37aa",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut04",
-            "GUID": "ca02d6d783db1614a85dc2a5312695e4",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut04A",
-            "GUID": "d8be5e718431f92478123f1c6795edf2",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut05",
-            "GUID": "0befe9465d94e004aa9748327d612a44",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut06",
-            "GUID": "65201b3c04e59dc45882640e02ce8a87",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut06A",
-            "GUID": "30b286b71ac21f449854508eb7aa0c0d",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut06B",
-            "GUID": "eac6d83e0fcaf7e4c82d2732d10fd347",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut06C",
-            "GUID": "4cdcbe221ef12994aa7ca5791156f076",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut06D",
-            "GUID": "8f0a8359322f86540ad16cb6591c3c9e",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut06E",
-            "GUID": "915a5c1755ee80942a923b277c4ecba8",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut06F",
-            "GUID": "b983fd21ced42104c83120e75c7eaa99",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut06G",
-            "GUID": "55bdd2b661dffa541be31be2e68a4276",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut07",
-            "GUID": "28c19758bcc76ca419f9c53403008f10",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut07A",
-            "GUID": "80cca47338366c5459c670f2b1f513b1",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut07B",
-            "GUID": "aa40b4e2ef7242043af065b1e7d71340",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut07C",
-            "GUID": "af32f6738deeadb439405e21fb1f3a48",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
             "MipmapBias": 0.0
         },
         {
@@ -636,8 +192,8 @@
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Tut08",
-            "GUID": "5c492154a2be96a49b67bbe261ab6644",
+            "Path": "textures/Floor1_Diff+Spec",
+            "GUID": "cc39a17532b382042b971e892c29aee4",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
@@ -645,57 +201,12 @@
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Tut08A",
-            "GUID": "44f01c89e0aaef844bfc6b8c4da0d52d",
+            "Path": "textures/Floor1_Bump",
+            "GUID": "d4953f7c4b5211a4d880b0889f5e31b4",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut08B",
-            "GUID": "50a4c395b455eb9489eb848af3083014",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut08C",
-            "GUID": "2505928f6a2bb4e4fbd4ffa90ab7744c",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut09",
-            "GUID": "a19e4fb5803867d4cb8288fac9f9998a",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut09A",
-            "GUID": "2c674f511f74b5b4f98bc6f75c7fa139",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut09B",
-            "GUID": "b0f992a45ceaf134b830092eb8cdb198",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         }
     ]

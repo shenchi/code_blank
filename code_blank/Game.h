@@ -40,6 +40,7 @@ private:
 	PController* pControl;
 
 	std::vector<Character*>* enemyList;
+	std::vector<PathNode*>* pathNodes;
 
 	enum sceneType
 	{

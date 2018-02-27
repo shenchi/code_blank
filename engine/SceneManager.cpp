@@ -21,6 +21,7 @@ namespace tofu
 
 	int32_t SceneManager::LoadScene(const char * filename)
 	{
+		int32_t count = 0;
 		rapidjson::Document d;
 		char* json = nullptr;
 		CHECKED(FileIO::ReadFile(
@@ -33,6 +34,7 @@ namespace tofu
 
 		d.Parse(json);
 
+		// Entities
 		if (!d.HasMember("entities"))
 		{
 			return kErrUnknown;
@@ -44,11 +46,84 @@ namespace tofu
 			return kErrUnknown;
 		}
 
+		// Path Nodes
+		if (!d.HasMember("pathNodes"))
+		{
+			return kErrUnknown;
+		}
+
+		const auto& pathNodeList = d["pathNodes"];
+		if (!pathNodeList.IsArray())
+		{
+			return kErrUnknown;
+		}
+
+		// Spawn Nodes
+		if (!d.HasMember("spawnerNodes"))
+		{
+			return kErrUnknown;
+		}
+
+		const auto& spawnerNodes = d["spawnerNodes"];
+		if (!spawnerNodes.IsArray())
+		{
+			return kErrUnknown;
+		}
+
+		// Trigger Nodes
+		if (!d.HasMember("triggerNodes"))
+		{
+			return kErrUnknown;
+		}
+
+		const auto& triggerNodes = d["triggerNodes"];
+		if (!triggerNodes.IsArray())
+		{
+			return kErrUnknown;
+		}
+
+		// load entities
 		for (rapidjson::SizeType i = 0; i < entities.Size(); i++)
 		{
 			CHECKED(LoadSceneEntity(entities[i], TransformComponent()));
 		}
 
+		// add path nodes to a vector
+		pathNodes = new std::vector<PathNode*>(pathNodeList.Size());
+		for (rapidjson::SizeType i = 0; i < pathNodeList.Size(); i++)
+		{
+			CHECKED(AddPathNode(pathNodeList[i], count));
+			count++;
+		}
+
+		return kOK;
+	}
+
+	int32_t SceneManager::AddPathNode(const rapidjson::Value& value, int32_t i)
+	{
+		if (!value.HasMember("name") && !value.HasMember("position"))
+		{
+			return kErrUnknown;
+		}
+		PathNode* temp = new PathNode();
+		temp->name = value["name"].GetString();
+		temp->position.x = value["position"]["x"].GetFloat();
+		temp->position.y = value["position"]["y"].GetFloat();
+		temp->position.z = value["position"]["z"].GetFloat();
+		PathNode* temp_1 = new PathNode();
+		temp_1->name = value["nearby_1"].GetString();
+		PathNode* temp_2 = new PathNode();
+		temp_2->name = value["nearby_2"].GetString();
+		PathNode* temp_3 = new PathNode();
+		temp_3->name = value["nearby_3"].GetString();
+		PathNode* temp_4 = new PathNode();
+		temp_4->name = value["nearby_4"].GetString();
+
+		temp->nearby_1 = temp_1;
+		temp->nearby_2 = temp_2;
+		temp->nearby_3 = temp_3;
+		temp->nearby_4 = temp_4;
+		pathNodes->at(i) = temp;
 		return kOK;
 	}
 
@@ -195,5 +270,15 @@ namespace tofu
 		}
 
 		return kOK;
+	}
+
+	std::vector<PathNode*>* SceneManager::GetPathNodes()
+	{
+		return pathNodes;
+	}
+
+	int32_t SceneManager::GetPathNodesLength()
+	{
+		return pathNodes->size();
 	}
 }

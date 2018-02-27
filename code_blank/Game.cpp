@@ -305,7 +305,35 @@ bool Game::LoadScene(sceneType num)
 			// Setup the Scene
 			CHECKED(sceneMgr.Init());
 
-			CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial.json"));
+			CHECKED(sceneMgr.LoadScene("assets/scenes/Node_Export.json"));
+			pathNodes = new std::vector<PathNode*>(sceneMgr.GetPathNodesLength());
+			pathNodes = sceneMgr.GetPathNodes();
+
+			// loop through nodes and link up references to nearby nodes
+			// TODO this could be slow and need to be redone later or elsewhere
+			for (uint32_t i = 0; i < pathNodes->size(); i++)
+			{
+				std::string name = pathNodes->at(i)->name;
+				for (uint32_t j = 0; j < pathNodes->size(); j++)
+				{
+					if (pathNodes->at(j)->nearby_1->name == name)
+					{
+						pathNodes->at(j)->nearby_1 = pathNodes->at(i);
+					}
+					else if (pathNodes->at(j)->nearby_2->name == name)
+					{
+						pathNodes->at(j)->nearby_2 = pathNodes->at(i);
+					}
+					else if (pathNodes->at(j)->nearby_3->name == name)
+					{
+						pathNodes->at(j)->nearby_3 = pathNodes->at(i);
+					}
+					else if (pathNodes->at(j)->nearby_4->name == name)
+					{
+						pathNodes->at(j)->nearby_4 = pathNodes->at(i);
+					}
+				}
+			}
 
 			CharacterDetails playerDetails = {};
 			playerDetails.capsuleColliderSize = { 50.0f, 100.0f };
