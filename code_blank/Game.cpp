@@ -307,6 +307,46 @@ bool Game::LoadScene(sceneType num)
 
 			CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial.json"));
 
+			// Dummy light
+			{
+				Entity e = Entity::Create();
+
+				TransformComponent tSun = e.AddComponent<TransformComponent>();
+				tSun->SetLocalPosition(math::float3{ 58.0f, 3.0f, -41.0f });
+				tSun->SetLocalRotation(math::angleAxis(3.14f / 4, math::float3{ 1.0f, 0.0f, 0.0f }));
+
+				LightComponent lSun = e.AddComponent<LightComponent>();
+				lSun->SetType(LightType::kLightTypeDirectional);
+				math::float4 sunColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
+				lSun->SetColor(sunColor);
+				lSun->CreateDepthMap();
+			}
+			// Moon light 
+			{
+				Entity e = Entity::Create();
+
+				TransformComponent tMoon = e.AddComponent<TransformComponent>();
+
+				tMoon->SetLocalRotation(math::angleAxis(3.14f / 2.0f, math::float3{ 1.0f,0.0f, 0.0f }));
+
+				LightComponent lMoon = e.AddComponent<LightComponent>();
+				lMoon->SetType(LightType::kLightTypeDirectional);
+				math::float4 moonColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
+				lMoon->SetColor(moonColor);
+			}
+			// Point light
+			{
+				Entity e = Entity::Create();
+
+				TransformComponent tBulb = e.AddComponent<TransformComponent>();
+				tBulb->SetLocalPosition(math::float3{ -5, 5, -4 });
+
+				LightComponent lBulb = e.AddComponent<LightComponent>();
+				lBulb->SetType(LightType::kLightTypePoint);
+				math::float4 bulbColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
+				lBulb->SetColor(bulbColor);
+			}
+
 			CharacterDetails playerDetails = {};
 			playerDetails.capsuleColliderSize = { 50.0f, 100.0f };
 			playerDetails.colliderOrigin = { 0.0f, 100.0f, 0.0f };

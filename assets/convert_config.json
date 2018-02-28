@@ -16,6 +16,18 @@
 				"source": "archer_walking.fbx",
 				"avatar": "archer_avatar.json",
 				"clip": "mixamo.com"
+			},
+			{
+				"name": "jump",
+				"source": "archer_jump.fbx",
+				"avatar": "archer_avatar.json",
+				"clip": "mixamo.com"
+			},
+			{
+				"name": "run",
+				"source": "archer_running.fbx",
+				"avatar": "archer_avatar.json",
+				"clip": "mixamo.com"
 			}
 		]
 	}
