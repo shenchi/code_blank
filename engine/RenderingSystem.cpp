@@ -675,7 +675,7 @@ namespace tofu
 
 					cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
 				}
-				for (uint32_t i = 0; i < 1; ++i)
+				for (uint32_t i = 0; i < numActiveRenderables; ++i)
 				{
 					RenderingComponentData& comp = renderables[activeRenderables[i]];
 
@@ -692,63 +692,40 @@ namespace tofu
 						Material* mat = comp.materials[iMesh < comp.numMaterials ? iMesh : (comp.numMaterials - 1)];
 
 						DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
-						params->pipelineState = materialPSOs[kMaterialTypeDepth];
-						params->vertexBuffer = mesh.VertexBuffer;
-						params->indexBuffer = mesh.IndexBuffer;
-						params->startIndex = mesh.StartIndex;
-						params->startVertex = mesh.StartVertex;
-						params->indexCount = mesh.NumIndices;
-						params->renderTargets[0] = TextureHandle();
-						params->depthRenderTarget = lights[j].depthMap;
 
-
-						params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
-						params->vsConstantBuffers[1] = { shadowDepthBuffer[j], 0, 16 };
-						//params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
-
-						cmdBuf->Add(RendererCommand::kCommandDraw, params);
-					}
-				}
-			
-				for (uint32_t i = numActiveRenderables - 1; i < numActiveRenderables; ++i)
-				{
-					RenderingComponentData& comp = renderables[activeRenderables[i]];
-
-					assert(nullptr != comp.model);
-					assert(0 != comp.numMaterials);
-
-					Model& model = *comp.model;
-					//Material* mat = comp.material;
-
-					for (uint32_t iMesh = 0; iMesh < model.numMeshes; ++iMesh)
-					{
-						assert(model.meshes[iMesh]);
-						Mesh& mesh = meshes[model.meshes[iMesh].id];
-						Material* mat = comp.materials[iMesh < comp.numMaterials ? iMesh : (comp.numMaterials - 1)];
-
-						DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
-						params->pipelineState = materialPSOs[kMaterialTypeOpaqueSkinned];
-						params->vertexBuffer = mesh.VertexBuffer;
-						params->indexBuffer = mesh.IndexBuffer;
-						params->startIndex = mesh.StartIndex;
-						params->startVertex = mesh.StartVertex;
-						params->indexCount = mesh.NumIndices;
-						params->renderTargets[0] = TextureHandle();
-						params->depthRenderTarget = lights[j].depthMap;
-
-						params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
-						params->vsConstantBuffers[1] = { shadowDepthBuffer[j], 0, 16 };
-						//params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
-
-						(void*)0;
+						switch (mat->type)
 						{
-							AnimationComponent anim = comp.entity.GetComponent<AnimationComponent>();
-							if (!anim || !anim->boneMatricesBuffer)
+						case kMaterialTypeOpaqueSkinned:
+							params->pipelineState = materialPSOs[kMaterialTypeOpaqueSkinned];
+							(void*)0;
 							{
-								return kErrUnknown;
+								AnimationComponent anim = comp.entity.GetComponent<AnimationComponent>();
+								if (!anim || !anim->boneMatricesBuffer)
+								{
+									return kErrUnknown;
+								}
+								params->vsConstantBuffers[2] = { anim->boneMatricesBuffer, 0, 0 };
 							}
-							params->vsConstantBuffers[2] = { anim->boneMatricesBuffer, 0, 0 };
+							break;
+						case kMaterialTypeOpaque:
+							params->pipelineState = materialPSOs[kMaterialTypeDepth];
+							break;
+						default:
+							assert(false && "this material type is not applicable for entities");
+							break;
 						}
+
+						params->vertexBuffer = mesh.VertexBuffer;
+						params->indexBuffer = mesh.IndexBuffer;
+						params->startIndex = mesh.StartIndex;
+						params->startVertex = mesh.StartVertex;
+						params->indexCount = mesh.NumIndices;
+						params->renderTargets[0] = TextureHandle();
+						params->depthRenderTarget = lights[j].depthMap;
+
+						params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
+						params->vsConstantBuffers[1] = { shadowDepthBuffer[j], 0, 16 };
+
 
 						cmdBuf->Add(RendererCommand::kCommandDraw, params);
 					}
