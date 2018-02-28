@@ -146,7 +146,8 @@ void Enemy::MoveEnemy(float dT, bool jump, math::float3 inputDir)
 
 		tEnemy->Translate(moveDir * dT * speed);
 
-		aEnemy->CrossFade(1, 0.3f);
+		//aEnemy->CrossFade(1, 0.3f);
+		aEnemy->CrossFade("Walk", 0.3f, 0);
 	}
 	else
 	{
@@ -154,7 +155,8 @@ void Enemy::MoveEnemy(float dT, bool jump, math::float3 inputDir)
 		if (speed < 0.0f) speed = 0.0f;
 		tEnemy->Translate(tEnemy->GetForwardVector() * dT * speed);
 
-		aEnemy->CrossFade(0, 0.2f);
+		aEnemy->CrossFade("Idle", 0.2f, 0);
+		//aEnemy->CrossFade(0, 0.2f);
 	}
 
 	if (jump && !inAir)
