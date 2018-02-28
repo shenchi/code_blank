@@ -12,6 +12,8 @@ namespace tofu
 		kMaterialTypeSkybox,
 		kMaterialTypeOpaque,
 		kMaterialTypeOpaqueSkinned,
+		kMaterialTypeDepth,
+		kMaterialTypeDepthSkinned,
 		kMaxMaterialTypes
 	};
 

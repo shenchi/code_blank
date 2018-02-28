@@ -24,10 +24,11 @@ int32_t TestGame::Init()
 		Entity e = Entity::Create();
 
 		tGround = e.AddComponent<TransformComponent>();
-
+		tGround->SetLocalScale(math::float3{ 20.01f, 0.1f, 20.01f });
 		RenderingComponent r = e.AddComponent<RenderingComponent>();
 
-		Model* model = RenderingSystem::instance()->CreateModel("assets/ground.model");
+		//Model* model = RenderingSystem::instance()->CreateModel("assets/ground.model");
+		Model* model = RenderingSystem::instance()->CreateModel("assets/cube.model");
 
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
 		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
@@ -45,11 +46,11 @@ int32_t TestGame::Init()
 		ph->SetColliderOrigin(math::float3{ 0.0f, -0.5f, 0.0f });
 	}
 
-	{
+	/*{
 		Entity e = Entity::Create();
 
 		tBox = e.AddComponent<TransformComponent>();
-		tBox->SetLocalPosition(math::float3{ 0, 10, 10 });
+		tBox->SetLocalPosition(math::float3{ -1.0, 1, 0 });
 
 		RenderingComponent r = e.AddComponent<RenderingComponent>();
 
@@ -66,7 +67,7 @@ int32_t TestGame::Init()
 		r->SetModel(model);
 
 		PhysicsComponent ph = e.AddComponent<PhysicsComponent>();
-	}
+	}*/
 
 	{
 		Entity e = Entity::Create();
@@ -100,23 +101,48 @@ int32_t TestGame::Init()
 		pPlayer = e.AddComponent<PhysicsComponent>();
 
 		pPlayer->LockRotation(true, false, true);
-		pPlayer->SetCapsuleCollider(0.5f, 1.0f);
-		pPlayer->SetColliderOrigin(math::float3{ 0.0f, 1.0f, 0.0f });
+		pPlayer->SetCapsuleCollider(50.0f, 100.0f);
+		pPlayer->SetColliderOrigin(math::float3{ 0.0f, 100.0f, 0.0f });
 	}
-	// light 
+	// Sun light 
 	{
 		Entity e = Entity::Create();
 
 		tSun = e.AddComponent<TransformComponent>();
-		tSun->SetLocalPosition(math::float3{ 5, 5, -5 });
-		tSun->SetLocalRotation(math::angleAxis(3.14f / 4, math::float3{ 1.0f, 0.0f, 0.0f }));
+		tSun->SetLocalPosition(math::float3(0.0f, 2.0f, -2.0f));
+		tSun->SetLocalRotation(math::angleAxis(3.14f / 4.0f, math::float3{ 1.0f, 0.0f, 0.0f }));
 
 		lSun = e.AddComponent<LightComponent>();
 		lSun->SetType(LightType::kLightTypeDirectional);
 		math::float4 sunColor = math::float4{ 1.0f, 0.0f, 0.0f, 1.0f };
 		lSun->SetColor(sunColor);
+		lSun->CreateDepthMap();
 	}
+	// Moon light 
+	{
+		Entity e = Entity::Create();
 
+		tMoon = e.AddComponent<TransformComponent>();
+		
+		tMoon->SetLocalRotation(math::angleAxis(3.14f / 2.0f, math::float3{ 1.0f,0.0f, 0.0f }));
+
+		lMoon = e.AddComponent<LightComponent>();
+		lMoon->SetType(LightType::kLightTypeDirectional);
+		math::float4 moonColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
+		lMoon->SetColor(moonColor);
+	}
+	// Point light
+	{
+		Entity e = Entity::Create();
+
+		tBulb = e.AddComponent<TransformComponent>();
+		tBulb->SetLocalPosition(math::float3{ -5, 5, -4 });
+		
+		lBulb = e.AddComponent<LightComponent>();
+		lBulb->SetType(LightType::kLightTypePoint);
+		math::float4 bulbColor = math::float4{ 0.0f, 1.0f, 0.0f, 1.0f };
+		lBulb->SetColor(bulbColor);
+	}
 	{
 		Entity e = Entity::Create();
 
@@ -226,7 +252,7 @@ int32_t TestGame::Update()
 		pPlayer->SetVelocity(moveDir * speed);
 		//tPlayer->Translate(moveDir * Time::DeltaTime * speed);
 
-		anim->CrossFade(1, 0.3f);
+		anim->CrossFade("walk", 0.3f);
 	}
 	else
 	{
@@ -236,7 +262,7 @@ int32_t TestGame::Update()
 		pPlayer->SetVelocity(tPlayer->GetForwardVector() * speed);
 		//tPlayer->Translate(tPlayer->GetForwardVector() * Time::DeltaTime * speed);
 
-		anim->CrossFade(0, 0.2f);
+		anim->CrossFade("idle", 0.2f);
 	}
 
 	if (jump && !inAir)

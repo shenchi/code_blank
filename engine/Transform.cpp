@@ -46,12 +46,23 @@ namespace tofu
 		return float4{ ret.x, ret.y, ret.z, v.w };
 	}
 
-	void Transform::BlendByWeight(Transform other, float weight)
+	void Transform::SetToRelativeTransform(const Transform& parent) {
+		const quat inverseRot = inverse(parent.rotation);
+
+		// assert scale != 0
+		scale /= parent.scale;
+		translation = (inverseRot * (translation - parent.translation)) / parent.scale;
+		rotation = inverseRot * rotation;
+	}
+
+	void Transform::BlendByWeight(const Transform other, float weight)
 	{
 		if (isDirty && other.isDirty) {
 			translation = mix(translation, other.translation, weight);
-			rotation = mix(rotation, other.rotation, weight);
+			rotation = slerp(rotation, other.rotation, weight);
 			scale = mix(scale, other.scale, weight);
+
+			normalize(rotation);
 		}
 		else if (!isDirty) {
 			*this = other;

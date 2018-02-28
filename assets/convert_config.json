@@ -1,0 +1,22 @@
+[
+	{
+		"target": "archer.model",
+		"source": "archer_idle.fbx",
+		"avatar": "archer_avatar.json",
+		"animations":
+		[
+			{
+				"name": "idle",
+				"source": "KB_Movement.fbx",
+				"avatar": "KB_avatar.json",
+				"clip": "Armature|Armature|KB_Idle_3|KB_Idle_3:BaseAnimation"
+			},
+			{
+				"name": "walk",
+				"source": "archer_walking.fbx",
+				"avatar": "archer_avatar.json",
+				"clip": "mixamo.com"
+			}
+		]
+	}
+]

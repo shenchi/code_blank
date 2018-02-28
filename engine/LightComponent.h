@@ -6,6 +6,7 @@
 
 namespace tofu
 {
+	class Material;
 	enum LightType
 	{
 		kLightTypeDirectional,
@@ -29,8 +30,9 @@ namespace tofu
 		void SetType(LightType t) { type = t; }
 
 		void SetColor(tofu::math::float4 t) { lightColor = t; }
+	
+		void CreateDepthMap();
 
-		void CreateDepthMap() {}
 
 	private:
 		Entity entity;
@@ -38,6 +40,7 @@ namespace tofu
 		tofu::math::float4	lightColor;
 
 		TextureHandle  depthMap;
+        
 	};
 
 	typedef Component<LightComponentData> LightComponent;

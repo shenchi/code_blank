@@ -25,6 +25,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/spline.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 
 #else // TOFU_USE_GLM
 
@@ -51,12 +52,17 @@ namespace tofu
 		typedef glm::vec2 float2;
 		typedef glm::vec3 float3;
 		typedef glm::vec4 float4;
-		typedef glm::quat quat;
+		//typedef glm::quat quat;
 
 		typedef glm::ivec2 int2;
 		typedef glm::ivec3 int3;
 		typedef glm::ivec4 int4;
 
+		typedef glm::tvec2<uint32_t, glm::highp> uint2;
+		typedef glm::tvec3<uint32_t, glm::highp> uint3;
+		typedef glm::tvec4<uint32_t, glm::highp> uint4;
+
+		typedef glm::mat3 float3x3;
 		typedef glm::mat4 float4x4;
 
 		using namespace glm;
@@ -121,6 +127,13 @@ namespace tofu
 				float4{ s.z * (a_c_2 + b_d_2),  s.z * (c_d_2 - a_b_2), s.z * (a_sqr - b_sqr - c_sqr + d_sqr), 0.0f },
 				float4{ t.x, t.y, t.z, 1.0f }
 			};
+		}
+
+		TF_INLINE void decompose(const float4x4& m, float3& t, quat& r, float3& s)
+		{
+			float3 skew; float4 persp;
+			decompose(m, s, r, t, skew, persp);
+			r = conjugate(r);
 		}
 
 		TF_INLINE float angleBetween(const float3& a, const float3& b)

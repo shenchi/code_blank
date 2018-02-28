@@ -3,6 +3,7 @@
 #include <cstdint>
 #include "TofuMath.h"
 #include <unordered_map>
+#include <assert.h>
 
 namespace tofu
 {
@@ -16,10 +17,13 @@ namespace tofu
 		//constexpr uint32_t kModelFileMaxTexcoordChannels = 4;
 		constexpr uint32_t kModelFileMaxTexcoordChannels = 1;
 
+		constexpr uint16_t kModelMaxJointIndex = 0x1fff;
+
 		struct ModelHeader
 		{
 			uint32_t			Magic;
 			uint32_t			Version;
+			
 			union
 			{
 				uint32_t		Flags;
@@ -38,10 +42,11 @@ namespace tofu
 			uint32_t			NumMeshes;
 			uint16_t			NumBones;
 			uint32_t			NumAnimations;
-			uint32_t			NumAnimChannels;
-			uint32_t			NumTotalTranslationFrames;
-			uint32_t			NumTotalRotationFrames;
-			uint32_t			NumTotalScaleFrames;
+			// TODO: Remove following 4 params
+			uint32_t            NumAnimChannels;
+			uint32_t            NumTotalTranslationFrames;
+			uint32_t            NumTotalRotationFrames;
+			uint32_t            NumTotalScaleFrames;
 			uint32_t			NumAnimationFrames;
 
 			inline uint32_t CalculateVertexSize() const
@@ -53,7 +58,7 @@ namespace tofu
 					vertexSize += sizeof(float) * 4;
 				}
 
-				if (HasAnimation == 1)
+				if (NumBones != 0)
 				{
 					vertexSize += sizeof(float) * 4 + sizeof(uint32_t) * 4; // bone ids + bone weights
 				}
@@ -93,18 +98,12 @@ namespace tofu
 
 		// ... followed by an array of ModelAnimation
 
-		// ... followed by an array of all ModelAnimChannel
-
-		// ... followed by an array of all translation frames (ModelFloat3Frame)
-
-		// ... followed by an array of all rotation frames (ModelQuatFrame)
-
-		// ... followed by an array of all scale frames (ModelFloat3Frame)
-
 		// ... followed by an array of all uniform frames (ModelAnimFrame)
 
 		struct ModelBone
 		{
+			// TODO: Better solution for name? 
+			char			name[128];
 			uint16_t		id;
 			uint16_t		parent;
 			uint16_t		firstChild;
@@ -119,8 +118,6 @@ namespace tofu
 			char			name[128];
 			float			tickCount;
 			float			ticksPerSecond;
-			uint32_t		numChannels;
-			uint32_t		startChannelId;
 			size_t			startFrames;
 			size_t			numFrames;
 		};
@@ -129,9 +126,6 @@ namespace tofu
 
 		struct ModelAnimFrame
 		{
-			uint16_t time = 0;
-			uint16_t jointIndex = 0;
-
 			// TODO: float compression
 			// https://github.com/Maratyszcza/FP16/blob/master/third-party/float16-compressor.h
 			// https://github.com/guillaumeblanc/ozz-animation/blob/71f622e1480bf76d3cc0da5fe90900dc247234c3/include/ozz/base/maths/internal/simd_math_sse-inl.h
@@ -141,10 +135,18 @@ namespace tofu
 
 			math::float3 value;
 
+			uint16_t time = 0;
+
+		private:
+			uint16_t jointIndex = 0;
+
+
+		public:
+
 			bool GetSignedBit() const 
 			{
 				// Most significant two bits of this 16bit index contains channel type info.
-				return static_cast<bool>((jointIndex & (0x2000)) >> 13);
+				return ((jointIndex & 0x2000) >> 13) == 1;
 			}
 
 			void SetSignedBit(bool s)
@@ -157,37 +159,21 @@ namespace tofu
 				// Most significant two bits of this 16bit index contains channel type info.
 				return static_cast<ChannelType>((jointIndex & (0xc000)) >> 14);
 			}
+			
 			void SetChannelType(ChannelType type)
 			{
 				jointIndex |= (static_cast<uint16_t>(type) << 14);
 			}
+			
 			std::uint16_t GetJointIndex() const
 			{
-				return jointIndex & 0x1fff;
+				return jointIndex & kModelMaxJointIndex;
 			}
-		};
 
-		struct ModelAnimChannel
-		{
-			uint16_t		boneId;
-			uint32_t		startTranslationFrame;
-			uint32_t		numTranslationFrame;
-			uint32_t		startRotationFrame;
-			uint32_t		numRotationFrame;
-			uint32_t		startScaleFrame;
-			uint32_t		numScaleFrame;
-		};
-
-		struct ModelFloat3Frame
-		{
-			float			time;
-			math::float3	value;
-		};
-
-		struct ModelQuatFrame
-		{
-			float			time;
-			math::quat		value;
+			void SetJointIndex(uint16_t index) {
+				assert(index <= kModelMaxJointIndex);
+				jointIndex = (jointIndex & 0xE000) + index;
+			}
 		};
 	}
 }

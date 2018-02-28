@@ -12,6 +12,9 @@
 
 #include <cassert>
 
+#include <crtdbg.h>
+#define BREAK(x) if (0 != (x)) __debugbreak();
+
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
 
@@ -647,6 +650,10 @@ namespace tofu
 
 					);
 
+					if (texDesc.Format == DXGI_FORMAT_D24_UNORM_S8_UINT && 0u != (params->bindingFlags & kBindingDepthStencil))
+						//texDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
+					    texDesc.Format = DXGI_FORMAT_R32_TYPELESS;
+					
 					D3D11_SUBRESOURCE_DATA subResData = {};
 					subResData.pSysMem = params->data;
 					subResData.SysMemPitch = params->pitch;
@@ -658,7 +665,35 @@ namespace tofu
 
 					if (params->bindingFlags & kBindingShaderResource)
 					{
-						DXCHECKED(device->CreateShaderResourceView(textures[id].tex, nullptr, &(textures[id].srv)));
+						if (params->format == kFormatD24UnormS8Uint)
+						{
+							//textures[id].tex->GetDesc()
+							D3D11_SHADER_RESOURCE_VIEW_DESC desc = {};
+							//desc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+							desc.Format = DXGI_FORMAT_R32_FLOAT;
+							if (params->cubeMap == 1)
+							{
+								desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+								desc.TextureCube.MipLevels = 1;
+								desc.TextureCube.MostDetailedMip = 0;
+							}
+							else
+							{
+								desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+								desc.Texture2D.MipLevels = 1;
+								desc.Texture2D.MostDetailedMip = 0;
+							
+
+								// TODO: we don't expect array here
+								assert(params->arraySize == 1);
+							}
+
+							DXCHECKED(device->CreateShaderResourceView(textures[id].tex, &desc, &(textures[id].srv)));
+						}
+						else
+						{
+							DXCHECKED(device->CreateShaderResourceView(textures[id].tex, nullptr, &(textures[id].srv)));
+						}
 					}
 				}
 
@@ -700,7 +735,21 @@ namespace tofu
 					}
 					else
 					{
-						DXCHECKED(device->CreateDepthStencilView(textures[id].tex, nullptr, &(textures[id].dsv[0])));
+						if (params->format == kFormatD24UnormS8Uint && params->bindingFlags & kBindingShaderResource)
+						{
+							CD3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc(textures[id].tex,
+								D3D11_DSV_DIMENSION_TEXTURE2D,
+								DXGI_FORMAT_D32_FLOAT
+								//DXGI_FORMAT_D24_UNORM_S8_UINT
+								);
+
+							DXCHECKED(device->CreateDepthStencilView(textures[id].tex, &dsvDesc, &(textures[id].dsv[0])));
+
+						}
+						else
+						{
+							DXCHECKED(device->CreateDepthStencilView(textures[id].tex, nullptr, &(textures[id].dsv[0])));
+						}
 					}
 					//DXCHECKED(device->CreateDepthStencilView(textures[id].tex, nullptr, &(textures[id].dsv)));
 				}
@@ -794,9 +843,9 @@ namespace tofu
 				assert(nullptr == samplers[id].samp);
 
 				CD3D11_SAMPLER_DESC samplerDesc(D3D11_DEFAULT);
-				samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-				samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-				samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+				samplerDesc.AddressU = (D3D11_TEXTURE_ADDRESS_MODE)params->textureAddressU;
+				samplerDesc.AddressV = (D3D11_TEXTURE_ADDRESS_MODE)params->textureAddressV;
+				samplerDesc.AddressW = (D3D11_TEXTURE_ADDRESS_MODE)params->textureAddressW;
 
 				DXCHECKED(device->CreateSamplerState(&samplerDesc, &(samplers[id].samp)));
 
@@ -924,15 +973,16 @@ namespace tofu
 				DXCHECKED(device->CreateBlendState(&blendState, &(pipelineStates[id].blendState)));
 
 				assert(true == params->vertexShader && nullptr != vertexShaders[params->vertexShader.id].shader);
-				//assert(true == params->pixelShader && nullptr != pixelShaders[params->vertexShader.id].shader);
+				//assert(true == params->pixelShader && nullptr != pixelShaders[params->pixelShader.id].shader);
 
 				DXCHECKED(device->CreateInputLayout(
 					InputElemDescTable[params->vertexFormat],
 					InputElemDescSizeTable[params->vertexFormat],
-					vertexShaders[id].data,
-					vertexShaders[id].size,
+					vertexShaders[params->vertexShader.id].data,
+					vertexShaders[params->vertexShader.id].size,
 					&(pipelineStates[id].inputLayout)
 				));
+
 
 				pipelineStates[id].viewport = {
 					0.0f, 0.0f, (FLOAT)winWidth, (FLOAT)winHeight, 0.0f, 1.0f
@@ -1001,7 +1051,7 @@ namespace tofu
 			int32_t Draw(void* _params)
 			{
 				DrawParams* params = reinterpret_cast<DrawParams*>(_params);
-
+			
 				assert(true == params->pipelineState);
 				
 				// change pipeline states if necessary
@@ -1240,7 +1290,7 @@ namespace tofu
 					// draw it!
 					context->DrawIndexed(params->indexCount, params->startIndex, params->startVertex);
 				}
-
+				//context->RSSetState(0);
 				return kOK;
 			}
 

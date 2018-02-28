@@ -55,7 +55,7 @@ namespace tofu
 
 		Material* CreateMaterial(MaterialType type);
 
-
+		TextureHandle CreateDepthMap( uint32_t width, uint32_t height);
 	private:
 
 		int32_t InitBuiltinMaterial(MaterialType matType, const char* vsFile, const char* psFile);
@@ -91,7 +91,7 @@ namespace tofu
 		BufferHandle			frameConstantBuffer;
 
 		BufferHandle            lightingConstantBuffer;
-
+		BufferHandle            shadowDepthBuffer;
 
 		Mesh					meshes[kMaxMeshes];
 		Model					models[kMaxModels];
@@ -101,10 +101,9 @@ namespace tofu
 		VertexShaderHandle		materialVSs[kMaxMaterialTypes];
 		PixelShaderHandle		materialPSs[kMaxMaterialTypes];
 		SamplerHandle			defaultSampler;
+		SamplerHandle           shadowSampler;
 
 		Model*					builtinCube;
-
-		//TextureHandle			testRT;
 
 		RendererCommandBuffer*	cmdBuf;
 	};
