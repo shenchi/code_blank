@@ -197,15 +197,15 @@ namespace tofu
 			{
 				auto l = e.AddComponent<LightComponent>();
 				const char* lightTypeStr = comp["lightType"].GetString();
-				if (strcmp(lightTypeStr, "directional"))
+				if (strcmp(lightTypeStr, "directional") == 0)
 				{
 					l->SetType(LightType::kLightTypeDirectional);
 				}
-				else if (strcmp(lightTypeStr, "point"))
+				else if (strcmp(lightTypeStr, "point") == 0)
 				{
 					l->SetType(LightType::kLightTypePoint);
 				}
-				else if (strcmp(lightTypeStr, "spot"))
+				else if (strcmp(lightTypeStr, "spot") == 0)
 				{
 					l->SetType(LightType::kLightTypeSpot);
 				}
@@ -216,6 +216,9 @@ namespace tofu
 					color["z"].GetFloat(),
 					color["w"].GetFloat()
 				});
+				l->SetRange(comp["range"].GetFloat());
+				l->SetIntensity(comp["intensity"].GetFloat());
+				l->SetSpotAngle(comp["spotAngle"].GetFloat());
 			}
 		}
 

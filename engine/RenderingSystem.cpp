@@ -37,6 +37,17 @@ namespace
 		tofu::math::float4		_reserv1[3071];
 	};
 
+	// parameters for lights in lighting pass (deferred shading)
+	// make sure this structure to be 16 shader constants (float4) in size;
+	struct LightParameters
+	{
+		tofu::math::float4x4	transform;		// 4
+		tofu::math::float4		color;			// 1
+		float					range;
+		float					intensity;
+		float					spotAngle;		
+		float					padding[10 * 4 + 1];
+	};
 }
 
 namespace tofu
@@ -71,7 +82,14 @@ namespace tofu
 		defaultSampler(),
 		shadowSampler(),
 		builtinCube(),
-		cmdBuf(nullptr)
+		builtinSphere(),
+		builtinCone(),
+		cmdBuf(nullptr),
+		// resources for deferred shading
+		gBufferPosition(),
+		gBufferNormal(),
+		gBufferAlbedo(),
+		gBufferDepth()
 	{
 		assert(nullptr == _instance);
 		_instance = this;
@@ -141,6 +159,10 @@ namespace tofu
 			"assets/deferred_geometry_skinned_vs.shader",
 			"assets/deferred_geometry_ps.shader"));
 
+		CHECKED(InitBuiltinMaterial(kMaterialDeferredLighting,
+			"assets/deferred_lighting_vs.shader",
+			"assets/deferred_lighting_ps.shader"));
+
 		// constant buffers
 		{
 			transformBuffer = bufferHandleAlloc.Allocate();
@@ -195,6 +217,19 @@ namespace tofu
 				params->handle = lightingConstantBuffer;
 				params->bindingFlags = kBindingConstantBuffer;
 				params->size = sizeof(LightingConstants);
+				params->dynamic = 1;
+
+				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
+			}
+
+			lightParamsBuffer = bufferHandleAlloc.Allocate();
+			assert(lightParamsBuffer);
+			{
+				CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
+				assert(nullptr != params);
+				params->handle = lightParamsBuffer;
+				params->bindingFlags = kBindingConstantBuffer;
+				params->size = sizeof(LightParameters) * kMaxEntities;
 				params->dynamic = 1;
 
 				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
@@ -300,6 +335,19 @@ namespace tofu
 
 				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 			}
+
+			materialPSOs[kMaterialDeferredLighting] = pipelineStateHandleAlloc.Allocate();
+			assert(materialPSOs[kMaterialDeferredLighting]);
+			{
+				CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
+				params->handle = materialPSOs[kMaterialDeferredLighting];
+				params->vertexShader = materialVSs[kMaterialDeferredLighting];
+				params->pixelShader = materialPSs[kMaterialDeferredLighting];
+				params->blendEnable = 1;
+				params->srcBlend = kBlendOne;
+				params->destBlend = kBlendOne;
+				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+			}
 		}
 
 		// create default sampler
@@ -336,6 +384,12 @@ namespace tofu
 
 		builtinCube = CreateModel("assets/cube.model");
 		assert(nullptr != builtinCube);
+
+		builtinSphere = CreateModel("assets/sphere.model");
+		assert(nullptr != builtinSphere);
+
+		builtinCone = CreateModel("assets/cone.model");
+		assert(nullptr != builtinCone);
 
 		/*{
 			testRT = textureHandleAlloc.Allocate();
@@ -1260,87 +1314,54 @@ namespace tofu
 			cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
 		}
 
-		//LightComponentData* lights = LightComponent::GetAllComponents();
-		//uint32_t lightsCount = LightComponent::GetNumComponents();
-		////TextureHandle * depthMap = new TextureHandle[lightsCount];
-		//// Light constant buffer data
-		//{
-		//	LightingConstants* data = reinterpret_cast<LightingConstants*>(
-		//		MemoryAllocator::Allocators[allocNo].Allocate(sizeof(LightingConstants), 16)
-		//		);
-		//	assert(nullptr != data);
-
-		//	for (uint32_t i = 0; i < lightsCount; ++i)
-		//	{
-		//		LightComponentData& comp = lights[i];
-
-		//		// TODO culling
-		//		TransformComponent t = comp.entity.GetComponent<TransformComponent>();
-		//		if (comp.type == kLightTypeDirectional) {
-		//			data->lightDirection[i] = math::float4{ (t->GetForwardVector()).x,
-		//				(t->GetForwardVector()).y,
-		//				(t->GetForwardVector()).z ,0.0f };
-		//			data->type[i].x = 1.0f;
-		//		}
-		//		else if (comp.type == kLightTypePoint) {
-		//			data->type[i].x = 2.0f;
-		//			data->lightPosition[i] = math::float4(t->GetWorldPosition(), 0);
-		//		}
-		//		else {
-		//			data->type[i].x = 3.0f;
-		//		}
-		//		data->lightColor[i] = comp.lightColor;
-		//	}
-		//	data->count = lightsCount;
-		//	data->camPos = camPos;
-
-
-		//	UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
-		//	assert(nullptr != params);
-		//	params->handle = lightingConstantBuffer;
-		//	params->data = data;
-		//	params->size = sizeof(LightingConstants);
-
-		//	cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
-		//}
-
 		// clear
-		TextureHandle skyboxTex = TextureHandle();
-
-		if (nullptr == camera.skybox)
 		{
 			ClearParams* params = MemoryAllocator::Allocate<ClearParams>(allocNo);
 
-			const math::float4& clearColor = camera.GetClearColor();
-
-			params->clearColor[0] = clearColor.x;
-			params->clearColor[1] = clearColor.y;
-			params->clearColor[2] = clearColor.z;
-			params->clearColor[3] = clearColor.w;
+			params->clearColor[0] = 0;
+			params->clearColor[1] = 0;
+			params->clearColor[2] = 0;
+			params->clearColor[3] = 1;
 
 			cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
 		}
-		else
-		{
-			assert(camera.skybox->type == kMaterialTypeSkybox);
-			skyboxTex = camera.skybox->mainTex;
 
-			Mesh& mesh = meshes[builtinCube->meshes[0].id];
+		//TextureHandle skyboxTex = TextureHandle();
 
-			DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
-			params->pipelineState = materialPSOs[kMaterialTypeSkybox];
-			params->vertexBuffer = mesh.VertexBuffer;
-			params->indexBuffer = mesh.IndexBuffer;
-			params->startIndex = mesh.StartIndex;
-			params->startVertex = mesh.StartVertex;
-			params->indexCount = mesh.NumIndices;
-			params->vsConstantBuffers[0] = { frameConstantBuffer, 0, 16 };
+		//if (nullptr == camera.skybox)
+		//{
+		//	ClearParams* params = MemoryAllocator::Allocate<ClearParams>(allocNo);
 
-			params->psTextures[0] = skyboxTex;
-			params->psSamplers[0] = defaultSampler;
+		//	const math::float4& clearColor = camera.GetClearColor();
 
-			cmdBuf->Add(RendererCommand::kCommandDraw, params);
-		}
+		//	params->clearColor[0] = clearColor.x;
+		//	params->clearColor[1] = clearColor.y;
+		//	params->clearColor[2] = clearColor.z;
+		//	params->clearColor[3] = clearColor.w;
+
+		//	cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
+		//}
+		//else
+		//{
+		//	assert(camera.skybox->type == kMaterialTypeSkybox);
+		//	skyboxTex = camera.skybox->mainTex;
+
+		//	Mesh& mesh = meshes[builtinCube->meshes[0].id];
+
+		//	DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
+		//	params->pipelineState = materialPSOs[kMaterialTypeSkybox];
+		//	params->vertexBuffer = mesh.VertexBuffer;
+		//	params->indexBuffer = mesh.IndexBuffer;
+		//	params->startIndex = mesh.StartIndex;
+		//	params->startVertex = mesh.StartVertex;
+		//	params->indexCount = mesh.NumIndices;
+		//	params->vsConstantBuffers[0] = { frameConstantBuffer, 0, 16 };
+
+		//	params->psTextures[0] = skyboxTex;
+		//	params->psSamplers[0] = defaultSampler;
+
+		//	cmdBuf->Add(RendererCommand::kCommandDraw, params);
+		//}
 
 		// get all renderables in system
 		RenderingComponentData* renderables = RenderingComponent::GetAllComponents();
@@ -1378,6 +1399,7 @@ namespace tofu
 #else
 			transformArray[idx * 4] = transform->GetWorldTransform().GetMatrix();
 #endif
+			transformArray[idx * 4 + 1] = math::transpose(math::inverse(transformArray[idx * 4]));
 		}
 
 		// upload transform matrices
@@ -1558,6 +1580,9 @@ namespace tofu
 		//			}
 		//		}
 
+
+		// Geometry Pass
+
 		{
 			ClearParams* params = MemoryAllocator::Allocate<ClearParams>(allocNo);
 			params->renderTargets[0] = TextureHandle();
@@ -1634,6 +1659,124 @@ namespace tofu
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
 		}
+
+		// Lighting Pass
+
+		LightComponentData* lights = LightComponent::GetAllComponents();
+		uint32_t lightsCount = LightComponent::GetNumComponents();
+		//TextureHandle * depthMap = new TextureHandle[lightsCount];
+		// Light constant buffer data
+
+		{
+			LightParameters* lightParams = reinterpret_cast<LightParameters*>(
+				MemoryAllocator::Allocators[allocNo].Allocate(sizeof(LightParameters) * kMaxEntities, 16)
+				);
+			assert(nullptr != lightParams);
+
+			uint32_t* pointLights = reinterpret_cast<uint32_t*>(MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxEntities, 4));
+			uint32_t* soptLights = reinterpret_cast<uint32_t*>(MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxEntities, 4));
+
+			uint32_t numPointLights = 0;
+			uint32_t numSpotLights = 0;
+
+			for (uint32_t i = 0; i < lightsCount; ++i)
+			{
+				LightComponentData& comp = lights[i];
+
+				// TODO culling
+				TransformComponent t = comp.entity.GetComponent<TransformComponent>();
+
+				assert(t);
+
+#ifdef TOFU_USE_GLM
+				lightParams[i].transform = math::transpose(t->GetWorldTransform().GetMatrix());
+#else
+				lightParams[i].transform = t->GetWorldTransform().GetMatrix();
+#endif
+				lightParams[i].color = comp.lightColor;
+				lightParams[i].range = comp.range;
+				lightParams[i].intensity = comp.intensity;
+				lightParams[i].spotAngle = comp.spotAngle;
+
+				if (comp.type == kLightTypeDirectional) 
+				{
+					
+				}
+				else if (comp.type == kLightTypePoint) 
+				{
+					pointLights[numPointLights++] = i;
+					lightParams[i].transform = math::scale(math::float4x4(1.0f), math::float3(comp.range)) * lightParams[i].transform;
+				}
+				else if (comp.type == kLightTypeSpot) 
+				{
+					soptLights[numSpotLights++] = i;
+					float scale = math::tan(math::radians(comp.spotAngle * 0.5f)) * comp.range;
+					lightParams[i].transform = math::scale(math::float4x4(1.0f), math::float3(scale, scale, comp.range)) * lightParams[i].transform;
+				}
+			}
+
+			{
+				UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
+				assert(nullptr != params);
+				params->handle = lightParamsBuffer;
+				params->data = lightParams;
+				params->size = sizeof(LightParameters) * lightsCount;
+
+				cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
+			}
+
+			// go through all point lights
+			for (uint32_t i = 0; i < numPointLights; i++)
+			{
+				Mesh& mesh = meshes[builtinSphere->meshes[0].id];
+				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
+				assert(nullptr != params);
+
+				params->pipelineState = materialPSOs[kMaterialDeferredLighting];
+
+				params->vertexBuffer = mesh.VertexBuffer;
+				params->indexBuffer = mesh.IndexBuffer;
+				params->startIndex = mesh.StartIndex;
+				params->startVertex = mesh.StartVertex;
+				params->indexCount = mesh.NumIndices;
+
+				params->vsConstantBuffers[0] = { lightParamsBuffer, static_cast<uint16_t>(pointLights[i] * 16), 16 };
+				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
+
+				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
+
+				params->depthRenderTarget = gBufferDepth;
+
+				cmdBuf->Add(RendererCommand::kCommandDraw, params);
+			}
+
+			// go through all spot lights
+			for (uint32_t i = 0; i < numSpotLights; i++)
+			{
+				Mesh& mesh = meshes[builtinCone->meshes[0].id];
+				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
+				assert(nullptr != params);
+
+				params->pipelineState = materialPSOs[kMaterialDeferredLighting];
+
+				params->vertexBuffer = mesh.VertexBuffer;
+				params->indexBuffer = mesh.IndexBuffer;
+				params->startIndex = mesh.StartIndex;
+				params->startVertex = mesh.StartVertex;
+				params->indexCount = mesh.NumIndices;
+
+				params->vsConstantBuffers[0] = { lightParamsBuffer, static_cast<uint16_t>(soptLights[i] * 16), 16 };
+				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
+
+				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
+
+				params->depthRenderTarget = gBufferDepth;
+
+				cmdBuf->Add(RendererCommand::kCommandDraw, params);
+			}
+		}
+
+		// TODO: Transparent Pass
 
 		return kOK;
 	}

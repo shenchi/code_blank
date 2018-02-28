@@ -970,6 +970,14 @@ namespace tofu
 				DXCHECKED(device->CreateRasterizerState(&rsState, &(pipelineStates[id].rasterizerState)));
 
 				CD3D11_BLEND_DESC blendState(D3D11_DEFAULT);
+				blendState.RenderTarget[0].BlendEnable = params->blendEnable;
+				blendState.RenderTarget[0].SrcBlend = (D3D11_BLEND)params->srcBlend;
+				blendState.RenderTarget[0].DestBlend = (D3D11_BLEND)params->destBlend;
+				blendState.RenderTarget[0].BlendOp = (D3D11_BLEND_OP)params->blendOp;
+				blendState.RenderTarget[0].SrcBlendAlpha = (D3D11_BLEND)params->srcBlendAlpha;
+				blendState.RenderTarget[0].DestBlendAlpha = (D3D11_BLEND)params->destBlendAlpha;
+				blendState.RenderTarget[0].BlendOpAlpha = (D3D11_BLEND_OP)params->blendOpAlpha;
+				blendState.RenderTarget[0].RenderTargetWriteMask = (D3D11_COLOR_WRITE_ENABLE)params->blendWriteMask;
 				DXCHECKED(device->CreateBlendState(&blendState, &(pipelineStates[id].blendState)));
 
 				assert(true == params->vertexShader && nullptr != vertexShaders[params->vertexShader.id].shader);

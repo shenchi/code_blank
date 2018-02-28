@@ -80,6 +80,46 @@ namespace tofu
 		kVertexFormatSkinned
 	};
 
+	enum Blend
+	{
+		kBlendZero = 1,
+		kBlendOne,
+		kBlendSrcColor,
+		kBlendInvSrcColor,
+		kBlendSrcAlpha,
+		kBlendInvSrcAlpha,
+		kBlendDestAlpha,
+		kBlendInvDestAlpha,
+		kBlendDestColor,
+		kBlendInvDestColor,
+		kBlendSrcAlphaSature,
+		kBlendFactor = 14,
+		kBlendInvFactor,
+		kBlendSrc1Color,
+		kBlendInvSrc1Color,
+		kBlendSrc1Alpha,
+		kBlendInvSrc1Alpha
+	};
+
+	enum BlendOp
+	{
+		kBlendOpAdd = 1,
+		kBlendOpSubtract,
+		kBlendOpRevSubtract,
+		kBlendOpMin,
+		kBlendOpMax
+	};
+
+	enum ColorWriteMask
+	{
+		kColorWriteNone = 0,
+		kColorWriteRed = 1,
+		kColorWriteGreen = 2,
+		kColorWriteBlue = 4,
+		kColorWriteAlpha = 8,
+		kColorWriteAll = kColorWriteRed | kColorWriteGreen | kColorWriteBlue | kColorWriteAlpha
+	};
+
 	struct RendererCommandBuffer
 	{
 		uint32_t*			cmds;
@@ -198,6 +238,22 @@ namespace tofu
 			uint32_t				depthStencilState;
 		};
 
+		union
+		{
+			struct
+			{
+				uint32_t			blendEnable : 1;
+				uint32_t			srcBlend : 5;
+				uint32_t			destBlend : 5;
+				uint32_t			blendOp : 3;
+				uint32_t			srcBlendAlpha : 5;
+				uint32_t			destBlendAlpha : 5;
+				uint32_t			blendOpAlpha : 3;
+				uint32_t			blendWriteMask : 5;
+			};
+			uint32_t				blendState;
+		};
+
 		CreatePipelineStateParams()
 			:
 			handle(),
@@ -207,7 +263,15 @@ namespace tofu
 			cullMode(kCullBack),
 			depthEnable(1),
 			depthWrite(1),
-			depthFunc(kComparisonLess)
+			depthFunc(kComparisonLess),
+			blendEnable(0),
+			srcBlend(kBlendOne),
+			destBlend(kBlendZero),
+			blendOp(kBlendOpAdd),
+			srcBlendAlpha(kBlendOne),
+			destBlendAlpha(kBlendZero),
+			blendOpAlpha(kBlendOpAdd),
+			blendWriteMask(kColorWriteAll)
 		{}
 	};
 

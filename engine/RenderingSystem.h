@@ -106,6 +106,8 @@ namespace tofu
 		SamplerHandle           shadowSampler;
 
 		Model*					builtinCube;
+		Model*					builtinSphere;
+		Model*					builtinCone;
 
 		RendererCommandBuffer*	cmdBuf;
 
@@ -114,6 +116,8 @@ namespace tofu
 		TextureHandle			gBufferNormal;
 		TextureHandle			gBufferAlbedo;
 		TextureHandle			gBufferDepth;
+
+		BufferHandle			lightParamsBuffer;
 	};
 
 }
