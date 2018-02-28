@@ -58,7 +58,7 @@ int32_t TestGame::Init()
 		ph->SetColliderOrigin(math::float3{ 0.0f, -0.5f, 0.0f });
 	}
 
-	{
+	/*{
 		Entity e = Entity::Create();
 
 		tBox = e.AddComponent<TransformComponent>();
@@ -70,10 +70,10 @@ int32_t TestGame::Init()
 
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
 		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-albedo2.texture");
-		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-normal3-UE4-Copy.texture");
-		TextureHandle   metallicMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-metalness-Copy.texture");
-		TextureHandle   roughnessMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-rough-Copy.texture");
-		TextureHandle   aoMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-ao-Copy.texture");
+		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-normal3-UE4 - Copy.texture");
+		TextureHandle   metallicMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-metalness - Copy.texture");
+		TextureHandle   roughnessMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-rough - Copy.texture");
+		TextureHandle   aoMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-ao - Copy.texture");
 
 		material->SetTexture(diffuse);
 		material->SetNormalMap(normalMap);
@@ -85,7 +85,7 @@ int32_t TestGame::Init()
 		r->SetModel(model);
 
 		PhysicsComponent ph = e.AddComponent<PhysicsComponent>();
-	}
+	}*/
 
 	{
 		Entity e = Entity::Create();
