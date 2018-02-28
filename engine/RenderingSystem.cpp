@@ -86,10 +86,9 @@ namespace tofu
 		builtinCone(),
 		cmdBuf(nullptr),
 		// resources for deferred shading
-		gBufferPosition(),
-		gBufferNormal(),
-		gBufferAlbedo(),
-		gBufferDepth()
+		gBuffer1(),
+		gBuffer2(),
+		gBuffer3()
 	{
 		assert(nullptr == _instance);
 		_instance = this;
@@ -217,6 +216,19 @@ namespace tofu
 				params->handle = lightingConstantBuffer;
 				params->bindingFlags = kBindingConstantBuffer;
 				params->size = sizeof(LightingConstants);
+				params->dynamic = 1;
+
+				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
+			}
+
+			screenParamsBuffer = bufferHandleAlloc.Allocate();
+			assert(screenParamsBuffer);
+			{
+				CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
+				assert(nullptr != params);
+				params->handle = screenParamsBuffer;
+				params->bindingFlags = kBindingConstantBuffer;
+				params->size = sizeof(math::float4x4);
 				params->dynamic = 1;
 
 				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
@@ -413,12 +425,11 @@ namespace tofu
 		// TODO when back buffer size changed !
 		int32_t w, h;
 		renderer->GetFrameBufferSize(w, h);
-		gBufferPosition = CreateTexture(kFormatR32g32b32a32Float, w, h, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
-		gBufferNormal = CreateTexture(kFormatR32g32b32a32Float, w, h, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
-		gBufferAlbedo = CreateTexture(kFormatR32g32b32a32Float, w, h, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
-		gBufferDepth = CreateTexture(kFormatD24UnormS8Uint, w, h, 0, nullptr, kBindingDepthStencil | kBindingShaderResource);
+		gBuffer1 = CreateTexture(kFormatR32g32b32a32Float, w, h, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
+		gBuffer2 = CreateTexture(kFormatR32g32b32a32Float, w, h, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
+		gBuffer3 = CreateTexture(kFormatR32g32b32a32Float, w, h, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
 
-		if (!gBufferPosition || !gBufferNormal || !gBufferAlbedo || !gBufferDepth)
+		if (!gBuffer1 || !gBuffer2 || !gBuffer3)
 		{
 			return kErrUnknown;
 		}
@@ -1278,10 +1289,10 @@ namespace tofu
 		CameraComponentData& camera = CameraComponent::GetAllComponents()[0];
 
 		// update aspect
+		int32_t bufferWidth, bufferHeight;
 		{
-			int32_t w, h;
-			renderer->GetFrameBufferSize(w, h);
-			camera.SetAspect(h == 0 ? 1.0f : float(w) / h);
+			renderer->GetFrameBufferSize(bufferWidth, bufferHeight);
+			camera.SetAspect(bufferHeight == 0 ? 1.0f : float(bufferWidth) / bufferHeight);
 		}
 
 
@@ -1314,7 +1325,7 @@ namespace tofu
 			cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
 		}
 
-		// clear
+		// clear default render target and depth buffer
 		{
 			ClearParams* params = MemoryAllocator::Allocate<ClearParams>(allocNo);
 
@@ -1583,12 +1594,13 @@ namespace tofu
 
 		// Geometry Pass
 
-		{
-			ClearParams* params = MemoryAllocator::Allocate<ClearParams>(allocNo);
-			params->renderTargets[0] = TextureHandle();
-			params->depthRenderTarget = gBufferDepth;
-			cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
-		}
+		//{
+		//	// clear g-buffer depth
+		//	ClearParams* params = MemoryAllocator::Allocate<ClearParams>(allocNo);
+		//	params->renderTargets[0] = TextureHandle();
+		//	params->depthRenderTarget = gBufferDepth;
+		//	cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
+		//}
 
 		// generate draw call for active renderables in command buffer
 		for (uint32_t i = 0; i < numActiveRenderables; ++i)
@@ -1645,10 +1657,9 @@ namespace tofu
 					params->psTextures[1] = mat->normalMap;
 					params->psSamplers[0] = defaultSampler;
 
-					params->renderTargets[0] = gBufferPosition;
-					params->renderTargets[1] = gBufferNormal;
-					params->renderTargets[2] = gBufferAlbedo;
-					params->depthRenderTarget = gBufferDepth;
+					params->renderTargets[0] = gBuffer1;
+					params->renderTargets[1] = gBuffer2;
+					params->renderTargets[2] = gBuffer3;
 
 					break;
 				default:
@@ -1725,6 +1736,19 @@ namespace tofu
 				cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
 			}
 
+			{
+				void* screenParams = MemoryAllocator::Allocators[allocNo].Allocate(sizeof(math::float4x4), 4);
+				*reinterpret_cast<math::float4*>(screenParams) = math::float4{float(bufferWidth), float(bufferHeight), 0, 0};
+
+				UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
+				assert(nullptr != params);
+				params->handle = screenParamsBuffer;
+				params->data = screenParams;
+				params->size = sizeof(math::float4x4);
+
+				cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
+			}
+
 			// go through all point lights
 			for (uint32_t i = 0; i < numPointLights; i++)
 			{
@@ -1744,8 +1768,12 @@ namespace tofu
 				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
 
 				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
+				params->psConstantBuffers[1] = { screenParamsBuffer, 0, 16 };
 
-				params->depthRenderTarget = gBufferDepth;
+				params->psTextures[0] = gBuffer1;
+				params->psTextures[1] = gBuffer2;
+				params->psTextures[2] = gBuffer3;
+				params->psSamplers[0] = defaultSampler;
 
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
@@ -1769,8 +1797,12 @@ namespace tofu
 				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
 
 				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
+				params->psConstantBuffers[1] = { screenParamsBuffer, 0, 16 };
 
-				params->depthRenderTarget = gBufferDepth;
+				params->psTextures[0] = gBuffer1;
+				params->psTextures[1] = gBuffer2;
+				params->psTextures[2] = gBuffer3;
+				params->psSamplers[0] = defaultSampler;
 
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}

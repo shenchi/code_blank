@@ -25,6 +25,5 @@ struct Input
 float4 main(Input input) : SV_POSITION
 {
 	matrix matMVP = mul(mul(transform, matView), matProj);
-	float4 pos = mul(float4(input.position, 1.0f), matMVP);
-	return pos;
+	return mul(float4(input.position, 1.0f), matMVP);
 }

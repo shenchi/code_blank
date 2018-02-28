@@ -112,11 +112,11 @@ namespace tofu
 		RendererCommandBuffer*	cmdBuf;
 
 		// resources for deferred shading
-		TextureHandle			gBufferPosition;
-		TextureHandle			gBufferNormal;
-		TextureHandle			gBufferAlbedo;
-		TextureHandle			gBufferDepth;
+		TextureHandle			gBuffer1;
+		TextureHandle			gBuffer2;
+		TextureHandle			gBuffer3;
 
+		BufferHandle			screenParamsBuffer;
 		BufferHandle			lightParamsBuffer;
 	};
 

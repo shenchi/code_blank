@@ -10,9 +10,9 @@ struct V2F
 
 struct PS_OUTPUT
 {
-	float4		position	: SV_TARGET0;
-	float4		normal		: SV_TARGET1;
-	float4		albedo		: SV_TARGET2;
+	float4		rt1	: SV_TARGET0;
+	float4		rt2	: SV_TARGET1;
+	float4		rt3	: SV_TARGET2;
 };
 
 
@@ -35,9 +35,9 @@ PS_OUTPUT main(V2F input)
 
 	PS_OUTPUT output;
 
-	output.position = float4(input.worldPos, 1.0f);
-	output.normal = float4(normal, 0.0f);
-	output.albedo = float4(diffuseTex.Sample(samp, input.uv).rgb , 1.0f);
+	output.rt1 = float4(input.worldPos, 1.0f);
+	output.rt2 = float4(normal, input.position.x / input.position.w);
+	output.rt3 = float4(diffuseTex.Sample(samp, input.uv).rgb , 1.0f);
 
 	return output;
 }

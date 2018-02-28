@@ -1078,71 +1078,6 @@ namespace tofu
 					currentPipelineState = params->pipelineState;
 				}
 
-				// render targets
-				{
-					if (params->renderTargets[0].id == DrawParams::DefaultRenderTarget.id)
-						params->renderTargets[0] = TextureHandle(kMaxTextures + 1);
-
-					if (params->depthRenderTarget.id == DrawParams::DefaultRenderTarget.id)
-						params->depthRenderTarget = TextureHandle(kMaxTextures);
-
-					bool rebind = false;
-
-					if (params->depthRenderTarget.id != depthRenderTarget.id ||
-						params->depthRenderTargetSubId != depthRenderTargetSubId)
-					{
-						rebind = true;
-					}
-					else
-					{
-						for (uint32_t i = 0; i < kMaxRenderTargetBindings; i++)
-						{
-							if (params->renderTargets[i].id != renderTargets[i].id ||
-								params->renderTargetSubIds[i] != renderTargetSubIds[i])
-							{
-								rebind = true;
-								break;
-							}
-						}
-					}
-
-					if (rebind)
-					{
-						ID3D11RenderTargetView* rtvs[kMaxRenderTargetBindings] = {};
-						ID3D11DepthStencilView* dsv = nullptr;
-
-						for (uint32_t i = 0; i < kMaxRenderTargetBindings; i++)
-						{
-							renderTargets[i] = params->renderTargets[i];
-							renderTargetSubIds[i] = params->renderTargetSubIds[i];
-							if (renderTargets[i])
-							{
-								Texture& tex = textures[renderTargets[i].id];
-								uint32_t subId = renderTargetSubIds[i];
-								if (nullptr == tex.rtv[subId] || 
-									!(tex.bindingFlags & kBindingRenderTarget))
-									return kErrUnknown;
-
-								rtvs[i] = tex.rtv[subId];
-							}
-						}
-
-						depthRenderTarget = params->depthRenderTarget;
-						depthRenderTargetSubId = params->depthRenderTargetSubId;
-						if (depthRenderTarget)
-						{
-							Texture& tex = textures[depthRenderTarget.id];
-							if (nullptr == tex.dsv[depthRenderTargetSubId] || 
-								!(tex.bindingFlags & kBindingDepthStencil))
-								return kErrUnknown;
-
-							dsv = tex.dsv[depthRenderTargetSubId];
-						}
-
-						context->OMSetRenderTargets(kMaxRenderTargetBindings, rtvs, dsv);
-					}
-				}
-
 				// vertex shader resource binding
 				{
 					// constant buffer bidnings
@@ -1265,6 +1200,71 @@ namespace tofu
 						}
 					}
 					context->PSSetSamplers(0, kMaxSamplerBindings, samps);
+				}
+
+				// render targets
+				{
+					if (params->renderTargets[0].id == DrawParams::DefaultRenderTarget.id)
+						params->renderTargets[0] = TextureHandle(kMaxTextures + 1);
+
+					if (params->depthRenderTarget.id == DrawParams::DefaultRenderTarget.id)
+						params->depthRenderTarget = TextureHandle(kMaxTextures);
+
+					bool rebind = false;
+
+					if (params->depthRenderTarget.id != depthRenderTarget.id ||
+						params->depthRenderTargetSubId != depthRenderTargetSubId)
+					{
+						rebind = true;
+					}
+					else
+					{
+						for (uint32_t i = 0; i < kMaxRenderTargetBindings; i++)
+						{
+							if (params->renderTargets[i].id != renderTargets[i].id ||
+								params->renderTargetSubIds[i] != renderTargetSubIds[i])
+							{
+								rebind = true;
+								break;
+							}
+						}
+					}
+
+					if (rebind)
+					{
+						ID3D11RenderTargetView* rtvs[kMaxRenderTargetBindings] = {};
+						ID3D11DepthStencilView* dsv = nullptr;
+
+						for (uint32_t i = 0; i < kMaxRenderTargetBindings; i++)
+						{
+							renderTargets[i] = params->renderTargets[i];
+							renderTargetSubIds[i] = params->renderTargetSubIds[i];
+							if (renderTargets[i])
+							{
+								Texture& tex = textures[renderTargets[i].id];
+								uint32_t subId = renderTargetSubIds[i];
+								if (nullptr == tex.rtv[subId] ||
+									!(tex.bindingFlags & kBindingRenderTarget))
+									return kErrUnknown;
+
+								rtvs[i] = tex.rtv[subId];
+							}
+						}
+
+						depthRenderTarget = params->depthRenderTarget;
+						depthRenderTargetSubId = params->depthRenderTargetSubId;
+						if (depthRenderTarget)
+						{
+							Texture& tex = textures[depthRenderTarget.id];
+							if (nullptr == tex.dsv[depthRenderTargetSubId] ||
+								!(tex.bindingFlags & kBindingDepthStencil))
+								return kErrUnknown;
+
+							dsv = tex.dsv[depthRenderTargetSubId];
+						}
+
+						context->OMSetRenderTargets(kMaxRenderTargetBindings, rtvs, dsv);
+					}
 				}
 
 				// draw call
