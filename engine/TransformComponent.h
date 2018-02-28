@@ -71,7 +71,7 @@ namespace tofu
 
 		TF_INLINE math::float3			WorldToLocalPosition(math::float3 world) const
 		{
-			return inverse((math::float3x3)GetWorldTransform().GetMatrix()) * world;
+			return inverse(GetWorldTransform().GetMatrix()) * math::float4(world, 1.0f);
 		}
 
 		TF_INLINE math::float3			GetLocalScale() const

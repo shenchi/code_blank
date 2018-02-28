@@ -8,8 +8,9 @@
 #include <Windows.h>
 #include <cassert>
 
-//#include "TestGame.h"
+#include "TestGame.h"
 #include "SceneLoadingDemo.h"
+#include "AnimationDemo.h"
 
 using tofu::kOK;
 
@@ -29,5 +30,6 @@ int CALLBACK WinMain(
 	CHECKED(engine.Init("config.lua"));
 	CHECKED(engine.AddModule(new SceneLoadingDemo()));
 	//CHECKED(engine.AddModule(new TestGame()));
+	//CHECKED(engine.AddModule(new AnimationDemo()));
 	return engine.Run();
 }

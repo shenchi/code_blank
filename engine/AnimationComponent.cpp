@@ -2,8 +2,8 @@
 #include "AnimationComponent.h"
 #include "TofuMath.h"
 #include <algorithm>
-#include "TransformComponent.h"
 #include <set>
+#include "TransformComponent.h"
 
 using namespace std;
 using namespace tofu::math;
@@ -40,9 +40,10 @@ namespace tofu
 		return kOK;
 	}
 
-	bool AnimationComponentData::SetIKPosition(AvatarIKGoal goal, float3 position)
+	void AnimationComponentData::SetIKTarget(IKTarget::HumanBoneID tipJoint, uint16_t jointCount, Entity* target, IKTarget::HumanBoneID targetJoint)
 	{
-		return false;
+		IKTarget ik { tipJoint, jointCount, target, targetJoint };
+		iks.push_back(ik);
 	}
 
 	void AnimationComponentData::UpdateTiming()
@@ -93,9 +94,9 @@ namespace tofu
 			matrices[i] = matrices[p] * matrices[i];
 		}
 
-		// FIXME: IK test function
-		FABRIKSolve(11, 2, float3(500, 100, 500), matrices);
-		FABRIKSolve(58, 2, float3(500, 100, 500), matrices);
+		for (IKTarget ik : iks) {
+			FABRIKSolve(ik.tipJoint, ik.jointCount, ik.target, ik.targetJoint, matrices);
+		}
 
 		// append the offset matrices ( convert vertices from model space to bone local space )
 		for (uint16_t i = 0; i < model->header->NumBones; i++)
@@ -112,16 +113,16 @@ namespace tofu
 
 	// FABRIK solver
 	// http://www.andreasaristidou.com/FABRIK.html
-	void AnimationComponentData::FABRIKSolve(uint16_t boneID, uint16_t limit, float3 target, float4x4* matrices)
+	void AnimationComponentData::FABRIKSolve(uint16_t tipJointIndex, uint16_t jointCount, Entity* target, uint16_t targetJoint, float4x4* matrices)
 	{
 		// minimum difference between the effector and IK target
 		static float minDifference = 1.0f;
 		static int maxIteration = 10;
 
-		if (boneID >= model->header->NumBones)
+		if (tipJointIndex >= model->header->NumBones)
 			return;
 
-		ModelBone *bone = &model->bones[boneID];
+		ModelBone *bone = &model->bones[tipJointIndex];
 
 		// no any parent bone to IK
 		if (bone->parent == UINT16_MAX)
@@ -148,7 +149,8 @@ namespace tofu
 		vector<uint16_t> bones;
 		bones.push_back(bone->id);
 
-		for (uint16_t i = 0; i < limit; i++) {
+		// get all adjust joints
+		for (uint16_t i = 0; i < jointCount; i++) {
 			if (bone->parent == UINT16_MAX)
 				break;
 
@@ -173,32 +175,33 @@ namespace tofu
 
 			chains.emplace_back(bones[i], length, transforms[bones[i]]);
 		}
+		
+		// FIXME:: TODO
+		if (targetJoint != IKTarget::Root)
+			return;
 
 		// convert to local position
-		target = entity.GetComponent<TransformComponent>()->WorldToLocalPosition(target);
-
-		// FIXME: for test
-		target = transforms[boneID].GetTranslation() + float3(0.f, 20.0f, 0.f);
-
+		float3 targetPosition = entity.GetComponent<TransformComponent>()->WorldToLocalPosition(target->GetComponent<TransformComponent>()->GetWorldPosition());
+		
 		// target is out of reach
-		if (totalLength < glm::length(target - transforms[bones.back()].GetTranslation())) {
+		if (totalLength < glm::length(targetPosition - transforms[bones[0]].GetTranslation())) {
 			// forward
 			for (int i = 0; i < bones.size() - 1; i++) {
-				float l = chains[i].length / glm::length(target - chains[i].transform.GetTranslation());
-				chains[i+1].transform.SetTranslation((1 - l) * chains[i].transform.GetTranslation() + l * target);
+				float l = chains[i].length / glm::length(targetPosition - chains[i].transform.GetTranslation());
+				chains[i+1].transform.SetTranslation((1 - l) * chains[i].transform.GetTranslation() + l * targetPosition);
 			}
 		}
 		else {
 			size_t const tipBoneIndex = chains.size() - 1;
 
 			// Check distance between tip location and effector location
-			float difference = glm::length(target - chains[tipBoneIndex].transform.GetTranslation());
+			float difference = glm::length(targetPosition - chains[tipBoneIndex].transform.GetTranslation());
 	
 			size_t IterationCount = 0;
 			while ((difference > minDifference) && (IterationCount++ < maxIteration))
 			{
 				// set tip bone at end effector location.
-				chains[tipBoneIndex].transform.SetTranslation(target);
+				chains[tipBoneIndex].transform.SetTranslation(targetPosition);
 
 				// backward reaching stage - adjust bones from end effector.
 				for (size_t i = tipBoneIndex - 1; i > 0; i--)
@@ -214,14 +217,14 @@ namespace tofu
 					chains[i].transform.SetTranslation((1 - l) * chains[i - 1].transform.GetTranslation() + l * chains[i].transform.GetTranslation());
 				}
 
-				difference = glm::length(target - chains[tipBoneIndex].transform.GetTranslation());
+				difference = glm::length(targetPosition - chains[tipBoneIndex].transform.GetTranslation());
 			}
 		}
 
 		set<uint16_t> effectBones;
 
 		for (auto boneId : bones) {
-			effectBones.insert(boneID);
+			effectBones.insert(tipJointIndex);
 		}
 
 		for (int i = bones.back(); i < model->header->NumBones; i++) {
@@ -231,7 +234,7 @@ namespace tofu
 		}
 
 		for (auto boneId : bones) {
-			effectBones.erase(boneID);
+			effectBones.erase(tipJointIndex);
 		}
 
 		vector<Transform> locals;

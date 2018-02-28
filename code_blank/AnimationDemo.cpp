@@ -1,8 +1,6 @@
-#include "SceneLoadingDemo.h"
+#include "AnimationDemo.h"
 
 using namespace tofu;
-
-typedef const rapidjson::Value& value_t;
 
 namespace
 {
@@ -15,12 +13,30 @@ namespace
 	constexpr float WalkSpeed = 2.0f;
 }
 
-int32_t SceneLoadingDemo::Init()
+int32_t AnimationDemo::Init()
 {
-	CHECKED(sceneMgr.Init());
+	{
+		Entity eBox = Entity::Create();
+		Entity &e = eBox;
 
-	CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial.json"));
-	//CHECKED(sceneMgr.LoadScene("assets/scenes/test6.json"));
+		tBox = e.AddComponent<TransformComponent>();
+		tBox->SetLocalPosition(math::float3{ 53.0f, 10.0f, -38.0f });
+		tBox->SetLocalScale(math::float3{ 0.1f, 0.1f, 0.1f });
+
+		RenderingComponent r = e.AddComponent<RenderingComponent>();
+
+		Model* model = RenderingSystem::instance()->CreateModel("assets/cube.model");
+
+		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
+		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
+		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/stone_wall_normalmap.texture");
+
+		material->SetTexture(diffuse);
+		material->SetNormalMap(normalMap);
+
+		r->SetMaterial(material);
+		r->SetModel(model);
+	}
 
 	{
 		Entity e = Entity::Create();
@@ -42,50 +58,25 @@ int32_t SceneLoadingDemo::Init()
 		AnimationStateMachine *stateMachine = anim->GetStateMachine();
 
 		AnimationState *idle = stateMachine->AddState("idle");
+		idle->animationName = "Armature|Armature|KB_Idle_2|KB_Idle_2:BaseAnimation";
 		idle->animationName = "idle";
 		AnimationState *walk = stateMachine->AddState("walk");
+		walk->animationName = "Armature|Armature|KB_p_DoubleHooks|KB_p_DoubleHooks:BaseAnimation";
 		walk->animationName = "walk";
+
+		// IK test
+		anim->SetIKTarget(IKTarget::LeftHand, 2, &eBox);
+		//anim->SetIKTarget(IKTarget::LeftFoot, 2, &eBox);
 
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaqueSkinned);
 
 		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");
 		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/archer_1.texture");
-
-		//TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/Paint_lambert11_DiffuseColor.texture");
-		//TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/Paint_lambert11_Normal.texture");
-
 		material->SetTexture(diffuse);
 		material->SetNormalMap(normalMap);
 
 		r->SetMaterial(material);
 		r->SetModel(model);
-
-		pPlayer = e.AddComponent<PhysicsComponent>();
-
-		pPlayer->LockRotation(true, false, true);
-		//pPlayer->SetCapsuleCollider(2.5f, 5.0f);
-		//pPlayer->SetColliderOrigin(math::float3{ 0.0f, 5.0f, 0.0f });
-		pPlayer->SetCapsuleCollider(50.0f, 100.0f);
-		pPlayer->SetColliderOrigin(math::float3{ 0.0f, 100.0f, 0.0f });
-	}
-
-	// camera
-	{
-		Entity e = Entity::Create();
-
-		tCamera = e.AddComponent<TransformComponent>();
-
-		cam = e.AddComponent<CameraComponent>();
-
-		cam->SetFOV(60.0f);
-		tCamera->SetLocalPosition(math::float3{ 0, 0, -2 });
-	//	tCamera->SetLocalPosition(math::float3{ 0, 100, -2 });
-
-		Material* skyboxMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeSkybox);
-		TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/craterlake.texture");
-		skyboxMat->SetTexture(tex);
-
-		cam->SetSkybox(skyboxMat);
 	}
 
 	// Dummy light
@@ -127,18 +118,38 @@ int32_t SceneLoadingDemo::Init()
 		math::float4 bulbColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
 		lBulb->SetColor(bulbColor);
 	}
+
+	// camera
+	{
+		Entity e = Entity::Create();
+
+		tCamera = e.AddComponent<TransformComponent>();
+
+		cam = e.AddComponent<CameraComponent>();
+
+		cam->SetFOV(60.0f);
+		tCamera->SetLocalPosition(math::float3{ 0, 0, -2 });
+		//	tCamera->SetLocalPosition(math::float3{ 0, 100, -2 });
+
+		Material* skyboxMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeSkybox);
+		TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/craterlake.texture");
+		skyboxMat->SetTexture(tex);
+
+		cam->SetSkybox(skyboxMat);
+	}
+
 	pitch = InitPitch;
 	yaw = 0.0f;
 
 	return kOK;
 }
 
-int32_t SceneLoadingDemo::Shutdown()
+int32_t AnimationDemo::Shutdown()
 {
 	return kOK;
 }
 
-int32_t SceneLoadingDemo::Update()
+int32_t AnimationDemo::Update()
 {
 	InputSystem* input = InputSystem::instance();
 	if (input->IsButtonDown(ButtonId::kKeyEscape))
@@ -181,6 +192,15 @@ int32_t SceneLoadingDemo::Update()
 		inputDir.z = -1.0f;
 	}
 
+	if (input->IsButtonDown(kKeyI))
+	{
+		inputDir.y = 1.0f;
+	}
+	else if (input->IsButtonDown(kKeyK))
+	{
+		inputDir.y = -1.0f;
+	}
+
 	if (input->IsButtonDown(kKeyD))
 	{
 		inputDir.x = 1.0f;
@@ -189,9 +209,6 @@ int32_t SceneLoadingDemo::Update()
 	{
 		inputDir.x = -1.0f;
 	}
-
-	bool jump = input->IsButtonDown(ButtonId::kKeySpace)
-		|| input->IsButtonDown(ButtonId::kGamepadFaceDown);
 
 	math::quat camRot = math::euler(pitch, yaw, 0.0f);
 	math::float3 camTgt = tPlayer->GetLocalPosition() + math::float3{ 0.0f, 2.0f, 0.0f };
@@ -202,28 +219,24 @@ int32_t SceneLoadingDemo::Update()
 
 	float maxSpeed = WalkSpeed;
 
+	anim->CrossFade("idle", 0.1f);
+
 	if (math::length(inputDir) > 0.25f)
 	{
 		math::float3 moveDir = camRot * inputDir;
-		moveDir.y = 0.0f;
 		moveDir = math::normalize(moveDir);
-		tPlayer->FaceTo(-moveDir);
-
+		
 		speed += Time::DeltaTime * Accelerate;
 		if (speed > maxSpeed)
 			speed = maxSpeed;
 
-		tPlayer->Translate(moveDir * Time::DeltaTime * speed);
-
-		anim->CrossFade("walk", 0.3f);
+		tBox->Translate(moveDir * Time::DeltaTime * speed);
 	}
 	else
 	{
 		speed -= Time::DeltaTime * Deaccelerate;
 		if (speed < 0.0f) speed = 0.0f;
-		tPlayer->Translate(tPlayer->GetForwardVector() * Time::DeltaTime * speed);
-
-		anim->CrossFade("idle", 0.1f);
+		tBox->Translate(tPlayer->GetForwardVector() * Time::DeltaTime * speed);
 	}
 
 	return kOK;
