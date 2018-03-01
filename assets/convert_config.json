@@ -38,20 +38,20 @@
 			{
 				"name": "jump_up",
 				"source": "KB_Jumping.fbx",
-				"avatar": "KB_avatar.json",
+				"avatar": "KB_Jumping_avatar.json",
 				"clip": "KB_Jump_Start"
 			},
 			{
 				"name": "jump_air",
 				"source": "KB_Jumping.fbx",
-				"avatar": "KB_avatar.json",
-				"clip": "KB_Loop"
+				"avatar": "KB_Jumping_avatar.json",
+				"clip": "KB_Jump_Loop"
 			},
 			{
 				"name": "jump_down",
 				"source": "KB_Jumping.fbx",
-				"avatar": "KB_avatar.json",
-				"clip": "KB_Jump_Land"
+				"avatar": "KB_Jumping_avatar.json",
+				"clip": "KB_Land"
 			},
 			{
 				"name": "kPunchJabL",
@@ -92,25 +92,25 @@
 			{
 				"name": "kKickAxeKick",
 				"source": "KB_Kicks.fbx",
-				"avatar": "KB_avatar.json",
+				"avatar": "KB_Jumping_avatar.json",
 				"clip": "KB_AxeKick"
 			},
 			{
 				"name": "kKickHorseKick",
 				"source": "KB_Kicks.fbx",
-				"avatar": "KB_avatar.json",
+				"avatar": "KB_Jumping_avatar.json",
 				"clip": "KB_m_RoundhouseKickRight"
 			},
 			{
 				"name": "kKickStraightMidR",
 				"source": "KB_Kicks.fbx",
-				"avatar": "KB_avatar.json",
+				"avatar": "KB_Jumping_avatar.json",
 				"clip": "KB_p_MidKickStraight_R"
 			},
 			{
 				"name": "kKickKnee",
 				"source": "KB_Kicks.fbx",
-				"avatar": "KB_avatar.json",
+				"avatar": "KB_Jumping_avatar.json",
 				"clip": "KB_m_KneeLeft"
 			}
 		]

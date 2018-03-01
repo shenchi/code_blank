@@ -517,7 +517,7 @@ inline bool IsEqual(const float4x4& a, const aiMatrix4x4& b)
 	return true;
 }
 
-uint16_t loadBoneHierarchy(aiNode* node, BoneTree& bones, BoneTable& table, uint16_t parentId = UINT16_MAX, uint16_t lastSibling = UINT16_MAX)
+uint16_t loadBoneHierarchy(const aiNode* node, BoneTree& bones, BoneTable& table, uint16_t parentId = UINT16_MAX, uint16_t lastSibling = UINT16_MAX)
 {
 	uint16_t boneId = static_cast<uint16_t>(bones.size());
 	bones.push_back(Bone());
@@ -534,11 +534,53 @@ uint16_t loadBoneHierarchy(aiNode* node, BoneTree& bones, BoneTable& table, uint
 	if (node->mName.length > 0)
 	{
 		strncpy_s(bone.name, 128, node->mName.C_Str(), _TRUNCATE);
-		table.insert(std::make_pair(node->mName.C_Str(), boneId));
 	}
 
 	CopyMatrix(bone.transform, node->mTransformation);
 	bone.offsetMatrix = float4x4(1.0f);
+
+	// deal with "$AssimpFbx$" issue
+	{
+		std::string bonename(node->mName.C_Str());
+		size_t idx = bonename.find("$AssimpFbx$");
+		if (idx != std::string::npos)
+		{
+			std::string basename = bonename.substr(0, idx - 1);
+			bonename = basename;
+
+			strncpy_s(bone.name, 128, basename.c_str(), _TRUNCATE);
+
+			while (node->mNumChildren > 0)
+			{
+				const aiNode* child = node->mChildren[0];
+
+				std::string childbonename(child->mName.C_Str());
+
+				if (childbonename != bonename)
+				{
+					idx = childbonename.find("$AssimpFbx$");
+					if (idx == std::string::npos) break;
+
+					basename = childbonename.substr(0, idx - 1);
+					if (basename != bonename) break;
+				}
+
+				node = child;
+
+				const aiMatrix4x4& m = node->mTransformation;
+				mat4 mat = mat4(
+					m.a1, m.a2, m.a3, m.a4,
+					m.b1, m.b2, m.b3, m.b4,
+					m.c1, m.c2, m.c3, m.c4,
+					m.d1, m.d2, m.d3, m.d4
+				);
+
+				bone.transform = mat * bone.transform;
+			}
+		}
+	}
+
+	table.insert(std::make_pair(bone.name, boneId));
 
 	uint16_t firstChild = UINT16_MAX;
 	uint16_t lastChild = UINT16_MAX;
@@ -882,6 +924,35 @@ struct ModelFile
 			{
 				aiNodeAnim* chan = anim->mChannels[iChan];
 				std::string boneName(chan->mNodeName.C_Str());
+
+				bool omitT = false, omitR = false, omitS = false;
+
+				size_t idx = boneName.find("$AssimpFbx$");
+				if (idx != std::string::npos)
+				{
+					size_t transIdx = idx + 12;
+					std::string transname = boneName.substr(transIdx);
+					boneName = boneName.substr(0, idx - 1);
+					if (transname == "Translation")
+					{
+						omitR = true; omitS = true;
+					}
+					else if (transname == "Rotation")
+					{
+						omitT = true; omitS = true;
+					}
+					else if (transname == "Scaling")
+					{
+						omitT = true; omitR = true;
+					}
+					else
+					{
+						assert(false);
+						printf("unable to recognize this channel %s\n", boneName.c_str());
+						return __LINE__;
+					}
+				}
+
 				auto iter = boneTable.find(boneName);
 				if (iter == boneTable.end())
 				{
@@ -895,72 +966,81 @@ struct ModelFile
 				uint32_t numS = chan->mNumScalingKeys;
 
 				// translation keys
-				for (uint32_t iFrame = 0; iFrame < numT; iFrame++)
+				if (!omitT)
 				{
-					aiVectorKey& key = chan->mPositionKeys[iFrame];
-					aiVectorKey& sortKey = chan->mPositionKeys[iFrame < 2 ? 0 : iFrame - 2];
+					for (uint32_t iFrame = 0; iFrame < numT; iFrame++)
+					{
+						aiVectorKey& key = chan->mPositionKeys[iFrame];
+						aiVectorKey& sortKey = chan->mPositionKeys[iFrame < 2 ? 0 : iFrame - 2];
 
-					ForSortingFrame temp;
-					temp.usedTime = static_cast<uint16_t>(round(sortKey.mTime));
+						ForSortingFrame temp;
+						temp.usedTime = static_cast<uint16_t>(round(sortKey.mTime));
 
-					ModelAnimFrame &frame = temp.frame;
-					frame.time = static_cast<uint16_t>(round(key.mTime));
-					frame.SetJointIndex(boneId);
-					frame.SetChannelType(kChannelTranslation);
-					frame.value.x = key.mValue.x;
-					frame.value.y = key.mValue.y;
-					frame.value.z = key.mValue.z;
+						ModelAnimFrame &frame = temp.frame;
+						frame.time = static_cast<uint16_t>(round(key.mTime));
+						frame.SetJointIndex(boneId);
+						frame.SetChannelType(kChannelTranslation);
+						frame.value.x = key.mValue.x;
+						frame.value.y = key.mValue.y;
+						frame.value.z = key.mValue.z;
 
-					frames.push_back(temp);
+						frames.push_back(temp);
+					}
 				}
 
 				// rotation keys
-				for (uint32_t iFrame = 0; iFrame < numT; iFrame++)
+				if (!omitR)
 				{
-					aiQuatKey& key = chan->mRotationKeys[iFrame];
-					aiQuatKey& sortKey = chan->mRotationKeys[iFrame < 2 ? 0 : iFrame - 2];
+					for (uint32_t iFrame = 0; iFrame < numT; iFrame++)
+					{
+						aiQuatKey& key = chan->mRotationKeys[iFrame];
+						aiQuatKey& sortKey = chan->mRotationKeys[iFrame < 2 ? 0 : iFrame - 2];
 
-					ForSortingFrame temp;
-					temp.usedTime = static_cast<uint16_t>(round(sortKey.mTime));
+						ForSortingFrame temp;
+						temp.usedTime = static_cast<uint16_t>(round(sortKey.mTime));
 
-					ModelAnimFrame &frame = temp.frame;
-					frame.time = static_cast<uint16_t>(round(key.mTime));
-					frame.SetJointIndex(boneId);
-					frame.SetChannelType(kChannelRotation);
+						ModelAnimFrame &frame = temp.frame;
+						frame.time = static_cast<uint16_t>(round(key.mTime));
+						frame.SetJointIndex(boneId);
+						frame.SetChannelType(kChannelRotation);
 
-					quat q;
-					q.x = key.mValue.x;
-					q.y = key.mValue.y;
-					q.z = key.mValue.z;
-					q.w = key.mValue.w;
+						quat q;
+						q.x = key.mValue.x;
+						q.y = key.mValue.y;
+						q.z = key.mValue.z;
+						q.w = key.mValue.w;
 
-					//CompressQuaternion(q, *reinterpret_cast<uint32_t*>(&frame.value.x));
+						//CompressQuaternion(q, *reinterpret_cast<uint32_t*>(&frame.value.x));
 
-					bool negativeW;
-					CompressQuaternion(q, frame.value, negativeW);
-					frame.SetSignedBit(negativeW);
+						bool negativeW;
+						CompressQuaternion(q, frame.value, negativeW);
+						frame.SetSignedBit(negativeW);
 
-					frames.push_back(temp);
+						frames.push_back(temp);
+					}
 				}
 
 				// scale keys
-				for (uint32_t iFrame = 0; iFrame < numT; iFrame++)
+				if (!omitS)
 				{
-					aiVectorKey& key = chan->mScalingKeys[iFrame];
-					aiVectorKey& sortKey = chan->mScalingKeys[iFrame < 2 ? 0 : iFrame - 2];
+					for (uint32_t iFrame = 0; iFrame < numT; iFrame++)
+					{
+						aiVectorKey& key = chan->mScalingKeys[iFrame];
+						aiVectorKey& sortKey = chan->mScalingKeys[iFrame < 2 ? 0 : iFrame - 2];
 
-					ForSortingFrame temp;
-					temp.usedTime = static_cast<uint16_t>(round(sortKey.mTime));
+						ForSortingFrame temp;
+						temp.usedTime = static_cast<uint16_t>(round(sortKey.mTime));
 
-					ModelAnimFrame &frame = temp.frame;
-					frame.time = static_cast<uint16_t>(round(key.mTime));
-					frame.SetJointIndex(boneId);
-					frame.SetChannelType(kChannelScale);
-					frame.value.x = key.mValue.x;
-					frame.value.y = key.mValue.y;
-					frame.value.z = key.mValue.z;
+						ModelAnimFrame &frame = temp.frame;
+						frame.time = static_cast<uint16_t>(round(key.mTime));
+						frame.SetJointIndex(boneId);
+						frame.SetChannelType(kChannelScale);
+						frame.value.x = key.mValue.x;
+						frame.value.y = key.mValue.y;
+						frame.value.z = key.mValue.z;
 
-					frames.push_back(temp);
+						frames.push_back(temp);
+					}
 				}
 			}
 
@@ -1565,7 +1645,17 @@ int execute_config(const char* configFilename)
 	return 0;
 }
 
-int list_animations(const char* filename)
+void list_bones(const aiNode* node, std::string indent = "")
+{
+	printf("%s%s\n", indent.c_str(), node->mName.C_Str());
+
+	for (uint32_t i = 0; i < node->mNumChildren; i++)
+	{
+		list_bones(node->mChildren[i], indent + "  ");
+	}
+}
+
+int list_information(const char* filename)
 {
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(filename, 0);
@@ -1576,7 +1666,9 @@ int list_animations(const char* filename)
 		return __LINE__;
 	}
 
-	printf("contains %d animations:\n");
+	list_bones(scene->mRootNode);
+
+	printf("contains %d animations:\n", scene->mNumAnimations);
 	for (uint32_t i = 0; i < scene->mNumAnimations; i++)
 	{
 		printf("[%5d] %s\n", i, scene->mAnimations[i]->mName.C_Str());
@@ -1639,7 +1731,7 @@ int main(int argc, char* argv[])
 		}
 		else
 		{
-			return list_animations(argv[1]);
+			return list_information(argv[1]);
 		}
 	}
 	else
