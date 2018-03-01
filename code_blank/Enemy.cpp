@@ -85,8 +85,8 @@ Enemy::Enemy(CharacterDetails details, void* comp)
 
 	//combatManager = new CombatManager(true, comp, this);
 
-	gEnemy = new GameplayAnimationMachine(aEnemy, combatManager);
-
+	//gEnemy = new GameplayAnimationMachine(aEnemy, combatManager);
+	gCharacter->SetAnimComp(aEnemy);
 
 	//rigidbody = GetComponent<Rigidbody>();
 	//rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;

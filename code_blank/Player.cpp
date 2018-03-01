@@ -52,7 +52,27 @@ Player::Player(CharacterDetails details, void* comp)
 		jump->animationName = "jump";
 		AnimationState *run = stateMachine->AddState("run");
 		run->animationName = "run";
-		
+
+		AnimationState *kPunchJabL = stateMachine->AddState("kPunchJabL");
+		kPunchJabL->animationName = "kPunchJabL";
+		AnimationState *kPunchJabR =  stateMachine->AddState("kPunchJabR");
+		kPunchJabR->animationName = "kPunchJabR";
+		AnimationState *kPunchHookL  = stateMachine->AddState("kPunchHookL");
+		kPunchHookL->animationName = "kPunchHookL";
+		AnimationState *kPunchHookR = stateMachine->AddState("kPunchHookR");
+		kPunchHookR->animationName = "kPunchHookR";
+		AnimationState *kPunchUpperCutL = stateMachine->AddState("kPunchUpperCutL");
+		kPunchUpperCutL->animationName = "kPunchUpperCutL";
+		AnimationState *kPunchUpperCutR = stateMachine->AddState("kPunchUpperCutR");
+		kPunchUpperCutR->animationName = "kPunchUpperCutR";
+		AnimationState *kKickAxeKick = stateMachine->AddState("kKickAxeKick");
+		kKickAxeKick->animationName = "kKickAxeKick";
+		AnimationState *kKickHorseKick = stateMachine->AddState("kKickHorseKick");
+		kKickHorseKick->animationName = "kKickHorseKick";
+		AnimationState *kKickStraightMidR = stateMachine->AddState("kKickStraightMidR");
+		kKickStraightMidR->animationName = "kKickStraightMidR";
+		AnimationState *kKickKnee = stateMachine->AddState("kKickKnee");
+		kKickKnee->animationName = "kKickKnee";
 
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaqueSkinned);
 		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");
@@ -86,7 +106,8 @@ Player::Player(CharacterDetails details, void* comp)
 	
 	physics = tofu::PhysicsSystem::instance();
 
-	gPlayer = new GameplayAnimationMachine(aPlayer, combatManager);
+	//gPlayer = new GameplayAnimationMachine(aPlayer, combatManager);
+	gCharacter->SetAnimComp(aPlayer);
 
 
 	//rigidbody = GetComponent<Rigidbody>();
@@ -112,7 +133,6 @@ Player::Player(CharacterDetails details, void* comp)
 Player::~Player()
 {
 	delete gun;
-	// delete gPlayer;
 }
 
 void Player::Update(float dT)
@@ -202,8 +222,8 @@ void Player::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camR
 
 	combatManager->SetIsMoving(false);
 	moving = false;
-	combatManager->SetIsSprinting(false);
-	isSprinting = false;
+	//combatManager->SetIsSprinting(false);
+	//isSprinting = false;
 
 	if (!combatManager->GetCanMove())
 	{
@@ -493,10 +513,10 @@ void Player::UpdateState(float dT)
 
 			if (moving)
 			{
-				currentState = kRun;
+				currentState = kWalk;
 				if (isSprinting)
 				{
-					animationParameter = 1;
+					currentState = kRun;
 				}
 			}
 			else
@@ -524,7 +544,7 @@ void Player::UpdateState(float dT)
 
 	if (lastState != currentState)
 	{
-		gPlayer->Play(currentState, animationParameter, 0);
+		gCharacter->Play(currentState, animationParameter, 0);
 		//aPlayer->CrossFade(0, 0.2f);
 	}
 

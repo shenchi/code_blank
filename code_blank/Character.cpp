@@ -9,11 +9,14 @@ Character::Character()
 
 Character::~Character()
 {
+	delete combatManager;
+	delete gCharacter;
 }
 
 void Character::Init(bool isPlayer, void* comp, CombatManagerDetails combatDetails)
 {
 	combatManager = new CombatManager(isPlayer, comp, this, combatDetails);
+	gCharacter = new GameplayAnimationMachine(combatManager);
 	physics = tofu::PhysicsSystem::instance();
 }
 

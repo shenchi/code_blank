@@ -23,7 +23,7 @@ PController::PController()
 	specialButtonDown = false;
 
 	// Default control scheme: 1, 1, 1, -1
-	SetControlMods(1, 1, 1, -1);
+	SetControlMods(1, 1, -1, 1);
 }
 
 // Destructor
@@ -151,8 +151,8 @@ void PController::UpdateP(float dT)
 	if ( (input->IsButtonDown(kKeyLeftShift) || (input->GetLeftTrigger() > 0) )
 		&& !isAiming )
 	{
-		player->Aim(true);
-		isAiming = true;
+		//player->Aim(true);
+		//isAiming = true;
 		
 	}
 	else if(isAiming)

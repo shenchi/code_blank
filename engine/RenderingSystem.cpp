@@ -928,11 +928,6 @@ namespace tofu
 					model.animationTable[model.animations[i].name] = i;
 				}
 
-				// FIXME: Test only
-				model.animationTable["idle"] = 0;
-				model.animationTable["walk"] = 1;
-				model.animationTable["jump"] = 2;
-				model.animationTable["run"] = 3;
 
 				model.frames = reinterpret_cast<model::ModelAnimFrame*>(
 					model.animations + header->NumAnimations

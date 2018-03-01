@@ -62,7 +62,6 @@ private:
 	tofu::TransformComponent	tPlayer;
 	tofu::PhysicsComponent		pPlayer;
 	tofu::AnimationComponent	aPlayer;
-	GameplayAnimationMachine*	gPlayer;
 	tofu::PhysicsSystem*		physics;
 	
 	tofu::math::quat camRotation;

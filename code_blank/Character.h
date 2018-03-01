@@ -75,6 +75,7 @@ protected:
 	tofu::PhysicsComponent		pCharacter;
 	tofu::AnimationComponent	aCharacter;
 	tofu::PhysicsSystem*		physics;
+	GameplayAnimationMachine*	gCharacter;
 
 	CombatManager*				combatManager;
 

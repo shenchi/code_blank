@@ -7,10 +7,11 @@ class CombatManager;
 class GameplayAnimationMachine
 {
 public:
-	GameplayAnimationMachine(tofu::AnimationComponent, CombatManager*);
+	GameplayAnimationMachine(CombatManager*);
 	~GameplayAnimationMachine();
 
 	void Play(CharacterState, uint32_t, size_t);
+	void SetAnimComp(tofu::AnimationComponent);
 
 private:
 	tofu::AnimationComponent	aComp;
