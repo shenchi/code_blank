@@ -348,6 +348,26 @@ namespace tofu
 				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 			}
 
+			materialPSOs[kMaterialDeferredLightingOcclude] = pipelineStateHandleAlloc.Allocate();
+			assert(materialPSOs[kMaterialDeferredLightingOcclude]);
+			{
+				CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
+				params->handle = materialPSOs[kMaterialDeferredLightingOcclude];
+				params->vertexShader = materialVSs[kMaterialDeferredLighting];
+				params->pixelShader = PixelShaderHandle();// materialPSs[kMaterialDeferredLighting];
+
+				params->depthEnable = 1;
+				params->depthWrite = 0;
+				params->depthFunc = kComparisonGreater;
+				params->stencilEnable = 1;
+				params->frontFacePassOp = kStencilOpDecSat; // dec to 0;
+				params->frontFaceFunc = kComparisonAlways;
+
+				params->cullMode = kCullBack;
+
+				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+			}
+
 			materialPSOs[kMaterialDeferredLighting] = pipelineStateHandleAlloc.Allocate();
 			assert(materialPSOs[kMaterialDeferredLighting]);
 			{
@@ -355,6 +375,15 @@ namespace tofu
 				params->handle = materialPSOs[kMaterialDeferredLighting];
 				params->vertexShader = materialVSs[kMaterialDeferredLighting];
 				params->pixelShader = materialPSs[kMaterialDeferredLighting];
+
+				params->depthEnable = 1;
+				params->depthWrite = 0;
+				params->depthFunc = kComparisonGEqual;
+				params->stencilEnable = 1;
+				params->backFaceFunc = kComparisonEqual;
+
+				params->cullMode = kCullFront;
+
 				params->blendEnable = 1;
 				params->srcBlend = kBlendOne;
 				params->destBlend = kBlendOne;
@@ -761,7 +790,6 @@ namespace tofu
 				params->indexCount = mesh.NumIndices;
 				params->renderTargets[0] = TextureHandle();
 				params->depthRenderTarget = lights[0].depthMap;
-
 
 				params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
 				params->vsConstantBuffers[1] = { shadowDepthBuffer, 0, 16 };
@@ -1334,6 +1362,8 @@ namespace tofu
 			params->clearColor[2] = 0;
 			params->clearColor[3] = 1;
 
+			params->clearStencil = 1u;
+
 			cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
 		}
 
@@ -1467,140 +1497,16 @@ namespace tofu
 			cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
 		}
 
-		//
-		//		// Generate shadow map
-		//		// So far one light
-		//		for (uint32_t i = 0; i < 1; ++i) {
-		//
-		//			FrameConstants* data = reinterpret_cast<FrameConstants*>(
-		//				MemoryAllocator::Allocators[allocNo].Allocate(sizeof(FrameConstants), 4)
-		//				);
-		//			assert(nullptr != data);
-		//
-		//			TransformComponent t = lights[i].entity.GetComponent<TransformComponent>();
-		//			data->cameraPos = camPos;
-		//
-		//
-		//			math::float3 lightPos = camPos;
-		//			//math::float3 lightPos = t->GetWorldPosition();
-		//			math::float3 forward = t->GetForwardVector();
-		//			math::float4x4 lightView = math::lookTo(lightPos, forward, math::float3{ 0, 1, 0 });
-		//			//	math::float4x4 lightProject = math::perspective(90.0f * 3.1415f / 180.0f, 1.0f, 0.01f, 100.0f);
-		//			math::float4x4 lightProject = math::orthoLH(-10.0f, 10.0f, -10.0f, 10.0f, 0.01f, 100.0f);
-		//#ifdef TOFU_USE_GLM
-		//			data->matView = math::transpose(lightView);
-		//			data->matProj = math::transpose(lightProject);
-		//#else
-		//			data->matView = camera.CalcViewMatrix();
-		//			data->matProj = camera.CalcProjectionMatrix();
-		//#endif
-		//			UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
-		//			assert(nullptr != params);
-		//			params->handle = shadowDepthBuffer;
-		//			//	params->handle = frameConstantBuffer;
-		//			params->data = data;
-		//			params->size = sizeof(FrameConstants);
-		//
-		//			cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
-		//		}
-		//		{
-		//			ClearParams* params = MemoryAllocator::Allocate<ClearParams>(allocNo);
-		//			params->renderTargets[0] = TextureHandle();
-		//			params->depthRenderTarget = lights[0].depthMap;
-		//			params->clearDepth = 1.0f;
-		//			params->clearStencil = 100.0f;
-		//
-		//			cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
-		//		}
-		//		for (uint32_t i = 0; i < 1; ++i)
-		//		{
-		//			RenderingComponentData& comp = renderables[activeRenderables[i]];
-		//
-		//			assert(nullptr != comp.model);
-		//			assert(0 != comp.numMaterials);
-		//
-		//			Model& model = *comp.model;
-		//			//Material* mat = comp.material;
-		//
-		//			for (uint32_t iMesh = 0; iMesh < model.numMeshes; ++iMesh)
-		//			{
-		//				assert(model.meshes[iMesh]);
-		//				Mesh& mesh = meshes[model.meshes[iMesh].id];
-		//				Material* mat = comp.materials[iMesh < comp.numMaterials ? iMesh : (comp.numMaterials - 1)];
-		//
-		//				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
-		//				params->pipelineState = materialPSOs[kMaterialTypeDepth];
-		//				params->vertexBuffer = mesh.VertexBuffer;
-		//				params->indexBuffer = mesh.IndexBuffer;
-		//				params->startIndex = mesh.StartIndex;
-		//				params->startVertex = mesh.StartVertex;
-		//				params->indexCount = mesh.NumIndices;
-		//				params->renderTargets[0] = TextureHandle();
-		//				params->depthRenderTarget = lights[0].depthMap;
-		//
-		//
-		//				params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
-		//				params->vsConstantBuffers[1] = { shadowDepthBuffer, 0, 16 };
-		//				//params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
-		//
-		//				cmdBuf->Add(RendererCommand::kCommandDraw, params);
-		//			}
-		//		}
-		//
-		//		for (uint32_t i = numActiveRenderables - 1; i < numActiveRenderables; ++i)
-		//		{
-		//			RenderingComponentData& comp = renderables[activeRenderables[i]];
-		//
-		//			assert(nullptr != comp.model);
-		//			assert(0 != comp.numMaterials);
-		//
-		//			Model& model = *comp.model;
-		//			//Material* mat = comp.material;
-		//
-		//			for (uint32_t iMesh = 0; iMesh < model.numMeshes; ++iMesh)
-		//			{
-		//				assert(model.meshes[iMesh]);
-		//				Mesh& mesh = meshes[model.meshes[iMesh].id];
-		//				Material* mat = comp.materials[iMesh < comp.numMaterials ? iMesh : (comp.numMaterials - 1)];
-		//
-		//				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
-		//				params->pipelineState = materialPSOs[kMaterialTypeOpaqueSkinned];
-		//				params->vertexBuffer = mesh.VertexBuffer;
-		//				params->indexBuffer = mesh.IndexBuffer;
-		//				params->startIndex = mesh.StartIndex;
-		//				params->startVertex = mesh.StartVertex;
-		//				params->indexCount = mesh.NumIndices;
-		//				params->renderTargets[0] = TextureHandle();
-		//				params->depthRenderTarget = lights[0].depthMap;
-		//
-		//				params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
-		//				params->vsConstantBuffers[1] = { shadowDepthBuffer, 0, 16 };
-		//				//params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
-		//
-		//				(void*)0;
-		//				{
-		//					AnimationComponent anim = comp.entity.GetComponent<AnimationComponent>();
-		//					if (!anim || !anim->boneMatricesBuffer)
-		//					{
-		//						return kErrUnknown;
-		//					}
-		//					params->vsConstantBuffers[2] = { anim->boneMatricesBuffer, 0, 0 };
-		//				}
-		//
-		//				cmdBuf->Add(RendererCommand::kCommandDraw, params);
-		//			}
-		//		}
-
-
 		// Geometry Pass
 
-		//{
-		//	// clear g-buffer depth
-		//	ClearParams* params = MemoryAllocator::Allocate<ClearParams>(allocNo);
-		//	params->renderTargets[0] = TextureHandle();
-		//	params->depthRenderTarget = gBufferDepth;
-		//	cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
-		//}
+		{
+			// clear g-buffer depth
+			ClearParams* params = MemoryAllocator::Allocate<ClearParams>(allocNo);
+			params->renderTargets[0] = gBuffer1;
+			params->renderTargets[1] = gBuffer2;
+			params->renderTargets[2] = gBuffer3;
+			cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
+		}
 
 		// generate draw call for active renderables in command buffer
 		for (uint32_t i = 0; i < numActiveRenderables; ++i)
@@ -1748,7 +1654,7 @@ namespace tofu
 
 				cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
 			}
-
+			//*
 			// go through all point lights
 			for (uint32_t i = 0; i < numPointLights; i++)
 			{
@@ -1806,6 +1712,7 @@ namespace tofu
 
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
+			/**/
 		}
 
 		// TODO: Transparent Pass

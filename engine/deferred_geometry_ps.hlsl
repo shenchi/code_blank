@@ -23,6 +23,8 @@ SamplerState samp : register(s0);
 
 PS_OUTPUT main(V2F input)
 {
+	PS_OUTPUT output;
+
 	float3 normal = normalize(input.normal);
 	float3 tangent = normalize(input.tangent.xyz - dot(input.tangent.xyz, normal) * normal);
 	float3 bitangent = cross(tangent, normal) * input.tangent.w;
@@ -33,10 +35,8 @@ PS_OUTPUT main(V2F input)
 
 	normal = mul(normTexel, TBN);
 
-	PS_OUTPUT output;
-
 	output.rt1 = float4(input.worldPos, 1.0f);
-	output.rt2 = float4(normal, input.position.x / input.position.w);
+	output.rt2 = float4(normal, input.position.z / input.position.w);
 	output.rt3 = float4(diffuseTex.Sample(samp, input.uv).rgb , 1.0f);
 
 	return output;

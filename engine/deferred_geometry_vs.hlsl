@@ -35,8 +35,8 @@ V2F main(Input input)
 
 	output.position = mul(float4(input.position, 1), matMVP);
 	output.worldPos = mul(float4(input.position, 1), matWorld).xyz;
-	output.normal = mul(input.normal, (float3x3)matWorld_IT);
-	output.tangent = float4(mul(input.tangent.xyz, (float3x3)matWorld_IT), input.tangent.w);
+	output.normal = normalize(mul(input.normal, (float3x3)matWorld_IT));
+	output.tangent = float4(normalize(mul(input.tangent.xyz, (float3x3)matWorld_IT)), input.tangent.w);
 	//output.normal = mul(input.normal, (float3x3)matWorld);
 	//output.tangent = float4(mul(input.tangent.xyz, (float3x3)matWorld), input.tangent.w);
 	output.uv = input.uv;

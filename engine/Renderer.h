@@ -80,6 +80,18 @@ namespace tofu
 		kVertexFormatSkinned
 	};
 
+	enum StencilOp
+	{
+		kStencilOpKeep = 1,
+		kStencilOpZero,
+		kStencilOpReplace,
+		kStencilOpIncSat,
+		kStencilOpDecSat,
+		kStencilOpInvert,
+		kStencilOpInc,
+		kStencilOpDec,
+	};
+
 	enum Blend
 	{
 		kBlendZero = 1,
@@ -220,22 +232,33 @@ namespace tofu
 		{
 			struct
 			{
-				uint32_t			cullMode : 2;
-				uint32_t			_reserved1 : 30;
+				uint64_t			depthEnable : 1;
+				uint64_t			depthWrite : 1;
+				uint64_t			depthFunc : 3;
+				uint64_t			stencilEnable : 1;
+				uint64_t			frontFaceFailOp : 4;
+				uint64_t			frontFaceDepthFailOp : 4;
+				uint64_t			frontFacePassOp : 4;
+				uint64_t			frontFaceFunc : 3;
+				uint64_t			backFaceFailOp : 4;
+				uint64_t			backFaceDepthFailOp : 4;
+				uint64_t			backFacePassOp : 4;
+				uint64_t			backFaceFunc : 3;
+				uint64_t			_reserved1 : 12;
+				uint64_t			stencilReadMask : 8;
+				uint64_t			stencilWriteMask : 8;
 			};
-			uint32_t				rasterizerState;
+			uint64_t				depthStencilState;
 		};
 
 		union
 		{
 			struct
 			{
-				uint32_t			depthEnable : 1;
-				uint32_t			depthWrite : 1;
-				uint32_t			depthFunc : 3;
-				uint32_t			_reserved2 : 27;
+				uint32_t			cullMode : 2;
+				uint32_t			_reserved2 : 30;
 			};
-			uint32_t				depthStencilState;
+			uint32_t				rasterizerState;
 		};
 
 		union
@@ -260,10 +283,21 @@ namespace tofu
 			vertexFormat(kVertexFormatNormal),
 			vertexShader(),
 			pixelShader(),
-			cullMode(kCullBack),
 			depthEnable(1),
 			depthWrite(1),
 			depthFunc(kComparisonLess),
+			stencilEnable(0),
+			frontFaceFailOp(kStencilOpKeep),
+			frontFaceDepthFailOp(kStencilOpKeep),
+			frontFacePassOp(kStencilOpKeep),
+			frontFaceFunc(kComparisonAlways),
+			backFaceFailOp(kStencilOpKeep),
+			backFaceDepthFailOp(kStencilOpKeep),
+			backFacePassOp(kStencilOpKeep),
+			backFaceFunc(kComparisonAlways),
+			stencilReadMask(255u),
+			stencilWriteMask(255u),
+			cullMode(kCullBack),
 			blendEnable(0),
 			srcBlend(kBlendOne),
 			destBlend(kBlendZero),

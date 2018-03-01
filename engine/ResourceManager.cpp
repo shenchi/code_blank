@@ -31,7 +31,7 @@ namespace tofu
 
 			*(data1) = math::float4{ 1, 1, 1, 1 };
 
-			*(data2) = math::float4{ 0, 0, 1, 1 };
+			*(data2) = math::float4{ 0.5f, 0.5f, 1, 1 };
 
 			TextureHandle defaultAlbedoTex = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 16, data1);
 			if (!defaultAlbedoTex)

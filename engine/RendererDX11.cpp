@@ -963,6 +963,17 @@ namespace tofu
 				dsState.DepthEnable = params->depthEnable;
 				dsState.DepthWriteMask = (D3D11_DEPTH_WRITE_MASK)params->depthWrite;
 				dsState.DepthFunc = (D3D11_COMPARISON_FUNC)(params->depthFunc + 1);
+				dsState.StencilEnable = params->stencilEnable;
+				dsState.FrontFace.StencilFailOp = (D3D11_STENCIL_OP)params->frontFaceFailOp;
+				dsState.FrontFace.StencilDepthFailOp = (D3D11_STENCIL_OP)params->frontFaceDepthFailOp;
+				dsState.FrontFace.StencilPassOp = (D3D11_STENCIL_OP)params->frontFacePassOp;
+				dsState.FrontFace.StencilFunc = (D3D11_COMPARISON_FUNC)(params->frontFaceFunc + 1);
+				dsState.BackFace.StencilFailOp = (D3D11_STENCIL_OP)params->backFaceFailOp;
+				dsState.BackFace.StencilDepthFailOp = (D3D11_STENCIL_OP)params->backFaceDepthFailOp;
+				dsState.BackFace.StencilPassOp = (D3D11_STENCIL_OP)params->backFacePassOp;
+				dsState.BackFace.StencilFunc = (D3D11_COMPARISON_FUNC)(params->backFaceFunc + 1);
+				dsState.StencilReadMask = params->stencilReadMask;
+				dsState.StencilWriteMask = params->stencilWriteMask;
 				DXCHECKED(device->CreateDepthStencilState(&dsState, &(pipelineStates[id].depthStencilState)));
 
 				CD3D11_RASTERIZER_DESC rsState(D3D11_DEFAULT);
@@ -1076,6 +1087,76 @@ namespace tofu
 					context->OMSetBlendState(pso.blendState, nullptr, 0xffffffffu);
 
 					currentPipelineState = params->pipelineState;
+				}
+
+				// render targets
+				{
+					if (params->renderTargets[0].id == DrawParams::DefaultRenderTarget.id)
+						params->renderTargets[0] = TextureHandle(kMaxTextures + 1);
+
+					if (params->depthRenderTarget.id == DrawParams::DefaultRenderTarget.id)
+						params->depthRenderTarget = TextureHandle(kMaxTextures);
+
+					bool rebind = false;
+
+					if (params->depthRenderTarget.id != depthRenderTarget.id ||
+						params->depthRenderTargetSubId != depthRenderTargetSubId)
+					{
+						rebind = true;
+					}
+					else
+					{
+						for (uint32_t i = 0; i < kMaxRenderTargetBindings; i++)
+						{
+							if (params->renderTargets[i].id != renderTargets[i].id ||
+								params->renderTargetSubIds[i] != renderTargetSubIds[i])
+							{
+								rebind = true;
+								break;
+							}
+						}
+					}
+
+					if (rebind)
+					{
+						// unbind textures;
+						ID3D11ShaderResourceView* srvs[kMaxTextureBindings] = { nullptr };
+						context->VSSetShaderResources(0, kMaxTextureBindings, srvs);
+						context->PSSetShaderResources(0, kMaxTextureBindings, srvs);
+
+						ID3D11RenderTargetView* rtvs[kMaxRenderTargetBindings] = {};
+						ID3D11DepthStencilView* dsv = nullptr;
+
+						for (uint32_t i = 0; i < kMaxRenderTargetBindings; i++)
+						{
+							renderTargets[i] = params->renderTargets[i];
+							renderTargetSubIds[i] = params->renderTargetSubIds[i];
+							if (renderTargets[i])
+							{
+								Texture& tex = textures[renderTargets[i].id];
+								uint32_t subId = renderTargetSubIds[i];
+								if (nullptr == tex.rtv[subId] || 
+									!(tex.bindingFlags & kBindingRenderTarget))
+									return kErrUnknown;
+
+								rtvs[i] = tex.rtv[subId];
+							}
+						}
+
+						depthRenderTarget = params->depthRenderTarget;
+						depthRenderTargetSubId = params->depthRenderTargetSubId;
+						if (depthRenderTarget)
+						{
+							Texture& tex = textures[depthRenderTarget.id];
+							if (nullptr == tex.dsv[depthRenderTargetSubId] || 
+								!(tex.bindingFlags & kBindingDepthStencil))
+								return kErrUnknown;
+
+							dsv = tex.dsv[depthRenderTargetSubId];
+						}
+
+						context->OMSetRenderTargets(kMaxRenderTargetBindings, rtvs, dsv);
+					}
 				}
 
 				// vertex shader resource binding
@@ -1200,71 +1281,6 @@ namespace tofu
 						}
 					}
 					context->PSSetSamplers(0, kMaxSamplerBindings, samps);
-				}
-
-				// render targets
-				{
-					if (params->renderTargets[0].id == DrawParams::DefaultRenderTarget.id)
-						params->renderTargets[0] = TextureHandle(kMaxTextures + 1);
-
-					if (params->depthRenderTarget.id == DrawParams::DefaultRenderTarget.id)
-						params->depthRenderTarget = TextureHandle(kMaxTextures);
-
-					bool rebind = false;
-
-					if (params->depthRenderTarget.id != depthRenderTarget.id ||
-						params->depthRenderTargetSubId != depthRenderTargetSubId)
-					{
-						rebind = true;
-					}
-					else
-					{
-						for (uint32_t i = 0; i < kMaxRenderTargetBindings; i++)
-						{
-							if (params->renderTargets[i].id != renderTargets[i].id ||
-								params->renderTargetSubIds[i] != renderTargetSubIds[i])
-							{
-								rebind = true;
-								break;
-							}
-						}
-					}
-
-					if (rebind)
-					{
-						ID3D11RenderTargetView* rtvs[kMaxRenderTargetBindings] = {};
-						ID3D11DepthStencilView* dsv = nullptr;
-
-						for (uint32_t i = 0; i < kMaxRenderTargetBindings; i++)
-						{
-							renderTargets[i] = params->renderTargets[i];
-							renderTargetSubIds[i] = params->renderTargetSubIds[i];
-							if (renderTargets[i])
-							{
-								Texture& tex = textures[renderTargets[i].id];
-								uint32_t subId = renderTargetSubIds[i];
-								if (nullptr == tex.rtv[subId] ||
-									!(tex.bindingFlags & kBindingRenderTarget))
-									return kErrUnknown;
-
-								rtvs[i] = tex.rtv[subId];
-							}
-						}
-
-						depthRenderTarget = params->depthRenderTarget;
-						depthRenderTargetSubId = params->depthRenderTargetSubId;
-						if (depthRenderTarget)
-						{
-							Texture& tex = textures[depthRenderTarget.id];
-							if (nullptr == tex.dsv[depthRenderTargetSubId] ||
-								!(tex.bindingFlags & kBindingDepthStencil))
-								return kErrUnknown;
-
-							dsv = tex.dsv[depthRenderTargetSubId];
-						}
-
-						context->OMSetRenderTargets(kMaxRenderTargetBindings, rtvs, dsv);
-					}
 				}
 
 				// draw call
