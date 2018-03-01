@@ -78,7 +78,7 @@
     <LibraryPath>$(SolutionDir)3rd_party\bullet\bin;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)3rd_party\DirectXTK\Inc;$(SolutionDir)engine;$(SolutionDir)3rd_party\rapidjson-1.1.0\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)engine;$(SolutionDir)3rd_party\rapidjson-1.1.0\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)3rd_party\bullet\bin;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

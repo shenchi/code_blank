@@ -1,5 +1,6 @@
 #include "AudioManager.h"
 #include <cassert>
+#include <Audio.h>
 
 using namespace DirectX;
 

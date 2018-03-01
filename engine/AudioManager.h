@@ -3,7 +3,14 @@
 #include "Common.h"
 #include "Module.h"
 #include <memory>
-#include <Audio.h>
+
+namespace DirectX
+{
+	class AudioEngine;
+	class SoundEffect;
+	class SoundEffectInstance;
+	class SoundEffect;
+}
 
 namespace tofu {
 
