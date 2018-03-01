@@ -7,6 +7,7 @@
 #include "RenderingSystem.h"
 #include "PhysicsSystem.h"
 #include "InputSystem.h"
+#include "AudioManager.h"
 
 namespace tofu
 {
@@ -20,6 +21,7 @@ namespace tofu
 		nativeContext(nullptr),
 		renderingSystem(nullptr),
 		inputSystem(nullptr),
+		audioManager(nullptr),
 		userModules(),
 		numUserModules(0),
 		timeCounterFreq(0),
@@ -63,6 +65,9 @@ namespace tofu
 		inputSystem = new InputSystem();
 		CHECKED(inputSystem->Init());
 
+		audioManager = new AudioManager();
+		CHECKED(audioManager->Init());
+
 		return kOK;
 	}
 
@@ -98,6 +103,8 @@ namespace tofu
 			CHECKED(inputSystem->Update());
 
 			CHECKED(physicsSystem->Update());
+
+			CHECKED(audioManager->Update());
 
 			for (uint32_t i = 0; i < numUserModules; i++)
 			{
@@ -137,10 +144,12 @@ namespace tofu
 		CHECKED(renderingSystem->Shutdown());
 		delete renderingSystem;
 
+		CHECKED(audioManager->Shutdown());
+		delete audioManager;
+
 		CHECKED(nativeContext->Shutdown());
 		delete nativeContext;
 
 		return kOK;
 	}
-
 }

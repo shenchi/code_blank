@@ -216,6 +216,7 @@ int32_t SceneLoadingDemo::Update()
 		tPlayer->Translate(moveDir * Time::DeltaTime * speed);
 
 		anim->CrossFade("walk", 0.3f);
+		AudioManager::instance()->Play("assets/sounds/steps.wav");
 	}
 	else
 	{
