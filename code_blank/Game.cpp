@@ -170,6 +170,7 @@ int32_t Game::Update()
 		comp->Update(Time::DeltaTime, player->GetPosition(), player->GetForward());
 		cam->Update();
 		pControl->UpdateP(Time::DeltaTime);
+		player->Update(Time::DeltaTime);
 
 		//*******************************************************************************
 		// Temp Enemy control code

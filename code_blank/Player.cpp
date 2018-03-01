@@ -319,7 +319,7 @@ void Player::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camR
 	}
 
 
-	Update(dT);
+	//Update(dT);
 	
 
 	 // control and velocity handling is different when grounded and airborne:

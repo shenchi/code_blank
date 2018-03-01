@@ -114,54 +114,54 @@ void GameplayAnimationMachine::Play(CharacterState state, uint32_t parameter, si
 				aComp->CrossFade("", -1, 0);
 				break;
 			case kPunchJabL:
-				aComp->CrossFade("kPunchJabL", -1, 0);
+				aComp->CrossFade("kPunchJabL", 0.2f, 0);
 				break;
 			case kPunchJabR:
-				aComp->CrossFade("kPunchJabR", -1, 0);
+				aComp->CrossFade("kPunchJabR", 0.2f, 0);
 				break;
 			case kPunchHookL:
-				aComp->CrossFade("kPunchHookL", -1, 0);
+				aComp->CrossFade("kPunchHookL", 0.2f, 0);
 				break;
 			case kPunchHookR:
-				aComp->CrossFade("kPunchHookR", -1, 0);
+				aComp->CrossFade("kPunchHookR", 0.2f, 0);
 				break;
 			case kPunchUpperCutL:
 				assert(false);
-				aComp->CrossFade("kPunchUpperCutL", -1, 0);
+				aComp->CrossFade("kPunchUpperCutL", 0.2f, 0);
 				break;
 			case kPunchUpperCutR:
 				assert(false);
-				aComp->CrossFade("kPunchUpperCutR", -1, 0);
+				aComp->CrossFade("kPunchUpperCutR", 0.2f, 0);
 				break;
 			case kKickStraightMidR:
-				aComp->CrossFade("kKickStraightMidR", -1, 0);
+				aComp->CrossFade("kKickStraightMidR", 0.2f, 0);
 				break;
 			case kKickKnee:
-				aComp->CrossFade("kKickKnee", -1, 0);
+				aComp->CrossFade("kKickKnee", 1, 0);
 				break;
 			case kKickAxeKick:
-				aComp->CrossFade("kKickAxeKick", -1, 0);
+				aComp->CrossFade("kKickAxeKick", 0.2f, 0);
 				break;
 			case kKickHorseKick:
-				aComp->CrossFade("kKickHorseKick", -1, 0);
+				aComp->CrossFade("kKickHorseKick", 0.2f, 0);
 				break;
 			case kSwordAttackR:
-				aComp->CrossFade("", -1, 0);
+				aComp->CrossFade("", 0.2f, 0);
 				break;
 			case kSwordAttackRL:
-				aComp->CrossFade("", -1, 0);
+				aComp->CrossFade("", 0.2f, 0);
 				break;
 			case kSwordAttackSpU:
-				aComp->CrossFade("", -1, 0);
+				aComp->CrossFade("", 0.2f, 0);
 				break;
 			case kSwordAttackComboLL:
-				aComp->CrossFade("", -1, 0);
+				aComp->CrossFade("", 0.2f, 0);
 				break;
 			case kGunShoot:
-				aComp->CrossFade("", -1, 0);
+				aComp->CrossFade("", 0.2f, 0);
 				break;
 			case kNumberOfItems:
-				aComp->CrossFade("", -1, 0);
+				aComp->CrossFade("", 0.2f, 0);
 				break;
 			default:
 				break;

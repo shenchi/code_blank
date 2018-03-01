@@ -116,8 +116,8 @@ private:
 	//GameObject gun;
 	//GameObject sword;
 	//GameObject wrist;
-	Enemy* enemy;
-	Player* player;
+	//Enemy* enemy;
+	//Player* player;
 	Character* character;
 
 	Companion* companion;
