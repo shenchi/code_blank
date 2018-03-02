@@ -56,6 +56,7 @@ namespace tofu
 	void AnimationState::Exit()
 	{
 		delete cache;
+		cache = nullptr;
 	}
 
 	void AnimationStateCache::Reset()
@@ -300,7 +301,7 @@ namespace tofu
 	// AnimationStateMachine
 
 	AnimationStateMachine::AnimationStateMachine(std::string name) :
-		AnimNodeBase(name), previous(nullptr), transitionDuration(0.f), elapsedTime(0.f)
+		AnimNodeBase(name)
 	{
 		states.push_back(std::move(new AnimNodeBase("entry")));
 		current = states.back();

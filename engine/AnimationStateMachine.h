@@ -16,7 +16,6 @@ namespace tofu
 	};
 
 	class Model;
-	class AnimNodeBase;
 
 	struct AnimationTransitionEntry
 	{
@@ -98,14 +97,14 @@ namespace tofu
 		friend class AnimationStateMachine;
 
 	public:
-		std::string	animationName;
-
 		bool isLoop = true;
 		float playbackSpeed = 1.0f;
 
-		AnimationStateCache* cache;
+		AnimationStateCache* cache = nullptr;
+
+		std::string	animationName = "";
 	public:
-		AnimationState(std::string name = "state") : AnimNodeBase(name) {}
+		AnimationState(std::string name) : AnimNodeBase(name) {}
 		virtual ~AnimationState();
 
 		virtual void Enter(Model *model) override;
@@ -129,17 +128,17 @@ namespace tofu
 		std::vector<AnimNodeBase*> states;
 		std::unordered_map<std::string, uint16_t> stateIndexTable;
 
-		AnimNodeBase *previous;
-		AnimNodeBase *current;
+		AnimNodeBase *previous = nullptr;
+		AnimNodeBase *current = nullptr;
 
 		// Elapsed time since entering the current state
-		float elapsedTime;
+		float elapsedTime = 0.f;
+		float transitionDuration = 0.f;
 
-		float transitionDuration;
 		std::list<AnimationTransitionEntry> transitions;
 
 	public:
-		AnimationStateMachine(std::string name = "machine");
+		AnimationStateMachine(std::string name = "stateMachine");
 		// TODO::
 		//AnimationStateMachine(const AnimationStateMachine& other);
 		AnimationStateMachine(AnimationStateMachine && other) noexcept;
