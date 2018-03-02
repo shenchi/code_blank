@@ -178,9 +178,9 @@ int32_t SceneLoadingDemo::Update()
 
 	// Enemy Movement
 	{
-		math::float3 moveDir = math::float3(1.0f, 0.0f, 0.0f);
+		math::float3 moveDir = tPlayer->GetWorldPosition() - tEnemy->GetWorldPosition();
 		tEnemy->FaceTo(-moveDir);
-		tEnemy->Translate(moveDir * Time::DeltaTime * 0.1f);
+		tEnemy->Translate(moveDir * Time::DeltaTime * 0.3f);
 		animEnemy->CrossFade(1, 0.3f);
 	}
 
