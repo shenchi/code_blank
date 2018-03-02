@@ -423,6 +423,75 @@ const char* HumanBone::name(uint32_t id)
 	return HumanBoneNames[id];
 }
 
+enum FbxNodeName
+{
+	fbxTranslation,
+	fbxRotationOffset,
+	fbxRotationPivot,
+	fbxPreRotation,
+	fbxRotation,
+	fbxPostRotation,
+	fbxRotationPivotInverse,
+	fbxScalingOffset,
+	fbxScalingPivot,
+	fbxScaling,
+	fbxScalingPivotInverse,
+	fbxNodeMax
+};
+
+std::unordered_map<std::string, uint32_t> fbxNodeNameTable =
+{
+	{ "Translation", fbxTranslation },
+	{ "RotationOffset", fbxRotationOffset },
+	{ "RotationPivot", fbxRotationPivot },
+	{ "PreRotation", fbxPreRotation },
+	{ "Rotation", fbxRotation },
+	{ "PostRotation", fbxPostRotation },
+	{ "PivotInverse", fbxRotationPivotInverse },
+	{ "ScalingOffset", fbxScalingOffset },
+	{ "ScalingPivot", fbxScalingPivot },
+	{ "Scaling", fbxScaling },
+	{ "ScalingPivotInverse", fbxScalingPivotInverse },
+};
+
+struct FbxNode
+{
+	float4x4 matrices[fbxNodeMax];
+
+	FbxNode()
+	{
+		for (uint32_t i = 0; i < fbxNodeMax; i++)
+			matrices[i] = float4x4(1.0f);
+	}
+
+	void SetMatrix(FbxNodeName id, const float4x4& matrix) { matrices[id] = matrix; }
+
+	void SetMatrix(const char* name, const float4x4& matrix)
+	{
+		auto iter = fbxNodeNameTable.find(name);
+		if (iter == fbxNodeNameTable.end())
+		{
+			assert(false);
+			return;
+		}
+
+		SetMatrix((FbxNodeName)(iter->second), matrix);
+	}
+
+	float4x4 GetMatrix() const 
+	{
+		mat4 ret = matrices[0];
+		for (uint32_t i = 1; i < fbxNodeMax; i++)
+		{
+			ret = matrices[i] * ret;
+		}
+
+		return ret;
+	}
+};
+
+typedef std::unordered_map<std::string, FbxNode> FbxNodeTable;
+
 struct ModelFile;
 bool CorrectHumanBoneRotation(const ModelFile & dstModel, const ModelFile & srcModel, quat& rotation, uint32_t humanBoneId);
 
@@ -517,7 +586,7 @@ inline bool IsEqual(const float4x4& a, const aiMatrix4x4& b)
 	return true;
 }
 
-uint16_t loadBoneHierarchy(const aiNode* node, BoneTree& bones, BoneTable& table, uint16_t parentId = UINT16_MAX, uint16_t lastSibling = UINT16_MAX)
+uint16_t loadBoneHierarchy(const aiNode* node, BoneTree& bones, BoneTable& table, FbxNodeTable& fbxNodeTable, uint16_t parentId = UINT16_MAX, uint16_t lastSibling = UINT16_MAX)
 {
 	uint16_t boneId = static_cast<uint16_t>(bones.size());
 	bones.push_back(Bone());
@@ -546,7 +615,18 @@ uint16_t loadBoneHierarchy(const aiNode* node, BoneTree& bones, BoneTable& table
 		if (idx != std::string::npos)
 		{
 			std::string basename = bonename.substr(0, idx - 1);
+			size_t transIdx = idx + 12;
+			std::string transname = bonename.substr(transIdx);
+
 			bonename = basename;
+
+			if (fbxNodeTable.find(basename) == fbxNodeTable.end())
+			{
+				fbxNodeTable.insert(std::pair<std::string, FbxNode>(basename, FbxNode()));
+			}
+
+			FbxNode& fbxNode = fbxNodeTable[basename];
+			fbxNode.SetMatrix(transname.c_str(), bone.transform);
 
 			strncpy_s(bone.name, 128, basename.c_str(), _TRUNCATE);
 
@@ -575,6 +655,13 @@ uint16_t loadBoneHierarchy(const aiNode* node, BoneTree& bones, BoneTable& table
 					m.d1, m.d2, m.d3, m.d4
 				);
 
+				if (childbonename != bonename)
+				{
+					transIdx = idx + 12;
+					transname = childbonename.substr(transIdx);
+					fbxNode.SetMatrix(transname.c_str(), mat);
+				}
+
 				bone.transform = mat * bone.transform;
 			}
 		}
@@ -586,7 +673,7 @@ uint16_t loadBoneHierarchy(const aiNode* node, BoneTree& bones, BoneTable& table
 	uint16_t lastChild = UINT16_MAX;
 	for (uint16_t i = 0; i < node->mNumChildren; i++)
 	{
-		uint16_t id = loadBoneHierarchy(node->mChildren[i], bones, table, boneId, lastChild);
+		uint16_t id = loadBoneHierarchy(node->mChildren[i], bones, table, fbxNodeTable, boneId, lastChild);
 		if (firstChild == UINT16_MAX)
 		{
 			firstChild = id;
@@ -648,6 +735,8 @@ struct ModelFile
 	float3							rootOffset;
 	float							hipsHeight;
 
+	FbxNodeTable					fbxNodeTable;
+
 
 	int Init(const char* filename, bool withAnim = true)
 	{
@@ -687,7 +776,7 @@ struct ModelFile
 		// gathering bone information
 		if (scene->mRootNode->mNumChildren > 0) {
 			// load bone hierarchy	
-			loadBoneHierarchy(scene->mRootNode, bones, boneTable);
+			loadBoneHierarchy(scene->mRootNode, bones, boneTable, fbxNodeTable);
 			header.NumBones = static_cast<uint16_t>(bones.size());
 			boneHasOffsetMatrices.resize(bones.size(), false);
 		}
@@ -926,6 +1015,7 @@ struct ModelFile
 				std::string boneName(chan->mNodeName.C_Str());
 
 				bool omitT = false, omitR = false, omitS = false;
+				FbxNode* fbxNode = nullptr;
 
 				size_t idx = boneName.find("$AssimpFbx$");
 				if (idx != std::string::npos)
@@ -951,6 +1041,13 @@ struct ModelFile
 						printf("unable to recognize this channel %s\n", boneName.c_str());
 						return __LINE__;
 					}
+
+					auto iter = fbxNodeTable.find(boneName);
+					if (iter != fbxNodeTable.end())
+					{
+						fbxNode = &(iter->second);
+					}
+					assert(fbxNode != nullptr);
 				}
 
 				auto iter = boneTable.find(boneName);
@@ -1009,6 +1106,19 @@ struct ModelFile
 						q.y = key.mValue.y;
 						q.z = key.mValue.z;
 						q.w = key.mValue.w;
+
+						if (nullptr != fbxNode)
+						{
+							mat4 rot = fbxNode->matrices[fbxRotationPivotInverse] *
+								fbxNode->matrices[fbxPostRotation] *
+								transpose(mat4_cast(q)) *
+								fbxNode->matrices[fbxPreRotation] *
+								fbxNode->matrices[fbxRotationPivot] *
+								fbxNode->matrices[fbxRotationOffset];
+
+							vec3 t, s;
+							decompose(transpose(rot), t, q, s);
+						}
 
 						//CompressQuaternion(q, *reinterpret_cast<uint32_t*>(&frame.value.x));
 
