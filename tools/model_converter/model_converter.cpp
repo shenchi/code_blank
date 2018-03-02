@@ -1088,7 +1088,7 @@ struct ModelFile
 				// rotation keys
 				if (!omitR)
 				{
-					for (uint32_t iFrame = 0; iFrame < numT; iFrame++)
+					for (uint32_t iFrame = 0; iFrame < numR; iFrame++)
 					{
 						aiQuatKey& key = chan->mRotationKeys[iFrame];
 						aiQuatKey& sortKey = chan->mRotationKeys[iFrame < 2 ? 0 : iFrame - 2];
@@ -1133,7 +1133,7 @@ struct ModelFile
 				// scale keys
 				if (!omitS)
 				{
-					for (uint32_t iFrame = 0; iFrame < numT; iFrame++)
+					for (uint32_t iFrame = 0; iFrame < numS; iFrame++)
 					{
 						aiVectorKey& key = chan->mScalingKeys[iFrame];
 						aiVectorKey& sortKey = chan->mScalingKeys[iFrame < 2 ? 0 : iFrame - 2];

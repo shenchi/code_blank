@@ -45,6 +45,8 @@ int32_t SceneLoadingDemo::Init()
 		idle->animationName = "idle";
 		AnimationState *walk = stateMachine->AddState("walk");
 		walk->animationName = "walk";
+		AnimationState *kick = stateMachine->AddState("kick");
+		walk->animationName = "kick";
 
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaqueSkinned);
 
