@@ -231,7 +231,16 @@ namespace tofu {
 			quat.x = float3.x;
 			quat.y = float3.y;
 			quat.z = float3.z;
-			quat.w = sqrt(1 - quat.x * quat.x - quat.y * quat.y - quat.z * quat.z);
+
+			float a = quat.x * quat.x + quat.y * quat.y + quat.z * quat.z;
+			if (a > 1)
+			{
+				quat.w = 0.0f;
+			}
+			else
+			{
+				quat.w = sqrt(1 - a);
+			}
 
 			if (negativeW) {
 				quat.w = -quat.w;
