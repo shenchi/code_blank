@@ -58,34 +58,34 @@ int32_t TestGame::Init()
 		ph->SetColliderOrigin(math::float3{ 0.0f, -0.5f, 0.0f });
 	}
 
-	{
-		Entity e = Entity::Create();
+	//{
+	//	Entity e = Entity::Create();
 
-		tBox = e.AddComponent<TransformComponent>();
-		tBox->SetLocalPosition(math::float3{ -1.0, 1, 0 });
+	//	tBox = e.AddComponent<TransformComponent>();
+	//	tBox->SetLocalPosition(math::float3{ -5.0, 2, 0 });
 
-		RenderingComponent r = e.AddComponent<RenderingComponent>();
+	//	RenderingComponent r = e.AddComponent<RenderingComponent>();
 
-		Model* model = RenderingSystem::instance()->CreateModel("assets/cube.model");
+	//	Model* model = RenderingSystem::instance()->CreateModel("assets/cube.model");
 
-		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
-		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-albedo2.texture");
-		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-normal3-UE4-Copy.texture");
-		TextureHandle   metallicMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-metalness-Copy.texture");
-		TextureHandle   roughnessMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-rough-Copy.texture");
-		TextureHandle   aoMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-ao-Copy.texture");
+	//	Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
+	//	TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-albedo2.texture");
+	//	TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-normal3-UE4-Copy.texture");
+	//	TextureHandle   metallicMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-metalness-Copy.texture");
+	//	TextureHandle   roughnessMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-rough-Copy.texture");
+	//	TextureHandle   aoMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-ao-Copy.texture");
 
-		material->SetTexture(diffuse);
-		material->SetNormalMap(normalMap);
-		material->SetMetallicMap(metallicMap);
-		material->SetAoMap(aoMap);
-		material->SetRoughnessMap(roughnessMap);
+	//	material->SetTexture(diffuse);
+	//	material->SetNormalMap(normalMap);
+	//	material->SetMetallicMap(metallicMap);
+	//	material->SetAoMap(aoMap);
+	//	material->SetRoughnessMap(roughnessMap);
 
-		r->SetMaterial(material);
-		r->SetModel(model);
+	//	r->SetMaterial(material);
+	//	r->SetModel(model);
 
-		PhysicsComponent ph = e.AddComponent<PhysicsComponent>();
-	}
+	//	PhysicsComponent ph = e.AddComponent<PhysicsComponent>();
+	//}
 
 	{
 		Entity e = Entity::Create();
@@ -149,18 +149,18 @@ int32_t TestGame::Init()
 		//lMoon->SetType(LightType::kLightTypePoint);
 		math::float4 moonColor = math::float4{ 0.0f, 0.0f, 1.0f, 1.0f };
 		lMoon->SetColor(moonColor);
-		lMoon->CreateDepthMap();
+		//lMoon->CreateDepthMap();
 	}
-	// Point light
+	// Spot light
 	{
 		Entity e = Entity::Create();
 
 		tBulb = e.AddComponent<TransformComponent>();
-		tBulb->SetLocalPosition(math::float3{ -5, 5, -5 });
-		tBulb->SetLocalRotation(math::angleAxis(3.14f / 2.0f, math::float3{ 1.0f,0.0f, 0.0f }));
+		tBulb->SetLocalPosition(math::float3{ -5, 5, 0 });
+		tBulb->SetLocalRotation(math::angleAxis(3.14f / 2.0f, math::float3{ 1.0f, 0.0f, 0.0f }));
 		
 		lBulb = e.AddComponent<LightComponent>();
-		lBulb->SetType(LightType::kLightTypePoint);
+		lBulb->SetType(LightType::kLightTypeSpot);
 		math::float4 bulbColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
 		lBulb->SetColor(bulbColor);
 		lBulb->CreateDepthMap();

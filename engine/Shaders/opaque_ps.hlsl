@@ -135,11 +135,14 @@ float4 main(V2F input) : SV_TARGET
 	F0 = lerp(F0, albedo, metallic);
 
 	float3 allDiLight = float3(0, 0, 0);
-	float3 allPoLight = float3(0, 0, 0);
+	float3 allSpLight = float3(0, 0, 0);
 	float3 Lo = float3(0, 0, 0);
+
+	float bias = 0; // For shadowmap
 
 	for (float i = 0.0f; i < count; i++) {
 		if (type[i].x == 1.0f) {
+			
 			//calculate per-light radiance
 			float3 direction = lightDirection[i].xyz;
 			float3 L = normalize(-direction);
@@ -148,6 +151,7 @@ float4 main(V2F input) : SV_TARGET
 			float attenuation = 1 / (distance*distance);
 			float3 radiance = lightColor[i].xyz * attenuation;
 
+            bias = max(0.001 * (1.0 - dot(N, direction)), 0.0001);
 			//cook-torrance BRDF
 			float NDF = DistributionGGX(N, H, roughness);
 			float3 F = fresnelSchlick(max(dot(N, V), 0), F0);
@@ -165,6 +169,9 @@ float4 main(V2F input) : SV_TARGET
 			allDiLight += (kD*albedo / PI + specular)*radiance*NdotL;
 		}
 		else if (type[i].x == 2.0f) {
+		
+		}
+		else if (type[i].x == 3.0f) {
 			//calculate per-light radiance
 			float3 position = lightPosition[i].xyz;
 			float3 L = normalize(position - input.worldPos);
@@ -173,6 +180,7 @@ float4 main(V2F input) : SV_TARGET
 			float attenuation = 1 / (distance*distance);
 			float3 radiance = lightColor[i].xyz*attenuation;
 
+			bias = max(0.001 * (1.0 - dot(N, L)), 0.0001);
 			//cook-torrance BRDF
 			float NDF = DistributionGGX(N, H, roughness);
 			float3 F = fresnelSchlick(max(dot(N, V), 0), F0);
@@ -187,15 +195,12 @@ float4 main(V2F input) : SV_TARGET
 			float3 specular = nominator / denominator;
 
 			float NdotL = max(dot(N, L), 0);
-			allPoLight += (kD*albedo / PI + specular)*radiance*NdotL;
-		}
-		else if (type[i].x == 3.0f) {
-
+			allSpLight += (kD*albedo / PI + specular)*radiance*NdotL;
 		}
 
 	}
 	
-	Lo = allPoLight + allDiLight;
+	Lo = allSpLight + allDiLight;
 
 
 	// Add environment diffuse 
@@ -223,11 +228,13 @@ float4 main(V2F input) : SV_TARGET
 	shadowMap.GetDimensions(width, height);
 	float2 textureSize = float2(width, height);
 	float2 texelSize = 1 / textureSize;
-	float bias = 0.001f;         //  Set the bias value for fixing the floating point precision issues.
+	//float bias = 0.001f;         //  Set the bias value for fixing the floating point precision issues.
+	
+	//float3 projCoords = (input.posForShadow.xyz - float3(0,0,bias)) / input.posForShadow.w;
 	float3 projCoords = input.posForShadow.xyz / input.posForShadow.w;
 	projCoords.xy = projCoords.xy * 0.5 + 0.5;
 	projCoords.y = 1 - projCoords.y;
-
+	
 
 	if ((saturate(projCoords.x) == projCoords.x) && (saturate(projCoords.y) == projCoords.y)) {
 
@@ -241,6 +248,8 @@ float4 main(V2F input) : SV_TARGET
 			}
 		}
 		shadow /= 25;
+		/*float cloestDepth = shadowMap.Sample(shadowSampler, projCoords.xy * texelSize).r;
+		shadow = currentDepth > cloestDepth ? 1 : 0;*/
 		color = (ambient + Lo) * (1 - shadow);
 	}
 	else {
