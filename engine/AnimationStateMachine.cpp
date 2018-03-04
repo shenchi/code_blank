@@ -1,5 +1,6 @@
 #include "Transform.h"
 #include "AnimationStateMachine.h"
+#include "MemoryAllocator.h"
 #include "Engine.h"
 #include "Model.h"
 #include "Compression.h"
@@ -71,7 +72,7 @@ namespace tofu
 
 	void AnimationStateCache::Update(UpdateContext* context, ModelAnimation* animation)
 	{
-		// TODO: backward update cache
+		// TODO: backward animation & update cache
 
 		// prevent load-hit-store
 		size_t tempCursor = cursor;
@@ -80,23 +81,20 @@ namespace tofu
 			size_t frameIndex = tempCursor + animation->startFrames;
 			ModelAnimFrame &frame = context->model->frames[frameIndex];
 
-			// TODO: Change offline retarget to online
 			if (frame.GetJointIndex() == kModelMaxJointIndex) {
 				tempCursor++;
 				continue;
 			}
 
 			AnimationFrameCache &cache = frameCaches[frame.GetJointIndex()];
-
 			size_t cacheIndex = cache.indices[frame.GetChannelType()][2];
 
-			if (cacheIndex == SIZE_MAX || context->model->frames[cacheIndex].time <= ticks) {
-				cache.AddFrameIndex(frame.GetChannelType(), frameIndex);
-				tempCursor++;
-			}
-			else {
+			if (cacheIndex != SIZE_MAX && context->model->frames[cacheIndex].time > ticks) {
 				break;
 			}
+
+			cache.AddFrameIndex(frame.GetChannelType(), frameIndex);
+			tempCursor++;
 		}
 		cursor = tempCursor;
 	}
@@ -114,10 +112,10 @@ namespace tofu
 		if (anim == nullptr)
 			return;
 
-		// TODO: scale time || uint_16 ticks
 		// convert time in seconds to ticks
 		cache->ticks += Time::DeltaTime * playbackSpeed * anim->ticksPerSecond;
 
+		// TODO: add exit time & transition
 		if (cache->ticks > anim->tickCount) {
 			if (isLoop) {
 				cache->ticks = std::fmodf(cache->ticks, anim->tickCount);
@@ -125,14 +123,10 @@ namespace tofu
 			}
 			else {
 				// end of animation
-				// event?
-				// Transition?
 			}
 		}
 
 		cache->Update(&context, anim);
-
-		// TODO: Add exitTime & transition
 	}
 
 	void AnimationState::Evaluate(EvaluateContext & context, float weight)
@@ -185,7 +179,7 @@ namespace tofu
 			}
 			else if (indices[3] != SIZE_MAX) {
 				math::quat q;
-				ModelAnimFrame &f = model->frames[frameCache.indices[kChannelRotation][3]];
+				ModelAnimFrame &f = model->frames[indices[3]];
 
 				//tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&f.value.x), q);
 				tofu::compression::DecompressQuaternion(q, f.value, f.GetSignedBit());
@@ -237,7 +231,6 @@ namespace tofu
 		float t = (cache->ticks - f2.time) / (f3.time - f2.time);
 		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
 
-		//return math::mix(f2.value, f3.value, t);
 		return catmullRom(f1.value, f2.value, f3.value, f4.value, t);
 	}
 
@@ -471,4 +464,3 @@ namespace tofu
 		stateMachine.Evaluate(context, weight);
 	}
 }
-

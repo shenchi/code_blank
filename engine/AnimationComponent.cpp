@@ -128,8 +128,8 @@ namespace tofu
 		if (bone->parent == UINT16_MAX)
 			return;
 
-		vector<Transform> transforms;
-		transforms.reserve(model->header->NumBones);
+		// TODO: integrate with allocator
+		Transform *transforms = static_cast<Transform*>(malloc(model->header->NumBones * sizeof(Transform)));
 
 		for (uint16_t i = 0; i < model->header->NumBones; i++)
 		{
@@ -141,9 +141,7 @@ namespace tofu
 
 			glm::decompose(matrices[i], scale, rotation, translation, skew, perspective);
 
-			rotation = glm::conjugate(rotation);
-
-			transforms.emplace_back(translation, rotation, scale);
+			transforms[i] = { translation, glm::conjugate(rotation), scale };
 		}
 
 		vector<uint16_t> bones;
@@ -176,7 +174,7 @@ namespace tofu
 			chains.emplace_back(bones[i], length, transforms[bones[i]]);
 		}
 		
-		// FIXME:: TODO
+		// TODO: allow to set IK on target's joint
 		if (targetJoint != IKTarget::Root)
 			return;
 
@@ -198,7 +196,7 @@ namespace tofu
 			float difference = glm::length(targetPosition - chains[tipBoneIndex].transform.GetTranslation());
 	
 			size_t IterationCount = 0;
-			while ((difference > minDifference) && (IterationCount++ < maxIteration))
+			while (difference > minDifference && IterationCount++ < maxIteration)
 			{
 				// set tip bone at end effector location.
 				chains[tipBoneIndex].transform.SetTranslation(targetPosition);
@@ -221,30 +219,31 @@ namespace tofu
 			}
 		}
 
-		set<uint16_t> effectBones;
+		set<uint16_t> affectedBones;
 
 		for (auto boneId : bones) {
-			effectBones.insert(tipJointIndex);
+			affectedBones.insert(tipJointIndex);
 		}
 
 		for (int i = bones.back(); i < model->header->NumBones; i++) {
-			if (effectBones.find(model->bones[i].parent) != effectBones.end()) {
-				effectBones.insert(i);
+			if (affectedBones.find(model->bones[i].parent) != affectedBones.end()) {
+				affectedBones.insert(i);
 			}
 		}
 
 		for (auto boneId : bones) {
-			effectBones.erase(tipJointIndex);
+			affectedBones.erase(tipJointIndex);
 		}
 
-		vector<Transform> locals;
-		locals.reserve(effectBones.size());
+		Transform *locals = static_cast<Transform*>(malloc(affectedBones.size() * sizeof(Transform)));
+		int localIndex = 0;
 
-		// TODO: make sure set is order ascending
-		for (uint16_t id : effectBones)
+		// iterate set in ascending order
+		for (uint16_t id : affectedBones)
 		{
-			locals.push_back(transforms[id]);
-			locals.back().SetToRelativeTransform(transforms[model->bones[id].parent]);
+			locals[localIndex] = transforms[id];
+			locals[localIndex].SetToRelativeTransform(transforms[model->bones[id].parent]);
+			localIndex++;
 		}
 
 		for (int i = 0; i < chains.size(); i++) {
@@ -260,18 +259,16 @@ namespace tofu
 
 				// calculate absolute rotation
 				chains[i].transform.SetRotation(deltaRotation * chains[i].transform.GetRotation());
-
-				// FIXME: need normalize?
-				//chains[i].transform.SetRotation(normalize(deltaRotation * chains[i].transform.GetRotation()));
 			}
 
 			// override the original transform
 			transforms[chains[i].boneIndex] = chains[i].transform;
 		}
 
-		int localIndex = 0;
+		localIndex = 0;
 
-		for (uint16_t id : effectBones)
+		// convert affected local to model
+		for (uint16_t id : affectedBones)
 		{
 			transforms[id] = locals[localIndex++] * transforms[model->bones[id].parent];
 		}
@@ -280,5 +277,8 @@ namespace tofu
 		{
 			matrices[i] = transforms[i].GetMatrix();
 		}
+
+		free(transforms);
+		free(locals);
 	}
 }

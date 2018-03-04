@@ -11,6 +11,7 @@
 #include "Game.h"
 #include "SceneLoadingDemo.h"
 //#include "CubemapProbeDemo.h"
+#include "AnimationDemo.h"
 
 using tofu::kOK;
 
@@ -30,6 +31,7 @@ int CALLBACK WinMain(
 	CHECKED(engine.Init("config.lua"));
 	CHECKED(engine.AddModule(new SceneLoadingDemo()));
 	//CHECKED(engine.AddModule(new Game()));
+	//CHECKED(engine.AddModule(new AnimationDemo()));
 
 	return engine.Run();
 }
