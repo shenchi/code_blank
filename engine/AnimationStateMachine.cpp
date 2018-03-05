@@ -243,11 +243,6 @@ namespace tofu
 
 		math::quat q1, q2, q3, q4;
 
-		/*tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&f1.value.x), q1);
-		tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&f2.value.x), q2);
-		tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&f3.value.x), q3);
-		tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&f4.value.x), q4);*/
-
 		tofu::compression::DecompressQuaternion(q1, f1.value, f1.GetSignedBit());
 		tofu::compression::DecompressQuaternion(q2, f2.value, f2.GetSignedBit());
 		tofu::compression::DecompressQuaternion(q3, f3.value, f3.GetSignedBit());
@@ -282,9 +277,6 @@ namespace tofu
 
 		math::quat a, b;
 
-		//tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&fa.value.x), a);
-		//tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&fb.value.x), b);
-
 		tofu::compression::DecompressQuaternion(a, fa.value, fa.GetSignedBit());
 		tofu::compression::DecompressQuaternion(b, fb.value, fb.GetSignedBit());
 
@@ -296,7 +288,7 @@ namespace tofu
 	AnimationStateMachine::AnimationStateMachine(std::string name) :
 		AnimNodeBase(name)
 	{
-		states.push_back(std::move(new AnimNodeBase("entry")));
+		states.push_back(new AnimNodeBase("entry"));
 		current = states.back();
 	}
 
@@ -307,42 +299,20 @@ namespace tofu
 		}
 	}
 
-	/** Move constructor */
-	AnimationStateMachine::AnimationStateMachine(AnimationStateMachine&& other) noexcept : /* noexcept needed to enable optimizations in containers */
-	AnimNodeBase(other.name), previous(other.previous), current(other.current), elapsedTime(other.elapsedTime), transitionDuration(other.transitionDuration)
-	{
-		states = std::move(other.states);
-		stateIndexTable = std::move(other.stateIndexTable);
-		transitions = std::move(other.transitions);
-	}
-
-	///** Copy assignment operator */
-	//Foo& operator= (const Foo& other)
-	//{
-	//	Foo tmp(other);         // re-use copy-constructor
-	//	*this = std::move(tmp); // re-use move-assignment
-	//	return *this;
-	//}
-
-	///** Move assignment operator */
-	//Foo& operator= (Foo&& other) noexcept
-	//{
-	//	if (this == &other)
-	//	{
-	//		// take precautions against `foo = std::move(foo)`
-	//		return *this;
-	//	}
-	//	delete[] data;
-	//	data = other.data;
-	//	other.data = nullptr;
-	//	return *this;
-	//}
-
 	AnimationState* AnimationStateMachine::AddState(std::string name)
 	{
 		stateIndexTable[name] = static_cast<uint16_t>(states.size());
-		states.push_back(std::move(new AnimationState(name)));
 
+		// TODO: allocator
+	/*	AnimationState *state = static_cast<AnimationState *>(
+			MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(sizeof(AnimationState), alignof(AnimationState)));
+
+		*state = AnimationState(name);
+		states.push_back(state);
+
+		return state;*/
+
+		states.push_back(new AnimationState(name));
 		return static_cast<AnimationState*>(states.back());
 	}
 
@@ -447,8 +417,8 @@ namespace tofu
 		return current->GetDurationInSecond(model);
 	}
 
-	AnimationLayer::AnimationLayer(std::string name, float weight)
-		:name(name), weight(weight), stateMachine(std::move(AnimationStateMachine("default")))
+	AnimationLayer::AnimationLayer(std::string name, float weight, AnimationEvaluationType type)
+		:name(name), weight(weight), type(type), stateMachine("default")
 	{
 	}
 

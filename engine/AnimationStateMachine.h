@@ -77,7 +77,7 @@ namespace tofu
 	{
 
 	public:
-		std::string	name;
+		std::string name;
 
 	public:
 		AnimNodeBase(std::string name);
@@ -138,10 +138,10 @@ namespace tofu
 		std::list<AnimationTransitionEntry> transitions;
 
 	public:
-		AnimationStateMachine(std::string name = "stateMachine");
+		AnimationStateMachine(std::string name);
 		// TODO::
 		//AnimationStateMachine(const AnimationStateMachine& other);
-		AnimationStateMachine(AnimationStateMachine && other) noexcept;
+		//AnimationStateMachine(AnimationStateMachine && other) noexcept;
 		virtual ~AnimationStateMachine();
 
 		void Play(std::string name);
@@ -162,7 +162,7 @@ namespace tofu
 		friend class AnimationComponentData;
 
 	public:
-		AnimationLayer(std::string name, float weight = 1.0f);
+		AnimationLayer(std::string name, float weight = 1.0f, AnimationEvaluationType type = kAET_None);
 
 		virtual void Update(Model *model);
 		virtual void Evaluate(EvaluateContext& context);
@@ -170,6 +170,8 @@ namespace tofu
 	private:
 		std::string name;
 		float weight;
+		AnimationEvaluationType type;
+
 		AnimationStateMachine stateMachine;
 	};
 }

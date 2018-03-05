@@ -51,7 +51,8 @@ namespace tofu
 		math::float4				TransformPosition(const math::float4& v) const;
 
 		void						SetToRelativeTransform(const Transform & parent);
-		void						BlendByWeight(const Transform other, float weight);
+		void						Blend(const Transform other, float weight);
+		void						Additive(const Transform other, float weight);
 
 	private:
 		math::quat					rotation;

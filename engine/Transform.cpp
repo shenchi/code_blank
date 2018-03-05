@@ -55,7 +55,7 @@ namespace tofu
 		rotation = inverseRot * rotation;
 	}
 
-	void Transform::BlendByWeight(const Transform other, float weight)
+	void Transform::Blend(const Transform other, float weight)
 	{
 		if (isDirty && other.isDirty) {
 			translation = mix(translation, other.translation, weight);
@@ -66,6 +66,16 @@ namespace tofu
 		}
 		else if (!isDirty) {
 			*this = other;
+		}
+	}
+
+	void Transform::Additive(const Transform other, float weight)
+	{
+		if (other.isDirty) {
+			translation += other.translation * weight;
+			rotation = slerp(rotation, other.rotation, weight);
+			
+			normalize(rotation);
 		}
 	}
 }
