@@ -231,20 +231,22 @@ namespace tofu {
 			quat.x = float3.x;
 			quat.y = float3.y;
 			quat.z = float3.z;
-
-			float a = quat.x * quat.x + quat.y * quat.y + quat.z * quat.z;
-			if (a > 1)
-			{
-				quat.w = 0.0f;
-			}
-			else
-			{
-				quat.w = sqrt(1 - a);
-			}
+			quat.w = sqrt(abs(1 - quat.x * quat.x - quat.y * quat.y - quat.z * quat.z));
 
 			if (negativeW) {
 				quat.w = -quat.w;
 			}
+		}
+
+		math::float3 compress(const math::quat in) {
+			if (in.w < 0)
+				return -math::float3(in.x, in.y, in.z);
+
+			return math::float3(in.x, in.y, in.z);
+		}
+
+		math::quat decompress(const math::float3& in) {
+			return math::quat(in.x, in.y, in.z, sqrt(abs(1 - in.x * in.x - in.y * in.y - in.z * in.z)));
 		}
 	}
 }
