@@ -116,6 +116,7 @@ namespace
 		tofu::VertexShaderHandle	vertexShader;
 		tofu::PixelShaderHandle		pixelShader;
 		D3D11_VIEWPORT				viewport;
+		uint8_t						stencilRef;
 	};
 }
 
@@ -1010,6 +1011,8 @@ namespace tofu
 				pipelineStates[id].vertexShader = params->vertexShader;
 				pipelineStates[id].pixelShader = params->pixelShader;
 
+				pipelineStates[id].stencilRef = params->stencilRef;
+
 				return kOK;
 			}
 
@@ -1083,7 +1086,7 @@ namespace tofu
 					context->PSSetShader((pso.pixelShader ? pixelShaders[pso.pixelShader.id].shader : nullptr), nullptr, 0);
 					context->RSSetState(pso.rasterizerState);
 					context->RSSetViewports(1, &(pso.viewport));
-					context->OMSetDepthStencilState(pso.depthStencilState, 0u);
+					context->OMSetDepthStencilState(pso.depthStencilState, pso.stencilRef);
 					context->OMSetBlendState(pso.blendState, nullptr, 0xffffffffu);
 
 					currentPipelineState = params->pipelineState;

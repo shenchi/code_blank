@@ -259,10 +259,13 @@
     <FxCompile Include="deferred_geometry_skinned_vs.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="deferred_lighting_ps.hlsl">
+    <FxCompile Include="deferred_lighting_vs.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="deferred_lighting_vs.hlsl">
+    <FxCompile Include="deferred_lighting_spotlight_ps.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="deferred_lighting_pointlight_ps.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

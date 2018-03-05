@@ -42,11 +42,12 @@ namespace
 	struct LightParameters
 	{
 		tofu::math::float4x4	transform;		// 4
+		tofu::math::float4		direction;		// 1
 		tofu::math::float4		color;			// 1
 		float					range;
 		float					intensity;
 		float					spotAngle;		
-		float					padding[10 * 4 + 1];
+		float					padding[9 * 4 + 1];
 	};
 }
 
@@ -158,9 +159,11 @@ namespace tofu
 			"assets/deferred_geometry_skinned_vs.shader",
 			"assets/deferred_geometry_ps.shader"));
 
-		CHECKED(InitBuiltinMaterial(kMaterialDeferredLighting,
+		CHECKED(InitBuiltinMaterial(kMaterialDeferredLightingPointLight,
 			"assets/deferred_lighting_vs.shader",
-			"assets/deferred_lighting_ps.shader"));
+			"assets/deferred_lighting_pointlight_ps.shader"));
+
+		CHECKED(LoadPixelShader("assets/deferred_lighting_spotlight_ps.shader", materialPSs[kMaterialDeferredLightingSpotLight]));
 
 		// constant buffers
 		{
@@ -353,36 +356,61 @@ namespace tofu
 			{
 				CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
 				params->handle = materialPSOs[kMaterialDeferredLightingOcclude];
-				params->vertexShader = materialVSs[kMaterialDeferredLighting];
+				params->vertexShader = materialVSs[kMaterialDeferredLightingPointLight];
 				params->pixelShader = PixelShaderHandle();// materialPSs[kMaterialDeferredLighting];
-
-				params->depthEnable = 1;
-				params->depthWrite = 0;
-				params->depthFunc = kComparisonGreater;
-				params->stencilEnable = 1;
-				params->frontFacePassOp = kStencilOpDecSat; // dec to 0;
-				params->frontFaceFunc = kComparisonAlways;
-
-				params->cullMode = kCullBack;
-
-				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
-			}
-
-			materialPSOs[kMaterialDeferredLighting] = pipelineStateHandleAlloc.Allocate();
-			assert(materialPSOs[kMaterialDeferredLighting]);
-			{
-				CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
-				params->handle = materialPSOs[kMaterialDeferredLighting];
-				params->vertexShader = materialVSs[kMaterialDeferredLighting];
-				params->pixelShader = materialPSs[kMaterialDeferredLighting];
 
 				params->depthEnable = 1;
 				params->depthWrite = 0;
 				params->depthFunc = kComparisonGEqual;
 				params->stencilEnable = 1;
-				params->backFaceFunc = kComparisonEqual;
+				params->backFacePassOp = kStencilOpReplace;
+				params->backFaceFunc = kComparisonAlways;
+				params->stencilRef = 1u;
 
 				params->cullMode = kCullFront;
+
+				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+			}
+
+			materialPSOs[kMaterialDeferredLightingPointLight] = pipelineStateHandleAlloc.Allocate();
+			assert(materialPSOs[kMaterialDeferredLightingPointLight]);
+			{
+				CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
+				params->handle = materialPSOs[kMaterialDeferredLightingPointLight];
+				params->vertexShader = materialVSs[kMaterialDeferredLightingPointLight];
+				params->pixelShader = materialPSs[kMaterialDeferredLightingPointLight];
+
+				params->depthEnable = 1;
+				params->depthWrite = 0;
+				params->depthFunc = kComparisonLEqual;
+				params->stencilEnable = 1;
+				params->frontFaceFunc = kComparisonEqual;
+				params->stencilRef = 1u;
+
+				params->cullMode = kCullBack;
+
+				params->blendEnable = 1;
+				params->srcBlend = kBlendOne;
+				params->destBlend = kBlendOne;
+				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+			}
+
+			materialPSOs[kMaterialDeferredLightingSpotLight] = pipelineStateHandleAlloc.Allocate();
+			assert(materialPSOs[kMaterialDeferredLightingSpotLight]);
+			{
+				CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
+				params->handle = materialPSOs[kMaterialDeferredLightingSpotLight];
+				params->vertexShader = materialVSs[kMaterialDeferredLightingPointLight];
+				params->pixelShader = materialPSs[kMaterialDeferredLightingSpotLight];
+
+				params->depthEnable = 1;
+				params->depthWrite = 0;
+				params->depthFunc = kComparisonLEqual;
+				params->stencilEnable = 1;
+				params->frontFaceFunc = kComparisonEqual;
+				params->stencilRef = 1u;
+
+				params->cullMode = kCullBack;
 
 				params->blendEnable = 1;
 				params->srcBlend = kBlendOne;
@@ -1362,7 +1390,7 @@ namespace tofu
 			params->clearColor[2] = 0;
 			params->clearColor[3] = 1;
 
-			params->clearStencil = 1u;
+			//params->clearStencil = 1u;
 
 			cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
 		}
@@ -1505,6 +1533,7 @@ namespace tofu
 			params->renderTargets[0] = gBuffer1;
 			params->renderTargets[1] = gBuffer2;
 			params->renderTargets[2] = gBuffer3;
+			params->depthRenderTarget = TextureHandle();
 			cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
 		}
 
@@ -1610,10 +1639,12 @@ namespace tofu
 #else
 				lightParams[i].transform = t->GetWorldTransform().GetMatrix();
 #endif
+				math::float3 dir = t->GetForwardVector();
+				lightParams[i].direction = math::float4{ dir.x, dir.y, dir.z, 0 };
 				lightParams[i].color = comp.lightColor;
 				lightParams[i].range = comp.range;
 				lightParams[i].intensity = comp.intensity;
-				lightParams[i].spotAngle = comp.spotAngle;
+				lightParams[i].spotAngle = math::cos(math::radians(comp.spotAngle * 0.5f));
 
 				if (comp.type == kLightTypeDirectional) 
 				{
@@ -1662,7 +1693,7 @@ namespace tofu
 				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
 				assert(nullptr != params);
 
-				params->pipelineState = materialPSOs[kMaterialDeferredLighting];
+				params->pipelineState = materialPSOs[kMaterialDeferredLightingOcclude];
 
 				params->vertexBuffer = mesh.VertexBuffer;
 				params->indexBuffer = mesh.IndexBuffer;
@@ -1691,7 +1722,7 @@ namespace tofu
 				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
 				assert(nullptr != params);
 
-				params->pipelineState = materialPSOs[kMaterialDeferredLighting];
+				params->pipelineState = materialPSOs[kMaterialDeferredLightingOcclude];
 
 				params->vertexBuffer = mesh.VertexBuffer;
 				params->indexBuffer = mesh.IndexBuffer;
@@ -1713,6 +1744,64 @@ namespace tofu
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
 			/**/
+
+			// go through all point lights
+			for (uint32_t i = 0; i < numPointLights; i++)
+			{
+				Mesh& mesh = meshes[builtinSphere->meshes[0].id];
+				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
+				assert(nullptr != params);
+
+				params->pipelineState = materialPSOs[kMaterialDeferredLightingPointLight];
+
+				params->vertexBuffer = mesh.VertexBuffer;
+				params->indexBuffer = mesh.IndexBuffer;
+				params->startIndex = mesh.StartIndex;
+				params->startVertex = mesh.StartVertex;
+				params->indexCount = mesh.NumIndices;
+
+				params->vsConstantBuffers[0] = { lightParamsBuffer, static_cast<uint16_t>(pointLights[i] * 16), 16 };
+				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
+
+				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
+				params->psConstantBuffers[1] = { screenParamsBuffer, 0, 16 };
+
+				params->psTextures[0] = gBuffer1;
+				params->psTextures[1] = gBuffer2;
+				params->psTextures[2] = gBuffer3;
+				params->psSamplers[0] = defaultSampler;
+
+				cmdBuf->Add(RendererCommand::kCommandDraw, params);
+			}
+
+			// go through all spot lights
+			for (uint32_t i = 0; i < numSpotLights; i++)
+			{
+				Mesh& mesh = meshes[builtinCone->meshes[0].id];
+				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
+				assert(nullptr != params);
+
+				params->pipelineState = materialPSOs[kMaterialDeferredLightingSpotLight];
+
+				params->vertexBuffer = mesh.VertexBuffer;
+				params->indexBuffer = mesh.IndexBuffer;
+				params->startIndex = mesh.StartIndex;
+				params->startVertex = mesh.StartVertex;
+				params->indexCount = mesh.NumIndices;
+
+				params->vsConstantBuffers[0] = { lightParamsBuffer, static_cast<uint16_t>(soptLights[i] * 16), 16 };
+				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
+
+				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
+				params->psConstantBuffers[1] = { screenParamsBuffer, 0, 16 };
+
+				params->psTextures[0] = gBuffer1;
+				params->psTextures[1] = gBuffer2;
+				params->psTextures[2] = gBuffer3;
+				params->psSamplers[0] = defaultSampler;
+
+				cmdBuf->Add(RendererCommand::kCommandDraw, params);
+			}
 		}
 
 		// TODO: Transparent Pass

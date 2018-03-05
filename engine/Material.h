@@ -17,7 +17,8 @@ namespace tofu
 		kMaterialDeferredGeometryOpaque,
 		kMaterialDeferredGeometryOpaqueSkinned,
 		kMaterialDeferredLightingOcclude,
-		kMaterialDeferredLighting,
+		kMaterialDeferredLightingPointLight,
+		kMaterialDeferredLightingSpotLight,
 		kMaxMaterialTypes
 	};
 

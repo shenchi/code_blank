@@ -244,7 +244,8 @@ namespace tofu
 				uint64_t			backFaceDepthFailOp : 4;
 				uint64_t			backFacePassOp : 4;
 				uint64_t			backFaceFunc : 3;
-				uint64_t			_reserved1 : 12;
+				uint64_t			_reserved1 : 4;
+				uint64_t			stencilRef : 8;
 				uint64_t			stencilReadMask : 8;
 				uint64_t			stencilWriteMask : 8;
 			};
@@ -295,6 +296,7 @@ namespace tofu
 			backFaceDepthFailOp(kStencilOpKeep),
 			backFacePassOp(kStencilOpKeep),
 			backFaceFunc(kComparisonAlways),
+			stencilRef(0),
 			stencilReadMask(255u),
 			stencilWriteMask(255u),
 			cullMode(kCullBack),
