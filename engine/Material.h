@@ -19,6 +19,7 @@ namespace tofu
 		kMaterialDeferredLightingOcclude,
 		kMaterialDeferredLightingPointLight,
 		kMaterialDeferredLightingSpotLight,
+		kMaterialDeferredLightingAmbient,
 		kMaxMaterialTypes
 	};
 

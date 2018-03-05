@@ -105,6 +105,7 @@ namespace tofu
 		SamplerHandle			defaultSampler;
 		SamplerHandle           shadowSampler;
 
+		Model*					builtinQuad;
 		Model*					builtinCube;
 		Model*					builtinSphere;
 		Model*					builtinCone;
@@ -116,7 +117,7 @@ namespace tofu
 		TextureHandle			gBuffer2;
 		TextureHandle			gBuffer3;
 
-		BufferHandle			screenParamsBuffer;
+		BufferHandle			lightParamsAmbDirBuffer;
 		BufferHandle			lightParamsBuffer;
 	};
 

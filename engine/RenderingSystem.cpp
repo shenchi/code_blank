@@ -46,8 +46,18 @@ namespace
 		tofu::math::float4		color;			// 1
 		float					range;
 		float					intensity;
-		float					spotAngle;		
+		float					spotAngle;
 		float					padding[9 * 4 + 1];
+	};
+
+	struct LightParametersDirectionalAndAmbient
+	{
+		tofu::math::float4		ambient;
+		struct
+		{
+			tofu::math::float4	direction;
+			tofu::math::float4	color;
+		}						directionalLights[tofu::kMaxDirectionalLights];
 	};
 }
 
@@ -82,6 +92,7 @@ namespace tofu
 		materialPSs(),
 		defaultSampler(),
 		shadowSampler(),
+		builtinQuad(),
 		builtinCube(),
 		builtinSphere(),
 		builtinCone(),
@@ -165,6 +176,10 @@ namespace tofu
 
 		CHECKED(LoadPixelShader("assets/deferred_lighting_spotlight_ps.shader", materialPSs[kMaterialDeferredLightingSpotLight]));
 
+		CHECKED(InitBuiltinMaterial(kMaterialDeferredLightingAmbient,
+			"assets/bypass_vs.shader",
+			"assets/deferred_lighting_ambient_ps.shader"));
+
 		// constant buffers
 		{
 			transformBuffer = bufferHandleAlloc.Allocate();
@@ -224,14 +239,14 @@ namespace tofu
 				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
 			}
 
-			screenParamsBuffer = bufferHandleAlloc.Allocate();
-			assert(screenParamsBuffer);
+			lightParamsAmbDirBuffer = bufferHandleAlloc.Allocate();
+			assert(lightParamsAmbDirBuffer);
 			{
 				CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
 				assert(nullptr != params);
-				params->handle = screenParamsBuffer;
+				params->handle = lightParamsAmbDirBuffer;
 				params->bindingFlags = kBindingConstantBuffer;
-				params->size = sizeof(math::float4x4);
+				params->size = sizeof(LightParametersDirectionalAndAmbient);
 				params->dynamic = 1;
 
 				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
@@ -419,6 +434,24 @@ namespace tofu
 			}
 		}
 
+		materialPSOs[kMaterialDeferredLightingAmbient] = pipelineStateHandleAlloc.Allocate();
+		assert(materialPSOs[kMaterialDeferredLightingAmbient]);
+		{
+			CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
+			params->handle = materialPSOs[kMaterialDeferredLightingAmbient];
+			params->vertexShader = materialVSs[kMaterialDeferredLightingAmbient];
+			params->pixelShader = materialPSs[kMaterialDeferredLightingAmbient];
+
+			params->depthEnable = 0;
+
+			params->cullMode = kCullBack;
+
+			params->blendEnable = 1;
+			params->srcBlend = kBlendOne;
+			params->destBlend = kBlendOne;
+			cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+		}
+
 		// create default sampler
 		{
 			defaultSampler = samplerHandleAlloc.Allocate();
@@ -449,7 +482,8 @@ namespace tofu
 			}
 		}
 
-
+		builtinQuad = CreateModel("assets/quad.model");
+		assert(nullptr != builtinQuad);
 
 		builtinCube = CreateModel("assets/cube.model");
 		assert(nullptr != builtinCube);
@@ -1615,17 +1649,26 @@ namespace tofu
 
 		{
 			LightParameters* lightParams = reinterpret_cast<LightParameters*>(
-				MemoryAllocator::Allocators[allocNo].Allocate(sizeof(LightParameters) * kMaxEntities, 16)
+				MemoryAllocator::Allocators[allocNo].Allocate(sizeof(LightParameters) * (kMaxEntities + 1), 16)
 				);
 			assert(nullptr != lightParams);
+
+			LightParametersDirectionalAndAmbient* lightParams2 = reinterpret_cast<LightParametersDirectionalAndAmbient*>(
+				MemoryAllocator::Allocators[allocNo].Allocate(sizeof(LightParametersDirectionalAndAmbient), 16)
+				);
+
+			assert(lightsCount <= kMaxEntities);
 
 			uint32_t* pointLights = reinterpret_cast<uint32_t*>(MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxEntities, 4));
 			uint32_t* soptLights = reinterpret_cast<uint32_t*>(MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxEntities, 4));
 
+			uint32_t numDirectionalLights = 0;
 			uint32_t numPointLights = 0;
 			uint32_t numSpotLights = 0;
 
-			for (uint32_t i = 0; i < lightsCount; ++i)
+			lightParams2->ambient = math::float4(0.1f, 0.1f, 0.1f, 1.0f);
+
+			for (uint32_t i = 0; i <= lightsCount; ++i)
 			{
 				LightComponentData& comp = lights[i];
 
@@ -1646,22 +1689,29 @@ namespace tofu
 				lightParams[i].intensity = comp.intensity;
 				lightParams[i].spotAngle = math::cos(math::radians(comp.spotAngle * 0.5f));
 
-				if (comp.type == kLightTypeDirectional) 
+				if (comp.type == kLightTypeDirectional)
 				{
-					
+					if (numDirectionalLights < kMaxDirectionalLights)
+					{
+						lightParams2->directionalLights[numDirectionalLights].color = comp.lightColor * comp.intensity;
+						lightParams2->directionalLights[numDirectionalLights].direction = lightParams[i].direction;
+						numDirectionalLights++;
+					}
 				}
-				else if (comp.type == kLightTypePoint) 
+				else if (comp.type == kLightTypePoint)
 				{
 					pointLights[numPointLights++] = i;
 					lightParams[i].transform = math::scale(math::float4x4(1.0f), math::float3(comp.range)) * lightParams[i].transform;
 				}
-				else if (comp.type == kLightTypeSpot) 
+				else if (comp.type == kLightTypeSpot)
 				{
 					soptLights[numSpotLights++] = i;
 					float scale = math::tan(math::radians(comp.spotAngle * 0.5f)) * comp.range;
 					lightParams[i].transform = math::scale(math::float4x4(1.0f), math::float3(scale, scale, comp.range)) * lightParams[i].transform;
 				}
 			}
+
+			lightParams2->ambient.w = float(numDirectionalLights);
 
 			{
 				UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
@@ -1674,17 +1724,15 @@ namespace tofu
 			}
 
 			{
-				void* screenParams = MemoryAllocator::Allocators[allocNo].Allocate(sizeof(math::float4x4), 4);
-				*reinterpret_cast<math::float4*>(screenParams) = math::float4{float(bufferWidth), float(bufferHeight), 0, 0};
-
 				UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
 				assert(nullptr != params);
-				params->handle = screenParamsBuffer;
-				params->data = screenParams;
-				params->size = sizeof(math::float4x4);
+				params->handle = lightParamsAmbDirBuffer;
+				params->data = lightParams2;
+				params->size = sizeof(LightParametersDirectionalAndAmbient);
 
 				cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
 			}
+
 			//*
 			// go through all point lights
 			for (uint32_t i = 0; i < numPointLights; i++)
@@ -1705,7 +1753,6 @@ namespace tofu
 				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
 
 				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
-				params->psConstantBuffers[1] = { screenParamsBuffer, 0, 16 };
 
 				params->psTextures[0] = gBuffer1;
 				params->psTextures[1] = gBuffer2;
@@ -1734,7 +1781,6 @@ namespace tofu
 				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
 
 				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
-				params->psConstantBuffers[1] = { screenParamsBuffer, 0, 16 };
 
 				params->psTextures[0] = gBuffer1;
 				params->psTextures[1] = gBuffer2;
@@ -1764,7 +1810,6 @@ namespace tofu
 				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
 
 				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
-				params->psConstantBuffers[1] = { screenParamsBuffer, 0, 16 };
 
 				params->psTextures[0] = gBuffer1;
 				params->psTextures[1] = gBuffer2;
@@ -1793,7 +1838,29 @@ namespace tofu
 				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
 
 				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
-				params->psConstantBuffers[1] = { screenParamsBuffer, 0, 16 };
+
+				params->psTextures[0] = gBuffer1;
+				params->psTextures[1] = gBuffer2;
+				params->psTextures[2] = gBuffer3;
+				params->psSamplers[0] = defaultSampler;
+
+				cmdBuf->Add(RendererCommand::kCommandDraw, params);
+			}
+
+			// ambient light
+			{
+				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
+				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
+
+				params->pipelineState = materialPSOs[kMaterialDeferredLightingAmbient];
+
+				params->vertexBuffer = mesh.VertexBuffer;
+				params->indexBuffer = mesh.IndexBuffer;
+				params->startIndex = mesh.StartIndex;
+				params->startVertex = mesh.StartVertex;
+				params->indexCount = mesh.NumIndices;
+
+				params->psConstantBuffers[0] = { lightParamsAmbDirBuffer, 0, 0 };
 
 				params->psTextures[0] = gBuffer1;
 				params->psTextures[1] = gBuffer2;

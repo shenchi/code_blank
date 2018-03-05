@@ -82,14 +82,15 @@ int32_t RenderingTest::Init()
 		Entity e = Entity::Create();
 
 		tSun = e.AddComponent<TransformComponent>();
-		tSun->SetLocalPosition(math::float3{ 58.0f, 3.0f, -41.0f });
-		tSun->SetLocalRotation(math::angleAxis(3.14f / 4, math::float3{ 1.0f, 0.0f, 0.0f }));
+		tSun->SetLocalPosition(math::float3{ 0.0f, 0.0f, 0.0f });
+		//tSun->SetLocalRotation(math::angleAxis(3.14f / 4, math::float3{ 1.0f, 0.0f, 0.0f }));
+		tSun->FaceTo(math::float3{ 0.0f, -1.0f, 1.0f });
 
 		lSun = e.AddComponent<LightComponent>();
 		lSun->SetType(LightType::kLightTypeDirectional);
 		math::float4 sunColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
 		lSun->SetColor(sunColor);
-		lSun->CreateDepthMap();
+		//lSun->CreateDepthMap();
 	}
 
 	pitch = InitPitch;
