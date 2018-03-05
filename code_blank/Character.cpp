@@ -46,7 +46,6 @@ void Character::HandleGroundedMovement(bool _jump, math::float3 move, float dT)
 
 		// TODO
 		// Current jump mechanic
-		//aCharacter->CrossFade(3, 0.001f);
 		pCharacter->ApplyImpulse(math::float3{ 0.0f, 4.0f, 0.0f });
 
 		//move.y = jumpPower * dT * move.y;

@@ -27,9 +27,10 @@ void GameplayAnimationMachine::Play(CharacterState state, uint32_t parameter, si
 		//aComp->CrossFade(0, 0.2f);
 		break;
 	case kIdleInCombat:
-		aComp->CrossFade("combat_idle", 0.2f, 0);
+		//aComp->CrossFade("combat_idle", 0.2f, 0);
+		aComp->CrossFade("idle", 0.05f, 0);
+		//aComp->Play("idle", 0);
 		//aComp->CrossFade("Idle_InCombat", 0.2f, layerMask);
-		//aComp->CrossFade(0, 0.2f); // Temp, is wrong animation
 		break;
 	case kWalk:
 		aComp->CrossFade("walk", 0.2f, 0);
@@ -42,13 +43,16 @@ void GameplayAnimationMachine::Play(CharacterState state, uint32_t parameter, si
 		//aComp->CrossFade(2, 0.3f);
 		break;
 	case kJumpUp:
+		aComp->CrossFade("jump_up", 0.2f, 0);
 		//aComp->Play("Jump_Up", layerMask);
 		//aComp->CrossFade(3, 0.5f);
 		break;
 	case kJumpAir:
+		aComp->CrossFade("jump_air", 0.1f, 0);
 		//aComp->Play("Jump_Air", layerMask);
 		break;
 	case kJumpDown:
+		aComp->CrossFade("jump_down", 0.6f, 0);
 		//aComp->Play("Jump_Down", layerMask);
 		break;
 	case kDrawGun:
