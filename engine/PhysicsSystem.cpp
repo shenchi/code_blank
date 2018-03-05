@@ -359,7 +359,7 @@ namespace tofu
 				math::float3 entityScale = t->GetWorldScale();
 				math::quat entityRot = t->GetWorldRotation();
 				math::float3 entityPos = t->GetWorldPosition();
-
+				comp.rigidbody->activate();
 				// if it moved since last frame
 				if (entityRot.x != comp.lastWorldRotation.x ||
 					entityRot.y != comp.lastWorldRotation.y ||
@@ -369,7 +369,7 @@ namespace tofu
 					entityPos.y != comp.lastWorldPosition.y ||
 					entityPos.z != comp.lastWorldPosition.z)
 				{
-					comp.rigidbody->activate();
+					//comp.rigidbody->activate();
 
 					math::float3 pos = entityPos +
 						entityRot * (comp.colliderDesc.origin * entityScale);

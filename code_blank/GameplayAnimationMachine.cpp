@@ -43,16 +43,17 @@ void GameplayAnimationMachine::Play(CharacterState state, uint32_t parameter, si
 		//aComp->CrossFade(2, 0.3f);
 		break;
 	case kJumpUp:
+		aComp->CrossFade("jump", 0.5f, 0);
 		//aComp->CrossFade("jump_up", 0.2f, 0);
 		//aComp->Play("Jump_Up", layerMask);
 		//aComp->CrossFade(3, 0.5f);
 		break;
 	case kJumpAir:
-		aComp->CrossFade("jump_air", 0.1f, 0);
+		//aComp->CrossFade("jump_air", 0.1f, 0);
 		//aComp->Play("Jump_Air", layerMask);
 		break;
 	case kJumpDown:
-		aComp->CrossFade("jump_down", 0.1f, 0);
+		//aComp->CrossFade("jump_down", 0.1f, 0);
 		//aComp->Play("Jump_Down", layerMask);
 		break;
 	case kDrawGun:

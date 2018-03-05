@@ -59,8 +59,8 @@ Player::Player(CharacterDetails details, void* comp)
 
 
 		// Jump Animations
-		/*AnimationState *jump = stateMachine->AddState("jump");
-		jump->animationName = "jump";*/
+		AnimationState *jump = stateMachine->AddState("jump");
+		jump->animationName = "jump";
 		AnimationState *jump_up = stateMachine->AddState("jump_up");
 		jump_up->animationName = "jump_up";
 		AnimationState *jump_air = stateMachine->AddState("jump_air");
@@ -180,11 +180,15 @@ void Player::Update(float dT)
 		combatManager->SwordSpecialCombat();
 		specialButtonDown = false;
 	}
+
+	// Handle charater movement only once per frame
+
+
 }
 
 
 // Move the player character
-void Player::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camRot)
+void Player::MoveReg(float dT, bool _jump, math::float3 inputDir, math::quat camRot)
 //void Player::MoveReg(float vert, float hori, Quaternion camRot, bool jump, bool running, bool dash, bool aiming)
 {
 	
@@ -204,9 +208,9 @@ void Player::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camR
 	}
 
 
-	if (isGrounded && jump)
+	if (isGrounded && _jump)
 	{
-		HandleGroundedMovement(jump, lastMove, dT);
+		HandleGroundedMovement(_jump, lastMove, dT);
 	}
 
 	/*
@@ -282,7 +286,6 @@ void Player::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camR
 			//aPlayer->CrossFade(0, 0.2f);
 		}
 	}// End if Grounded
-	
 	else
 	{
 		moveSpeedMultiplier -= dT * kAirDeaccelerate;
@@ -296,13 +299,14 @@ void Player::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camR
 	
 
 	 // control and velocity handling is different when grounded and airborne:
-	if (isGrounded && !jump)
+	if (isGrounded && !_jump)
 	{
-		HandleGroundedMovement(jump, move, dT);
+		HandleGroundedMovement(_jump, move, dT);
 	}
-	else
+	else if(!isGrounded)
 	{
-		HandleAirborneMovement(lastMove, dT);
+		//HandleAirborneMovement(lastMove, dT);
+		HandleAirborneMovement(move, inputDir, dT);
 	}
 
 	lastMove = move;
