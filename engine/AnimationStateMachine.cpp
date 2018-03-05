@@ -228,7 +228,7 @@ namespace tofu
 		ModelAnimFrame& f3 = model->frames[i3];
 		ModelAnimFrame& f4 = model->frames[i4];
 
-		float t = (cache->ticks - f2.time) / (f3.time - f2.time);
+		float t = std::min(1.0f, (cache->ticks - f2.time) / (f3.time - f2.time));
 		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
 
 		return catmullRom(f1.value, f2.value, f3.value, f4.value, t);
@@ -253,7 +253,7 @@ namespace tofu
 		tofu::compression::DecompressQuaternion(q3, f3.value, f3.GetSignedBit());
 		tofu::compression::DecompressQuaternion(q4, f4.value, f4.GetSignedBit());
 
-		float t = (cache->ticks - f2.time) / (f3.time - f2.time);
+		float t = std::min(1.0f, (cache->ticks - f2.time) / (f3.time - f2.time));
 		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
 
 		// FIXME: change after cruve fitting
@@ -266,7 +266,7 @@ namespace tofu
 		ModelAnimFrame& fa = model->frames[lhs];
 		ModelAnimFrame& fb = model->frames[rhs];
 
-		float t = (cache->ticks - fa.time) / (fb.time - fa.time);
+		float t = std::min(1.0f, (cache->ticks - fa.time) / (fb.time - fa.time));
 		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
 
 		return math::mix(fa.value, fb.value, t);
@@ -277,7 +277,7 @@ namespace tofu
 		ModelAnimFrame& fa = model->frames[lhs];
 		ModelAnimFrame& fb = model->frames[rhs];
 
-		float t = (cache->ticks - fa.time) / (fb.time - fa.time);
+		float t = std::min(1.0f, (cache->ticks - fa.time) / (fb.time - fa.time));
 		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
 
 		math::quat a, b;
