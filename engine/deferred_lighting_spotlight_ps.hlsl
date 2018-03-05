@@ -1,12 +1,14 @@
 cbuffer LightParameters : register (b0)
 {
 	float4x4				transform;
+	float4x4				matView;
+	float4x4				matProj;
 	float4					direction;
 	float4					color;
 	float					range;
 	float					intensity;
 	float					spotAngle;
-	float					padding[9 * 4 + 1];
+	float					padding[1 * 4 + 1];
 };
 
 Texture2D gBuffer1 : register(t0);
@@ -22,6 +24,7 @@ float4 main(float4 clipPos : SV_POSITION) : SV_TARGET
 
 	float3 worldPos = gBuffer1.Load(int3(screenPos, 0)).rgb;
 	float3 worldNormal = gBuffer2.Load(int3(screenPos, 0)).rgb;
+	float3 albedo = gBuffer3.Load(int3(screenPos, 0)).rgb;
 
 	float3 lightDir = lightPos - worldPos;
 	float dist = length(lightDir);
@@ -37,5 +40,5 @@ float4 main(float4 clipPos : SV_POSITION) : SV_TARGET
 
 	float value = NdotL * atten;
 
-	return float4(value * color.rgb, 1);
+	return float4(value * color.rgb * albedo, 1);
 }

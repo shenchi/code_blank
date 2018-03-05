@@ -132,6 +132,14 @@ namespace tofu
 		kColorWriteAll = kColorWriteRed | kColorWriteGreen | kColorWriteBlue | kColorWriteAlpha
 	};
 
+	enum TextureAdressMode
+	{
+		kTextureAddressWarp = 1,
+		kTextureAddressMirror,
+		kTextureAddressClamp,
+		kTextureAddressBorder
+	};
+
 	struct RendererCommandBuffer
 	{
 		uint32_t*			cmds;
@@ -193,15 +201,15 @@ namespace tofu
 	struct CreateSamplerParams
 	{
 		SamplerHandle		handle;
-		// TODO
+		
 		union
 		{
 			struct
 			{
-				uint32_t			textureAddressU : 2;
-				uint32_t			textureAddressV : 2;
-				uint32_t            textureAddressW : 2;
-				uint32_t			_reserved1 : 26;
+				uint32_t			textureAddressU : 3;
+				uint32_t			textureAddressV : 3;
+				uint32_t            textureAddressW : 3;
+				uint32_t			_reserved1 : 23;
 			};
 			uint32_t				textureAddress;
 		};

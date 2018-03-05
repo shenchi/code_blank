@@ -42,12 +42,14 @@ namespace
 	struct LightParameters
 	{
 		tofu::math::float4x4	transform;		// 4
+		tofu::math::float4x4	matView;		// 4
+		tofu::math::float4x4	matProj;		// 4
 		tofu::math::float4		direction;		// 1
 		tofu::math::float4		color;			// 1
 		float					range;
 		float					intensity;
 		float					spotAngle;
-		float					padding[9 * 4 + 1];
+		float					padding[1 * 4 + 1];
 	};
 
 	struct LightParametersDirectionalAndAmbient
@@ -457,9 +459,9 @@ namespace tofu
 			{
 				CreateSamplerParams* params = MemoryAllocator::Allocate<CreateSamplerParams>(allocNo);
 				params->handle = defaultSampler;
-				params->textureAddressU = 1;
-				params->textureAddressV = 1;
-				params->textureAddressW = 1;
+				params->textureAddressU = kTextureAddressWarp;
+				params->textureAddressV = kTextureAddressWarp;
+				params->textureAddressW = kTextureAddressWarp;
 				cmdBuf->Add(RendererCommand::kCommandCreateSampler, params);
 			}
 		}
@@ -471,9 +473,9 @@ namespace tofu
 			{
 				CreateSamplerParams* params = MemoryAllocator::Allocate<CreateSamplerParams>(allocNo);
 				params->handle = shadowSampler;
-				params->textureAddressU = 3;
-				params->textureAddressV = 3;
-				params->textureAddressW = 3;
+				params->textureAddressU = kTextureAddressClamp;
+				params->textureAddressV = kTextureAddressClamp;
+				params->textureAddressW = kTextureAddressClamp;
 
 				cmdBuf->Add(RendererCommand::kCommandCreateSampler, params);
 			}
@@ -486,9 +488,9 @@ namespace tofu
 			{
 				CreateSamplerParams* params = MemoryAllocator::Allocate<CreateSamplerParams>(allocNo);
 				params->handle = lutSampler;
-				params->textureAddressU = 3;
-				params->textureAddressV = 3;
-				params->textureAddressW = 3;
+				params->textureAddressU = kTextureAddressClamp;
+				params->textureAddressV = kTextureAddressClamp;
+				params->textureAddressW = kTextureAddressClamp;
 				cmdBuf->Add(RendererCommand::kCommandCreateSampler, params);
 			}
 		}
@@ -1552,6 +1554,108 @@ namespace tofu
 			cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
 		}
 
+		// get all lights
+		LightComponentData* lights = LightComponent::GetAllComponents();
+		uint32_t lightsCount = LightComponent::GetNumComponents();
+
+		LightParameters* lightParams = reinterpret_cast<LightParameters*>(
+			MemoryAllocator::Allocators[allocNo].Allocate(sizeof(LightParameters) * (kMaxEntities + 1), 16)
+			);
+		assert(nullptr != lightParams);
+
+		LightParametersDirectionalAndAmbient* lightParams2 = reinterpret_cast<LightParametersDirectionalAndAmbient*>(
+			MemoryAllocator::Allocators[allocNo].Allocate(sizeof(LightParametersDirectionalAndAmbient), 16)
+			);
+		assert(nullptr != lightParams2);
+
+		assert(lightsCount <= kMaxEntities);
+
+		uint32_t* pointLights = reinterpret_cast<uint32_t*>(MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxEntities, 4));
+		uint32_t* soptLights = reinterpret_cast<uint32_t*>(MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxEntities, 4));
+		uint32_t* shadowLights = reinterpret_cast<uint32_t*>(MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxShadowCastingLights, 4));
+
+		uint32_t numDirectionalLights = 0;
+		uint32_t numPointLights = 0;
+		uint32_t numSpotLights = 0;
+		uint32_t numShadowCastingLights = 0;
+		{
+			lightParams2->ambient = math::float4(0.1f, 0.1f, 0.1f, 1.0f);
+
+			for (uint32_t i = 0; i <= lightsCount; ++i)
+			{
+				LightComponentData& comp = lights[i];
+
+				// TODO culling
+				TransformComponent t = comp.entity.GetComponent<TransformComponent>();
+
+				assert(t);
+
+#ifdef TOFU_USE_GLM
+				lightParams[i].transform = math::transpose(t->GetWorldTransform().GetMatrix());
+#else
+				lightParams[i].transform = t->GetWorldTransform().GetMatrix();
+#endif
+				math::float3 dir = t->GetForwardVector();
+				lightParams[i].direction = math::float4{ dir.x, dir.y, dir.z, 0 };
+				lightParams[i].color = comp.lightColor;
+				lightParams[i].range = comp.range;
+				lightParams[i].intensity = comp.intensity;
+				lightParams[i].spotAngle = math::cos(math::radians(comp.spotAngle * 0.5f));
+
+				if (comp.type == kLightTypeDirectional)
+				{
+					if (numDirectionalLights < kMaxDirectionalLights)
+					{
+						lightParams2->directionalLights[numDirectionalLights].color = comp.lightColor * comp.intensity;
+						lightParams2->directionalLights[numDirectionalLights].direction = lightParams[i].direction;
+						numDirectionalLights++;
+					}
+				}
+				else if (comp.type == kLightTypePoint)
+				{
+					pointLights[numPointLights++] = i;
+					lightParams[i].transform = math::scale(math::float4x4(1.0f), math::float3(comp.range)) * lightParams[i].transform;
+				}
+				else if (comp.type == kLightTypeSpot)
+				{
+					soptLights[numSpotLights++] = i;
+					float scale = math::tan(math::radians(comp.spotAngle * 0.5f)) * comp.range;
+					lightParams[i].transform = math::scale(math::float4x4(1.0f), math::float3(scale, scale, comp.range)) * lightParams[i].transform;
+
+					if (comp.castShadow)
+					{
+						shadowLights[numShadowCastingLights++] = i;
+						math::float3 lightWorldPos = t->GetWorldPosition();
+						lightParams[i].matView = math::transpose(math::lookTo(lightWorldPos, dir, t->GetUpVector()));
+						// todo shadow map size?
+						lightParams[i].matProj = math::transpose(math::perspective(math::radians(comp.spotAngle), 1.0f, 0.01f, comp.range));
+					}
+				}
+			}
+
+			lightParams2->ambient.w = float(numDirectionalLights);
+
+			{
+				UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
+				assert(nullptr != params);
+				params->handle = lightParamsBuffer;
+				params->data = lightParams;
+				params->size = sizeof(LightParameters) * lightsCount;
+
+				cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
+			}
+
+			{
+				UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
+				assert(nullptr != params);
+				params->handle = lightParamsAmbDirBuffer;
+				params->data = lightParams2;
+				params->size = sizeof(LightParametersDirectionalAndAmbient);
+
+				cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
+			}
+		}
+
 		// update skinned mesh animation bone matrices
 		AnimationComponentData* animComps = AnimationComponent::GetAllComponents();
 		uint32_t animCompCount = AnimationComponent::GetNumComponents();
@@ -1593,6 +1697,8 @@ namespace tofu
 
 			cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
 		}
+
+		// Shadow Maps
 
 		// Geometry Pass
 
@@ -1677,98 +1783,7 @@ namespace tofu
 
 		// Lighting Pass
 
-		LightComponentData* lights = LightComponent::GetAllComponents();
-		uint32_t lightsCount = LightComponent::GetNumComponents();
-		//TextureHandle * depthMap = new TextureHandle[lightsCount];
-		// Light constant buffer data
-
 		{
-			LightParameters* lightParams = reinterpret_cast<LightParameters*>(
-				MemoryAllocator::Allocators[allocNo].Allocate(sizeof(LightParameters) * (kMaxEntities + 1), 16)
-				);
-			assert(nullptr != lightParams);
-
-			LightParametersDirectionalAndAmbient* lightParams2 = reinterpret_cast<LightParametersDirectionalAndAmbient*>(
-				MemoryAllocator::Allocators[allocNo].Allocate(sizeof(LightParametersDirectionalAndAmbient), 16)
-				);
-
-			assert(lightsCount <= kMaxEntities);
-
-			uint32_t* pointLights = reinterpret_cast<uint32_t*>(MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxEntities, 4));
-			uint32_t* soptLights = reinterpret_cast<uint32_t*>(MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxEntities, 4));
-
-			uint32_t numDirectionalLights = 0;
-			uint32_t numPointLights = 0;
-			uint32_t numSpotLights = 0;
-
-			lightParams2->ambient = math::float4(0.1f, 0.1f, 0.1f, 1.0f);
-
-			for (uint32_t i = 0; i <= lightsCount; ++i)
-			{
-				LightComponentData& comp = lights[i];
-
-				// TODO culling
-				TransformComponent t = comp.entity.GetComponent<TransformComponent>();
-
-				assert(t);
-
-#ifdef TOFU_USE_GLM
-				lightParams[i].transform = math::transpose(t->GetWorldTransform().GetMatrix());
-#else
-				lightParams[i].transform = t->GetWorldTransform().GetMatrix();
-#endif
-				math::float3 dir = t->GetForwardVector();
-				lightParams[i].direction = math::float4{ dir.x, dir.y, dir.z, 0 };
-				lightParams[i].color = comp.lightColor;
-				lightParams[i].range = comp.range;
-				lightParams[i].intensity = comp.intensity;
-				lightParams[i].spotAngle = math::cos(math::radians(comp.spotAngle * 0.5f));
-
-				if (comp.type == kLightTypeDirectional)
-				{
-					if (numDirectionalLights < kMaxDirectionalLights)
-					{
-						lightParams2->directionalLights[numDirectionalLights].color = comp.lightColor * comp.intensity;
-						lightParams2->directionalLights[numDirectionalLights].direction = lightParams[i].direction;
-						numDirectionalLights++;
-					}
-				}
-				else if (comp.type == kLightTypePoint)
-				{
-					pointLights[numPointLights++] = i;
-					lightParams[i].transform = math::scale(math::float4x4(1.0f), math::float3(comp.range)) * lightParams[i].transform;
-				}
-				else if (comp.type == kLightTypeSpot)
-				{
-					soptLights[numSpotLights++] = i;
-					float scale = math::tan(math::radians(comp.spotAngle * 0.5f)) * comp.range;
-					lightParams[i].transform = math::scale(math::float4x4(1.0f), math::float3(scale, scale, comp.range)) * lightParams[i].transform;
-				}
-			}
-
-			lightParams2->ambient.w = float(numDirectionalLights);
-
-			{
-				UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
-				assert(nullptr != params);
-				params->handle = lightParamsBuffer;
-				params->data = lightParams;
-				params->size = sizeof(LightParameters) * lightsCount;
-
-				cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
-			}
-
-			{
-				UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
-				assert(nullptr != params);
-				params->handle = lightParamsAmbDirBuffer;
-				params->data = lightParams2;
-				params->size = sizeof(LightParametersDirectionalAndAmbient);
-
-				cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
-			}
-
-			//*
 			// go through all point lights
 			for (uint32_t i = 0; i < numPointLights; i++)
 			{

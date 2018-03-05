@@ -1,11 +1,14 @@
 cbuffer LightParameters : register (b0)
 {
 	float4x4				transform;
+	float4x4				matLightView;
+	float4x4				matLightProj;
+	float4					direction;
 	float4					color;
 	float					range;
 	float					intensity;
 	float					spotAngle;
-	float					padding[10 * 4 + 1];
+	float					padding[1 * 4 + 1];
 };
 
 cbuffer FrameConstants : register (b1)

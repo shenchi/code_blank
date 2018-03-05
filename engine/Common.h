@@ -80,5 +80,6 @@ namespace tofu
 	constexpr uint32_t kMaxRenderTargetBindings = 8;
 
 	constexpr uint32_t kMaxDirectionalLights = 8;
+	constexpr uint32_t kMaxShadowCastingLights = 16;
 	
 }

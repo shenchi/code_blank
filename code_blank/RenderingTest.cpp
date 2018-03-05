@@ -77,21 +77,21 @@ int32_t RenderingTest::Init()
 		cam->SetSkybox(skyboxMat);
 	}
 
-	// Dummy light
-	{
-		Entity e = Entity::Create();
+	//// Dummy light
+	//{
+	//	Entity e = Entity::Create();
 
-		tSun = e.AddComponent<TransformComponent>();
-		tSun->SetLocalPosition(math::float3{ 0.0f, 0.0f, 0.0f });
-		//tSun->SetLocalRotation(math::angleAxis(3.14f / 4, math::float3{ 1.0f, 0.0f, 0.0f }));
-		tSun->FaceTo(math::float3{ 0.0f, -1.0f, 1.0f });
+	//	tSun = e.AddComponent<TransformComponent>();
+	//	tSun->SetLocalPosition(math::float3{ 0.0f, 0.0f, 0.0f });
+	//	//tSun->SetLocalRotation(math::angleAxis(3.14f / 4, math::float3{ 1.0f, 0.0f, 0.0f }));
+	//	tSun->FaceTo(math::float3{ 0.0f, -1.0f, 1.0f });
 
-		lSun = e.AddComponent<LightComponent>();
-		lSun->SetType(LightType::kLightTypeDirectional);
-		math::float4 sunColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
-		lSun->SetColor(sunColor);
-		//lSun->CreateDepthMap();
-	}
+	//	lSun = e.AddComponent<LightComponent>();
+	//	lSun->SetType(LightType::kLightTypeDirectional);
+	//	math::float4 sunColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
+	//	lSun->SetColor(sunColor);
+	//	//lSun->CreateDepthMap();
+	//}
 
 	pitch = InitPitch;
 	yaw = 0.0f;
