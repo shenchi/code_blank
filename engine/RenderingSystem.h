@@ -93,7 +93,7 @@ namespace tofu
 		BufferHandle			frameConstantBuffer;
 
 		BufferHandle            lightingConstantBuffer;
-		BufferHandle            shadowDepthBuffer;
+		BufferHandle            shadowDepthBuffer[kMaxLights];
 
 		Mesh					meshes[kMaxMeshes];
 		Model					models[kMaxModels];
@@ -104,6 +104,7 @@ namespace tofu
 		PixelShaderHandle		materialPSs[kMaxMaterialTypes];
 		SamplerHandle			defaultSampler;
 		SamplerHandle           shadowSampler;
+		SamplerHandle           lutSampler;
 
 		Model*					builtinQuad;
 		Model*					builtinCube;

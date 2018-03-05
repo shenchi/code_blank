@@ -31,11 +31,23 @@ int32_t TestGame::Init()
 		Model* model = RenderingSystem::instance()->CreateModel("assets/cube.model");
 
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
-		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
+		/*TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
 		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/stone_wall_normalmap.texture");
 
 		material->SetTexture(diffuse);
+		material->SetNormalMap(normalMap);*/
+		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/textures/test/Iron-Scuffed_basecolor - Copy.texture");
+		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/Iron-Scuffed_normal - Copy.texture");
+		TextureHandle   metallicMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/Iron-Scuffed_metallic - Copy.texture");
+		TextureHandle   roughnessMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/Iron-Scuffed_roughness - Copy.texture");
+		TextureHandle   aoMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/Iron-Scuffed_metallic - Copy.texture");
+
+		material->SetTexture(diffuse);
 		material->SetNormalMap(normalMap);
+		material->SetMetallicMap(metallicMap);
+		material->SetAoMap(aoMap);
+		material->SetRoughnessMap(roughnessMap);
+
 
 		r->SetMaterial(material);
 		r->SetModel(model);
@@ -46,28 +58,34 @@ int32_t TestGame::Init()
 		ph->SetColliderOrigin(math::float3{ 0.0f, -0.5f, 0.0f });
 	}
 
-	/*{
-		Entity e = Entity::Create();
+	//{
+	//	Entity e = Entity::Create();
 
-		tBox = e.AddComponent<TransformComponent>();
-		tBox->SetLocalPosition(math::float3{ -1.0, 1, 0 });
+	//	tBox = e.AddComponent<TransformComponent>();
+	//	tBox->SetLocalPosition(math::float3{ -5.0, 2, 0 });
 
-		RenderingComponent r = e.AddComponent<RenderingComponent>();
+	//	RenderingComponent r = e.AddComponent<RenderingComponent>();
 
-		Model* model = RenderingSystem::instance()->CreateModel("assets/cube.model");
+	//	Model* model = RenderingSystem::instance()->CreateModel("assets/cube.model");
 
-		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
-		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
-		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/stone_wall_normalmap.texture");
+	//	Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
+	//	TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-albedo2.texture");
+	//	TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-normal3-UE4-Copy.texture");
+	//	TextureHandle   metallicMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-metalness-Copy.texture");
+	//	TextureHandle   roughnessMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-rough-Copy.texture");
+	//	TextureHandle   aoMap = RenderingSystem::instance()->CreateTexture("assets/textures/test/slate2-tiled-ao-Copy.texture");
 
-		material->SetTexture(diffuse);
-		material->SetNormalMap(normalMap);
+	//	material->SetTexture(diffuse);
+	//	material->SetNormalMap(normalMap);
+	//	material->SetMetallicMap(metallicMap);
+	//	material->SetAoMap(aoMap);
+	//	material->SetRoughnessMap(roughnessMap);
 
-		r->SetMaterial(material);
-		r->SetModel(model);
+	//	r->SetMaterial(material);
+	//	r->SetModel(model);
 
-		PhysicsComponent ph = e.AddComponent<PhysicsComponent>();
-	}*/
+	//	PhysicsComponent ph = e.AddComponent<PhysicsComponent>();
+	//}
 
 	{
 		Entity e = Entity::Create();
@@ -109,7 +127,7 @@ int32_t TestGame::Init()
 		Entity e = Entity::Create();
 
 		tSun = e.AddComponent<TransformComponent>();
-		tSun->SetLocalPosition(math::float3(0.0f, 2.0f, -2.0f));
+		tSun->SetLocalPosition(math::float3(1.0f, 2.0f, -2.0f));
 		tSun->SetLocalRotation(math::angleAxis(3.14f / 4.0f, math::float3{ 1.0f, 0.0f, 0.0f }));
 
 		lSun = e.AddComponent<LightComponent>();
@@ -123,25 +141,29 @@ int32_t TestGame::Init()
 		Entity e = Entity::Create();
 
 		tMoon = e.AddComponent<TransformComponent>();
-		
-		tMoon->SetLocalRotation(math::angleAxis(3.14f / 2.0f, math::float3{ 1.0f,0.0f, 0.0f }));
-
+		tMoon->SetLocalPosition(math::float3(5.0f, 5.0f, 5.0f));
+		tMoon->SetLocalRotation(math::angleAxis(3.14f * 3 / 4.0f, math::float3{ 1.0f,0.0f, 0.0f }));
+		//tMoon->SetLocalRotation(math::angleAxis(3.14f / 2.0f, math::float3{ 1.0f,0.0f, 0.0f }));
 		lMoon = e.AddComponent<LightComponent>();
 		lMoon->SetType(LightType::kLightTypeDirectional);
-		math::float4 moonColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
+		//lMoon->SetType(LightType::kLightTypePoint);
+		math::float4 moonColor = math::float4{ 0.0f, 0.0f, 1.0f, 1.0f };
 		lMoon->SetColor(moonColor);
+		//lMoon->CreateDepthMap();
 	}
-	// Point light
+	// Spot light
 	{
 		Entity e = Entity::Create();
 
 		tBulb = e.AddComponent<TransformComponent>();
-		tBulb->SetLocalPosition(math::float3{ -5, 5, -4 });
+		tBulb->SetLocalPosition(math::float3{ -5, 5, 0 });
+		tBulb->SetLocalRotation(math::angleAxis(3.14f / 2.0f, math::float3{ 1.0f, 0.0f, 0.0f }));
 		
 		lBulb = e.AddComponent<LightComponent>();
-		lBulb->SetType(LightType::kLightTypePoint);
-		math::float4 bulbColor = math::float4{ 0.0f, 1.0f, 0.0f, 1.0f };
+		lBulb->SetType(LightType::kLightTypeSpot);
+		math::float4 bulbColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
 		lBulb->SetColor(bulbColor);
+		lBulb->CreateDepthMap();
 	}
 	{
 		Entity e = Entity::Create();
@@ -155,8 +177,14 @@ int32_t TestGame::Init()
 
 		Material* skyboxMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeSkybox);
 		TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/craterlake.texture");
+		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/textures/test/diffuseIrradianceMap.texture");
+		TextureHandle specular = RenderingSystem::instance()->CreateTexture("assets/textures/test/prefilteredMap.texture");
+		TextureHandle lut = RenderingSystem::instance()->CreateTexture("assets/textures/test/BrdfLUT-Copy.texture");		
 		skyboxMat->SetTexture(tex);
-
+		skyboxMat->SetSkyboxDiff(diffuse);
+		skyboxMat->SetSkyboxSpecMap(specular);
+		skyboxMat->SetLUTMap(lut);
+		
 		cam->SetSkybox(skyboxMat);
 	}
 
