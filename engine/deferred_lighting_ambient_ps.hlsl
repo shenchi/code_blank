@@ -21,7 +21,7 @@ float4 main(float4 clipPos : SV_POSITION) : SV_TARGET
 	//float3 worldPos = gBuffer1.Load(int3(screenPos, 0)).rgb;
 	float3 worldNormal = gBuffer2.Load(int3(screenPos, 0)).rgb;
 	float3 albedo = gBuffer3.Load(int3(screenPos, 0)).rgb;
-	float3 color = albedo * ambient;
+	float3 color = albedo * ambient.rgb;
 
 	uint numDirectionalLights = ambient.w;
 

@@ -165,6 +165,10 @@ namespace tofu
 		CHECKED(LoadVertexShader("assets/shadow_opaque_vs.shader", materialVSs[kMaterialTypeDepth]));
 		CHECKED(LoadVertexShader("assets/shadow_opaqueskinned_vs.shader", materialVSs[kMaterialTypeDepthSkinned]));
 
+
+		CHECKED(LoadVertexShader("assets/shadow_vs.shader", materialVSs[kMaterialShadow]));
+		CHECKED(LoadVertexShader("assets/shadow_skinned_vs.shader", materialVSs[kMaterialShadowSkinned]));
+
 		CHECKED(InitBuiltinMaterial(kMaterialDeferredGeometryOpaque,
 			"assets/deferred_geometry_vs.shader",
 			"assets/deferred_geometry_ps.shader"));
@@ -338,6 +342,25 @@ namespace tofu
 				params->handle = materialPSOs[kMaterialTypeOpaqueSkinned];
 				params->vertexShader = materialVSs[kMaterialTypeOpaqueSkinned];
 				params->pixelShader = materialPSs[kMaterialTypeOpaqueSkinned];
+				params->vertexFormat = kVertexFormatSkinned;
+				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+			}
+
+			materialPSOs[kMaterialShadow] = pipelineStateHandleAlloc.Allocate();
+			assert(materialPSOs[kMaterialShadow]);
+			{
+				CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
+				params->handle = materialPSOs[kMaterialShadow];
+				params->vertexShader = materialVSs[kMaterialShadow];
+				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+			}
+
+			materialPSOs[kMaterialShadowSkinned] = pipelineStateHandleAlloc.Allocate();
+			assert(materialPSOs[kMaterialShadowSkinned]);
+			{
+				CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
+				params->handle = materialPSOs[kMaterialShadowSkinned];
+				params->vertexShader = materialVSs[kMaterialShadowSkinned];
 				params->vertexFormat = kVertexFormatSkinned;
 				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 			}
@@ -1571,7 +1594,7 @@ namespace tofu
 		assert(lightsCount <= kMaxEntities);
 
 		uint32_t* pointLights = reinterpret_cast<uint32_t*>(MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxEntities, 4));
-		uint32_t* soptLights = reinterpret_cast<uint32_t*>(MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxEntities, 4));
+		uint32_t* spotLights = reinterpret_cast<uint32_t*>(MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxEntities, 4));
 		uint32_t* shadowLights = reinterpret_cast<uint32_t*>(MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxShadowCastingLights, 4));
 
 		uint32_t numDirectionalLights = 0;
@@ -1618,7 +1641,7 @@ namespace tofu
 				}
 				else if (comp.type == kLightTypeSpot)
 				{
-					soptLights[numSpotLights++] = i;
+					spotLights[numSpotLights++] = i;
 					float scale = math::tan(math::radians(comp.spotAngle * 0.5f)) * comp.range;
 					lightParams[i].transform = math::scale(math::float4x4(1.0f), math::float3(scale, scale, comp.range)) * lightParams[i].transform;
 
@@ -1627,7 +1650,6 @@ namespace tofu
 						shadowLights[numShadowCastingLights++] = i;
 						math::float3 lightWorldPos = t->GetWorldPosition();
 						lightParams[i].matView = math::transpose(math::lookTo(lightWorldPos, dir, t->GetUpVector()));
-						// todo shadow map size?
 						lightParams[i].matProj = math::transpose(math::perspective(math::radians(comp.spotAngle), 1.0f, 0.01f, comp.range));
 					}
 				}
@@ -1700,6 +1722,76 @@ namespace tofu
 
 		// Shadow Maps
 
+		for (uint32_t iLight = 0; iLight < numShadowCastingLights; iLight++)
+		{
+			uint32_t lightIdx = shadowLights[iLight];
+
+			// clear depth map
+			{
+				ClearParams* params = MemoryAllocator::Allocate<ClearParams>(allocNo);
+				params->renderTargets[0] = TextureHandle();
+				params->depthRenderTarget = lights[lightIdx].depthMap;
+				cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
+			}
+
+			// TODO: culling
+			for (uint32_t iObject = 0; iObject < numActiveRenderables; iObject++)
+			{
+				RenderingComponentData& comp = renderables[activeRenderables[iObject]];
+
+				assert(nullptr != comp.model);
+				assert(0 != comp.numMaterials);
+
+				Model& model = *comp.model;
+
+				for (uint32_t iMesh = 0; iMesh < model.numMeshes; iMesh++)
+				{
+					assert(model.meshes[iMesh]);
+					Mesh& mesh = meshes[model.meshes[iMesh].id];
+					Material* mat = comp.materials[iMesh < comp.numMaterials ? iMesh : (comp.numMaterials - 1)];
+
+					DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
+					params->pipelineState = materialPSOs[mat->type];
+					params->vertexBuffer = mesh.VertexBuffer;
+					params->indexBuffer = mesh.IndexBuffer;
+					params->startIndex = mesh.StartIndex;
+					params->startVertex = mesh.StartVertex;
+					params->indexCount = mesh.NumIndices;
+
+					if (mat->type == kMaterialTypeOpaque) params->pipelineState = materialPSOs[kMaterialShadow];
+					if (mat->type == kMaterialTypeOpaqueSkinned) params->pipelineState = materialPSOs[kMaterialShadowSkinned];
+
+					switch (mat->type)
+					{
+					case kMaterialTypeOpaqueSkinned:
+						(void*)0;
+						{
+							AnimationComponent anim = comp.entity.GetComponent<AnimationComponent>();
+							if (!anim || !anim->boneMatricesBuffer)
+							{
+								return kErrUnknown;
+							}
+							params->vsConstantBuffers[2] = { anim->boneMatricesBuffer, 0, 0 };
+						}
+						// fall through
+					case kMaterialTypeOpaque:
+						params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(iObject * 16), 16 };
+						params->vsConstantBuffers[1] = { lightParamsBuffer, static_cast<uint16_t>(lightIdx * 16), 16 };
+
+						params->renderTargets[0] = TextureHandle();
+						params->depthRenderTarget = lights[lightIdx].depthMap;
+
+						break;
+					default:
+						assert(false && "this material type is not applicable for entities");
+						break;
+					}
+
+					cmdBuf->Add(RendererCommand::kCommandDraw, params);
+				}
+			}
+		}
+
 		// Geometry Pass
 
 		{
@@ -1714,7 +1806,6 @@ namespace tofu
 
 		// generate draw call for active renderables in command buffer
 		for (uint32_t i = 0; i < numActiveRenderables; ++i)
-			//	for (uint32_t i = 0; i < 1; ++i)
 		{
 			RenderingComponentData& comp = renderables[activeRenderables[i]];
 
@@ -1827,7 +1918,7 @@ namespace tofu
 				params->startVertex = mesh.StartVertex;
 				params->indexCount = mesh.NumIndices;
 
-				params->vsConstantBuffers[0] = { lightParamsBuffer, static_cast<uint16_t>(soptLights[i] * 16), 16 };
+				params->vsConstantBuffers[0] = { lightParamsBuffer, static_cast<uint16_t>(spotLights[i] * 16), 16 };
 				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
 
 				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
@@ -1884,7 +1975,7 @@ namespace tofu
 				params->startVertex = mesh.StartVertex;
 				params->indexCount = mesh.NumIndices;
 
-				params->vsConstantBuffers[0] = { lightParamsBuffer, static_cast<uint16_t>(soptLights[i] * 16), 16 };
+				params->vsConstantBuffers[0] = { lightParamsBuffer, static_cast<uint16_t>(spotLights[i] * 16), 16 };
 				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
 
 				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
@@ -1892,7 +1983,11 @@ namespace tofu
 				params->psTextures[0] = gBuffer1;
 				params->psTextures[1] = gBuffer2;
 				params->psTextures[2] = gBuffer3;
+
+				params->psTextures[3] = lights[spotLights[i]].depthMap;
+
 				params->psSamplers[0] = defaultSampler;
+				params->psSamplers[1] = shadowSampler;
 
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}

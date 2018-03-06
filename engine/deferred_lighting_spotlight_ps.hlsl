@@ -14,8 +14,10 @@ cbuffer LightParameters : register (b0)
 Texture2D gBuffer1 : register(t0);
 Texture2D gBuffer2 : register(t1);
 Texture2D gBuffer3 : register(t2);
+Texture2D shadowMap : register(t3);
 
 SamplerState samp : register(s0);
+SamplerState shadowSamp : register(s1);
 
 float4 main(float4 clipPos : SV_POSITION) : SV_TARGET
 {
@@ -40,5 +42,21 @@ float4 main(float4 clipPos : SV_POSITION) : SV_TARGET
 
 	float value = NdotL * atten;
 
-	return float4(value * color.rgb * albedo, 1);
+	float4 lightSpacePos = mul(mul(float4(worldPos, 1), matView), matProj);
+	lightSpacePos /= lightSpacePos.w;
+	lightSpacePos.xy = lightSpacePos.xy * 0.5 + 0.5;
+	lightSpacePos.y = 1 - lightSpacePos.y;
+
+	float currentDepth = lightSpacePos.z;
+	//currentDepth += 0.0001f;
+	float shadow = 0;
+	for (int i = -3; i < 4; i++) {
+		for (int j = -3; j < 4; j++) {
+			float cloestDepth = shadowMap.Sample(shadowSamp, lightSpacePos.xy + float2(i, j) * 0.0009765625).r;
+			shadow += (currentDepth > cloestDepth ? 1 : 0);
+		}
+	}
+	shadow /= 25;
+
+	return float4(shadow * value * color.rgb * albedo, 1);
 }
