@@ -286,6 +286,16 @@ namespace tofu
 			uint32_t				blendState;
 		};
 
+		struct
+		{
+			float					topLeftX;
+			float					topLeftY;
+			float					width;
+			float					height;
+			float					minZ;
+			float					maxZ;
+		}							viewport;
+
 		CreatePipelineStateParams()
 			:
 			handle(),
@@ -315,7 +325,8 @@ namespace tofu
 			srcBlendAlpha(kBlendOne),
 			destBlendAlpha(kBlendZero),
 			blendOpAlpha(kBlendOpAdd),
-			blendWriteMask(kColorWriteAll)
+			blendWriteMask(kColorWriteAll),
+			viewport()
 		{}
 	};
 

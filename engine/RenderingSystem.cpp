@@ -274,6 +274,9 @@ namespace tofu
 
 		}
 
+		int32_t bufferWidth, bufferHeight;
+		renderer->GetFrameBufferSize(bufferWidth, bufferHeight);
+
 		// create built-in pipeline states
 		{
 			materialPSOs[kMaterialTypeTest] = pipelineStateHandleAlloc.Allocate();
@@ -284,6 +287,7 @@ namespace tofu
 				params->handle = materialPSOs[kMaterialTypeTest];
 				params->vertexShader = materialVSs[kMaterialTypeTest];
 				params->pixelShader = materialPSs[kMaterialTypeTest];
+				params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
 
 				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 			}
@@ -298,6 +302,7 @@ namespace tofu
 				params->pixelShader = materialPSs[kMaterialTypeSkybox];
 				params->cullMode = kCullFront;
 				params->depthFunc = kComparisonAlways;
+				params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
 				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 			}
 
@@ -309,6 +314,7 @@ namespace tofu
 				params->handle = materialPSOs[kMaterialTypeOpaque];
 				params->vertexShader = materialVSs[kMaterialTypeOpaque];
 				params->pixelShader = materialPSs[kMaterialTypeOpaque];
+				params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
 
 				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 			}
@@ -320,6 +326,9 @@ namespace tofu
 				params->handle = materialPSOs[kMaterialTypeDepth];
 				params->vertexShader = materialVSs[kMaterialTypeDepth];
 				params->cullMode = kCullFront;
+
+				params->viewport = { 0.0f, 0.0f, 1024.0f, 1024.0f, 0.0f, 1.0f };
+
 				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 			}
 
@@ -331,6 +340,9 @@ namespace tofu
 				params->vertexShader = materialVSs[kMaterialTypeDepthSkinned];
 				params->vertexFormat = kVertexFormatSkinned;
 				params->cullMode = kCullFront;
+
+				params->viewport = { 0.0f, 0.0f, 1024.0f, 1024.0f, 0.0f, 1.0f };
+
 				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 			}
 
@@ -343,6 +355,7 @@ namespace tofu
 				params->vertexShader = materialVSs[kMaterialTypeOpaqueSkinned];
 				params->pixelShader = materialPSs[kMaterialTypeOpaqueSkinned];
 				params->vertexFormat = kVertexFormatSkinned;
+				params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
 				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 			}
 
@@ -352,6 +365,9 @@ namespace tofu
 				CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
 				params->handle = materialPSOs[kMaterialShadow];
 				params->vertexShader = materialVSs[kMaterialShadow];
+
+				params->viewport = { 0.0f, 0.0f, 1024.0f, 1024.0f, 0.0f, 1.0f };
+
 				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 			}
 
@@ -362,6 +378,9 @@ namespace tofu
 				params->handle = materialPSOs[kMaterialShadowSkinned];
 				params->vertexShader = materialVSs[kMaterialShadowSkinned];
 				params->vertexFormat = kVertexFormatSkinned;
+
+				params->viewport = { 0.0f, 0.0f, 1024.0f, 1024.0f, 0.0f, 1.0f };
+
 				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 			}
 
@@ -372,6 +391,8 @@ namespace tofu
 				params->handle = materialPSOs[kMaterialDeferredGeometryOpaque];
 				params->vertexShader = materialVSs[kMaterialDeferredGeometryOpaque];
 				params->pixelShader = materialPSs[kMaterialDeferredGeometryOpaque];
+
+				params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
 
 				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 			}
@@ -384,6 +405,8 @@ namespace tofu
 				params->vertexShader = materialVSs[kMaterialDeferredGeometryOpaqueSkinned];
 				params->pixelShader = materialPSs[kMaterialDeferredGeometryOpaqueSkinned];
 				params->vertexFormat = kVertexFormatSkinned;
+
+				params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
 
 				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 			}
@@ -405,6 +428,8 @@ namespace tofu
 				params->stencilRef = 1u;
 
 				params->cullMode = kCullFront;
+
+				params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
 
 				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 			}
@@ -429,6 +454,9 @@ namespace tofu
 				params->blendEnable = 1;
 				params->srcBlend = kBlendOne;
 				params->destBlend = kBlendOne;
+
+				params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
+
 				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 			}
 
@@ -452,6 +480,9 @@ namespace tofu
 				params->blendEnable = 1;
 				params->srcBlend = kBlendOne;
 				params->destBlend = kBlendOne;
+
+				params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
+
 				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 			}
 		}
@@ -471,6 +502,9 @@ namespace tofu
 			params->blendEnable = 1;
 			params->srcBlend = kBlendOne;
 			params->destBlend = kBlendOne;
+
+			params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
+
 			cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 		}
 
@@ -1992,7 +2026,7 @@ namespace tofu
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
 
-			// ambient light
+			// ambient light & directional lights
 			{
 				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
 				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);

@@ -652,8 +652,8 @@ namespace tofu
 					);
 
 					if (texDesc.Format == DXGI_FORMAT_D24_UNORM_S8_UINT && 0u != (params->bindingFlags & kBindingDepthStencil))
-						//texDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
-					    texDesc.Format = DXGI_FORMAT_R32_TYPELESS;
+						texDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
+					    //texDesc.Format = DXGI_FORMAT_R32_TYPELESS;
 					
 					D3D11_SUBRESOURCE_DATA subResData = {};
 					subResData.pSysMem = params->data;
@@ -670,8 +670,8 @@ namespace tofu
 						{
 							//textures[id].tex->GetDesc()
 							D3D11_SHADER_RESOURCE_VIEW_DESC desc = {};
-							//desc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
-							desc.Format = DXGI_FORMAT_R32_FLOAT;
+							desc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+							//desc.Format = DXGI_FORMAT_R32_FLOAT;
 							if (params->cubeMap == 1)
 							{
 								desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
@@ -740,8 +740,8 @@ namespace tofu
 						{
 							CD3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc(textures[id].tex,
 								D3D11_DSV_DIMENSION_TEXTURE2D,
-								DXGI_FORMAT_D32_FLOAT
-								//DXGI_FORMAT_D24_UNORM_S8_UINT
+								//DXGI_FORMAT_D32_FLOAT
+								DXGI_FORMAT_D24_UNORM_S8_UINT
 								);
 
 							DXCHECKED(device->CreateDepthStencilView(textures[id].tex, &dsvDesc, &(textures[id].dsv[0])));
@@ -1005,7 +1005,9 @@ namespace tofu
 
 
 				pipelineStates[id].viewport = {
-					0.0f, 0.0f, (FLOAT)winWidth, (FLOAT)winHeight, 0.0f, 1.0f
+					params->viewport.topLeftX, params->viewport.topLeftY,
+					params->viewport.width, params->viewport.height,
+					params->viewport.minZ, params->viewport.maxZ
 				};
 
 				pipelineStates[id].vertexShader = params->vertexShader;

@@ -48,8 +48,9 @@ float4 main(float4 clipPos : SV_POSITION) : SV_TARGET
 	lightSpacePos.y = 1 - lightSpacePos.y;
 
 	float currentDepth = lightSpacePos.z;
-	//currentDepth += 0.0001f;
+	currentDepth -= 0.00001f;
 	float shadow = 0;
+
 	for (int i = -3; i < 4; i++) {
 		for (int j = -3; j < 4; j++) {
 			float cloestDepth = shadowMap.Sample(shadowSamp, lightSpacePos.xy + float2(i, j) * 0.0009765625).r;
@@ -58,5 +59,5 @@ float4 main(float4 clipPos : SV_POSITION) : SV_TARGET
 	}
 	shadow /= 25;
 
-	return float4(shadow * value * color.rgb * albedo, 1);
+	return float4((1 - shadow) * value * color.rgb * albedo, 1);
 }
