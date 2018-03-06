@@ -164,7 +164,7 @@ int32_t AnimationDemo::Update()
 
 	if (input->IsGamepadConnected())
 	{
-		if (input->IsButtonDown(ButtonId::kGamepadFaceRight))
+		if (input->IsButtonDown(ButtonId::kGamepadStart))
 		{
 			Engine::instance()->Quit();
 		}

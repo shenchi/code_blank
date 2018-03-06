@@ -47,8 +47,8 @@ Player::Player(CharacterDetails details, void* comp)
 		// Idle Animations
 		AnimationState *idle = stateMachine->AddState("idle");
 		idle->animationName = "idle";
-		/*AnimationState *combat_idle = stateMachine->AddState("combat_idle");
-		combat_idle->animationName = "combat_idle";*/
+		AnimationState *combat_idle = stateMachine->AddState("combat_idle");
+		combat_idle->animationName = "combat_idle";
 
 
 		// Movement Animations

@@ -27,8 +27,7 @@ void GameplayAnimationMachine::Play(CharacterState state, uint32_t parameter, si
 		//aComp->CrossFade(0, 0.2f);
 		break;
 	case kIdleInCombat:
-		//aComp->CrossFade("combat_idle", 0.2f, 0);
-		aComp->CrossFade("idle", 0.05f, 0);
+		aComp->CrossFade("combat_idle", 0.03f, 0);
 		//aComp->Play("idle", 0);
 		//aComp->CrossFade("Idle_InCombat", 0.2f, layerMask);
 		break;
