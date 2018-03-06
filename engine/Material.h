@@ -8,7 +8,6 @@ namespace tofu
 
 	enum MaterialType
 	{
-		kMaterialTypeTest,
 		kMaterialTypeSkybox,
 		kMaterialTypeOpaque,
 		kMaterialTypeOpaqueSkinned,
@@ -33,6 +32,12 @@ namespace tofu
 		void SetTexture(TextureHandle t) { mainTex = t; }
 
 		void SetNormalMap(TextureHandle t) { normalMap = t; }
+
+		void SetMetallicGlossMap(TextureHandle t) { metallicGlossMap = t; }
+
+		void SetOcclusionMap(TextureHandle t) { occlusionMap = t; }
+
+
 		void SetMetallicMap(TextureHandle t) { metallicMap = t; }
 
 		void SetRoughnessMap(TextureHandle t) { roughnessMap = t; }
@@ -45,12 +50,14 @@ namespace tofu
 		void SetLUTMap(TextureHandle t) { lutMap = t; }
 
 	private:
-		Material(MaterialType type = MaterialType::kMaterialTypeTest) 
+		Material(MaterialType type = MaterialType::kMaterialTypeSkybox) 
 			: 
 			type(type),
 			handle(),
 			mainTex(),
 			normalMap(),
+			metallicGlossMap(),
+			occlusionMap(),
 			metallicMap(),
 			roughnessMap(),
 			aoMap()
@@ -61,6 +68,9 @@ namespace tofu
 		MaterialHandle	handle;
 		TextureHandle	mainTex;
 		TextureHandle	normalMap;
+		TextureHandle	metallicGlossMap;
+		TextureHandle	occlusionMap;
+
 		TextureHandle   metallicMap;
 		TextureHandle   roughnessMap;
 		TextureHandle   aoMap;

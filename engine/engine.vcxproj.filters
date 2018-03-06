@@ -238,12 +238,6 @@
     <FxCompile Include="Shaders\skybox_vs.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shaders\test_ps.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\test_vs.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="opaque_skinned_ps.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>

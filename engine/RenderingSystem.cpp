@@ -21,10 +21,11 @@ namespace
 	{
 		tofu::math::float4x4	matView;			// 4 shader constants
 		tofu::math::float4x4	matProj;			// 4 shader constants
-		float					padding1[32];		// 8 shader constants
-		tofu::math::float3		cameraPos;			// 1 shader constants
-		float					padding2;
-		float					padding3[4 * 15];	// 15 shader constants
+		tofu::math::float4x4	matViewInv;			// 4 shader constants
+		tofu::math::float4x4	matProjInv;			// 4 shader constants
+		tofu::math::float4		cameraPos;			// 1 shader constants
+		tofu::math::float4		bufferSize;			// 1 shader constants
+		float					padding3[4 * 14];	// 15 shader constants
 	};
 
 	struct LightingConstants {                      // 16 shader constants in total
@@ -140,11 +141,6 @@ namespace tofu
 		BeginFrame();
 
 		// Create Built-in Shaders
-		CHECKED(InitBuiltinMaterial(kMaterialTypeTest,
-			"assets/test_vs.shader",
-			"assets/test_ps.shader"
-		));
-
 		CHECKED(InitBuiltinMaterial(kMaterialTypeSkybox,
 			"assets/skybox_vs.shader",
 			"assets/skybox_ps.shader"
@@ -279,19 +275,6 @@ namespace tofu
 
 		// create built-in pipeline states
 		{
-			materialPSOs[kMaterialTypeTest] = pipelineStateHandleAlloc.Allocate();
-			assert(materialPSOs[kMaterialTypeTest]);
-
-			{
-				CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
-				params->handle = materialPSOs[kMaterialTypeTest];
-				params->vertexShader = materialVSs[kMaterialTypeTest];
-				params->pixelShader = materialPSs[kMaterialTypeTest];
-				params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
-
-				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
-			}
-
 			materialPSOs[kMaterialTypeSkybox] = pipelineStateHandleAlloc.Allocate();
 			assert(materialPSOs[kMaterialTypeSkybox]);
 
@@ -642,9 +625,9 @@ namespace tofu
 		}
 		CameraComponentData& camera = CameraComponent::GetAllComponents()[0];
 
+		int32_t w, h;
 		// update aspect
 		{
-			int32_t w, h;
 			renderer->GetFrameBufferSize(w, h);
 			camera.SetAspect(h == 0 ? 1.0f : float(w) / h);
 		}
@@ -658,15 +641,22 @@ namespace tofu
 			assert(nullptr != data);
 
 #ifdef TOFU_USE_GLM
-			data->matView = math::transpose(camera.CalcViewMatrix());
-			data->matProj = math::transpose(camera.CalcProjectionMatrix());
+			math::float4x4 matView = camera.CalcViewMatrix();
+			math::float4x4 matProj = camera.CalcProjectionMatrix();
+			data->matView = math::transpose(matView);
+			data->matProj = math::transpose(matProj);
+			data->matViewInv = math::transpose(math::inverse(matView));
+			data->matProjInv = math::transpose(math::inverse(matProj));
 #else
 			data->matView = camera.CalcViewMatrix();
 			data->matProj = camera.CalcProjectionMatrix();
+			data->matViewInv = math::inverse(data->matView);
+			data->matProjInv = math::inverse(data->matProj);
 #endif
 
 			TransformComponent t = camera.entity.GetComponent<TransformComponent>();
-			data->cameraPos = t->GetWorldPosition();
+			data->cameraPos = math::float4(t->GetWorldPosition(), 1.0f);
+			data->bufferSize = math::float4(float(w), float(h), 0, 0);
 
 			camPos = data->cameraPos;
 
@@ -867,7 +857,7 @@ namespace tofu
 				assert(nullptr != data);
 
 				TransformComponent t = lights[i].entity.GetComponent<TransformComponent>();
-				data->cameraPos = camPos;
+				data->cameraPos = math::float4(camPos, 1);
 
 				math::float3 lightPos;
 				math::float3 forward;
@@ -1022,12 +1012,6 @@ namespace tofu
 
 				switch (mat->type)
 				{
-				case kMaterialTypeTest:
-					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
-					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
-					params->psTextures[0] = mat->mainTex;
-					params->psSamplers[0] = defaultSampler;
-					break;
 				case kMaterialTypeOpaqueSkinned:
 					(void*)0;
 					{
@@ -1488,15 +1472,22 @@ namespace tofu
 			assert(nullptr != data);
 
 #ifdef TOFU_USE_GLM
-			data->matView = math::transpose(camera.CalcViewMatrix());
-			data->matProj = math::transpose(camera.CalcProjectionMatrix());
+			math::float4x4 matView = camera.CalcViewMatrix();
+			math::float4x4 matProj = camera.CalcProjectionMatrix();
+			data->matView = math::transpose(matView);
+			data->matProj = math::transpose(matProj);
+			data->matViewInv = math::transpose(math::inverse(matView));
+			data->matProjInv = math::transpose(math::inverse(matProj));
 #else
 			data->matView = camera.CalcViewMatrix();
 			data->matProj = camera.CalcProjectionMatrix();
+			data->matViewInv = math::inverse(data->matView);
+			data->matProjInv = math::inverse(data->matProj);
 #endif
 
 			TransformComponent t = camera.entity.GetComponent<TransformComponent>();
-			data->cameraPos = t->GetWorldPosition();
+			data->cameraPos = math::float4(t->GetWorldPosition(), 1);
+			data->bufferSize = math::float4(float(bufferWidth), float(bufferHeight), 0, 0);
 
 			camPos = data->cameraPos;
 
@@ -1868,12 +1859,6 @@ namespace tofu
 
 				switch (mat->type)
 				{
-				case kMaterialTypeTest:
-					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
-					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
-					params->psTextures[0] = mat->mainTex;
-					params->psSamplers[0] = defaultSampler;
-					break;
 				case kMaterialTypeOpaqueSkinned:
 					(void*)0;
 					{
@@ -1887,7 +1872,7 @@ namespace tofu
 					// fall through
 				case kMaterialTypeOpaque:
 					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
-					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
+					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 32 };
 					params->psTextures[0] = mat->mainTex;
 					params->psTextures[1] = mat->normalMap;
 					params->psSamplers[0] = defaultSampler;
@@ -1925,7 +1910,7 @@ namespace tofu
 				params->indexCount = mesh.NumIndices;
 
 				params->vsConstantBuffers[0] = { lightParamsBuffer, static_cast<uint16_t>(pointLights[i] * 16), 16 };
-				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
+				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 32 };
 
 				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
 
@@ -1953,7 +1938,7 @@ namespace tofu
 				params->indexCount = mesh.NumIndices;
 
 				params->vsConstantBuffers[0] = { lightParamsBuffer, static_cast<uint16_t>(spotLights[i] * 16), 16 };
-				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
+				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 32 };
 
 				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
 
@@ -1982,9 +1967,10 @@ namespace tofu
 				params->indexCount = mesh.NumIndices;
 
 				params->vsConstantBuffers[0] = { lightParamsBuffer, static_cast<uint16_t>(pointLights[i] * 16), 16 };
-				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
+				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
 
 				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
+				params->psConstantBuffers[1] = params->vsConstantBuffers[1];
 
 				params->psTextures[0] = gBuffer1;
 				params->psTextures[1] = gBuffer2;
@@ -2010,9 +1996,10 @@ namespace tofu
 				params->indexCount = mesh.NumIndices;
 
 				params->vsConstantBuffers[0] = { lightParamsBuffer, static_cast<uint16_t>(spotLights[i] * 16), 16 };
-				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
+				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
 
 				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
+				params->psConstantBuffers[1] = params->vsConstantBuffers[1];
 
 				params->psTextures[0] = gBuffer1;
 				params->psTextures[1] = gBuffer2;

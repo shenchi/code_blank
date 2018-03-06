@@ -43,6 +43,8 @@ namespace tofu
 
 			SetDefaultAlbedoMap(defaultAlbedoTex);
 			SetDefaultNormalMap(defaultNormalMap);
+			SetDefaultMetallicGlossMap(defaultAlbedoTex);
+			SetDefaultOcclusionMap(defaultAlbedoTex);
 		}
 
 		return kOK;
@@ -88,9 +90,33 @@ namespace tofu
 			}
 		}
 
+		TextureHandle metallicGloss = defaultMetallicGlossMap;
+		const char* metallicMapPath = matConfig["MetallicGlossMap"].GetString();
+		if (nullptr != metallicMapPath && metallicMapPath[0] != 0)
+		{
+			metallicGloss = LoadTexture(metallicMapPath);
+			if (!metallicGloss)
+			{
+				return nullptr;
+			}
+		}
+
+		TextureHandle occlusion = defaultOcclusionMap;
+		const char* occlusionPath = matConfig["OcclusionMap"].GetString();
+		if (nullptr != occlusionPath && occlusionPath[0] != 0)
+		{
+			occlusion = LoadTexture(occlusionPath);
+			if (!occlusion)
+			{
+				return nullptr;
+			}
+		}
+
 		Material* mat = RenderingSystem::instance()->CreateMaterial(kMaterialTypeOpaque);
 		mat->SetTexture(albedo);
 		mat->SetNormalMap(normal);
+		mat->SetMetallicGlossMap(metallicGloss);
+		mat->SetOcclusionMap(occlusion);
 
 		materials.insert(std::pair<std::string, Material*>(name, mat));
 		return mat;

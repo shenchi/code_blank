@@ -678,6 +678,198 @@
         }
       ],
       "children": null
+    },
+    {
+      "name": "Flamable_2",
+      "transform": {
+        "translate": {
+          "x": -9.44,
+          "y": 0.604,
+          "z": 1.8
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "model": "models/barrel.model",
+          "materials": [
+            "Flamable_2"
+          ],
+          "type": "renderable"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Spotlight (4)",
+      "transform": {
+        "translate": {
+          "x": -9.3,
+          "y": 8.53,
+          "z": -5.24
+        },
+        "rotate": {
+          "x": 0.5,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 0.8660254
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "lightType": "spot",
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "range": 20.0,
+          "intensity": 4.5,
+          "spotAngle": 60.0,
+          "castShadow": true,
+          "type": "light"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Flamable_2 (1)",
+      "transform": {
+        "translate": {
+          "x": -10.92,
+          "y": 0.604,
+          "z": 1.27
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "model": "models/barrel.model",
+          "materials": [
+            "Flamable_2"
+          ],
+          "type": "renderable"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Wooden_Barrel",
+      "transform": {
+        "translate": {
+          "x": -8.821,
+          "y": 0.6,
+          "z": -3.122
+        },
+        "rotate": {
+          "x": 2.18556941E-08,
+          "y": 3.774895E-08,
+          "z": -8.556457E-16,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 2.0,
+          "y": 2.0,
+          "z": 2.0
+        }
+      },
+      "components": [
+        {
+          "model": "models/Wooden_Barrel.model",
+          "materials": [
+            "Wooden_Barrel"
+          ],
+          "type": "renderable"
+        },
+        {
+          "colliderType": "mesh",
+          "center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "size": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "model": "models/Wooden_Barrel.model",
+          "type": "physics"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Wooden_Barrel (1)",
+      "transform": {
+        "translate": {
+          "x": -11.172,
+          "y": 0.6,
+          "z": -2.45
+        },
+        "rotate": {
+          "x": 2.18556941E-08,
+          "y": 3.774895E-08,
+          "z": -8.556457E-16,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 2.0,
+          "y": 2.0,
+          "z": 2.0
+        }
+      },
+      "components": [
+        {
+          "model": "models/Wooden_Barrel.model",
+          "materials": [
+            "Wooden_Barrel"
+          ],
+          "type": "renderable"
+        },
+        {
+          "colliderType": "mesh",
+          "center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "size": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "model": "models/Wooden_Barrel.model",
+          "type": "physics"
+        }
+      ],
+      "children": null
     }
   ],
   "spawnernodes": null,
