@@ -80,8 +80,14 @@ namespace tofu
 		std::string name;
 
 	public:
+		AnimNodeBase() = default;
 		AnimNodeBase(std::string name);
+		AnimNodeBase& operator=(AnimNodeBase other) { swap(*this, other); return *this; }
+		AnimNodeBase(AnimNodeBase& other) = delete;
+		AnimNodeBase(AnimNodeBase&& other) noexcept : AnimNodeBase() { swap(*this, other); }
 		virtual ~AnimNodeBase() {}
+
+		friend void swap(AnimNodeBase& lhs, AnimNodeBase& rhs) noexcept;
 
 		virtual void Enter(Model *model) {}
 		virtual void Exit() {}
@@ -104,8 +110,14 @@ namespace tofu
 
 		std::string	animationName = "";
 	public:
+		AnimationState() = default;
+		AnimationState& operator=(AnimationState other) { swap(*this, other); return *this; }
+		AnimationState(AnimationState& other) = delete;
+		AnimationState(AnimationState&& other) noexcept : AnimationState() { swap(*this, other); }
 		AnimationState(std::string name) : AnimNodeBase(name) {}
 		virtual ~AnimationState();
+
+		friend void swap(AnimationState& lhs, AnimationState& rhs) noexcept;
 
 		virtual void Enter(Model *model) override;
 		virtual void Exit() override;
@@ -138,11 +150,16 @@ namespace tofu
 		std::list<AnimationTransitionEntry> transitions;
 
 	public:
+		AnimationStateMachine() = default;
 		AnimationStateMachine(std::string name);
-		// TODO::
-		//AnimationStateMachine(const AnimationStateMachine& other);
-		//AnimationStateMachine(AnimationStateMachine && other) noexcept;
+		AnimationStateMachine& operator=(AnimationStateMachine other) { swap(*this, other); return *this; }
+		AnimationStateMachine(AnimationStateMachine& other) = delete;
+		AnimationStateMachine(AnimationStateMachine&& other) noexcept : AnimationStateMachine() {
+			swap(*this, other); 
+		}
 		virtual ~AnimationStateMachine();
+
+		friend void swap(AnimationStateMachine& lhs, AnimationStateMachine& rhs) noexcept;
 
 		void Play(std::string name);
 		void CrossFade(std::string name, float normalizedTransitionDuration);

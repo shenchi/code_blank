@@ -42,6 +42,12 @@ namespace tofu
 		indices[type][3] = index;
 	}
 
+	/*AnimationState::AnimationState(AnimationState & other)
+		:isLoop(other.isLoop), playbackSpeed(other.playbackSpeed), animationName(other.animationName)
+	{
+		
+	}*/
+
 	AnimationState::~AnimationState()
 	{
 		if(cache)
@@ -99,10 +105,14 @@ namespace tofu
 		cursor = tempCursor;
 	}
 
-	AnimNodeBase::AnimNodeBase(std::string name)
-		:name(name)
+	AnimNodeBase::AnimNodeBase(std::string name) : name(name)
 	{
 	}
+
+	/*AnimNodeBase::AnimNodeBase(AnimNodeBase & other)
+	{
+		name = other.name;
+	}*/
 
 	void AnimationState::Update(UpdateContext& context)
 	{
@@ -206,7 +216,7 @@ namespace tofu
 
 			trans.isDirty = true;
 
-			context.transforms[i].BlendByWeight(trans, weight);
+			context.transforms[i].Blend(trans, weight);
 		}
 	}
 
@@ -283,14 +293,17 @@ namespace tofu
 		return math::slerp(a, b, t);
 	}
 
-	// AnimationStateMachine
-
 	AnimationStateMachine::AnimationStateMachine(std::string name) :
 		AnimNodeBase(name)
 	{
 		states.push_back(new AnimNodeBase("entry"));
 		current = states.back();
 	}
+
+	//AnimationStateMachine::AnimationStateMachine(AnimationStateMachine & other)
+	//{
+	//	
+	//}
 
 	AnimationStateMachine::~AnimationStateMachine()
 	{
@@ -303,14 +316,17 @@ namespace tofu
 	{
 		stateIndexTable[name] = static_cast<uint16_t>(states.size());
 
-		// TODO: allocator
-	/*	AnimationState *state = static_cast<AnimationState *>(
-			MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(sizeof(AnimationState), alignof(AnimationState)));
+		//// TODO: allocator
+		//AnimationState *state = reinterpret_cast<AnimationState *>(
+		//	MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(sizeof(AnimationState), alignof(AnimationState)));
 
-		*state = AnimationState(name);
-		states.push_back(state);
+		////state->name = std::string();
+		////state->animationName = std::move(std::string());
+		//state->name = std::string();
+		//*state = std::move(AnimationState(name));
+		//states.push_back(state);
 
-		return state;*/
+		//return state;
 
 		states.push_back(new AnimationState(name));
 		return static_cast<AnimationState*>(states.back());
@@ -401,7 +417,7 @@ namespace tofu
 				current->Evaluate(temp, alpha);
 
 				for (auto i = 0; i < context.model->header->NumBones; i++) {
-					context.transforms[i].BlendByWeight(temp.transforms[i], weight);
+					context.transforms[i].Blend(temp.transforms[i], weight);
 				}
 
 				delete[] temp.transforms;
@@ -432,5 +448,30 @@ namespace tofu
 	void AnimationLayer::Evaluate(EvaluateContext & context)
 	{
 		stateMachine.Evaluate(context, weight);
+	}
+
+	void swap(AnimNodeBase & lhs, AnimNodeBase & rhs) noexcept
+	{
+		using std::swap;
+		swap(lhs.name, rhs.name);
+	}
+
+	void swap(AnimationState & lhs, AnimationState & rhs) noexcept
+	{
+		using std::swap;
+		swap(lhs.name, rhs.name);
+		swap(lhs.animationName, rhs.animationName);
+		swap(lhs.cache, rhs.cache);
+	}
+
+	void swap(AnimationStateMachine & lhs, AnimationStateMachine & rhs) noexcept
+	{
+		using std::swap;
+		swap(lhs.name, rhs.name);
+		swap(lhs.previous, rhs.previous);
+		swap(lhs.current, rhs.current);
+		swap(lhs.transitions, rhs.transitions);
+		swap(lhs.states, rhs.states);
+		swap(lhs.stateIndexTable, rhs.stateIndexTable);
 	}
 }
