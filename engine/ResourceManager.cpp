@@ -24,6 +24,10 @@ namespace tofu
 				MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(
 					sizeof(math::float4), sizeof(math::float4)));
 
+			math::float4* data3 = reinterpret_cast<math::float4*>(
+				MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(
+					sizeof(math::float4), sizeof(math::float4)));
+
 			if (nullptr == data1 || nullptr == data2)
 			{
 				return kErrUnknown;
@@ -33,6 +37,8 @@ namespace tofu
 
 			*(data2) = math::float4{ 0.5f, 0.5f, 1, 1 };
 
+			*(data3) = math::float4{ 0, 0, 0, 0 };
+
 			TextureHandle defaultAlbedoTex = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 16, data1);
 			if (!defaultAlbedoTex)
 				return kErrUnknown;
@@ -41,9 +47,13 @@ namespace tofu
 			if (!defaultNormalMap)
 				return kErrUnknown;
 
+			TextureHandle defaultMetallicGlossMap = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 16, data3);
+			if (!defaultNormalMap)
+				return kErrUnknown;
+
 			SetDefaultAlbedoMap(defaultAlbedoTex);
 			SetDefaultNormalMap(defaultNormalMap);
-			SetDefaultMetallicGlossMap(defaultAlbedoTex);
+			SetDefaultMetallicGlossMap(defaultMetallicGlossMap);
 			SetDefaultOcclusionMap(defaultAlbedoTex);
 		}
 

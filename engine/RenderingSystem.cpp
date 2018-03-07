@@ -182,6 +182,8 @@ namespace tofu
 		CHECKED(InitBuiltinMaterial(kMaterialDeferredLightingAmbient,
 			"assets/bypass_vs.shader",
 			"assets/deferred_lighting_ambient_ps.shader"));
+		
+		CHECKED(LoadPixelShader("assets/post_process_tone_mapping_ps.shader", materialPSs[kMaterialPostProcessToneMapping]));
 
 		// constant buffers
 		{
@@ -374,6 +376,9 @@ namespace tofu
 				params->handle = materialPSOs[kMaterialDeferredGeometryOpaque];
 				params->vertexShader = materialVSs[kMaterialDeferredGeometryOpaque];
 				params->pixelShader = materialPSs[kMaterialDeferredGeometryOpaque];
+				//params->stencilEnable = 1;
+				//params->frontFacePassOp = kStencilOpReplace;
+				//params->stencilRef = 1u;
 
 				params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
 
@@ -388,6 +393,9 @@ namespace tofu
 				params->vertexShader = materialVSs[kMaterialDeferredGeometryOpaqueSkinned];
 				params->pixelShader = materialPSs[kMaterialDeferredGeometryOpaqueSkinned];
 				params->vertexFormat = kVertexFormatSkinned;
+				//params->stencilEnable = 1;
+				//params->frontFacePassOp = kStencilOpReplace;
+				//params->stencilRef = 1u;
 
 				params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
 
@@ -406,6 +414,8 @@ namespace tofu
 				params->depthWrite = 0;
 				params->depthFunc = kComparisonGEqual;
 				params->stencilEnable = 1;
+				//params->backFaceDepthFailOp = kStencilOpDecSat;
+				//params->backFaceFunc = kComparisonEqual;
 				params->backFacePassOp = kStencilOpReplace;
 				params->backFaceFunc = kComparisonAlways;
 				params->stencilRef = 1u;
@@ -485,6 +495,23 @@ namespace tofu
 			params->blendEnable = 1;
 			params->srcBlend = kBlendOne;
 			params->destBlend = kBlendOne;
+
+			params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
+
+			cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+		}
+
+		materialPSOs[kMaterialPostProcessToneMapping] = pipelineStateHandleAlloc.Allocate();
+		assert(materialPSOs[kMaterialPostProcessToneMapping]);
+		{
+			CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
+			params->handle = materialPSOs[kMaterialPostProcessToneMapping];
+			params->vertexShader = materialVSs[kMaterialDeferredLightingAmbient];
+			params->pixelShader = materialPSs[kMaterialPostProcessToneMapping];
+
+			params->depthEnable = 0;
+
+			params->cullMode = kCullBack;
 
 			params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
 
@@ -574,7 +601,9 @@ namespace tofu
 		gBuffer2 = CreateTexture(kFormatR32g32b32a32Float, w, h, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
 		gBuffer3 = CreateTexture(kFormatR32g32b32a32Float, w, h, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
 
-		if (!gBuffer1 || !gBuffer2 || !gBuffer3)
+		hdrTarget = CreateTexture(kFormatR32g32b32a32Float, w, h, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
+
+		if (!gBuffer1 || !gBuffer2 || !gBuffer3 || !hdrTarget)
 		{
 			return kErrUnknown;
 		}
@@ -1440,7 +1469,7 @@ namespace tofu
 		assert(nullptr != params);
 		params->handle = bufferHandle;
 		params->bindingFlags = kBindingConstantBuffer;
-		params->size = c.boneMatricesBufferSize;
+		params->size = sizeof(math::float4x4) * 256;
 		params->dynamic = 1;
 
 		cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
@@ -1504,6 +1533,7 @@ namespace tofu
 		{
 			ClearParams* params = MemoryAllocator::Allocate<ClearParams>(allocNo);
 
+			params->renderTargets[0] = hdrTarget;
 			params->clearColor[0] = 0;
 			params->clearColor[1] = 0;
 			params->clearColor[2] = 0;
@@ -1875,6 +1905,8 @@ namespace tofu
 					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 32 };
 					params->psTextures[0] = mat->mainTex;
 					params->psTextures[1] = mat->normalMap;
+					params->psTextures[2] = mat->metallicGlossMap;
+					params->psTextures[3] = mat->occlusionMap;
 					params->psSamplers[0] = defaultSampler;
 
 					params->renderTargets[0] = gBuffer1;
@@ -1945,9 +1977,9 @@ namespace tofu
 				params->psTextures[0] = gBuffer1;
 				params->psTextures[1] = gBuffer2;
 				params->psTextures[2] = gBuffer3;
-				params->psSamplers[0] = defaultSampler;
+params->psSamplers[0] = defaultSampler;
 
-				cmdBuf->Add(RendererCommand::kCommandDraw, params);
+cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
 			/**/
 
@@ -1976,6 +2008,8 @@ namespace tofu
 				params->psTextures[1] = gBuffer2;
 				params->psTextures[2] = gBuffer3;
 				params->psSamplers[0] = defaultSampler;
+
+				params->renderTargets[0] = hdrTarget;
 
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
@@ -2010,6 +2044,8 @@ namespace tofu
 				params->psSamplers[0] = defaultSampler;
 				params->psSamplers[1] = shadowSampler;
 
+				params->renderTargets[0] = hdrTarget;
+
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
 
@@ -2033,11 +2069,35 @@ namespace tofu
 				params->psTextures[2] = gBuffer3;
 				params->psSamplers[0] = defaultSampler;
 
+				params->renderTargets[0] = hdrTarget;
+
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
 		}
 
 		// TODO: Transparent Pass
+
+		// post-process effect
+		{
+			// tone mapping
+			{
+				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
+				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
+
+				params->pipelineState = materialPSOs[kMaterialPostProcessToneMapping];
+
+				params->vertexBuffer = mesh.VertexBuffer;
+				params->indexBuffer = mesh.IndexBuffer;
+				params->startIndex = mesh.StartIndex;
+				params->startVertex = mesh.StartVertex;
+				params->indexCount = mesh.NumIndices;
+
+				params->psTextures[0] = hdrTarget;
+				//params->psSamplers[0] = defaultSampler;
+
+				cmdBuf->Add(RendererCommand::kCommandDraw, params);
+			}
+		}
 
 		return kOK;
 	}

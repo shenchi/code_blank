@@ -19,7 +19,7 @@ cbuffer LightParameters : register (b1)
 
 cbuffer BoneMatrices : register (b2)
 {
-	matrix bones[1024];
+	matrix bones[256];
 };
 
 struct Input

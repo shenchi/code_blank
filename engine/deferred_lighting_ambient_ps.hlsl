@@ -18,10 +18,11 @@ float4 main(float4 clipPos : SV_POSITION) : SV_TARGET
 {
 	float2 screenPos = clipPos.xy - 0.5;// / bufferSize.xy;
 
-	//float3 worldPos = gBuffer1.Load(int3(screenPos, 0)).rgb;
 	float3 worldNormal = gBuffer2.Load(int3(screenPos, 0)).rgb;
-	float3 albedo = gBuffer3.Load(int3(screenPos, 0)).rgb;
-	float3 color = albedo * ambient.rgb;
+	float3 albedo = gBuffer1.Load(int3(screenPos, 0)).rgb;
+	float3 occlusion = gBuffer3.Load(int3(screenPos, 0)).rgb;
+
+	float3 color = albedo * ambient.rgb * occlusion;
 
 	uint numDirectionalLights = ambient.w;
 

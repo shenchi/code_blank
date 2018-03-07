@@ -118,6 +118,8 @@ namespace tofu
 		TextureHandle			gBuffer2;
 		TextureHandle			gBuffer3;
 
+		TextureHandle			hdrTarget;
+
 		BufferHandle			lightParamsAmbDirBuffer;
 		BufferHandle			lightParamsBuffer;
 	};

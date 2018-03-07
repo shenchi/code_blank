@@ -27,6 +27,8 @@ Texture2D gBuffer3 : register(t2);
 
 SamplerState samp : register(s0);
 
+#include "PBR.hlsli"
+
 float4 main(float4 clipPos : SV_POSITION) : SV_TARGET
 {
 	float3 lightPos = transform[3].rgb;
@@ -41,16 +43,36 @@ float4 main(float4 clipPos : SV_POSITION) : SV_TARGET
 	worldPos = mul(worldPos, matViewInv);
 	
 	float3 worldNormal = texel.rgb;
-	float3 albedo = gBuffer3.Load(int3(screenPos, 0)).rgb;
+	
+	texel = gBuffer1.Load(int3(screenPos, 0)).rgba;
+	float3 albedo = texel.rgb;
+	float metallic = texel.a;
 
-	float3 lightDir = lightPos - worldPos,xyz;
-	float dist = length(lightDir);
+	texel = gBuffer3.Load(int3(screenPos, 0)).rgba;
+	float3 occlution = texel.rgb;
+	float roughness = 1 - texel.a; // gloss
+
+	float3 viewDir = normalize(cameraPos.xyz - worldPos.xyz);
+	
+	float3 lightDir = lightPos - worldPos.xyz;
+	float dist = length(lightDir) / range;
 	lightDir = normalize(lightDir);
 
 	float NdotL = max(dot(lightDir, worldNormal), 0);
-	float atten = max(0, 1 - (dist / range));
+	float atten = 1 / (dist * dist) * (1 - step(1, dist));
+
+	float3 H = normalize(lightDir + viewDir);
+	float NdotH = max(dot(worldNormal, H), 0);
+	float HdotV = max(dot(H, viewDir), 0);
+
+	float NdotV = max(dot(worldNormal, viewDir), 0);
 
 	float value = NdotL * atten;
 
-	return float4(value * color.rgb * albedo, 1);
+	float3 radiance = color.rgb * atten * intensity;
+	float3 Lo = LightingModel(radiance, albedo, NdotH, HdotV, NdotV, NdotL, metallic, roughness);
+
+	float3 finalColor = Lo;
+
+	return float4(finalColor, 1);
 }

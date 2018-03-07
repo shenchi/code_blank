@@ -18,8 +18,8 @@ struct PS_OUTPUT
 
 Texture2D diffuseTex : register(t0);
 Texture2D normalMap : register(t1);
-//Texture2D metallicGlossMap : register(t2);
-//Texture2D occlusionMap : register(t3);
+Texture2D metallicGlossMap : register(t2);
+Texture2D occlusionMap : register(t3);
 
 SamplerState samp : register(s0);
 
@@ -38,12 +38,14 @@ PS_OUTPUT main(V2F input)
 	normal = mul(normTexel, TBN);
 
 	float3 albedo = diffuseTex.Sample(samp, input.uv).rgb;
-	//float2 metallicGloss = metallicGlossMap.Sample(samp, input.uv).ra;
-	//float3 occlusion = occlusionMap.Sample(samp, input.uv).rgb;
+	float2 metallicGloss = metallicGlossMap.Sample(samp, input.uv).ra;
+	float3 occlusion = occlusionMap.Sample(samp, input.uv).rgb;
 
-	output.rt1 = float4(input.worldPos, 1.0);
+	albedo = pow(albedo, 2.2);
+
+	output.rt1 = float4(albedo, metallicGloss.x);
 	output.rt2 = float4(normal, input.position.z);
-	output.rt3 = float4(albedo, 1.0);
+	output.rt3 = float4(occlusion, metallicGloss.y);
 
 	return output;
 }

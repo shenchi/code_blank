@@ -29,10 +29,12 @@ Texture2D shadowMap : register(t3);
 SamplerState samp : register(s0);
 SamplerState shadowSamp : register(s1);
 
+#include "PBR.hlsli"
+
 float4 main(float4 clipPos : SV_POSITION) : SV_TARGET
 {
 	float3 lightPos = transform[3].rgb;
-	float2 screenPos = clipPos.xy - 0.5;// / bufferSize.xy;
+	float2 screenPos = clipPos.xy - 0.5;
 
 	float4 texel = gBuffer2.Load(int3(screenPos, 0)).rgba;
 	float4 worldPos = float4(screenPos, texel.a, 1);
@@ -42,30 +44,51 @@ float4 main(float4 clipPos : SV_POSITION) : SV_TARGET
 	worldPos /= worldPos.w;
 	worldPos = mul(worldPos, matViewInv);
 
-	float3 worldNormal = gBuffer2.Load(int3(screenPos, 0)).rgb;
-	float3 albedo = gBuffer3.Load(int3(screenPos, 0)).rgb;
+	float3 worldNormal = texel.rgb;
 
-	float3 lightDir = lightPos - worldPos;
-	float dist = length(lightDir);
+	texel = gBuffer1.Load(int3(screenPos, 0)).rgba;
+	float3 albedo = texel.rgb;
+	float metallic = texel.a;
+
+	texel = gBuffer3.Load(int3(screenPos, 0)).rgba;
+	float3 occlution = texel.rgb;
+	float roughness = 1 - texel.a; // gloss
+
+	float3 viewDir = normalize(cameraPos.xyz - worldPos.xyz);
+	
+	float3 lightDir = lightPos - worldPos.xyz;
+	float dist = length(lightDir) / range;
 	lightDir = normalize(lightDir);
 
 	float NdotL = max(dot(lightDir, worldNormal), 0);
-	float atten = max(0, 1 - (dist / range));
+	float atten = 1 / (dist * dist);
 
+	float3 H = normalize(lightDir + viewDir);
+	float NdotH = max(dot(worldNormal, H), 0);
+	float HdotV = max(dot(H, viewDir), 0);
+
+	float NdotV = max(dot(worldNormal, viewDir), 0);
+
+	// * for spot light - begin
 	float DdotL = dot(-direction.xyz, lightDir);
 
 	float r = 1 - spotAngle;
-	atten *= pow(max(0, 1 - (1 - DdotL) / r), 0.5);
+	atten *= pow(max(0, 1 - (1 - DdotL) / r), 2.0);
+	// * for spot light - end
 
-	float value = NdotL * atten;
+	// pbr
+	float3 radiance = color.rgb  * atten * intensity;
+	float3 Lo = LightingModel(radiance, albedo, NdotH, HdotV, NdotV, NdotL, metallic, roughness);
 
+	// shadow
 	float4 lightSpacePos = mul(mul(worldPos, matLightView), matLightProj);
 	lightSpacePos /= lightSpacePos.w;
 	lightSpacePos.xy = lightSpacePos.xy * 0.5 + 0.5;
 	lightSpacePos.y = 1 - lightSpacePos.y;
 
 	float currentDepth = lightSpacePos.z;
-	currentDepth -= 0.00001f;
+	float bias = max(0.001 * (1.0 - NdotL), 0.0001);
+	currentDepth -= 0.00001;
 	float shadow = 0;
 
 	for (int i = -3; i < 4; i++) {
@@ -76,5 +99,7 @@ float4 main(float4 clipPos : SV_POSITION) : SV_TARGET
 	}
 	shadow /= 25;
 
-	return float4((1 - shadow) * value * color.rgb * albedo, 1);
+	float3 finalColor = max(Lo, 0) * max(1 - shadow, 0);
+
+	return float4(finalColor, 1);
 }

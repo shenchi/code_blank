@@ -277,8 +277,14 @@
     <FxCompile Include="shadow_skinned_vs.hlsl">
       <Filter>Shaders\new</Filter>
     </FxCompile>
+    <FxCompile Include="post_process_tone_mapping_ps.hlsl">
+      <Filter>Shaders\new</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="PBR.hlsli">
+      <Filter>Shaders\new</Filter>
+    </None>
   </ItemGroup>
 </Project>
