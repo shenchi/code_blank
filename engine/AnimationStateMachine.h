@@ -85,7 +85,11 @@ namespace tofu
 		AnimNodeBase& operator=(AnimNodeBase other) { swap(*this, other); return *this; }
 		AnimNodeBase(AnimNodeBase& other) = delete;
 		AnimNodeBase(AnimNodeBase&& other) noexcept : AnimNodeBase() { swap(*this, other); }
-		virtual ~AnimNodeBase() {}
+		virtual ~AnimNodeBase() {
+			if (name.compare("walk") == 0) {
+				int a = 1;
+			}
+		}
 
 		friend void swap(AnimNodeBase& lhs, AnimNodeBase& rhs) noexcept;
 
@@ -111,10 +115,10 @@ namespace tofu
 		std::string	animationName = "";
 	public:
 		AnimationState() = default;
+		AnimationState(std::string name) : AnimNodeBase(name) {}
 		AnimationState& operator=(AnimationState other) { swap(*this, other); return *this; }
 		AnimationState(AnimationState& other) = delete;
 		AnimationState(AnimationState&& other) noexcept : AnimationState() { swap(*this, other); }
-		AnimationState(std::string name) : AnimNodeBase(name) {}
 		virtual ~AnimationState();
 
 		friend void swap(AnimationState& lhs, AnimationState& rhs) noexcept;
@@ -154,9 +158,7 @@ namespace tofu
 		AnimationStateMachine(std::string name);
 		AnimationStateMachine& operator=(AnimationStateMachine other) { swap(*this, other); return *this; }
 		AnimationStateMachine(AnimationStateMachine& other) = delete;
-		AnimationStateMachine(AnimationStateMachine&& other) noexcept : AnimationStateMachine() {
-			swap(*this, other); 
-		}
+		AnimationStateMachine(AnimationStateMachine&& other) noexcept : AnimationStateMachine() { swap(*this, other); }
 		virtual ~AnimationStateMachine();
 
 		friend void swap(AnimationStateMachine& lhs, AnimationStateMachine& rhs) noexcept;

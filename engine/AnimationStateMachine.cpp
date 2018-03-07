@@ -42,6 +42,16 @@ namespace tofu
 		indices[type][3] = index;
 	}
 
+	AnimNodeBase::AnimNodeBase(std::string name) : name(name)
+	{
+		
+	}
+
+	/*AnimNodeBase::AnimNodeBase(AnimNodeBase & other)
+	{
+	name = other.name;
+	}*/
+
 	/*AnimationState::AnimationState(AnimationState & other)
 		:isLoop(other.isLoop), playbackSpeed(other.playbackSpeed), animationName(other.animationName)
 	{
@@ -104,15 +114,6 @@ namespace tofu
 		}
 		cursor = tempCursor;
 	}
-
-	AnimNodeBase::AnimNodeBase(std::string name) : name(name)
-	{
-	}
-
-	/*AnimNodeBase::AnimNodeBase(AnimNodeBase & other)
-	{
-		name = other.name;
-	}*/
 
 	void AnimationState::Update(UpdateContext& context)
 	{
@@ -308,7 +309,7 @@ namespace tofu
 	AnimationStateMachine::~AnimationStateMachine()
 	{
 		for (AnimNodeBase* node : states) {
-			delete node;
+			node->~AnimNodeBase();
 		}
 	}
 
@@ -316,20 +317,16 @@ namespace tofu
 	{
 		stateIndexTable[name] = static_cast<uint16_t>(states.size());
 
-		//// TODO: allocator
-		//AnimationState *state = reinterpret_cast<AnimationState *>(
-		//	MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(sizeof(AnimationState), alignof(AnimationState)));
+		// TODO: allocator
+		AnimationState *state = static_cast<AnimationState *>(
+			MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(sizeof(AnimationState), alignof(AnimationState)));
 
-		////state->name = std::string();
-		////state->animationName = std::move(std::string());
-		//state->name = std::string();
-		//*state = std::move(AnimationState(name));
-		//states.push_back(state);
+		states.push_back(new(state)AnimationState(name));
 
-		//return state;
+		return state;
 
-		states.push_back(new AnimationState(name));
-		return static_cast<AnimationState*>(states.back());
+		/*states.push_back(new AnimationState(name));
+		return static_cast<AnimationState*>(states.back());*/
 	}
 
 	void AnimationStateMachine::Play(std::string name)

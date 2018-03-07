@@ -118,7 +118,6 @@ namespace tofu
 		uint32_t				boneMatricesBufferSize;
 
 		std::vector<AnimationLayer> layers;
-
 		std::vector<IKTarget> iks;
 
 	private:
