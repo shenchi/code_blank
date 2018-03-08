@@ -76,6 +76,173 @@ int test_collision()
 		{
 			return __LINE__;
 		}
+
+		Transform ta, tb;
+		ta.SetRotation(math::radians(45.0f), math::radians(90.0f), 0.0f);
+		tb.SetRotation(math::radians(45.0f), math::radians(-90.0f), 0.0f);
+		ta.SetTranslation(-5, 5, 0);
+		tb.SetTranslation(5, 5, 0);
+		a = c;
+		b = c;
+		a.Transform(ta);
+		b.Transform(tb);
+		if (!a.Intersects(b) || !a.Intersects(b))
+		{
+			return __LINE__;
+		}
+
+		float l = 10 / math::sqrt(2.0f);
+		float d = math::sqrt(2.0f);
+		ta.SetRotation(math::radians(45.0f), 0.0f, math::radians(45.0f));
+		tb.SetRotation(math::radians(135.0f), 0.0f, math::radians(45.0f));
+		ta.SetTranslation(0, 0, 0);
+		tb.SetTranslation(d - 0.001f, 0, l);
+		a = c;
+		b = c;
+		a.Transform(ta);
+		b.Transform(tb);
+
+		if (!a.Intersects(b) || !a.Intersects(b))
+		{
+			return __LINE__;
+		}
+
+		tb.SetTranslation(d + 0.001f, 0, l);
+		a = c;
+		b = c;
+		a.Transform(ta);
+		b.Transform(tb);
+
+		if (a.Intersects(b) || a.Intersects(b))
+		{
+			return __LINE__;
+		}
+	}
+
+	{
+		Frustum a{ math::float3(), math::quat(), 0.1f, -0.1f, 0.1f, -0.1f, 0.0f, 10.0f };
+		OrientedBoundingBox b(math::float3(), math::float3{ 1, 1, 1 }, math::quat());
+		Frustum c = a;
+		OrientedBoundingBox d = b;
+
+		Transform t;
+		t.SetTranslation(0, 0, 5);
+		b.Transform(t);
+
+		if (!a.Intersects(b))
+		{
+			return __LINE__;
+		}
+
+		b = d;
+		t.SetTranslation(0, 0, 11);
+		b.Transform(t);
+
+		if (!a.Intersects(b))
+		{
+			return __LINE__;
+		}
+
+		b = d;
+		t.SetTranslation(0, 0, 11.001f);
+		b.Transform(t);
+
+		if (a.Intersects(b))
+		{
+			return __LINE__;
+		}
+
+		b = d;
+		t.SetTranslation(0, 0, -1);
+		b.Transform(t);
+
+		if (!a.Intersects(b))
+		{
+			return __LINE__;
+		}
+
+		b = d;
+		t.SetTranslation(0, 0, -1.001f);
+		b.Transform(t);
+
+		if (a.Intersects(b))
+		{
+			return __LINE__;
+		}
+
+		b = d;
+		t.SetTranslation(2, 2, 11);
+		b.Transform(t);
+
+		if (!a.Intersects(b))
+		{
+			return __LINE__;
+		}
+
+		b = d;
+		t.SetTranslation(2.001f, 2, 11);
+		b.Transform(t);
+
+		if (a.Intersects(b))
+		{
+			return __LINE__;
+		}
+
+		b = d;
+		t.SetTranslation(2, 2.001f, 11);
+		b.Transform(t);
+
+		if (a.Intersects(b))
+		{
+			return __LINE__;
+		}
+
+		float l = math::sqrt(3.0f);
+		t.SetRotation(0.0, math::atan(1.0f / math::sqrt(2.0f)), math::radians(45.f));
+		t.SetTranslation(0.5f + l - 0.001f, 0, 5);
+		b = d;
+		b.Transform(t);
+
+		if (!a.Intersects(b))
+		{
+			return __LINE__;
+		}
+
+		t.SetTranslation(0.5f + l + 0.001f, 0, 5);
+		b = d;
+		b.Transform(t);
+
+		if (a.Intersects(b))
+		{
+			return __LINE__;
+		}
+
+		l = (10 / math::sqrt(2.0f) + 1);
+		float l2 = l / math::sqrt(2.0f);
+		Transform ta, tb;
+		ta.SetRotation(math::radians(45.0f), math::radians(45.0f), 0);
+		ta.SetTranslation(-l2 + 0.001f, l - 0.001f, -l2 + 0.001f);
+		tb.SetRotation(0.0f, math::radians(45.0f), 0.0f);
+		a = c;
+		b = d;
+		a.Transform(ta);
+		b.Transform(tb);
+
+		if (!a.Intersects(b))
+		{
+			return __LINE__;
+		}
+
+		ta.SetTranslation(-l2 - 0.001f, l + 0.001f, -l2 - 0.001f);
+		a = c;
+		b = d;
+		a.Transform(ta);
+		b.Transform(tb);
+
+		if (a.Intersects(b))
+		{
+			return __LINE__;
+		}
 	}
 
 	return 0;
