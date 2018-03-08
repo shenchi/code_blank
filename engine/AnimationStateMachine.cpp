@@ -16,7 +16,9 @@ namespace tofu
 	EvaluateContext::EvaluateContext(Model * model) :model(model)
 	{
 		transforms = new Transform[model->header->NumBones];
+		results = new Transform[model->header->NumBones];
 
+		// FIXME: Add to model
 		for (int i = 0; i < model->header->NumBones; i++) {
 			float3 t, s;
 			quat q;
@@ -24,15 +26,12 @@ namespace tofu
 			decompose(model->bones[i].transform, t, q, s);
 			transforms[i] = std::move(Transform(t, q, s));
 		}
-
-		results = new Transform[model->header->NumBones];
 	}
 
 	EvaluateContext::~EvaluateContext()
 	{
-		//if (transforms)
-			delete[] transforms;
-			delete[] results;
+		delete[] transforms;
+		delete[] results;
 	}
 
 	void AnimationFrameCache::Reset()
@@ -158,16 +157,6 @@ namespace tofu
 		{
 			AnimationFrameCache &frameCache = cache->frameCaches[i];
 
-			/*if (frameCache.indices[kChannelTranslation][3] == SIZE_MAX &&
-				frameCache.indices[kChannelRotation][3] == SIZE_MAX &&
-				frameCache.indices[kChannelScale][3] == SIZE_MAX) {
-
-				if (type == kAET_Additive)
-					context.results[i].Additive(context.transforms[i], weight);
-
-				continue;
-			}*/
-
 			Model *model = context.model;
 
 			Transform trans;
@@ -240,15 +229,10 @@ namespace tofu
 				trans.SetScale(context.transforms[i].GetScale());
 			}
 
-			if (type == kAET_None) {
-				//context.transforms[i] = trans * weight;
-			}
-			else if (type == kAET_Blend) {
-				//context.transforms[i].Blend(trans, weight);
+			if (type == kAET_Blend) {
 				context.results[i].Blend(trans, weight);
 			}
 			else if (type == kAET_Additive) {
-				//context.transforms[i].Additive(trans, weight);
 				context.results[i].Additive(trans, weight);
 			}
 			else {
@@ -439,8 +423,6 @@ namespace tofu
 		if (transitionDuration) {
 			float alpha = elapsedTime / transitionDuration;
 
-			//EvaluateContext temp(context.model);
-
 			if (type == kAET_Blend) {
 				for (auto i = 0; i < context.model->header->NumBones; i++) {
 					context.results[i] *= 1.0f - weight;
@@ -449,17 +431,6 @@ namespace tofu
 
 			previous->Evaluate(context, (1.0f - alpha) * weight, kAET_Additive);
 			current->Evaluate(context, alpha * weight, kAET_Additive);
-
-			/*if (type == kAET_Blend) {
-				for (auto i = 0; i < context.model->header->NumBones; i++) {
-					context.transforms[i].Blend(temp.transforms[i], weight);
-				}
-			}
-			else if (type == kAET_Additive) {
-				for (auto i = 0; i < context.model->header->NumBones; i++) {
-					context.transforms[i].Additive(temp.transforms[i], weight);
-				}
-			}*/
 		}
 		else {
 			current->Evaluate(context, weight, type);
