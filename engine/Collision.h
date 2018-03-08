@@ -85,33 +85,61 @@ namespace tofu
 	};
 
 
+	TF_INLINE math::float3 NearestPointOnLineSegment(const math::float3& s1, const math::float3& s2, const math::float3& p)
+	{
+		math::float3 dir = s2 - s1;
+		float proj = math::dot(p, dir) - math::dot(s1, dir);
+		float lengthSq = math::dot(dir, dir);
+
+		float t = proj / lengthSq;
+		math::float3 point = t * dir + s1;
+
+		int selectS1 = int(proj < 0);
+		int selectS2 = int(proj > lengthSq);
+
+		point =
+		{
+			selectS1 * s1.x + (1 - selectS1) * point.x,
+			selectS1 * s1.y + (1 - selectS1) * point.y,
+			selectS1 * s1.z + (1 - selectS1) * point.z
+		};
+			
+		point =
+		{
+			selectS2 * s2.x + (1 - selectS2) * point.x,
+			selectS2 * s2.y + (1 - selectS2) * point.y,
+			selectS2 * s2.z + (1 - selectS2) * point.z
+		};
+
+		return point;
+	}
+
 	TF_INLINE void BoundingSphere::Transform(const tofu::Transform& t)
 	{
-
+		center = t.TransformPosition(center);
 	}
 
 	TF_INLINE bool BoundingSphere::Intersects(const BoundingSphere& sphere) const
 	{
-		assert(false && "this function unimplemented yet.");
-		return false;
+		math::float3 dist = sphere.center - center;
+		float dist_Sqr = math::dot(dist, dist);
+		float radiusSum = radius + sphere.radius;
+		return dist_Sqr <= radiusSum * radiusSum;
 	}
 
 	TF_INLINE bool BoundingSphere::Intersects(const BoundingBox& aabb) const
 	{
-		assert(false && "this function unimplemented yet.");
-		return false;
+		return aabb.Intersects(*this);
 	}
 
 	TF_INLINE bool BoundingSphere::Intersects(const OrientedBoundingBox& obb) const
 	{
-		assert(false && "this function unimplemented yet.");
-		return false;
+		return obb.Intersects(*this);
 	}
 
 	TF_INLINE bool BoundingSphere::Intersects(const Frustum& frustum) const
 	{
-		assert(false && "this function unimplemented yet.");
-		return false;
+		return frustum.Intersects(*this);
 	}
 
 	TF_INLINE void BoundingBox::Transform(const tofu::Transform& t)
@@ -138,20 +166,48 @@ namespace tofu
 
 	TF_INLINE bool BoundingBox::Intersects(const BoundingSphere& sphere) const
 	{
-		assert(false && "this function unimplemented yet.");
-		return false;
+		math::float3 boxMin = center - extends;
+		math::float3 boxMax = center + extends;
+
+		math::int3 less = math::lessThan(sphere.center, boxMin);
+		math::int3 greater = math::greaterThan(sphere.center, boxMax);
+		math::float3 minDelta = sphere.center - boxMin;
+		math::float3 maxDelta = sphere.center - boxMax;
+
+		math::float3 d{
+			less.x * minDelta.x,
+			less.y * minDelta.y,
+			less.z * minDelta.z,
+		};
+
+		d = math::float3{
+			greater.x * maxDelta.x + (1 - greater.x) * d.x,
+			greater.y * maxDelta.y + (1 - greater.y) * d.y,
+			greater.z * maxDelta.z + (1 - greater.z) * d.z,
+		};
+
+		float dist = math::dot(d, d);
+
+		return dist <= sphere.radius * sphere.radius;
 	}
 
 	TF_INLINE bool BoundingBox::Intersects(const BoundingBox& aabb) const
 	{
-		assert(false && "this function unimplemented yet.");
-		return false;
+		math::float3 minA = center - extends;
+		math::float3 maxA = center + extends;
+
+		math::float3 minB = aabb.center - aabb.extends;
+		math::float3 maxB = aabb.center + aabb.extends;
+
+		math::bool3 result = math::greaterThan(minA, maxB) ||
+			math::greaterThan(minB, maxA);
+
+		return result.x || result.y || result.z;
 	}
 
 	TF_INLINE bool BoundingBox::Intersects(const OrientedBoundingBox& obb) const
 	{
-		assert(false && "this function unimplemented yet.");
-		return false;
+		return obb.Intersects(*this);
 	}
 
 	TF_INLINE bool BoundingBox::Intersects(const Frustum& frustum) const
@@ -168,20 +224,168 @@ namespace tofu
 
 	TF_INLINE bool OrientedBoundingBox::Intersects(const BoundingSphere& sphere) const
 	{
-		assert(false && "this function unimplemented yet.");
-		return false;
+		math::float3 sphereCenter = math::inverse(orientation) * (sphere.center - center);
+
+		math::int3 less = math::lessThan(sphereCenter, -extends);
+		math::int3 greater = math::greaterThan(sphereCenter, extends);
+		math::float3 minDelta = sphereCenter + extends;
+		math::float3 maxDelta = sphereCenter - extends;
+
+		math::float3 d{
+			less.x * minDelta.x,
+			less.y * minDelta.y,
+			less.z * minDelta.z,
+		};
+
+		d = math::float3{
+			greater.x * maxDelta.x + (1 - greater.x) * d.x,
+			greater.y * maxDelta.y + (1 - greater.y) * d.y,
+			greater.z * maxDelta.z + (1 - greater.z) * d.z,
+		};
+
+		float dist = math::dot(d, d);
+
+		return dist <= sphere.radius * sphere.radius;
 	}
 
 	TF_INLINE bool OrientedBoundingBox::Intersects(const BoundingBox& aabb) const
 	{
-		assert(false && "this function unimplemented yet.");
-		return false;
+		OrientedBoundingBox obb(aabb.center, aabb.extends, math::quat());
+		return Intersects(obb);
 	}
 
 	TF_INLINE bool OrientedBoundingBox::Intersects(const OrientedBoundingBox& obb) const
 	{
-		assert(false && "this function unimplemented yet.");
-		return false;
+		math::float3 centerA = center;
+		math::quat orientA = orientation;
+
+		math::quat invOrientA = math::inverse(orientA);
+		math::quat orientB = obb.orientation;
+		math::float3 centerB = invOrientA * (obb.center - centerA);
+
+		math::quat Q = math::inverse(orientB) * orientA;
+		math::float3x3 R = math::mat3_cast(Q);
+
+		math::float3 extendsA = extends;
+		math::float3 extendsB = obb.extends;
+
+		math::float3 R0X = R[0];
+		math::float3 R1X = R[1];
+		math::float3 R2X = R[2];
+
+		R = math::transpose(R);
+
+		math::float3 RX0 = R[0];
+		math::float3 RX1 = R[1];
+		math::float3 RX2 = R[2];
+
+		math::float3 AR0X = math::abs(R0X);
+		math::float3 AR1X = math::abs(R1X);
+		math::float3 AR2X = math::abs(R2X);
+
+		math::float3 ARX0 = math::abs(RX0);
+		math::float3 ARX1 = math::abs(RX1);
+		math::float3 ARX2 = math::abs(RX2);
+
+		float d, dA, dB;
+
+		// B against A's axes
+
+		d = centerB.x;
+		dA = extendsA.x;
+		dB = math::dot(extendsB, AR0X);
+
+		bool noIntersection = (math::abs(d) > (dA + dB));
+
+		d = centerB.y;
+		dA = extendsA.y;
+		dB = math::dot(extendsB, AR1X);
+
+		noIntersection |= (math::abs(d) > (dA + dB));
+
+		d = centerB.z;
+		dA = extendsA.z;
+		dB = math::dot(extendsB, AR2X);
+
+		noIntersection |= (math::abs(d) > (dA + dB));
+
+		// A against B's axes
+
+		d = math::dot(centerB, RX0);
+		dA = math::dot(extendsA, ARX0);
+		dB = extendsB.x;
+
+		noIntersection |= (math::abs(d) > (dA + dB));
+
+		d = math::dot(centerB, RX1);
+		dA = math::dot(extendsA, ARX1);
+		dB = extendsB.y;
+
+		noIntersection |= (math::abs(d) > (dA + dB));
+
+		d = math::dot(centerB, RX2);
+		dA = math::dot(extendsA, ARX2);
+		dB = extendsB.z;
+
+		noIntersection |= (math::abs(d) > (dA + dB));
+
+		// cross or each pair of axes
+
+		d = math::dot(centerB, math::float3{0, -RX0.z, RX0.y});
+		dA = math::dot(extendsA, math::float3{ 0, ARX0.z, ARX0.y });
+		dB = math::dot(extendsB, math::float3{ 0, AR0X.z, AR0X.y });
+
+		noIntersection |= (math::abs(d) > (dA + dB));
+
+		d = math::dot(centerB, math::float3{ 0, -RX1.z, RX1.y });
+		dA = math::dot(extendsA, math::float3{ 0, ARX1.z, ARX1.y });
+		dB = math::dot(extendsB, math::float3{ AR0X.z, 0, AR0X.x });
+
+		noIntersection |= (math::abs(d) > (dA + dB));
+
+		d = math::dot(centerB, math::float3{ 0, -RX2.z, RX2.y });
+		dA = math::dot(extendsA, math::float3{ 0, ARX2.z, ARX2.y });
+		dB = math::dot(extendsB, math::float3{ AR0X.y, AR0X.x, 0 });
+
+		noIntersection |= (math::abs(d) > (dA + dB));
+
+		d = math::dot(centerB, math::float3{ RX0.z, 0, -RX0.x });
+		dA = math::dot(extendsA, math::float3{ ARX0.z, 0, ARX0.x });
+		dB = math::dot(extendsB, math::float3{ 0, AR1X.z, AR1X.y });
+
+		noIntersection |= (math::abs(d) > (dA + dB));
+
+		d = math::dot(centerB, math::float3{ RX1.z, 0, -RX1.x });
+		dA = math::dot(extendsA, math::float3{ ARX1.z, 0, ARX1.x });
+		dB = math::dot(extendsB, math::float3{ AR1X.z, 0, AR1X.x });
+
+		noIntersection |= (math::abs(d) > (dA + dB));
+
+		d = math::dot(centerB, math::float3{ RX2.z, 0, -RX2.x });
+		dA = math::dot(extendsA, math::float3{ ARX2.z, 0, ARX2.x });
+		dB = math::dot(extendsB, math::float3{ AR1X.y, AR1X.x, 0 });
+
+		noIntersection |= (math::abs(d) > (dA + dB));
+
+		d = math::dot(centerB, math::float3{ -RX0.y, RX0.x, 0 });
+		dA = math::dot(extendsA, math::float3{ ARX0.y, ARX0.x, 0 });
+		dB = math::dot(extendsB, math::float3{ 0, AR2X.z, AR2X.y });
+
+		noIntersection |= (math::abs(d) > (dA + dB));
+
+		d = math::dot(centerB, math::float3{ -RX1.y, RX1.x, 0 });
+		dA = math::dot(extendsA, math::float3{ ARX1.y, ARX1.x, 0 });
+		dB = math::dot(extendsB, math::float3{ AR2X.z, 0, AR2X.x });
+
+		noIntersection |= (math::abs(d) > (dA + dB));
+
+		d = math::dot(centerB, math::float3{ -RX2.y, RX2.x, 0 });
+		dA = math::dot(extendsA, math::float3{ ARX2.y, ARX2.x, 0 });
+		dB = math::dot(extendsB, math::float3{ AR2X.y, AR2X.x, 0 });
+
+		noIntersection |= (math::abs(d) > (dA + dB));
+
+		return !noIntersection;
 	}
 
 	TF_INLINE bool OrientedBoundingBox::Intersects(const Frustum& frustum) const
@@ -200,8 +404,119 @@ namespace tofu
 
 	TF_INLINE bool Frustum::Intersects(const BoundingSphere& sphere) const
 	{
-		assert(false && "this function unimplemented yet.");
-		return false;
+		// construct planes
+		math::float3 planeAxes[6] =
+		{
+			{ 0.0f, 0.0f, -1.0f },  // near plane
+			{ 0.0f, 0.0f, 1.0f },  // far plane
+			{ 1.0f, 0.0f, -rightSlope }, // right plane
+			{ -1.0f, 0.0f, leftSlope }, // left plane
+			{ 0.0f, 1.0f, -topSlope }, // top plane
+			{ 0.0f, -1.0f, bottomSlope }, // bottom plane
+		};
+
+		float planeDists[6] = { -near, far, 0, 0, 0, 0 };
+
+		planeAxes[2] = math::normalize(planeAxes[2]);
+		planeAxes[3] = math::normalize(planeAxes[3]);
+		planeAxes[4] = math::normalize(planeAxes[4]);
+		planeAxes[5] = math::normalize(planeAxes[5]);
+
+		float radius = sphere.radius;
+		math::float3 sphereCenter = math::inverse(orientation) * (sphere.center - origin);
+
+		bool outside = false;
+		bool insideAll = true;
+		bool centerInsideAll = true;
+
+		float dist[6] = {};
+
+		for (size_t i = 0; i < 6; ++i)
+		{
+			dist[i] = math::dot(sphereCenter, planeAxes[i]) - planeDists[i];
+
+			outside |= (dist[i] > radius);
+			insideAll &= (dist[i] <= -radius);
+			centerInsideAll &= (dist[i] <= 0);
+		}
+
+		if (outside) return false;
+		if (insideAll) return true;
+		if (centerInsideAll) return true;
+
+		static const size_t adjacentFaces[6][4] =
+		{
+			{ 2, 3, 4, 5 }, // 0, near plane
+			{ 2, 3, 4, 5 }, // 1, far plane
+			{ 0, 1, 4, 5 }, // 2, right plane
+			{ 0, 1, 4, 5 }, // 3, left plane
+			{ 0, 1, 2, 3 }, // 4, top plane
+			{ 0, 1, 2, 3 }, // 5, bottom plane
+		};
+
+		bool intersects = false;
+
+		for (size_t i = 0; i < 6; ++i)
+		{
+			math::float3 point = sphereCenter - planeAxes[i] * dist[i];
+
+			bool insideFace = true;
+
+			for (size_t j = 0; j < 4; ++j)
+			{
+				size_t planeIdx = adjacentFaces[i][j];
+
+				insideFace &= (math::dot(point, planeAxes[planeIdx]) <= planeDists[planeIdx]);
+			}
+
+			intersects |= ((dist[i] > 0) && insideFace);
+		}
+
+		if (intersects) return true;
+
+		// construct corners of frustum
+		math::float3 rightTopA{ rightSlope, topSlope, 1.0f };
+		math::float3 rightBottomA{ rightSlope, bottomSlope, 1.0f };
+		math::float3 leftTopA{ leftSlope, topSlope, 1.0f };
+		math::float3 leftBottomA{ leftSlope, bottomSlope, 1.0f };
+		math::float3 nearA{ near, near, near };
+		math::float3 farA{ far, far, far };
+
+		math::float3 corners[8] =
+		{
+			rightTopA * nearA,			// 0, near right top
+			rightBottomA * nearA,		// 1, near right bottom
+			leftTopA * nearA,			// 2, near left top
+			leftBottomA * nearA,		// 3, near left bottom
+			rightTopA * farA,			// 4, far right top
+			rightBottomA * farA,		// 5, far right bottom
+			leftTopA * farA,			// 6, far left top
+			leftBottomA * farA,			// 7, far left bottom
+		};
+
+		static const size_t edges[12][2] =
+		{
+			{ 0, 1 }, { 2, 3 }, { 0, 2 }, { 1, 3 },
+			{ 4, 5 }, { 6, 7 }, { 4, 6 }, { 5, 7 },
+			{ 0, 4 }, { 1, 5 }, { 2, 6 }, { 3, 7 }
+		};
+
+		float radiusSq = sphere.radius * sphere.radius;
+
+		for (size_t i = 0; i < 12; ++i)
+		{
+			size_t ei0 = edges[i][0];
+			size_t ei1 = edges[i][1];
+
+			math::float3 point = NearestPointOnLineSegment(corners[ei0], corners[ei1], sphereCenter);
+
+			math::float3 delta = sphereCenter - point;
+			float distSq = math::dot(delta, delta);
+
+			intersects |= (distSq <= radiusSq);
+		}
+
+		return intersects;
 	}
 
 	TF_INLINE bool Frustum::Intersects(const BoundingBox& aabb) const
@@ -213,7 +528,7 @@ namespace tofu
 	TF_INLINE bool Frustum::Intersects(const OrientedBoundingBox& obb) const
 	{
 		// construct planes
-		math::float3 axis[6] =
+		math::float3 planeAxes[6] =
 		{
 			{ 0.0f, 0.0f, -1.0f },  // near plane
 			{ 0.0f, 0.0f, 1.0f },  // far plane
@@ -223,7 +538,7 @@ namespace tofu
 			{ 0.0f, -1.0f, bottomSlope }, // bottom plane
 		};
 
-		float dists[6] = { -near, far, 0, 0, 0, 0 };
+		float planeDists[6] = { -near, far, 0, 0, 0, 0 };
 
 		math::float3 center = obb.center;
 		math::float3 extends = obb.extends;
@@ -241,11 +556,11 @@ namespace tofu
 
 		for (size_t i = 0; i < 6; ++i)
 		{
-			float dist = math::dot(center, axis[i]) - dists[i];
+			float dist = math::dot(center, planeAxes[i]) - planeDists[i];
 			math::float3 radius{
-				math::dot(R[0], axis[i]),
-				math::dot(R[1], axis[i]),
-				math::dot(R[2], axis[i])
+				math::dot(R[0], planeAxes[i]),
+				math::dot(R[1], planeAxes[i]),
+				math::dot(R[2], planeAxes[i])
 			};
 
 			float projRadius = math::dot(math::abs(radius), extends);

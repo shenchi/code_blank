@@ -5,7 +5,7 @@ using namespace tofu;
 int test_collision()
 {
 
-	// frustum
+	// frustum / frustum
 	{
 		Frustum a{ math::float3{0, 0, 0}, math::quat(1, 0, 0, 0), 1.0f, -1.0f, 1.0f, -1.0f, 0.0f, 1.0f };
 		Frustum b = a;
@@ -119,6 +119,7 @@ int test_collision()
 		}
 	}
 
+	// frustum / obb
 	{
 		Frustum a{ math::float3(), math::quat(), 0.1f, -0.1f, 0.1f, -0.1f, 0.0f, 10.0f };
 		OrientedBoundingBox b(math::float3(), math::float3{ 1, 1, 1 }, math::quat());
@@ -240,6 +241,106 @@ int test_collision()
 		b.Transform(tb);
 
 		if (a.Intersects(b))
+		{
+			return __LINE__;
+		}
+	}
+
+	// frustum / sphere
+	{
+		Frustum a{ math::float3(), math::quat(), 0.1f, -0.1f, 0.1f, -0.1f, 0.0f, 10.0f };
+		BoundingSphere b(math::float3(), 1);
+		b.center.z = -1;
+
+		if (!a.Intersects(b))
+		{
+			return __LINE__;
+		}
+
+		b.center.z = -1.001f;
+
+		if (a.Intersects(b))
+		{
+			return __LINE__;
+		}
+
+		b.center.z = 11;
+
+		if (!a.Intersects(b))
+		{
+			return __LINE__;
+		}
+
+		b.center.z = 11.001f;
+
+		if (a.Intersects(b))
+		{
+			return __LINE__;
+		}
+
+		b.center = math::float3{ 1, 1, 10 } + (1 / math::sqrt(3.0f)) - 0.001f;
+
+		if (!a.Intersects(b))
+		{
+			return __LINE__;
+		}
+
+		b.center = math::float3{ 1, 1, 10 } +(1 / math::sqrt(3.0f)) + 0.001f;
+
+		if (a.Intersects(b))
+		{
+			return __LINE__;
+		}
+
+		a = Frustum{ math::float3{}, math::quat{}, 1, -1, 1, -1, 0, 1 };
+		a.orientation = math::euler(0, math::radians(-45.0f), 0);
+
+		b.center = { 1, 0, 0.5f };
+
+		if (!a.Intersects(b))
+		{
+			return __LINE__;
+		}
+
+		b.center = { 1.001f, 0, 0.5f };
+
+		if (a.Intersects(b))
+		{
+			return __LINE__;
+		}
+	}
+
+	// obb / obb
+	{
+		OrientedBoundingBox c(math::float3(), math::float3{ 0.5f, 0.5f, 0.5f }, math::quat());
+		OrientedBoundingBox a = c;
+		OrientedBoundingBox b = c;
+
+		Transform ta, tb;
+
+		ta.SetRotation(0.0f, 0.0f, math::radians(-45.0f));
+
+		math::quat rot = math::euler(0.0, math::atan(1.0f / math::sqrt(2.0f)), math::radians(45.f));
+		rot = ta.GetRotation() * rot;
+		tb.SetRotation(rot);
+
+		float l = (0.5f + math::sqrt(3.0f) * 0.5f) / math::sqrt(2.0f);
+		tb.SetTranslation(l - 0.001f, -l + 0.001f, 0);
+
+		a.Transform(ta);
+		b.Transform(tb);
+
+		if (!a.Intersects(b) || !b.Intersects(a))
+		{
+			return __LINE__;
+		}
+
+		tb.SetTranslation(l + 0.001f, -l - 0.001f, 0);
+
+		b = c;
+		b.Transform(tb);
+
+		if (a.Intersects(b) || b.Intersects(a))
 		{
 			return __LINE__;
 		}
