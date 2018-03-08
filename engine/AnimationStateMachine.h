@@ -12,6 +12,7 @@ namespace tofu
 	enum AnimationEvaluationType
 	{
 		kAET_None,
+		kAET_Blend,
 		kAET_Additive
 	};
 
@@ -33,6 +34,7 @@ namespace tofu
 	{
 		Model *model;
 		Transform *transforms;
+		Transform *results;
 
 		EvaluateContext(Model *model);
 		~EvaluateContext();
@@ -85,11 +87,7 @@ namespace tofu
 		AnimNodeBase& operator=(AnimNodeBase other) { swap(*this, other); return *this; }
 		AnimNodeBase(AnimNodeBase& other) = delete;
 		AnimNodeBase(AnimNodeBase&& other) noexcept : AnimNodeBase() { swap(*this, other); }
-		virtual ~AnimNodeBase() {
-			if (name.compare("walk") == 0) {
-				int a = 1;
-			}
-		}
+		virtual ~AnimNodeBase() {}
 
 		friend void swap(AnimNodeBase& lhs, AnimNodeBase& rhs) noexcept;
 
@@ -97,7 +95,7 @@ namespace tofu
 		virtual void Exit() {}
 
 		virtual void Update(UpdateContext& context) {}
-		virtual void Evaluate(EvaluateContext& context, float weight) {}
+		virtual void Evaluate(EvaluateContext& context, float weight, AnimationEvaluationType type) {}
 
 		virtual float GetDurationInSecond(Model *model) { return 0.f; }
 	};
@@ -127,7 +125,7 @@ namespace tofu
 		virtual void Exit() override;
 
 		virtual void Update(UpdateContext& context) override;
-		virtual void Evaluate(EvaluateContext& context, float weight) override;
+		virtual void Evaluate(EvaluateContext& context, float weight, AnimationEvaluationType type) override;
 
 		virtual float GetDurationInSecond(Model *model) override;
 
@@ -172,7 +170,7 @@ namespace tofu
 		virtual void Exit() override;
 
 		virtual void Update(UpdateContext& context) override;
-		virtual void Evaluate(EvaluateContext& context, float weight) override;
+		virtual void Evaluate(EvaluateContext& context, float weight, AnimationEvaluationType type) override;
 
 		virtual float GetDurationInSecond(Model *model) override;
 	};
@@ -181,7 +179,7 @@ namespace tofu
 		friend class AnimationComponentData;
 
 	public:
-		AnimationLayer(std::string name, float weight = 1.0f, AnimationEvaluationType type = kAET_None);
+		AnimationLayer(std::string name, float weight = 1.0f, AnimationEvaluationType type = kAET_Blend);
 
 		virtual void Update(Model *model);
 		virtual void Evaluate(EvaluateContext& context);

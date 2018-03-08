@@ -9,18 +9,30 @@
 #include <string>
 
 using namespace tofu::model;
+using namespace tofu::math;
 
 namespace tofu
 {
 	EvaluateContext::EvaluateContext(Model * model) :model(model)
 	{
 		transforms = new Transform[model->header->NumBones];
+
+		for (int i = 0; i < model->header->NumBones; i++) {
+			float3 t, s;
+			quat q;
+
+			decompose(model->bones[i].transform, t, q, s);
+			transforms[i] = std::move(Transform(t, q, s));
+		}
+
+		results = new Transform[model->header->NumBones];
 	}
 
 	EvaluateContext::~EvaluateContext()
 	{
-		if (transforms)
+		//if (transforms)
 			delete[] transforms;
+			delete[] results;
 	}
 
 	void AnimationFrameCache::Reset()
@@ -140,17 +152,21 @@ namespace tofu
 		cache->Update(&context, anim);
 	}
 
-	void AnimationState::Evaluate(EvaluateContext & context, float weight)
+	void AnimationState::Evaluate(EvaluateContext & context, float weight, AnimationEvaluationType type)
 	{
 		for (size_t i = 0; i < cache->frameCaches.size(); i++)
 		{
 			AnimationFrameCache &frameCache = cache->frameCaches[i];
 
-			if (frameCache.indices[kChannelTranslation][3] == SIZE_MAX &&
+			/*if (frameCache.indices[kChannelTranslation][3] == SIZE_MAX &&
 				frameCache.indices[kChannelRotation][3] == SIZE_MAX &&
 				frameCache.indices[kChannelScale][3] == SIZE_MAX) {
+
+				if (type == kAET_Additive)
+					context.results[i].Additive(context.transforms[i], weight);
+
 				continue;
-			}
+			}*/
 
 			Model *model = context.model;
 
@@ -172,6 +188,9 @@ namespace tofu
 			}
 			else if (indices[3] != SIZE_MAX) {
 				trans.SetTranslation(model->frames[indices[3]].value);
+			}
+			else {
+				trans.SetTranslation(context.transforms[i].GetTranslation());
 			}
 
 			indices = frameCache.indices[kChannelRotation];
@@ -196,6 +215,9 @@ namespace tofu
 				tofu::compression::DecompressQuaternion(q, f.value, f.GetSignedBit());
 				trans.SetRotation(q);
 			}
+			else {
+				trans.SetRotation(context.transforms[i].GetRotation());
+			}
 
 			indices = frameCache.indices[kChannelScale];
 
@@ -214,10 +236,24 @@ namespace tofu
 			else if (indices[3] != SIZE_MAX) {
 				trans.SetScale(model->frames[indices[3]].value);
 			}
+			else {
+				trans.SetScale(context.transforms[i].GetScale());
+			}
 
-			trans.isDirty = true;
-
-			context.transforms[i].Blend(trans, weight);
+			if (type == kAET_None) {
+				//context.transforms[i] = trans * weight;
+			}
+			else if (type == kAET_Blend) {
+				//context.transforms[i].Blend(trans, weight);
+				context.results[i].Blend(trans, weight);
+			}
+			else if (type == kAET_Additive) {
+				//context.transforms[i].Additive(trans, weight);
+				context.results[i].Additive(trans, weight);
+			}
+			else {
+				assert(0);
+			}
 		}
 	}
 
@@ -309,7 +345,8 @@ namespace tofu
 	AnimationStateMachine::~AnimationStateMachine()
 	{
 		for (AnimNodeBase* node : states) {
-			node->~AnimNodeBase();
+			// FIXME: Chi
+			//node->~AnimNodeBase();
 		}
 	}
 
@@ -397,31 +434,35 @@ namespace tofu
 		current->Update(context);
 	}
 
-	void AnimationStateMachine::Evaluate(EvaluateContext & context, float weight)
+	void AnimationStateMachine::Evaluate(EvaluateContext & context, float weight, AnimationEvaluationType type)
 	{
 		if (transitionDuration) {
 			float alpha = elapsedTime / transitionDuration;
 
-			if (weight == 1.0f) {
-				previous->Evaluate(context, 1.0f);
-				current->Evaluate(context, alpha);
+			//EvaluateContext temp(context.model);
+
+			if (type == kAET_Blend) {
+				for (auto i = 0; i < context.model->header->NumBones; i++) {
+					context.results[i] *= 1.0f - weight;
+				}
 			}
-			else {
-				EvaluateContext temp = context;
-				temp.transforms = new Transform[context.model->header->NumBones];
 
-				previous->Evaluate(temp, 1.0f);
-				current->Evaluate(temp, alpha);
+			previous->Evaluate(context, (1.0f - alpha) * weight, kAET_Additive);
+			current->Evaluate(context, alpha * weight, kAET_Additive);
 
+			/*if (type == kAET_Blend) {
 				for (auto i = 0; i < context.model->header->NumBones; i++) {
 					context.transforms[i].Blend(temp.transforms[i], weight);
 				}
-
-				delete[] temp.transforms;
 			}
+			else if (type == kAET_Additive) {
+				for (auto i = 0; i < context.model->header->NumBones; i++) {
+					context.transforms[i].Additive(temp.transforms[i], weight);
+				}
+			}*/
 		}
 		else {
-			current->Evaluate(context, weight);
+			current->Evaluate(context, weight, type);
 		}
 	}
 
@@ -444,7 +485,7 @@ namespace tofu
 
 	void AnimationLayer::Evaluate(EvaluateContext & context)
 	{
-		stateMachine.Evaluate(context, weight);
+		stateMachine.Evaluate(context, weight, type);
 	}
 
 	void swap(AnimNodeBase & lhs, AnimNodeBase & rhs) noexcept

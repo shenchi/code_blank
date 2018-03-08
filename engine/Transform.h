@@ -11,16 +11,14 @@ namespace tofu
 			:
 			translation(),
 			rotation(),
-			scale({ 1.0f, 1.0f, 1.0f }),
-			isDirty(false)
+			scale({ 1.0f, 1.0f, 1.0f })
 		{}
 
 		Transform(math::float3 translation, math::quat rotation, math::float3 scale)
 			:
 			translation(translation),
 			rotation(rotation),
-			scale(scale),
-			isDirty(false)
+			scale(scale)
 		{}
 
 		TF_INLINE const math::float3&	GetTranslation() const { return translation; }
@@ -41,8 +39,9 @@ namespace tofu
 	public:
 		// a * b  - apply transform a and then transform b
 		Transform operator * (const Transform&) const;
+		Transform operator * (const float multiplier) const;
+		Transform& operator *= (const float multiplier);
 		math::float4x4				GetMatrix() const;
-		bool isDirty;
 
 	public:
 		math::float3				TransformVector(const math::float3& v) const;

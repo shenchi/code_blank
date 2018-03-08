@@ -73,19 +73,18 @@ namespace tofu
 			matrices[i] = model->bones[i].transform;
 		}
 
-		// evaluate animation result
-		EvaluateContext context(model);
+		//// evaluate animation result
+		//EvaluateContext context(model);
 
-		for (AnimationLayer &layer : layers) {
-			layer.Evaluate(context);
-		}
+		//for (AnimationLayer &layer : layers) {
+		//	layer.Evaluate(context);
+		//}
 
-		// apply result
-		for (auto i = 0; i < model->header->NumBones; i++) {
-			if (context.transforms[i].isDirty) {
-				matrices[i] = context.transforms[i].GetMatrix();
-			}
-		}
+		//// apply result
+		//for (auto i = 0; i < model->header->NumBones; i++) {
+		//	//matrices[i] = context.transforms[i].GetMatrix();
+		//	matrices[i] = context.results[i].GetMatrix();
+		//}
 
 		// matrix to convert bone local space to model space 
 		for (uint16_t i = 1; i < model->header->NumBones; i++)

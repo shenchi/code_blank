@@ -12,9 +12,22 @@ namespace tofu
 		t.rotation = other.rotation * rotation;
 		t.scale = scale * other.scale;
 		t.translation = other.rotation * (other.scale * translation) + other.translation;
-		t.isDirty = other.isDirty;
 
 		return t;
+	}
+
+	Transform Transform::operator*(const float multiplier) const
+	{
+		return Transform(translation * multiplier, rotation * multiplier, scale * multiplier);
+	}
+
+	Transform& Transform::operator*=(const float multiplier)
+	{
+		translation *= multiplier;
+		rotation = normalize(rotation * multiplier);
+		scale *= multiplier;
+
+		return *this;
 	}
 
 	float4x4 Transform::GetMatrix() const
@@ -57,26 +70,25 @@ namespace tofu
 
 	void Transform::Blend(const Transform other, float weight)
 	{
-		if (isDirty && other.isDirty) {
-			translation = mix(translation, other.translation, weight);
-			rotation = slerp(rotation, other.rotation, weight);
-			scale = mix(scale, other.scale, weight);
+		translation = mix(translation, other.translation, weight);
+		rotation = slerp(rotation, other.rotation, weight);
+		scale = mix(scale, other.scale, weight);
 
-			normalize(rotation);
-		}
-		else if (!isDirty) {
-			*this = other;
-		}
+		//normalize(rotation);
 	}
 
 	void Transform::Additive(const Transform other, float weight)
 	{
-		if (other.isDirty) {
-			translation += other.translation * weight;
-			rotation = slerp(rotation, other.rotation, weight);
-			
-			normalize(rotation);
+		translation += other.translation * weight;
+		scale += other.scale * weight;
+
+		quat temp = slerp(quat(), other.rotation, weight);
+
+		if (dot(rotation, temp) < 0.f) {
+			temp = -temp;
 		}
+
+		rotation = temp * rotation;
+		//rotation = normalize(temp * rotation);
 	}
 }
-

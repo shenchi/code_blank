@@ -110,6 +110,7 @@ namespace tofu
 			uint16_t		nextSibling;
 			math::float4x4	transform;
 			math::float4x4	offsetMatrix;
+			//Transform trans;
 		};
 
 		struct ModelAnimation
