@@ -283,6 +283,12 @@
     <FxCompile Include="post_process_tone_mapping_ps.hlsl">
       <Filter>Shaders\new</Filter>
     </FxCompile>
+    <FxCompile Include="volumetric_fog_scatter_cs.hlsl">
+      <Filter>Shaders\new</Filter>
+    </FxCompile>
+    <FxCompile Include="volumetric_fog_apply_ps.hlsl">
+      <Filter>Shaders\new</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

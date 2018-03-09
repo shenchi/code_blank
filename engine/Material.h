@@ -22,6 +22,7 @@ namespace tofu
 		kMaterialDeferredLightingSpotLight,
 		kMaterialDeferredLightingAmbient,
 		kMaterialPostProcessToneMapping,
+		kMaterialPostProcessVolumetricFog,
 		kMaxMaterialTypes
 	};
 

@@ -51,7 +51,9 @@ namespace tofu
 
 		TextureHandle CreateTexture(const char* filename);
 
-		TextureHandle CreateTexture(PixelFormat format, uint32_t width, uint32_t height, uint32_t pitch, void* data = nullptr, uint32_t binding = kBindingShaderResource);
+		TextureHandle CreateTexture(PixelFormat format, uint32_t width, uint32_t height, uint32_t pitch = 0, void* data = nullptr, uint32_t binding = kBindingShaderResource);
+
+		TextureHandle CreateTexture(PixelFormat format, uint32_t width, uint32_t height, uint32_t depth, uint32_t pitch = 0, uint32_t slicePitch = 0, void* data = nullptr, uint32_t binding = kBindingShaderResource);
 
 		Material* CreateMaterial(MaterialType type);
 
@@ -63,6 +65,8 @@ namespace tofu
 		int32_t LoadVertexShader(const char* filename, VertexShaderHandle& handle);
 
 		int32_t LoadPixelShader(const char* filename, PixelShaderHandle& handle);
+
+		int32_t LoadComputeShader(const char* filename, ComputeShaderHandle& handle);
 
 		int32_t ReallocAnimationResources(AnimationComponentData& c);
 
@@ -82,6 +86,7 @@ namespace tofu
 		HandleAllocator<SamplerHandle, kMaxSamplers>				samplerHandleAlloc;
 		HandleAllocator<VertexShaderHandle, kMaxVertexShaders>		vertexShaderHandleAlloc;
 		HandleAllocator<PixelShaderHandle, kMaxPixelShaders>		pixelShaderHandleAlloc;
+		HandleAllocator<ComputeShaderHandle, kMaxComputeShaders>	computeShaderHandleAlloc;
 		HandleAllocator<PipelineStateHandle, kMaxPipelineStates>	pipelineStateHandleAlloc;
 
 		size_t					frameNo;
@@ -122,6 +127,10 @@ namespace tofu
 
 		BufferHandle			lightParamsAmbDirBuffer;
 		BufferHandle			lightParamsBuffer;
+
+		// resources for volumetric fog
+		TextureHandle			scatterTex;
+		ComputeShaderHandle		scatterShader;
 	};
 
 }

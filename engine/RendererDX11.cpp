@@ -1504,9 +1504,9 @@ namespace tofu
 					ID3D11UnorderedAccessView* uavs[kMaxTextureBindings] = {};
 					for (uint32_t i = 0; i < kMaxTextureBindings; i++)
 					{
-						if (params->textures[i])
+						if (params->rwTextures[i])
 						{
-							Texture& tex = textures[params->textures[i].id];
+							Texture& tex = textures[params->rwTextures[i].id];
 							assert(nullptr != tex.srv);
 							if (!(tex.bindingFlags & kBindingUnorderedAccess))
 							{
@@ -1552,6 +1552,12 @@ namespace tofu
 				}
 
 				context->Dispatch(params->threadGroupCountX, params->threadGroupCountY, params->threadGroupCountZ);
+
+				{
+					// rw texture bindings
+					ID3D11UnorderedAccessView* uavs[kMaxTextureBindings] = {};
+					context->CSSetUnorderedAccessViews(0, kMaxTextureBindings, uavs, nullptr);
+				}
 
 				return kOK;
 			}

@@ -185,6 +185,10 @@ namespace tofu
 		
 		CHECKED(LoadPixelShader("assets/post_process_tone_mapping_ps.shader", materialPSs[kMaterialPostProcessToneMapping]));
 
+		CHECKED(LoadPixelShader("assets/volumetric_fog_apply_ps.shader", materialPSs[kMaterialPostProcessVolumetricFog]));
+
+		CHECKED(LoadComputeShader("assets/volumetric_fog_scatter_cs.shader", scatterShader));
+
 		// constant buffers
 		{
 			transformBuffer = bufferHandleAlloc.Allocate();
@@ -518,6 +522,23 @@ namespace tofu
 			cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 		}
 
+		materialPSOs[kMaterialPostProcessVolumetricFog] = pipelineStateHandleAlloc.Allocate();
+		assert(materialPSOs[kMaterialPostProcessVolumetricFog]);
+		{
+			CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
+			params->handle = materialPSOs[kMaterialPostProcessVolumetricFog];
+			params->vertexShader = materialVSs[kMaterialDeferredLightingAmbient];
+			params->pixelShader = materialPSs[kMaterialPostProcessVolumetricFog];
+
+			params->depthEnable = 0;
+
+			params->cullMode = kCullBack;
+
+			params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
+
+			cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+		}
+
 		// create default sampler
 		{
 			defaultSampler = samplerHandleAlloc.Allocate();
@@ -604,6 +625,13 @@ namespace tofu
 		hdrTarget = CreateTexture(kFormatR32g32b32a32Float, w, h, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
 
 		if (!gBuffer1 || !gBuffer2 || !gBuffer3 || !hdrTarget)
+		{
+			return kErrUnknown;
+		}
+
+		scatterTex = CreateTexture(kFormatR32g32b32a32Float, 160, 90, 0, nullptr, kBindingShaderResource | kBindingUnorderedAccess);
+
+		if (!scatterTex)
 		{
 			return kErrUnknown;
 		}
@@ -1315,14 +1343,24 @@ namespace tofu
 
 		CreateTextureParams* params = MemoryAllocator::Allocate<CreateTextureParams>(allocNo);
 
-		params->handle = handle;
-		params->bindingFlags = binding;
-		params->format = format;
-		params->arraySize = 1;
-		params->width = width;
-		params->height = height;
-		params->pitch = pitch;
-		params->data = data;
+		params->InitAsTexture2D(handle, width, height, format, data, pitch, binding);
+
+		cmdBuf->Add(RendererCommand::kCommandCreateTexture, params);
+
+		return handle;
+	}
+
+	TextureHandle RenderingSystem::CreateTexture(PixelFormat format, uint32_t width, uint32_t height, uint32_t depth, uint32_t pitch, uint32_t slicePitch, void* data, uint32_t binding)
+	{
+		TextureHandle handle = textureHandleAlloc.Allocate();
+		if (!handle)
+		{
+			return handle;
+		}
+
+		CreateTextureParams* params = MemoryAllocator::Allocate<CreateTextureParams>(allocNo);
+
+		params->InitAsTexture3D(handle, width, height, depth, format, data, pitch, slicePitch, binding);
 
 		cmdBuf->Add(RendererCommand::kCommandCreateTexture, params);
 
@@ -1435,6 +1473,38 @@ namespace tofu
 			}
 
 			cmdBuf->Add(RendererCommand::kCommandCreatePixelShader, params);
+		}
+
+		return kOK;
+	}
+
+	int32_t RenderingSystem::LoadComputeShader(const char * filename, ComputeShaderHandle & handle)
+	{
+		handle = computeShaderHandleAlloc.Allocate();
+		if (!handle)
+		{
+			return kErrUnknown;
+		}
+
+		{
+			CreateComputeShaderParams* params = MemoryAllocator::Allocate<CreateComputeShaderParams>(allocNo);
+			assert(nullptr != params);
+			params->handle = handle;
+
+			int32_t err = FileIO::ReadFile(
+				filename,
+				false,
+				4,
+				allocNo,
+				&(params->data),
+				&(params->size));
+
+			if (kOK != err)
+			{
+				return err;
+			}
+
+			cmdBuf->Add(RendererCommand::kCommandCreateComputeShader, params);
 		}
 
 		return kOK;
@@ -2097,6 +2167,42 @@ cmdBuf->Add(RendererCommand::kCommandDraw, params);
 
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
+
+			/**/
+			{
+				ComputeParams* params = MemoryAllocator::Allocate<ComputeParams>(allocNo);
+
+				params->shader = scatterShader;
+				params->rwTextures[0] = scatterTex;
+
+				params->threadGroupCountX = 10;
+				params->threadGroupCountY = 10;
+				params->threadGroupCountZ = 1;
+
+				cmdBuf->Add(RendererCommand::kCommandCompute, params);
+			}
+
+			// volumetric fog
+			{
+				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
+				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
+
+				params->pipelineState = materialPSOs[kMaterialPostProcessVolumetricFog];
+
+				params->vertexBuffer = mesh.VertexBuffer;
+				params->indexBuffer = mesh.IndexBuffer;
+				params->startIndex = mesh.StartIndex;
+				params->startVertex = mesh.StartVertex;
+				params->indexCount = mesh.NumIndices;
+
+				params->psConstantBuffers[0] = { frameConstantBuffer, 0, 0 };
+
+				params->psTextures[0] = scatterTex;
+				params->psSamplers[0] = defaultSampler;
+
+				cmdBuf->Add(RendererCommand::kCommandDraw, params);
+			}
+			/**/
 		}
 
 		return kOK;
