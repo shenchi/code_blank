@@ -24,6 +24,7 @@ Game::~Game()
 	delete cam;
 	delete player;
 	delete pControl;
+	delete DebugPlayer;
 }
 
 // Intialization of Game components
@@ -31,16 +32,21 @@ int32_t Game::Init()
 {
 	uint32_t ret;	
 
-	// Create a camera
-	cam = new Camera();
+	debugMode = true;
 
-	// Create a Player Controller
-	pControl = new PController();
-	pControl->SetCamera(cam);
+	if (!debugMode)
+	{
+		// Create a camera
+		cam = new Camera();
 
-	comp = NULL;
-	player = NULL;
-	enemyList = nullptr;
+		// Create a Player Controller
+		pControl = new PController();
+		pControl->SetCamera(cam);
+
+		comp = NULL;
+		player = NULL;
+		enemyList = nullptr;
+	}
 
 	// Load the initial scene (Defalut is Intro)
 	// Load other scenes here for fast testing
@@ -70,16 +76,19 @@ int32_t Game::Update()
 {
 	uint32_t ret;
 
-	pControl->Update();
-
-	// should pause?
-	if (pControl->GetPause())
+	if (!debugMode)
 	{
-		//Temp for Testing
-		Engine::instance()->Quit();
+		pControl->Update();
 
-		 //TODO
-		 //Pause the game and load the pasue menu
+		// should pause?
+		if (pControl->GetPause())
+		{
+			//Temp for Testing
+			Engine::instance()->Quit();
+
+			//TODO
+			//Pause the game and load the pasue menu
+		}
 	}
 
 	// Switch for game state
@@ -153,58 +162,64 @@ int32_t Game::Update()
 	}
 	case 6:	// Level
 	{
-		//if (input->IsButtonDown(ButtonId::kKeyEnter))
-		//{
-		//	// Load next scene
-		//	currentScene = credits;
-		//	ret = LoadScene(credits);
-		//	assert(ret);
-
-		//	// Unload last scene
-		//	lastScene = level;
-		//	ret = UnloadScene(level);
-		//	assert(ret);
-		//}
-
-		// May also need to run player update here
-		comp->Update(Time::DeltaTime, player->GetPosition(), player->GetForward());
-		cam->Update();
-		pControl->UpdateP(Time::DeltaTime);
-		player->Update(Time::DeltaTime);
-
-		//*******************************************************************************
-		// Temp Enemy control code
-		if (loopStart)
+		if (debugMode)
 		{
-			startTime = Time::TotalTime;
-			loopStart = false;
+			DebugPlayer->Update();
 		}
-		
-		timePassed = Time::TotalTime - startTime;
-		
-		//if (timePassed > 0 && timePassed <= 10)	// Move Forward
-		//{
-		//	enemy01->Move(Time::DeltaTime, false, math::float3{0, 0, 1});
-		//}
-		//else if (timePassed > 10 && timePassed <= 20) // Move Left
-		//{
-		//	enemy01->Move(Time::DeltaTime, false, math::float3{-1, 0, 0 });
-		//}
-		//else if (timePassed > 20 && timePassed <= 30) // Move Backward
-		//{
-		//	enemy01->Move(Time::DeltaTime, false, math::float3{0, 0, -1});
-		//}
-		//else if (timePassed > 30 && timePassed <= 40) // Move Right
-		//{
-		//	enemy01->Move(Time::DeltaTime, false, math::float3{1, 0, 0});
-		//}
-
-		if (timePassed > 40)
+		else
 		{
-			timePassed = 0.0f;
-			loopStart = true;
-		}
+			//if (input->IsButtonDown(ButtonId::kKeyEnter))
+			//{
+			//	// Load next scene
+			//	currentScene = credits;
+			//	ret = LoadScene(credits);
+			//	assert(ret);
 
+			//	// Unload last scene
+			//	lastScene = level;
+			//	ret = UnloadScene(level);
+			//	assert(ret);
+			//}
+
+			// May also need to run player update here
+			comp->Update(Time::DeltaTime, player->GetPosition(), player->GetForward());
+			cam->Update();
+			pControl->UpdateP(Time::DeltaTime);
+			player->Update(Time::DeltaTime);
+
+			//*******************************************************************************
+			// Temp Enemy control code
+			if (loopStart)
+			{
+				startTime = Time::TotalTime;
+				loopStart = false;
+			}
+
+			timePassed = Time::TotalTime - startTime;
+
+			//if (timePassed > 0 && timePassed <= 10)	// Move Forward
+			//{
+			//	enemy01->Move(Time::DeltaTime, false, math::float3{0, 0, 1});
+			//}
+			//else if (timePassed > 10 && timePassed <= 20) // Move Left
+			//{
+			//	enemy01->Move(Time::DeltaTime, false, math::float3{-1, 0, 0 });
+			//}
+			//else if (timePassed > 20 && timePassed <= 30) // Move Backward
+			//{
+			//	enemy01->Move(Time::DeltaTime, false, math::float3{0, 0, -1});
+			//}
+			//else if (timePassed > 30 && timePassed <= 40) // Move Right
+			//{
+			//	enemy01->Move(Time::DeltaTime, false, math::float3{1, 0, 0});
+			//}
+
+			if (timePassed > 40)
+			{
+				timePassed = 0.0f;
+				loopStart = true;
+			}
+		}
 		assert(!(timePassed < 0) && timePassed < 50);
 		//*******************************************************************************
 
@@ -306,90 +321,56 @@ bool Game::LoadScene(sceneType num)
 			// Setup the Scene
 			CHECKED(sceneMgr.Init());
 
-			CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial.json"));
+			CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial_3.json"));
 
-			// Dummy light
-			/*{
-				Entity e = Entity::Create();
-
-				TransformComponent tSun = e.AddComponent<TransformComponent>();
-				tSun->SetLocalPosition(math::float3{ 58.0f, 3.0f, -41.0f });
-				tSun->SetLocalRotation(math::angleAxis(3.14f / 4, math::float3{ 1.0f, 0.0f, 0.0f }));
-
-				LightComponent lSun = e.AddComponent<LightComponent>();
-				lSun->SetType(LightType::kLightTypeDirectional);
-				math::float4 sunColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
-				lSun->SetColor(sunColor);
-				lSun->CreateDepthMap();
-			}*/
-			// Moon light 
-			/*{
-				Entity e = Entity::Create();
-
-				TransformComponent tMoon = e.AddComponent<TransformComponent>();
-
-				tMoon->SetLocalRotation(math::angleAxis(3.14f / 2.0f, math::float3{ 1.0f,0.0f, 0.0f }));
-
-				LightComponent lMoon = e.AddComponent<LightComponent>();
-				lMoon->SetType(LightType::kLightTypeDirectional);
-				math::float4 moonColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
-				lMoon->SetColor(moonColor);
-			}*/
-			// Point light
-			/*{
-				Entity e = Entity::Create();
-
-				TransformComponent tBulb = e.AddComponent<TransformComponent>();
-				tBulb->SetLocalPosition(math::float3{ -5, 5, -4 });
-
-				LightComponent lBulb = e.AddComponent<LightComponent>();
-				lBulb->SetType(LightType::kLightTypePoint);
-				math::float4 bulbColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
-				lBulb->SetColor(bulbColor);
-			}*/
-
-			CharacterDetails playerDetails = {};
-			playerDetails.capsuleColliderSize = { 50.0f, 100.0f };
-			playerDetails.colliderOrigin = { 0.0f, 100.0f, 0.0f };
-			playerDetails.health = 200.0f;
-			playerDetails.jumpPower = 4.0f;
-			playerDetails.position = { 53.0f, 1.0f, -38.0f };
-			playerDetails.scale = { 0.01f, 0.01f, 0.01f };
-			playerDetails.sprintSpeed = 10.0f;
-			playerDetails.tag = "player";
-			playerDetails.walkSpeed = 5.0f;
-			playerDetails.rollDodgeCost = 10.0f;
-
-
-			// Setup the Player's Companion
-			if (comp == NULL)
+			if (debugMode)
 			{
-				comp = new Companion(playerDetails.position);
-				pControl->SetCompanion(comp);
+				DebugPlayer = new Utility::GhostPlayer(tofu::math::float3{ -80.0f, 13.0f, 887.0f });
 			}
-
-			// Setup the Player
-			if (player == NULL)
+			else
 			{
-				player = new Player(playerDetails, comp);
-				pControl->SetPlayer(player);
+				CharacterDetails playerDetails = {};
+				playerDetails.capsuleColliderSize = { 50.0f, 100.0f };
+				playerDetails.colliderOrigin = { 0.0f, 100.0f, 0.0f };
+				playerDetails.health = 200.0f;
+				playerDetails.jumpPower = 4.0f;
+				playerDetails.position = { -80.0f, 13.0f, 887.0f };
+				playerDetails.scale = { 0.01f, 0.01f, 0.01f };
+				playerDetails.sprintSpeed = 10.0f;
+				playerDetails.tag = "player";
+				playerDetails.walkSpeed = 5.0f;
+				playerDetails.rollDodgeCost = 10.0f;
+
+
+				// Setup the Player's Companion
+				if (comp == NULL)
+				{
+					comp = new Companion(playerDetails.position);
+					pControl->SetCompanion(comp);
+				}
+
+				// Setup the Player
+				if (player == NULL)
+				{
+					player = new Player(playerDetails, comp);
+					pControl->SetPlayer(player);
+				}
+				assert(player != NULL);
+
+
+				//*********************************************************************************************
+				//temp for test
+				/*enemy01 = new Enemy(math::float3{ 10.0f, 1.0f, 0.0f });
+				enemy02 = new Enemy(math::float3{ -10.0f, 1.0f, -10.0f });
+				enemy03 = new Enemy(math::float3{ -10.0f, 1.0f, 10.0f });*/
+				//*********************************************************************************************
+
+				// Add each enemy to the enemy list
+				// enemyList = new std::vector<Character*>();
+				// enemyList.pushback(enemy01);
+
+				player->GetCombatManager()->SetEnemyList(enemyList);
 			}
-			assert(player != NULL);
-
-
-			//*********************************************************************************************
-			//temp for test
-			/*enemy01 = new Enemy(math::float3{ 10.0f, 1.0f, 0.0f });
-			enemy02 = new Enemy(math::float3{ -10.0f, 1.0f, -10.0f });
-			enemy03 = new Enemy(math::float3{ -10.0f, 1.0f, 10.0f });*/
-			//*********************************************************************************************
-
-			// Add each enemy to the enemy list
-			// enemyList = new std::vector<Character*>();
-			// enemyList.pushback(enemy01);
-
-			player->GetCombatManager()->SetEnemyList(enemyList);
-
 			break;
 		}
 		case 7:

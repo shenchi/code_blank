@@ -5,6 +5,7 @@
 #include "PController.h"
 #include "Camera.h"
 #include "Enemy.h"
+#include "Utility.h"
 
 // Game: The main game loop.
 // Runs all things game related.
@@ -76,5 +77,9 @@ private:
 	float timePassed;
 	float startTime;
 	bool loopStart;
+
+	bool debugMode;
+
+	Utility::GhostPlayer* DebugPlayer;
 	//*********************************************************************************************
 };
