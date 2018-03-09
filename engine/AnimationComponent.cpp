@@ -11,18 +11,6 @@ using namespace tofu::model;
 
 namespace tofu
 {
-	struct FABRIKChain {
-		uint16_t boneIndex;
-
-		// distance to its child
-		float length;
-
-		Transform transform;
-
-		FABRIKChain(uint16_t boneIndex, float length, Transform transform)
-			:boneIndex(boneIndex), length(length), transform(transform) {}
-	};
-
 	AnimationStateMachine * AnimationComponentData::GetStateMachine(size_t layer)
 	{
 		return &layers[layer].stateMachine;
@@ -67,12 +55,6 @@ namespace tofu
 			return kErrUnknown;
 		}
 
-		// load bone matrices
-		for (uint16_t i = 0; i < model->header->NumBones; i++)
-		{
-			matrices[i] = model->bones[i].transform;
-		}
-
 		// evaluate animation result
 		EvaluateContext context(model);
 
@@ -82,8 +64,12 @@ namespace tofu
 
 		// apply result
 		for (auto i = 0; i < model->header->NumBones; i++) {
-			if (context.transforms[i].isDirty) {
-				matrices[i] = context.transforms[i].GetMatrix();
+			matrices[i] = context.results[i].GetMatrix();
+
+			// TODO: check available state before transition, then we can remove it
+			// Set to T-pose if something wrong
+			if (matrices[i] == glm::mat4()) {
+				matrices[i] = model->bones[i].transformMatrix;
 			}
 		}
 
@@ -110,6 +96,18 @@ namespace tofu
 
 		return kOK;
 	}
+
+	struct FABRIKChain {
+		uint16_t boneIndex;
+
+		// distance to its child
+		float length;
+
+		Transform transform;
+
+		FABRIKChain(uint16_t boneIndex, float length, Transform transform)
+			:boneIndex(boneIndex), length(length), transform(transform) {}
+	};
 
 	// FABRIK solver
 	// http://www.andreasaristidou.com/FABRIK.html

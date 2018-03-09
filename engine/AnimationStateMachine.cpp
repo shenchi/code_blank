@@ -9,18 +9,19 @@
 #include <string>
 
 using namespace tofu::model;
+using namespace tofu::math;
+using namespace tofu::compression;
 
 namespace tofu
 {
 	EvaluateContext::EvaluateContext(Model * model) :model(model)
 	{
-		transforms = new Transform[model->header->NumBones];
+		results = new Transform[model->header->NumBones];
 	}
 
 	EvaluateContext::~EvaluateContext()
 	{
-		if (transforms)
-			delete[] transforms;
+		delete[] results;
 	}
 
 	void AnimationFrameCache::Reset()
@@ -40,6 +41,11 @@ namespace tofu
 		indices[type][1] = indices[type][2];
 		indices[type][2] = indices[type][3];
 		indices[type][3] = index;
+	}
+
+	AnimNodeBase::AnimNodeBase(std::string name) : name(name)
+	{
+		
 	}
 
 	AnimationState::~AnimationState()
@@ -99,11 +105,6 @@ namespace tofu
 		cursor = tempCursor;
 	}
 
-	AnimNodeBase::AnimNodeBase(std::string name)
-		:name(name)
-	{
-	}
-
 	void AnimationState::Update(UpdateContext& context)
 	{
 		model::ModelAnimation *anim = context.model->GetAnimation(animationName);
@@ -129,17 +130,11 @@ namespace tofu
 		cache->Update(&context, anim);
 	}
 
-	void AnimationState::Evaluate(EvaluateContext & context, float weight)
+	void AnimationState::Evaluate(EvaluateContext & context, float weight, AnimationEvaluationType type)
 	{
 		for (size_t i = 0; i < cache->frameCaches.size(); i++)
 		{
 			AnimationFrameCache &frameCache = cache->frameCaches[i];
-
-			if (frameCache.indices[kChannelTranslation][3] == SIZE_MAX &&
-				frameCache.indices[kChannelRotation][3] == SIZE_MAX &&
-				frameCache.indices[kChannelScale][3] == SIZE_MAX) {
-				continue;
-			}
 
 			Model *model = context.model;
 
@@ -162,6 +157,9 @@ namespace tofu
 			else if (indices[3] != SIZE_MAX) {
 				trans.SetTranslation(model->frames[indices[3]].value);
 			}
+			else {
+				trans.SetTranslation(model->bones[i].transform.GetTranslation());
+			}
 
 			indices = frameCache.indices[kChannelRotation];
 
@@ -178,12 +176,12 @@ namespace tofu
 				trans.SetRotation(SlerpFromFrameIndex(model, indices[2], indices[3]));
 			}
 			else if (indices[3] != SIZE_MAX) {
-				math::quat q;
-				ModelAnimFrame &f = model->frames[indices[3]];
-
-				//tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&f.value.x), q);
-				tofu::compression::DecompressQuaternion(q, f.value, f.GetSignedBit());
+				quat q;
+				decompress(model->frames[indices[3]].value, q);
 				trans.SetRotation(q);
+			}
+			else {
+				trans.SetRotation(model->bones[i].transform.GetRotation());
 			}
 
 			indices = frameCache.indices[kChannelScale];
@@ -203,10 +201,19 @@ namespace tofu
 			else if (indices[3] != SIZE_MAX) {
 				trans.SetScale(model->frames[indices[3]].value);
 			}
+			else {
+				trans.SetScale(model->bones[i].transform.GetScale());
+			}
 
-			trans.isDirty = true;
-
-			context.transforms[i].BlendByWeight(trans, weight);
+			if (type == kAET_Blend) {
+				context.results[i].Blend(trans, weight);
+			}
+			else if (type == kAET_Additive) {
+				context.results[i].Additive(trans, weight);
+			}
+			else {
+				assert(0);
+			}
 		}
 	}
 
@@ -228,7 +235,7 @@ namespace tofu
 		ModelAnimFrame& f3 = model->frames[i3];
 		ModelAnimFrame& f4 = model->frames[i4];
 
-		float t = std::min(1.0f, (cache->ticks - f2.time) / (f3.time - f2.time));
+		float t = (cache->ticks - f2.time) / (f3.time - f2.time);
 		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
 
 		return catmullRom(f1.value, f2.value, f3.value, f4.value, t);
@@ -243,18 +250,13 @@ namespace tofu
 
 		math::quat q1, q2, q3, q4;
 
-		/*tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&f1.value.x), q1);
-		tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&f2.value.x), q2);
-		tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&f3.value.x), q3);
-		tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&f4.value.x), q4);*/
-
-		tofu::compression::DecompressQuaternion(q1, f1.value, f1.GetSignedBit());
-		tofu::compression::DecompressQuaternion(q2, f2.value, f2.GetSignedBit());
-		tofu::compression::DecompressQuaternion(q3, f3.value, f3.GetSignedBit());
-		tofu::compression::DecompressQuaternion(q4, f4.value, f4.GetSignedBit());
-
-		float t = std::min(1.0f, (cache->ticks - f2.time) / (f3.time - f2.time));
+		float t = (cache->ticks - f2.time) / (f3.time - f2.time);
 		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
+
+		decompress(f1.value, q1);
+		decompress(f2.value, q2);
+		decompress(f3.value, q3);
+		decompress(f4.value, q4);
 
 		// FIXME: change after cruve fitting
 		return math::slerp(q2, q3, t);
@@ -266,7 +268,7 @@ namespace tofu
 		ModelAnimFrame& fa = model->frames[lhs];
 		ModelAnimFrame& fb = model->frames[rhs];
 
-		float t = std::min(1.0f, (cache->ticks - fa.time) / (fb.time - fa.time));
+		float t = (cache->ticks - fa.time) / (fb.time - fa.time);
 		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
 
 		return math::mix(fa.value, fb.value, t);
@@ -277,72 +279,46 @@ namespace tofu
 		ModelAnimFrame& fa = model->frames[lhs];
 		ModelAnimFrame& fb = model->frames[rhs];
 
-		float t = std::min(1.0f, (cache->ticks - fa.time) / (fb.time - fa.time));
+		float t = (cache->ticks - fa.time) / (fb.time - fa.time);
 		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
 
 		math::quat a, b;
 
-		//tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&fa.value.x), a);
-		//tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&fb.value.x), b);
-
-		tofu::compression::DecompressQuaternion(a, fa.value, fa.GetSignedBit());
-		tofu::compression::DecompressQuaternion(b, fb.value, fb.GetSignedBit());
+		decompress(fa.value, a);
+		decompress(fb.value, b);
 
 		return math::slerp(a, b, t);
 	}
 
-	// AnimationStateMachine
-
 	AnimationStateMachine::AnimationStateMachine(std::string name) :
 		AnimNodeBase(name)
 	{
-		states.push_back(std::move(new AnimNodeBase("entry")));
+		states.push_back(new AnimNodeBase("entry"));
 		current = states.back();
 	}
 
 	AnimationStateMachine::~AnimationStateMachine()
 	{
 		for (AnimNodeBase* node : states) {
+			// FIXME: Chi
+			//node->~AnimNodeBase();
 			delete node;
 		}
 	}
 
-	/** Move constructor */
-	AnimationStateMachine::AnimationStateMachine(AnimationStateMachine&& other) noexcept : /* noexcept needed to enable optimizations in containers */
-	AnimNodeBase(other.name), previous(other.previous), current(other.current), elapsedTime(other.elapsedTime), transitionDuration(other.transitionDuration)
-	{
-		states = std::move(other.states);
-		stateIndexTable = std::move(other.stateIndexTable);
-		transitions = std::move(other.transitions);
-	}
-
-	///** Copy assignment operator */
-	//Foo& operator= (const Foo& other)
-	//{
-	//	Foo tmp(other);         // re-use copy-constructor
-	//	*this = std::move(tmp); // re-use move-assignment
-	//	return *this;
-	//}
-
-	///** Move assignment operator */
-	//Foo& operator= (Foo&& other) noexcept
-	//{
-	//	if (this == &other)
-	//	{
-	//		// take precautions against `foo = std::move(foo)`
-	//		return *this;
-	//	}
-	//	delete[] data;
-	//	data = other.data;
-	//	other.data = nullptr;
-	//	return *this;
-	//}
-
 	AnimationState* AnimationStateMachine::AddState(std::string name)
 	{
 		stateIndexTable[name] = static_cast<uint16_t>(states.size());
-		states.push_back(std::move(new AnimationState(name)));
 
+		//// TODO: allocator
+		//AnimationState *state = static_cast<AnimationState *>(
+		//	MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(sizeof(AnimationState), alignof(AnimationState)));
+
+		//states.push_back(new(state)AnimationState(name));
+
+		//return state;
+
+		states.push_back(new AnimationState(name));
 		return static_cast<AnimationState*>(states.back());
 	}
 
@@ -379,6 +355,7 @@ namespace tofu
 			if (entry.name.compare(current->name) == 0)
 				continue;
 
+			// TODO: also check state availability, abstract methond
 			if (stateIndexTable.find(entry.name) != stateIndexTable.end()) {
 
 				if (previous) {
@@ -409,36 +386,28 @@ namespace tofu
 		}
 
 		// TODO: better way to prevent passing previous transition?
+		// only allow one transition?
 		transitions.clear();
 
 		current->Update(context);
 	}
 
-	void AnimationStateMachine::Evaluate(EvaluateContext & context, float weight)
+	void AnimationStateMachine::Evaluate(EvaluateContext & context, float weight, AnimationEvaluationType type)
 	{
 		if (transitionDuration) {
 			float alpha = elapsedTime / transitionDuration;
 
-			if (weight == 1.0f) {
-				previous->Evaluate(context, 1.0f);
-				current->Evaluate(context, alpha);
-			}
-			else {
-				EvaluateContext temp = context;
-				temp.transforms = new Transform[context.model->header->NumBones];
-
-				previous->Evaluate(temp, 1.0f);
-				current->Evaluate(temp, alpha);
-
+			if (type == kAET_Blend) {
 				for (auto i = 0; i < context.model->header->NumBones; i++) {
-					context.transforms[i].BlendByWeight(temp.transforms[i], weight);
+					context.results[i] *= 1.0f - weight;
 				}
-
-				delete[] temp.transforms;
 			}
+
+			previous->Evaluate(context, (1.0f - alpha) * weight, kAET_Additive);
+			current->Evaluate(context, alpha * weight, kAET_Additive);
 		}
 		else {
-			current->Evaluate(context, weight);
+			current->Evaluate(context, weight, type);
 		}
 	}
 
@@ -447,8 +416,8 @@ namespace tofu
 		return current->GetDurationInSecond(model);
 	}
 
-	AnimationLayer::AnimationLayer(std::string name, float weight)
-		:name(name), weight(weight), stateMachine(std::move(AnimationStateMachine("default")))
+	AnimationLayer::AnimationLayer(std::string name, float weight, AnimationEvaluationType type)
+		:name(name), weight(weight), type(type), stateMachine("default")
 	{
 	}
 
@@ -461,6 +430,31 @@ namespace tofu
 
 	void AnimationLayer::Evaluate(EvaluateContext & context)
 	{
-		stateMachine.Evaluate(context, weight);
+		stateMachine.Evaluate(context, weight, type);
+	}
+
+	void swap(AnimNodeBase & lhs, AnimNodeBase & rhs) noexcept
+	{
+		using std::swap;
+		swap(lhs.name, rhs.name);
+	}
+
+	void swap(AnimationState & lhs, AnimationState & rhs) noexcept
+	{
+		using std::swap;
+		swap(lhs.name, rhs.name);
+		swap(lhs.animationName, rhs.animationName);
+		swap(lhs.cache, rhs.cache);
+	}
+
+	void swap(AnimationStateMachine & lhs, AnimationStateMachine & rhs) noexcept
+	{
+		using std::swap;
+		swap(lhs.name, rhs.name);
+		swap(lhs.previous, rhs.previous);
+		swap(lhs.current, rhs.current);
+		swap(lhs.transitions, rhs.transitions);
+		swap(lhs.states, rhs.states);
+		swap(lhs.stateIndexTable, rhs.stateIndexTable);
 	}
 }

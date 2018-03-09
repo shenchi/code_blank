@@ -23,7 +23,7 @@ int CALLBACK WinMain(
 #ifdef _DEBUG
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
-	//_CrtSetBreakAlloc(167801);
+	//_CrtSetBreakAlloc(132852);
 #endif
 
 	tofu::Engine engine;

@@ -112,13 +112,13 @@ namespace tofu
 	private:
 		Entity					entity;
 		Model*					model;
+		Transform*				transforms;
 
 		// constant buffer for bone matrices
 		BufferHandle			boneMatricesBuffer;
 		uint32_t				boneMatricesBufferSize;
 
 		std::vector<AnimationLayer> layers;
-
 		std::vector<IKTarget> iks;
 
 	private:

@@ -19,6 +19,7 @@
 #include "../../engine/ModelFormat.h"
 #include "../../engine/TofuMath.h"
 #include "../../engine/Compression.h"
+#include "../../engine/Transform.h"
 
 //using tofu::math::float2;
 //using tofu::math::float3;
@@ -605,7 +606,7 @@ uint16_t loadBoneHierarchy(const aiNode* node, BoneTree& bones, BoneTable& table
 		strncpy_s(bone.name, 128, node->mName.C_Str(), _TRUNCATE);
 	}
 
-	CopyMatrix(bone.transform, node->mTransformation);
+	CopyMatrix(bone.transformMatrix, node->mTransformation);
 	bone.offsetMatrix = float4x4(1.0f);
 
 	// deal with "$AssimpFbx$" issue
@@ -626,7 +627,7 @@ uint16_t loadBoneHierarchy(const aiNode* node, BoneTree& bones, BoneTable& table
 			}
 
 			FbxNode& fbxNode = fbxNodeTable[basename];
-			fbxNode.SetMatrix(transname.c_str(), bone.transform);
+			fbxNode.SetMatrix(transname.c_str(), bone.transformMatrix);
 
 			strncpy_s(bone.name, 128, basename.c_str(), _TRUNCATE);
 
@@ -662,7 +663,7 @@ uint16_t loadBoneHierarchy(const aiNode* node, BoneTree& bones, BoneTable& table
 					fbxNode.SetMatrix(transname.c_str(), mat);
 				}
 
-				bone.transform = mat * bone.transform;
+				bone.transformMatrix = mat * bone.transformMatrix;
 			}
 		}
 	}
@@ -681,6 +682,14 @@ uint16_t loadBoneHierarchy(const aiNode* node, BoneTree& bones, BoneTable& table
 		lastChild = id;
 	}
 	bones[boneId].firstChild = firstChild;
+
+	for (int i = 0; i < bones.size(); i++) {
+		tofu::math::float3 t, s;
+		tofu::math::quat q;
+
+		tofu::math::decompose(bones[i].transformMatrix, t, q, s);
+		bones[i].transform = std::move(tofu::Transform(t, q, s));
+	}
 
 	return boneId;
 }
@@ -707,7 +716,6 @@ bool SortingFrameComp(ForSortingFrame i, ForSortingFrame j) {
 	else {
 		return i.usedTime < j.usedTime;
 	}
-
 }
 
 struct ModelFile
@@ -1120,12 +1128,7 @@ struct ModelFile
 							decompose(transpose(rot), t, q, s);
 						}
 
-						//CompressQuaternion(q, *reinterpret_cast<uint32_t*>(&frame.value.x));
-
-						bool negativeW;
-						CompressQuaternion(q, frame.value, negativeW);
-						frame.SetSignedBit(negativeW);
-
+						compress(q, frame.value);
 						frames.push_back(temp);
 					}
 				}
@@ -1238,7 +1241,7 @@ struct ModelFile
 						}
 						else
 						{
-							decompose(transpose(bones[iter->second].transform), trans, rot, scale);
+							decompose(transpose(bones[iter->second].transformMatrix), trans, rot, scale);
 
 							// column-majored
 							humanBoneWorldMatrices[i] = humanBoneWorldMatrices[p] * translate(mat4(1.0f), trans);
@@ -1485,17 +1488,15 @@ struct ModelFile
 			auto type = frame.GetChannelType();
 			if (type == tofu::model::kChannelRotation)
 			{
-				quat q(1, 0, 0, 0);
-				DecompressQuaternion(q, frame.value, frame.GetSignedBit());
+				quat q;
+				decompress(frame.value, q);
 
 				if (!CorrectHumanBoneRotation(*this, other, q, humanBoneId))
 				{
 					return __LINE__;
 				}
 
-				bool sign;
-				CompressQuaternion(q, frame.value, sign);
-				frame.SetSignedBit(sign);
+				compress(q, frame.value);
 			}
 			else if (type == tofu::model::kChannelTranslation)
 			{
