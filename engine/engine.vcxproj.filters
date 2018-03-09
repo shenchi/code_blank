@@ -289,6 +289,9 @@
     <FxCompile Include="volumetric_fog_apply_ps.hlsl">
       <Filter>Shaders\new</Filter>
     </FxCompile>
+    <FxCompile Include="volumetric_fog_inject_lights_cs.hlsl">
+      <Filter>Shaders\new</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

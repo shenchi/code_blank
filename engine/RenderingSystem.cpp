@@ -25,7 +25,12 @@ namespace
 		tofu::math::float4x4	matProjInv;			// 4 shader constants
 		tofu::math::float4		cameraPos;			// 1 shader constants
 		tofu::math::float4		bufferSize;			// 1 shader constants
-		float					padding3[4 * 14];	// 15 shader constants
+		tofu::math::float4		leftTopRay;			// 1 shader constants
+		tofu::math::float4		rightTopRay;		// 1 shader constants
+		tofu::math::float4		leftBottomRay;		// 1 shader constants
+		tofu::math::float4		rightBottomRay;		// 1 shader constants
+		tofu::math::float4		perspectiveParams;	// 1 shader constants (fov, aspect, zNear, zFar)
+		float					padding3[4 * 9];	// p shader constants
 	};
 
 	struct LightingConstants {                      // 16 shader constants in total
@@ -1587,6 +1592,10 @@ namespace tofu
 			TransformComponent t = camera.entity.GetComponent<TransformComponent>();
 			data->cameraPos = math::float4(t->GetWorldPosition(), 1);
 			data->bufferSize = math::float4(float(bufferWidth), float(bufferHeight), 0, 0);
+
+			// TODO frustum rays
+
+			data->perspectiveParams = math::float4{ camera.GetFOV(), camera.GetAspect(), camera.GetZNear(), camera.GetZFar() };
 
 			camPos = data->cameraPos;
 
