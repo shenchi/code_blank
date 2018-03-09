@@ -112,6 +112,7 @@ namespace tofu
 	private:
 		Entity					entity;
 		Model*					model;
+		Transform*				transforms;
 
 		// constant buffer for bone matrices
 		BufferHandle			boneMatricesBuffer;

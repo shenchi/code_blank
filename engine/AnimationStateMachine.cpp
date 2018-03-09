@@ -10,27 +10,17 @@
 
 using namespace tofu::model;
 using namespace tofu::math;
+using namespace tofu::compression;
 
 namespace tofu
 {
 	EvaluateContext::EvaluateContext(Model * model) :model(model)
 	{
-		transforms = new Transform[model->header->NumBones];
 		results = new Transform[model->header->NumBones];
-
-		// FIXME: Add to model
-		for (int i = 0; i < model->header->NumBones; i++) {
-			float3 t, s;
-			quat q;
-
-			decompose(model->bones[i].transform, t, q, s);
-			transforms[i] = std::move(Transform(t, q, s));
-		}
 	}
 
 	EvaluateContext::~EvaluateContext()
 	{
-		delete[] transforms;
 		delete[] results;
 	}
 
@@ -57,17 +47,6 @@ namespace tofu
 	{
 		
 	}
-
-	/*AnimNodeBase::AnimNodeBase(AnimNodeBase & other)
-	{
-	name = other.name;
-	}*/
-
-	/*AnimationState::AnimationState(AnimationState & other)
-		:isLoop(other.isLoop), playbackSpeed(other.playbackSpeed), animationName(other.animationName)
-	{
-		
-	}*/
 
 	AnimationState::~AnimationState()
 	{
@@ -179,7 +158,7 @@ namespace tofu
 				trans.SetTranslation(model->frames[indices[3]].value);
 			}
 			else {
-				trans.SetTranslation(context.transforms[i].GetTranslation());
+				trans.SetTranslation(model->bones[i].transform.GetTranslation());
 			}
 
 			indices = frameCache.indices[kChannelRotation];
@@ -197,15 +176,12 @@ namespace tofu
 				trans.SetRotation(SlerpFromFrameIndex(model, indices[2], indices[3]));
 			}
 			else if (indices[3] != SIZE_MAX) {
-				math::quat q;
-				ModelAnimFrame &f = model->frames[indices[3]];
-
-				//tofu::compression::DecompressQuaternion(*reinterpret_cast<uint32_t*>(&f.value.x), q);
-				tofu::compression::DecompressQuaternion(q, f.value, f.GetSignedBit());
+				quat q;
+				decompress(model->frames[indices[3]].value, q);
 				trans.SetRotation(q);
 			}
 			else {
-				trans.SetRotation(context.transforms[i].GetRotation());
+				trans.SetRotation(model->bones[i].transform.GetRotation());
 			}
 
 			indices = frameCache.indices[kChannelScale];
@@ -226,7 +202,7 @@ namespace tofu
 				trans.SetScale(model->frames[indices[3]].value);
 			}
 			else {
-				trans.SetScale(context.transforms[i].GetScale());
+				trans.SetScale(model->bones[i].transform.GetScale());
 			}
 
 			if (type == kAET_Blend) {
@@ -274,13 +250,13 @@ namespace tofu
 
 		math::quat q1, q2, q3, q4;
 
-		tofu::compression::DecompressQuaternion(q1, f1.value, f1.GetSignedBit());
-		tofu::compression::DecompressQuaternion(q2, f2.value, f2.GetSignedBit());
-		tofu::compression::DecompressQuaternion(q3, f3.value, f3.GetSignedBit());
-		tofu::compression::DecompressQuaternion(q4, f4.value, f4.GetSignedBit());
-
 		float t = (cache->ticks - f2.time) / (f3.time - f2.time);
 		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
+
+		decompress(f1.value, q1);
+		decompress(f2.value, q2);
+		decompress(f3.value, q3);
+		decompress(f4.value, q4);
 
 		// FIXME: change after cruve fitting
 		return math::slerp(q2, q3, t);
@@ -308,8 +284,8 @@ namespace tofu
 
 		math::quat a, b;
 
-		tofu::compression::DecompressQuaternion(a, fa.value, fa.GetSignedBit());
-		tofu::compression::DecompressQuaternion(b, fb.value, fb.GetSignedBit());
+		decompress(fa.value, a);
+		decompress(fb.value, b);
 
 		return math::slerp(a, b, t);
 	}
@@ -320,11 +296,6 @@ namespace tofu
 		states.push_back(new AnimNodeBase("entry"));
 		current = states.back();
 	}
-
-	//AnimationStateMachine::AnimationStateMachine(AnimationStateMachine & other)
-	//{
-	//	
-	//}
 
 	AnimationStateMachine::~AnimationStateMachine()
 	{
@@ -384,6 +355,7 @@ namespace tofu
 			if (entry.name.compare(current->name) == 0)
 				continue;
 
+			// TODO: also check state availability, abstract methond
 			if (stateIndexTable.find(entry.name) != stateIndexTable.end()) {
 
 				if (previous) {
@@ -414,6 +386,7 @@ namespace tofu
 		}
 
 		// TODO: better way to prevent passing previous transition?
+		// only allow one transition?
 		transitions.clear();
 
 		current->Update(context);

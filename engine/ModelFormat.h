@@ -4,6 +4,7 @@
 #include "TofuMath.h"
 #include <unordered_map>
 #include <assert.h>
+#include "Transform.h"
 
 namespace tofu
 {
@@ -17,7 +18,7 @@ namespace tofu
 		//constexpr uint32_t kModelFileMaxTexcoordChannels = 4;
 		constexpr uint32_t kModelFileMaxTexcoordChannels = 1;
 
-		constexpr uint16_t kModelMaxJointIndex = 0x1fff;
+		constexpr uint16_t kModelMaxJointIndex = 0x3fff;
 
 		struct ModelHeader
 		{
@@ -102,15 +103,14 @@ namespace tofu
 
 		struct ModelBone
 		{
-			// TODO: Better solution for name? 
 			char			name[128];
 			uint16_t		id;
 			uint16_t		parent;
 			uint16_t		firstChild;
 			uint16_t		nextSibling;
-			math::float4x4	transform;
+			math::float4x4	transformMatrix;
 			math::float4x4	offsetMatrix;
-			//Transform trans;
+			Transform		transform;
 		};
 
 		struct ModelAnimation
@@ -141,20 +141,7 @@ namespace tofu
 		private:
 			uint16_t jointIndex = 0;
 
-
 		public:
-
-			bool GetSignedBit() const 
-			{
-				// Most significant two bits of this 16bit index contains channel type info.
-				return ((jointIndex & 0x2000) >> 13) == 1;
-			}
-
-			void SetSignedBit(bool s)
-			{
-				jointIndex |= (static_cast<uint16_t>(s == true ? 1 : 0) << 13);
-			}
-
 			ChannelType GetChannelType() const
 			{
 				// Most significant two bits of this 16bit index contains channel type info.
@@ -173,7 +160,7 @@ namespace tofu
 
 			void SetJointIndex(uint16_t index) {
 				assert(index <= kModelMaxJointIndex);
-				jointIndex = (jointIndex & 0xE000) + index;
+				jointIndex = (jointIndex & 0xc000) + index;
 			}
 		};
 	}

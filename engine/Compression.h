@@ -7,6 +7,8 @@
 
 // credit to https://github.com/ThisIsRobokitty/netgame/blob/60ac89873a53b02611a88b0d5b10987d4693a9ad/XX%20-%20Fiedler's%20Cubes/Engine.h
 
+using namespace tofu::math;
+
 namespace tofu {
 	namespace compression {
 
@@ -214,39 +216,21 @@ namespace tofu {
 			orientation = math::normalize(orientation);
 		}
 
-		void CompressQuaternion(const math::quat &quat, math::float3& float3, bool &negativeW) {
-			float3.x = quat.x;
-			float3.y = quat.y;
-			float3.z = quat.z;
+		void compress(const quat& in, float3& out) {
+			out.x = in.x;
+			out.y = in.y;
+			out.z = in.z;
 
-			if (quat.w > 0) {
-				negativeW = false;
-			}
-			else {
-				negativeW = true;
+			if (in.w < 0) {
+				out = -out;
 			}
 		}
 
-		void DecompressQuaternion(math::quat &quat, const math::float3& float3, const bool negativeW) {
-			quat.x = float3.x;
-			quat.y = float3.y;
-			quat.z = float3.z;
-			quat.w = sqrt(abs(1 - quat.x * quat.x - quat.y * quat.y - quat.z * quat.z));
-
-			if (negativeW) {
-				quat.w = -quat.w;
-			}
-		}
-
-		math::float3 compress(const math::quat in) {
-			if (in.w < 0)
-				return -math::float3(in.x, in.y, in.z);
-
-			return math::float3(in.x, in.y, in.z);
-		}
-
-		math::quat decompress(const math::float3& in) {
-			return math::quat(in.x, in.y, in.z, sqrt(abs(1 - in.x * in.x - in.y * in.y - in.z * in.z)));
+		void decompress(const float3& in, quat& out) {
+			out.x = in.x;
+			out.y = in.y;
+			out.z = in.z;
+			out.w = sqrt(abs(1 - in.x * in.x - in.y * in.y - in.z * in.z));
 		}
 	}
 }

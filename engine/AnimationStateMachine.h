@@ -33,7 +33,6 @@ namespace tofu
 	struct EvaluateContext
 	{
 		Model *model;
-		Transform *transforms;
 		Transform *results;
 
 		EvaluateContext(Model *model);

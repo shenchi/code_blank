@@ -913,7 +913,7 @@ namespace tofu
 			// transpose matrix, model convertor is using row-major layout
 			for (uint32_t iBone = 0; iBone < header->NumBones; iBone++)
 			{
-				model.bones[iBone].transform = math::transpose(model.bones[iBone].transform);
+				model.bones[iBone].transformMatrix = math::transpose(model.bones[iBone].transformMatrix);
 				model.bones[iBone].offsetMatrix = math::transpose(model.bones[iBone].offsetMatrix);
 			}
 #endif
@@ -1151,7 +1151,7 @@ namespace tofu
 
 		c.boneMatricesBuffer = bufferHandle;
 		c.boneMatricesBufferSize = static_cast<uint32_t>(sizeof(math::float4x4)) * model->header->NumBones;
-
+		
 		CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
 		assert(nullptr != params);
 		params->handle = bufferHandle;
