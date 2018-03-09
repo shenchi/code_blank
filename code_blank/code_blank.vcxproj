@@ -144,6 +144,14 @@
     <ClInclude Include="CombatManager.h" />
     <ClInclude Include="Companion.h" />
     <ClInclude Include="CubemapProbeDemo.h" />
+    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="GameplayAnimationMachine.h" />
+    <ClInclude Include="GameplayDS.h" />
+    <ClInclude Include="Gun.h" />
+    <ClInclude Include="PController.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="RenderingTest.h" />
     <ClInclude Include="SceneLoadingDemo.h" />
     <ClInclude Include="TestGame.h" />
     <ClInclude Include="Utility.h" />
@@ -160,6 +168,9 @@
     <ClCompile Include="GameplayAnimationMachine.cpp" />
     <ClCompile Include="Gun.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PController.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="RenderingTest.cpp" />
     <ClCompile Include="SceneLoadingDemo.cpp" />
     <ClCompile Include="TestGame.cpp" />
     <ClCompile Include="Utility.cpp" />

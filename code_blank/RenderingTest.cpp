@@ -181,7 +181,7 @@ int32_t RenderingTest::Update()
 
 		tPlayer->Translate(moveDir * Time::DeltaTime * speed);
 
-		anim->CrossFade(1, 0.3f);
+		anim->CrossFade("walk", 0.3f, 0);
 	}
 	else
 	{

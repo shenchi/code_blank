@@ -36,24 +36,6 @@
 				"clip": "mixamo.com"
 			},
 			{
-				"name": "jump_up",
-				"source": "KB_Jumping.fbx",
-				"avatar": "KB_Jumping_avatar.json",
-				"clip": "KB_Jump_Start"
-			},
-			{
-				"name": "jump_air",
-				"source": "KB_Jumping.fbx",
-				"avatar": "KB_Jumping_avatar.json",
-				"clip": "KB_Jump_Loop"
-			},
-			{
-				"name": "jump_down",
-				"source": "KB_Jumping.fbx",
-				"avatar": "KB_Jumping_avatar.json",
-				"clip": "KB_Land"
-			},
-			{
 				"name": "kPunchJabL",
 				"source": "KB_Punches.fbx",
 				"avatar": "KB_avatar.json",
