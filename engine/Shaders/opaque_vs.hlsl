@@ -1,13 +1,17 @@
 cbuffer InstanceConstants : register (b0)
 {
 	matrix	matWorld;
-	//matrix	matWorld_IT;
+	matrix	matWorld_IT;
 };
 
 cbuffer FrameConstants : register (b1)
 {
 	matrix	matView;
 	matrix	matProj;
+	matrix	matViewInv;
+	matrix	matProjInv;
+	float4	cameraPos;
+	float4	bufferSize;
 };
 
 cbuffer FrameConstants : register (b2) {
@@ -42,10 +46,10 @@ V2F main(Input input)
 
 	output.position = mul(float4(input.position, 1), matMVP);
 	output.worldPos = mul(float4(input.position, 1), matWorld).xyz;
-	//output.normal = mul(input.normal, (float3x3)matWorld_IT);
-	//output.tangent = mul(input.tangent, (float3x3)matWorld_IT); 
-	output.normal = mul(input.normal, (float3x3)matWorld);
-	output.tangent = float4(mul(input.tangent.xyz, (float3x3)matWorld), input.tangent.w);
+	output.normal = mul(input.normal, (float3x3)matWorld_IT);
+	output.tangent = float4(mul(input.tangent.xyz, (float3x3)matWorld_IT), input.tangent.w);
+	//output.normal = mul(input.normal, (float3x3)matWorld);
+	//output.tangent = float4(mul(input.tangent.xyz, (float3x3)matWorld), input.tangent.w);
 	output.uv = input.uv;
 
 	// Calculate the position of this vertex relative to the shadow-casting light

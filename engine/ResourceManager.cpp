@@ -16,26 +16,45 @@ namespace tofu
 		CHECKED(LoadConfig());
 
 		{
-			void* data1 = MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(16, 4);
-			void* data2 = MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(16, 4);
+			math::float4* data1 = reinterpret_cast<math::float4*>(
+				MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(
+					sizeof(math::float4), sizeof(math::float4)));
+
+			math::float4* data2 = reinterpret_cast<math::float4*>(
+				MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(
+					sizeof(math::float4), sizeof(math::float4)));
+
+			math::float4* data3 = reinterpret_cast<math::float4*>(
+				MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(
+					sizeof(math::float4), sizeof(math::float4)));
+
 			if (nullptr == data1 || nullptr == data2)
 			{
 				return kErrUnknown;
 			}
 
-			*reinterpret_cast<math::float4*>(data1) = math::float4{ 1, 1, 1, 1 };
-			*reinterpret_cast<math::float4*>(data2) = math::float4{ 0, 0, 1, 1 };
+			*(data1) = math::float4{ 1, 1, 1, 1 };
 
-			TextureHandle defaultAlbedoTex = RenderingSystem::instance()->CreateTexture(kFormatR8g8b8a8Unorm, 1, 1, 16, data1);
+			*(data2) = math::float4{ 0.5f, 0.5f, 1, 1 };
+
+			*(data3) = math::float4{ 0, 0, 0, 0 };
+
+			TextureHandle defaultAlbedoTex = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 16, data1);
 			if (!defaultAlbedoTex)
 				return kErrUnknown;
 
-			TextureHandle defaultNormalMap = RenderingSystem::instance()->CreateTexture(kFormatR8g8b8a8Unorm, 1, 1, 16, data2);
+			TextureHandle defaultNormalMap = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 16, data2);
+			if (!defaultNormalMap)
+				return kErrUnknown;
+
+			TextureHandle defaultMetallicGlossMap = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 16, data3);
 			if (!defaultNormalMap)
 				return kErrUnknown;
 
 			SetDefaultAlbedoMap(defaultAlbedoTex);
 			SetDefaultNormalMap(defaultNormalMap);
+			SetDefaultMetallicGlossMap(defaultMetallicGlossMap);
+			SetDefaultOcclusionMap(defaultAlbedoTex);
 		}
 
 		return kOK;
@@ -81,9 +100,33 @@ namespace tofu
 			}
 		}
 
+		TextureHandle metallicGloss = defaultMetallicGlossMap;
+		const char* metallicMapPath = matConfig["MetallicGlossMap"].GetString();
+		if (nullptr != metallicMapPath && metallicMapPath[0] != 0)
+		{
+			metallicGloss = LoadTexture(metallicMapPath);
+			if (!metallicGloss)
+			{
+				return nullptr;
+			}
+		}
+
+		TextureHandle occlusion = defaultOcclusionMap;
+		const char* occlusionPath = matConfig["OcclusionMap"].GetString();
+		if (nullptr != occlusionPath && occlusionPath[0] != 0)
+		{
+			occlusion = LoadTexture(occlusionPath);
+			if (!occlusion)
+			{
+				return nullptr;
+			}
+		}
+
 		Material* mat = RenderingSystem::instance()->CreateMaterial(kMaterialTypeOpaque);
 		mat->SetTexture(albedo);
 		mat->SetNormalMap(normal);
+		mat->SetMetallicGlossMap(metallicGloss);
+		mat->SetOcclusionMap(occlusion);
 
 		materials.insert(std::pair<std::string, Material*>(name, mat));
 		return mat;

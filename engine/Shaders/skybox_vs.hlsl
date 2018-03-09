@@ -2,6 +2,10 @@ cbuffer FrameConstants : register (b0)
 {
 	matrix	matView;
 	matrix	matProj;
+	matrix	matViewInv;
+	matrix	matProjInv;
+	float4	cameraPos;
+	float4	bufferSize;
 };
 
 struct Input

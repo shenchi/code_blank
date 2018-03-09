@@ -25,6 +25,10 @@ namespace tofu
 
 		void SetDefaultNormalMap(TextureHandle tex) { defaultNormalMap = tex; }
 
+		void SetDefaultMetallicGlossMap(TextureHandle tex) { defaultMetallicGlossMap = tex; }
+
+		void SetDefaultOcclusionMap(TextureHandle tex) { defaultOcclusionMap = tex; }
+
 	private:
 
 		int32_t LoadConfig();
@@ -34,6 +38,8 @@ namespace tofu
 
 		TextureHandle			defaultAlbedoMap;
 		TextureHandle			defaultNormalMap;
+		TextureHandle			defaultMetallicGlossMap;
+		TextureHandle			defaultOcclusionMap;
 
 		std::unordered_map<std::string, Material*>	materials;
 		std::unordered_map<std::string, TextureHandle> textures;

@@ -24,20 +24,35 @@ namespace tofu
 			entity(e),
 			type(kLightTypeDirectional),
 			lightColor(),
+			range(1.0f),
+			intensity(1.0f),
+			spotAngle(45.0f),
+			castShadow(false),
 			depthMap()
 		{}
 		
 		void SetType(LightType t) { type = t; }
 
-		void SetColor(tofu::math::float4 t) { lightColor = t; }
-	
+		void SetColor(const math::float4& t) { lightColor = t; }
+
+		void SetRange(float r) { range = r; }
+
+		void SetIntensity(float i) { intensity = i; }
+
+		void SetSpotAngle(float angle) { spotAngle = angle; }
+
 		void CreateDepthMap();
 
 
 	private:
-		Entity entity;
-		LightType	type;
-		tofu::math::float4	lightColor;
+		Entity				entity;
+		LightType			type;
+		math::float4		lightColor;
+		float				range;
+		float				intensity;
+		float				spotAngle;
+		bool				castShadow;
+
 
 		TextureHandle  depthMap;
         
