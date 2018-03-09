@@ -107,6 +107,7 @@ void GameplayAnimationMachine::Play(CharacterState state, uint32_t parameter, si
 		//aComp->Play("Death", layerMask);
 		break;
 	case kRoll:
+		aComp->CrossFade("kRoll", 0.5f, 0);
 		//aComp->Play("Roll", layerMask);
 		break;
 	case kAttack:
@@ -138,15 +139,20 @@ void GameplayAnimationMachine::Play(CharacterState state, uint32_t parameter, si
 				aComp->CrossFade("kPunchUpperCutR", 0.2f, 0);
 				break;
 			case kKickStraightMidR:
+				// 5 Basic Attacks
 				aComp->CrossFade("kKickStraightMidR", 0.2f, 0);
 				break;
 			case kKickKnee:
-				aComp->CrossFade("kKickKnee", 1, 0);
+				// Currently not used
+				//aComp->CrossFade("kKickKnee", 1, 0);
+				assert(false);
 				break;
 			case kKickAxeKick:
+				// Press and Hold Attack
 				aComp->CrossFade("kKickAxeKick", 0.2f, 0);
 				break;
 			case kKickHorseKick:
+				// 5 Basic attacks and then hold attack
 				aComp->CrossFade("kKickHorseKick", 0.2f, 0);
 				break;
 			case kSwordAttackR:

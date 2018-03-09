@@ -240,22 +240,22 @@ void Character::ForceMove(float speed, float dT, int direction)
 	if (direction == 0)
 	{
 		//tPlayer->Translate -= tPlayer->GetForwardVector() * speed * dT;
-		tCharacter->Translate(tCharacter->GetForwardVector() * dT * -speed);
+		tCharacter->Translate(tCharacter->GetForwardVector() * dT * speed);
 	}
 	else if (direction == 1)
 	{
 		//tPlayer->Translate += tPlayer->GetForwardVector() * speed * dT;
-		tCharacter->Translate(tCharacter->GetForwardVector() * dT * speed);
+		tCharacter->Translate(tCharacter->GetForwardVector() * dT * -speed);
 	}
 	else if (direction == 2)
 	{
 		//tPlayer->Translate += tPlayer->GetRightVector() * speed * dT;
-		tCharacter->Translate(tCharacter->GetRightVector() * dT * speed);
+		tCharacter->Translate(tCharacter->GetRightVector() * dT * -speed);
 	}
 	else if (direction == 3)
 	{
 		//tPlayer->Translate -= tPlayer->GetRightVector() * speed * dT;
-		tCharacter->Translate(tCharacter->GetRightVector() * dT * -speed);
+		tCharacter->Translate(tCharacter->GetRightVector() * dT * speed);
 	}
 }
 

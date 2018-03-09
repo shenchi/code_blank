@@ -12,6 +12,8 @@ public:
 	CombatManager(bool, void*, void*, CombatManagerDetails);
 	~CombatManager();
 
+	void SetMoves();
+
 	void Update(float);
 	bool UpdateState(float, float);
 	void Hit(HitPosition, HitDirection, HitPower, float, float);

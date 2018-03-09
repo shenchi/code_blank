@@ -99,7 +99,7 @@
 				"name": "kKickHorseKick",
 				"source": "KB_Kicks.fbx",
 				"avatar": "KB_Jumping_avatar.json",
-				"clip": "KB_m_RoundhouseKickRight"
+				"clip": "KB_m_HighKickRound_R_1"
 			},
 			{
 				"name": "kKickStraightMidR",
@@ -111,7 +111,13 @@
 				"name": "kKickKnee",
 				"source": "KB_Kicks.fbx",
 				"avatar": "KB_Jumping_avatar.json",
-				"clip": "KB_m_KneeLeft"
+				"clip": "KB_m_KneeRight"
+			},
+            {
+				"name": "kRoll",
+				"source": "Roll.fbx",
+				"avatar": "mixamo_avatar.json",
+				"clip": "mixamo.com"
 			}
 		]
 	}

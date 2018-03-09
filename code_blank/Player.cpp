@@ -17,7 +17,7 @@ Player::Player(CharacterDetails details, void* comp)
 	combatDetails.comboTimer = 0.0f;
 	combatDetails.maxComboTime = 2.0f;
 	combatDetails.dodgeTime = 0.0f;
-	combatDetails.rollTime = 0.5f;
+	combatDetails.rollTime = 1.5f;
 	combatDetails.rollSpeed = 3.0f;
 	combatDetails.hitTime = 1.0f;
 	combatDetails.hitMaxWalkSpeed = 1.0f;
@@ -70,8 +70,8 @@ Player::Player(CharacterDetails details, void* comp)
 
 
 		// Roll/Dodge Animations
-		/*AnimationState *roll = stateMachine->AddState("roll");
-		roll->animationName = "roll";*/
+		AnimationState *kRoll = stateMachine->AddState("kRoll");
+		kRoll->animationName = "kRoll";
 
 
 		// Combat Animations
