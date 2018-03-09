@@ -21,10 +21,13 @@ namespace tofu
 			kCommandDestroyVertexShader,
 			kCommandCreatePixelShader,
 			kCommandDestroyPixelShader,
+			kCommandCreateComputeShader,
+			kCommandDestroyComputeShader,
 			kCommandCreatePipelineState,
 			kCommandDestroyPipelineState,
 			kCommandClearRenderTargets,
 			kCommandDraw,
+			kCommandCompute,
 			kMaxRendererCommands
 		};
 	};
@@ -66,12 +69,13 @@ namespace tofu
 
 	enum BindingFlag
 	{
-		kBindingVertexBuffer = 1 << 0,
-		kBindingIndexBuffer = 1 << 1,
-		kBindingConstantBuffer = 1 << 2,
-		kBindingShaderResource = 1 << 3,
-		kBindingRenderTarget = 1 << 5,
-		kBindingDepthStencil = 1 << 6,
+		kBindingVertexBuffer = 1u << 0u,
+		kBindingIndexBuffer = 1u << 1u,
+		kBindingConstantBuffer = 1u << 2u,
+		kBindingShaderResource = 1u << 3u,
+		kBindingRenderTarget = 1u << 5u,
+		kBindingDepthStencil = 1u << 6u,
+		kBindingUnorderedAccess = 1u << 7u,
 	};
 
 	enum VertexFormat
@@ -187,14 +191,82 @@ namespace tofu
 		uint32_t			bindingFlags : 8;
 		uint32_t			width;
 		uint32_t			height;
+		uint32_t			depth;
 		uint32_t			pitch;
+		uint32_t			slicePitch;
 		void*				data;
+
+		TF_INLINE void InitAsTextureFromFile(TextureHandle handle, void* data, uint32_t size)
+		{
+			handle = handle;
+			bindingFlags = kBindingShaderResource;
+			isFile = 1;
+			data = data;
+			width = static_cast<uint32_t>(size);
+		}
+
+		TF_INLINE void InitAsTexture2D(TextureHandle handle, uint32_t width, uint32_t height, PixelFormat format = kFormatR8g8b8a8Unorm, uint32_t binding = kBindingShaderResource)
+		{
+			this->handle = handle;
+			this->bindingFlags = binding;
+			this->format = format;
+			this->arraySize = 1;
+			this->width = width;
+			this->height = height;
+		}
+
+		TF_INLINE void InitAsTexture2D(TextureHandle handle, uint32_t width, uint32_t height, PixelFormat format, void* data, uint32_t pitch, uint32_t binding = kBindingShaderResource)
+		{
+			this->handle = handle;
+			this->bindingFlags = binding;
+			this->format = format;
+			this->arraySize = 1;
+			this->width = width;
+			this->height = height;
+			this->pitch = pitch;
+			this->data = data;
+		}
+
+		TF_INLINE void InitAsTextureCubeMap(TextureHandle handle, uint32_t width, uint32_t height, PixelFormat format = kFormatR8g8b8a8Unorm, uint32_t binding = kBindingShaderResource)
+		{
+			this->handle = handle;
+			this->bindingFlags = binding;
+			this->format = format;
+			this->cubeMap = 1;
+			this->arraySize = 6;
+			this->width = width;
+			this->height = height;
+		}
+
+		TF_INLINE void InitAsTexture3D(TextureHandle handle, uint32_t width, uint32_t height, uint32_t depth, PixelFormat format = kFormatR8g8b8a8Unorm, uint32_t binding = kBindingShaderResource)
+		{
+			this->handle = handle;
+			this->bindingFlags = binding;
+			this->format = format;
+			this->width = width;
+			this->height = height;
+			this->depth = depth;
+		}
+
+		TF_INLINE void InitAsTexture3D(TextureHandle handle, uint32_t width, uint32_t height, uint32_t depth, PixelFormat format, void* data, uint32_t pitch, uint32_t slicePitch, uint32_t binding = kBindingShaderResource)
+		{
+			this->handle = handle;
+			this->bindingFlags = binding;
+			this->format = format;
+			this->width = width;
+			this->height = height;
+			this->depth = depth;
+			this->pitch = pitch;
+			this->slicePitch = slicePitch;
+			this->data = data;
+		}
 	};
 
 	struct UpdateTextureParams
 	{
 		TextureHandle		handle;
 		uint32_t			pitch;
+		uint32_t			slicePitch;
 		void*				data;
 	};
 
@@ -225,6 +297,13 @@ namespace tofu
 	struct CreatePixelShaderParams
 	{
 		PixelShaderHandle	handle;
+		void*				data;
+		size_t				size;
+	};
+
+	struct CreateComputeShaderParams
+	{
+		ComputeShaderHandle	handle;
 		void*				data;
 		size_t				size;
 	};
@@ -411,6 +490,18 @@ namespace tofu
 		{
 			renderTargets[0] = DefaultRenderTarget;
 		}
+	};
+
+	struct ComputeParams
+	{
+		ComputeShaderHandle		shader;
+		uint32_t				threadGroupCountX;
+		uint32_t				threadGroupCountY;
+		uint32_t				threadGroupCountZ;
+		ConstantBufferBinding	constantBuffers[kMaxConstantBufferBindings];
+		TextureHandle			rwTextures[kMaxTextureBindings];
+		TextureHandle			textures[kMaxTextureBindings];
+		SamplerHandle			samplers[kMaxSamplerBindings];
 	};
 
 	class Renderer

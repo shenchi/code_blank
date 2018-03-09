@@ -45,6 +45,7 @@ namespace tofu
 	HANDLE_DECL(Sampler);
 	HANDLE_DECL(VertexShader);
 	HANDLE_DECL(PixelShader);
+	HANDLE_DECL(ComputeShader);
 	HANDLE_DECL(PipelineState);
 
 	constexpr uint32_t kFrameBufferCount = 2;
@@ -72,6 +73,7 @@ namespace tofu
 	constexpr uint32_t kMaxSamplers = 256;
 	constexpr uint32_t kMaxVertexShaders = 256;
 	constexpr uint32_t kMaxPixelShaders = 256;
+	constexpr uint32_t kMaxComputeShaders = 256;
 	constexpr uint32_t kMaxPipelineStates = 256;
 
 	constexpr uint32_t kMaxConstantBufferBindings = 14;
