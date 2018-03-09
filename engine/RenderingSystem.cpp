@@ -1707,6 +1707,7 @@ namespace tofu
 
 			lightParams2->ambient.w = float(numDirectionalLights);
 
+			if (lightsCount > 0)
 			{
 				UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
 				assert(nullptr != params);
