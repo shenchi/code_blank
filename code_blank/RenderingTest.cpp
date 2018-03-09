@@ -72,7 +72,14 @@ int32_t RenderingTest::Init()
 
 		Material* skyboxMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeSkybox);
 		TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/craterlake.texture");
+		TextureHandle skyboxDiff = RenderingSystem::instance()->CreateTexture("assets/textures/test/diffuseIrradianceMap.texture");
+		TextureHandle skyboxSpec = RenderingSystem::instance()->CreateTexture("assets/textures/test/prefilteredMap.texture");
+		TextureHandle lut = RenderingSystem::instance()->CreateTexture("assets/textures/test/BrdfLUT-Copy.texture");
+
 		skyboxMat->SetTexture(tex);
+		skyboxMat->SetSkyboxDiff(skyboxDiff);
+		skyboxMat->SetSkyboxSpecMap(skyboxSpec);
+		skyboxMat->SetLUTMap(lut);
 
 		cam->SetSkybox(skyboxMat);
 	}

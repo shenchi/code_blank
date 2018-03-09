@@ -286,7 +286,7 @@ namespace tofu
 				params->vertexShader = materialVSs[kMaterialTypeSkybox];
 				params->pixelShader = materialPSs[kMaterialTypeSkybox];
 				params->cullMode = kCullFront;
-				params->depthFunc = kComparisonAlways;
+				params->depthFunc = kComparisonLEqual;
 				params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
 				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 			}
@@ -1544,42 +1544,7 @@ namespace tofu
 			cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
 		}
 
-		//TextureHandle skyboxTex = TextureHandle();
-
-		//if (nullptr == camera.skybox)
-		//{
-		//	ClearParams* params = MemoryAllocator::Allocate<ClearParams>(allocNo);
-
-		//	const math::float4& clearColor = camera.GetClearColor();
-
-		//	params->clearColor[0] = clearColor.x;
-		//	params->clearColor[1] = clearColor.y;
-		//	params->clearColor[2] = clearColor.z;
-		//	params->clearColor[3] = clearColor.w;
-
-		//	cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
-		//}
-		//else
-		//{
-		//	assert(camera.skybox->type == kMaterialTypeSkybox);
-		//	skyboxTex = camera.skybox->mainTex;
-
-		//	Mesh& mesh = meshes[builtinCube->meshes[0].id];
-
-		//	DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
-		//	params->pipelineState = materialPSOs[kMaterialTypeSkybox];
-		//	params->vertexBuffer = mesh.VertexBuffer;
-		//	params->indexBuffer = mesh.IndexBuffer;
-		//	params->startIndex = mesh.StartIndex;
-		//	params->startVertex = mesh.StartVertex;
-		//	params->indexCount = mesh.NumIndices;
-		//	params->vsConstantBuffers[0] = { frameConstantBuffer, 0, 16 };
-
-		//	params->psTextures[0] = skyboxTex;
-		//	params->psSamplers[0] = defaultSampler;
-
-		//	cmdBuf->Add(RendererCommand::kCommandDraw, params);
-		//}
+	
 
 		// get all renderables in system
 		RenderingComponentData* renderables = RenderingComponent::GetAllComponents();
@@ -2063,11 +2028,17 @@ cmdBuf->Add(RendererCommand::kCommandDraw, params);
 				params->indexCount = mesh.NumIndices;
 
 				params->psConstantBuffers[0] = { lightParamsAmbDirBuffer, 0, 0 };
+				params->psConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
 
 				params->psTextures[0] = gBuffer1;
 				params->psTextures[1] = gBuffer2;
 				params->psTextures[2] = gBuffer3;
+				params->psTextures[3] = camera.skybox->skyboxDiffMap;
+				params->psTextures[4] = camera.skybox->skyboxSpecMap;
+				params->psTextures[5] = camera.skybox->lutMap;
+
 				params->psSamplers[0] = defaultSampler;
+				params->psSamplers[1] = lutSampler;
 
 				params->renderTargets[0] = hdrTarget;
 
@@ -2076,6 +2047,47 @@ cmdBuf->Add(RendererCommand::kCommandDraw, params);
 		}
 
 		// TODO: Transparent Pass
+
+
+
+		TextureHandle skyboxTex = TextureHandle();
+
+		if (nullptr == camera.skybox)
+		{
+			ClearParams* params = MemoryAllocator::Allocate<ClearParams>(allocNo);
+
+			const math::float4& clearColor = camera.GetClearColor();
+
+			params->clearColor[0] = clearColor.x;
+			params->clearColor[1] = clearColor.y;
+			params->clearColor[2] = clearColor.z;
+			params->clearColor[3] = clearColor.w;
+
+			cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
+		}
+		else
+		{
+			assert(camera.skybox->type == kMaterialTypeSkybox);
+			skyboxTex = camera.skybox->mainTex;
+
+			Mesh& mesh = meshes[builtinCube->meshes[0].id];
+
+			DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
+			params->pipelineState = materialPSOs[kMaterialTypeSkybox];
+			params->vertexBuffer = mesh.VertexBuffer;
+			params->indexBuffer = mesh.IndexBuffer;
+			params->startIndex = mesh.StartIndex;
+			params->startVertex = mesh.StartVertex;
+			params->indexCount = mesh.NumIndices;
+			params->vsConstantBuffers[0] = { frameConstantBuffer, 0, 16 };
+
+			params->psTextures[0] = skyboxTex;
+			params->psSamplers[0] = defaultSampler;
+
+			params->renderTargets[0] = hdrTarget;
+
+			cmdBuf->Add(RendererCommand::kCommandDraw, params);
+		}
 
 		// post-process effect
 		{
