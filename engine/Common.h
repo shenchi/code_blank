@@ -28,18 +28,38 @@
 #define SINGLETON_IMPL(CLASS_NAME) \
 	CLASS_NAME* CLASS_NAME::_instance = nullptr;
 
+struct BaseHandle
+{
+	uint32_t		id		: 16;
+	uint32_t		type	: 16; 
+
+	TF_INLINE operator bool() const { return id != UINT16_MAX; }
+};
 
 #define HANDLE_DECL(CLASS_NAME) \
-	struct CLASS_NAME##Handle \
+	struct CLASS_NAME##Handle : BaseHandle \
 	{ \
-		uint32_t id; \
-		TF_INLINE explicit CLASS_NAME##Handle(uint32_t _id = UINT32_MAX) : id (_id) {} \
-		TF_INLINE operator bool() const { return id != UINT32_MAX; } \
+		TF_INLINE explicit CLASS_NAME##Handle(uint32_t _id = UINT16_MAX) : BaseHandle {_id, kHandleType##CLASS_NAME} {} \
 	};
 
 
 namespace tofu
 {
+	enum HandleType
+	{
+		kHandleTypeBase,
+		kHandleTypeBuffer,
+		kHandleTypeTexture,
+		kHandleTypeSampler,
+		kHandleTypeVertexShader,
+		kHandleTypePixelShader,
+		kHandleTypeComputeShader,
+		kHandleTypePipelineState,
+		kHandleTypeMesh,
+		kHandleTypeModel,
+		kHandleTypeMaterial,
+	};
+
 	HANDLE_DECL(Buffer);
 	HANDLE_DECL(Texture);
 	HANDLE_DECL(Sampler);
@@ -47,6 +67,9 @@ namespace tofu
 	HANDLE_DECL(PixelShader);
 	HANDLE_DECL(ComputeShader);
 	HANDLE_DECL(PipelineState);
+	HANDLE_DECL(Mesh);
+	HANDLE_DECL(Model);
+	HANDLE_DECL(Material);
 
 	constexpr uint32_t kFrameBufferCount = 2;
 

@@ -4,8 +4,6 @@
 
 namespace tofu
 {
-	HANDLE_DECL(Material);
-
 	enum MaterialType
 	{
 		kMaterialTypeSkybox,

@@ -458,8 +458,8 @@ namespace tofu
 		uint32_t				indexCount;
 		ConstantBufferBinding	vsConstantBuffers[kMaxConstantBufferBindings];
 		ConstantBufferBinding	psConstantBuffers[kMaxConstantBufferBindings];
-		TextureHandle			vsTextures[kMaxTextureBindings];
-		TextureHandle			psTextures[kMaxTextureBindings];
+		BaseHandle				vsShaderResources[kMaxTextureBindings];
+		BaseHandle				psShaderResources[kMaxTextureBindings];
 		SamplerHandle			vsSamplers[kMaxSamplerBindings];
 		SamplerHandle			psSamplers[kMaxSamplerBindings];
 		TextureHandle			renderTargets[kMaxRenderTargetBindings];
@@ -479,8 +479,8 @@ namespace tofu
 			indexCount(),
 			vsConstantBuffers(),
 			psConstantBuffers(),
-			vsTextures(),
-			psTextures(),
+			vsShaderResources(),
+			psShaderResources(),
 			vsSamplers(),
 			psSamplers(),
 			renderTargets(),
@@ -499,8 +499,8 @@ namespace tofu
 		uint32_t				threadGroupCountY;
 		uint32_t				threadGroupCountZ;
 		ConstantBufferBinding	constantBuffers[kMaxConstantBufferBindings];
-		TextureHandle			rwTextures[kMaxTextureBindings];
-		TextureHandle			textures[kMaxTextureBindings];
+		BaseHandle				rwShaderResources[kMaxTextureBindings];
+		BaseHandle				shaderResources[kMaxTextureBindings];
 		SamplerHandle			samplers[kMaxSamplerBindings];
 	};
 

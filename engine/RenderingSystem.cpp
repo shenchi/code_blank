@@ -808,7 +808,7 @@ namespace tofu
 			params->indexCount = mesh.NumIndices;
 			params->vsConstantBuffers[0] = { frameConstantBuffer, 0, 16 };
 
-			params->psTextures[0] = skyboxTex;
+			params->psShaderResources[0] = skyboxTex;
 			params->psSamplers[0] = defaultSampler;
 
 			cmdBuf->Add(RendererCommand::kCommandDraw, params);
@@ -1088,9 +1088,9 @@ namespace tofu
 					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
 			    // 	params->vsConstantBuffers[1] = { shadowDepthBuffer[indexShadow], 0, 16 };
 					params->psConstantBuffers[0] = { lightingConstantBuffer,0, 4096 };
-					params->psTextures[0] = skyboxTex;
-					params->psTextures[1] = mat->mainTex;
-					params->psTextures[2] = mat->normalMap;
+					params->psShaderResources[0] = skyboxTex;
+					params->psShaderResources[1] = mat->mainTex;
+					params->psShaderResources[2] = mat->normalMap;
 					params->psSamplers[0] = defaultSampler;
 
 					break;
@@ -1101,16 +1101,16 @@ namespace tofu
 				//	params->vsConstantBuffers[1] = { shadowDepthBuffer[indexShadow], 0, 16 };
 					params->vsConstantBuffers[2] = { shadowDepthBuffer[indexShadow], 0, 16 };
 					params->psConstantBuffers[0] = { lightingConstantBuffer,0, 4096 };
-					params->psTextures[0] = skyboxTex;
-					params->psTextures[1] = mat->mainTex;
-					params->psTextures[2] = mat->normalMap;
-			     	params->psTextures[3] = lights[indexShadow].depthMap;
-					params->psTextures[4] = mat->roughnessMap;
-					params->psTextures[5] = mat->metallicMap;
-					params->psTextures[6] = mat->aoMap;
-					params->psTextures[7] = camera.skybox->skyboxDiffMap;
-					params->psTextures[8] = camera.skybox->skyboxSpecMap;
-					params->psTextures[9] = camera.skybox->lutMap;
+					params->psShaderResources[0] = skyboxTex;
+					params->psShaderResources[1] = mat->mainTex;
+					params->psShaderResources[2] = mat->normalMap;
+			     	params->psShaderResources[3] = lights[indexShadow].depthMap;
+					params->psShaderResources[4] = mat->roughnessMap;
+					params->psShaderResources[5] = mat->metallicMap;
+					params->psShaderResources[6] = mat->aoMap;
+					params->psShaderResources[7] = camera.skybox->skyboxDiffMap;
+					params->psShaderResources[8] = camera.skybox->skyboxSpecMap;
+					params->psShaderResources[9] = camera.skybox->lutMap;
 					params->psSamplers[0] = defaultSampler;
 					params->psSamplers[1] = shadowSampler;
 					params->psSamplers[2] = lutSampler;
@@ -1593,9 +1593,15 @@ namespace tofu
 			data->cameraPos = math::float4(t->GetWorldPosition(), 1);
 			data->bufferSize = math::float4(float(bufferWidth), float(bufferHeight), 0, 0);
 
-			// TODO frustum rays
-
 			data->perspectiveParams = math::float4{ camera.GetFOV(), camera.GetAspect(), camera.GetZNear(), camera.GetZFar() };
+			float farClipMaxY = math::radians(data->perspectiveParams.x * 0.5f) * data->perspectiveParams.w;
+			float farClipMaxX = farClipMaxY * data->perspectiveParams.y;
+
+			const Transform& worldTrans = t->GetWorldTransform();
+			data->leftTopRay = worldTrans.TransformVector(math::float4{ -farClipMaxX, farClipMaxY, data->perspectiveParams.w, 0 });
+			data->rightTopRay =worldTrans.TransformVector(math::float4{ farClipMaxX, farClipMaxY, data->perspectiveParams.w, 0 });
+			data->leftBottomRay = worldTrans.TransformVector(math::float4{ -farClipMaxX, -farClipMaxY, data->perspectiveParams.w, 0 });
+			data->rightBottomRay = worldTrans.TransformVector(math::float4{ farClipMaxX, -farClipMaxY, data->perspectiveParams.w, 0 });
 
 			camPos = data->cameraPos;
 
@@ -1982,10 +1988,10 @@ namespace tofu
 				case kMaterialTypeOpaque:
 					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
 					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 32 };
-					params->psTextures[0] = mat->mainTex;
-					params->psTextures[1] = mat->normalMap;
-					params->psTextures[2] = mat->metallicGlossMap;
-					params->psTextures[3] = mat->occlusionMap;
+					params->psShaderResources[0] = mat->mainTex;
+					params->psShaderResources[1] = mat->normalMap;
+					params->psShaderResources[2] = mat->metallicGlossMap;
+					params->psShaderResources[3] = mat->occlusionMap;
 					params->psSamplers[0] = defaultSampler;
 
 					params->renderTargets[0] = gBuffer1;
@@ -2025,9 +2031,9 @@ namespace tofu
 
 				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
 
-				params->psTextures[0] = gBuffer1;
-				params->psTextures[1] = gBuffer2;
-				params->psTextures[2] = gBuffer3;
+				params->psShaderResources[0] = gBuffer1;
+				params->psShaderResources[1] = gBuffer2;
+				params->psShaderResources[2] = gBuffer3;
 				params->psSamplers[0] = defaultSampler;
 
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
@@ -2053,9 +2059,9 @@ namespace tofu
 
 				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
 
-				params->psTextures[0] = gBuffer1;
-				params->psTextures[1] = gBuffer2;
-				params->psTextures[2] = gBuffer3;
+				params->psShaderResources[0] = gBuffer1;
+				params->psShaderResources[1] = gBuffer2;
+				params->psShaderResources[2] = gBuffer3;
 params->psSamplers[0] = defaultSampler;
 
 cmdBuf->Add(RendererCommand::kCommandDraw, params);
@@ -2083,9 +2089,9 @@ cmdBuf->Add(RendererCommand::kCommandDraw, params);
 				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
 				params->psConstantBuffers[1] = params->vsConstantBuffers[1];
 
-				params->psTextures[0] = gBuffer1;
-				params->psTextures[1] = gBuffer2;
-				params->psTextures[2] = gBuffer3;
+				params->psShaderResources[0] = gBuffer1;
+				params->psShaderResources[1] = gBuffer2;
+				params->psShaderResources[2] = gBuffer3;
 				params->psSamplers[0] = defaultSampler;
 
 				params->renderTargets[0] = hdrTarget;
@@ -2114,11 +2120,11 @@ cmdBuf->Add(RendererCommand::kCommandDraw, params);
 				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
 				params->psConstantBuffers[1] = params->vsConstantBuffers[1];
 
-				params->psTextures[0] = gBuffer1;
-				params->psTextures[1] = gBuffer2;
-				params->psTextures[2] = gBuffer3;
+				params->psShaderResources[0] = gBuffer1;
+				params->psShaderResources[1] = gBuffer2;
+				params->psShaderResources[2] = gBuffer3;
 
-				params->psTextures[3] = lights[spotLights[i]].depthMap;
+				params->psShaderResources[3] = lights[spotLights[i]].depthMap;
 
 				params->psSamplers[0] = defaultSampler;
 				params->psSamplers[1] = shadowSampler;
@@ -2143,9 +2149,9 @@ cmdBuf->Add(RendererCommand::kCommandDraw, params);
 
 				params->psConstantBuffers[0] = { lightParamsAmbDirBuffer, 0, 0 };
 
-				params->psTextures[0] = gBuffer1;
-				params->psTextures[1] = gBuffer2;
-				params->psTextures[2] = gBuffer3;
+				params->psShaderResources[0] = gBuffer1;
+				params->psShaderResources[1] = gBuffer2;
+				params->psShaderResources[2] = gBuffer3;
 				params->psSamplers[0] = defaultSampler;
 
 				params->renderTargets[0] = hdrTarget;
@@ -2171,18 +2177,17 @@ cmdBuf->Add(RendererCommand::kCommandDraw, params);
 				params->startVertex = mesh.StartVertex;
 				params->indexCount = mesh.NumIndices;
 
-				params->psTextures[0] = hdrTarget;
+				params->psShaderResources[0] = hdrTarget;
 				//params->psSamplers[0] = defaultSampler;
 
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
 
-			/**/
 			{
 				ComputeParams* params = MemoryAllocator::Allocate<ComputeParams>(allocNo);
 
 				params->shader = scatterShader;
-				params->rwTextures[0] = scatterTex;
+				params->rwShaderResources[0] = scatterTex;
 
 				params->threadGroupCountX = 10;
 				params->threadGroupCountY = 10;
@@ -2191,6 +2196,7 @@ cmdBuf->Add(RendererCommand::kCommandDraw, params);
 				cmdBuf->Add(RendererCommand::kCommandCompute, params);
 			}
 
+			/*
 			// volumetric fog
 			{
 				Mesh& mesh = meshes[builtinQuad->meshes[0].id];

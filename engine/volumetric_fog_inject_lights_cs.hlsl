@@ -1,4 +1,4 @@
-cbuffer FrameConstants : register (b0);
+cbuffer FrameConstants : register (b0)
 {
 	float4x4				matView;
 	float4x4				matProj;
@@ -16,22 +16,34 @@ cbuffer FrameConstants : register (b0);
 
 RWTexture3D<float4> lightDensityVolume : register (u0);
 
+float3 SpotLights(float3 pos)
+{
+	return 0;
+}
+
 [numthreads(16, 9, 4)]
 void main( uint3 DTid : SV_DispatchThreadID )
 {
-	float2 uv = DTid.xy / float3(159.0, 89.0);
+	float2 uv = DTid.xy / float2(159.0, 89.0);
 	float z = DTid.z / 127.0;
 
 	float zNear = perspectiveParams.z;
 	float zFar = perspectiveParams.w;
 
 	// linear z to cam pos
-	z = (zNear + pos.z * (zFar - zNear)) / zFar;
+	z = (zNear + z * (zFar - zNear)) / zFar;
 
-	float3 rayTop = slerp(leftTop, rightTop, uv.x);
-	float3 rayBottom = slerp(leftBottom, rightBottom, uv.x);
+	float3 rayTop = lerp(leftTopRay, rightTopRay, uv.x);
+	float3 rayBottom = lerp(leftBottomRay, rightBottomRay, uv.x);
 
-	float3 pos = slerp(rayTop, rayBottom, uv.y) * z;
+	float3 pos = cameraPos + lerp(rayTop, rayBottom, uv.y) * z;
+
+	float3 color = 0;
+	float density = 0;
+
+	color += SpotLights(pos);
 
 
+
+	lightDensityVolume[DTid] = float4(color, density);
 }

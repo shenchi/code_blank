@@ -7,9 +7,6 @@ namespace tofu
 {
 	class RenderingSystem;
 
-	HANDLE_DECL(Mesh);
-	HANDLE_DECL(Model);
-
 	class Model
 	{
 		friend class RenderingSystem;
