@@ -12,10 +12,16 @@ using namespace tofu::model;
 using namespace tofu::math;
 using namespace tofu::compression;
 
+constexpr size_t nanIndex = SIZE_MAX;
+
 namespace tofu
 {
 	EvaluateContext::EvaluateContext(Model * model) :model(model)
 	{
+		// TODO: move all memory allocation to allocator
+		//results = static_cast<Transform *>(MemoryAllocator::Allocators[kAllocFrameBasedMem]
+		//	.Allocate(sizeof(Transform) * model->header->NumBones, alignof(AnimationState)));
+
 		results = new Transform[model->header->NumBones];
 	}
 
@@ -28,10 +34,10 @@ namespace tofu
 	{
 		// Assume channel numbers SQT = 3
 		for (int i = 0; i < 3; i++) {
-			indices[i][0] = SIZE_MAX;
-			indices[i][1] = SIZE_MAX;
-			indices[i][2] = SIZE_MAX;
-			indices[i][3] = SIZE_MAX;
+			indices[i][0] = nanIndex;
+			indices[i][1] = nanIndex;
+			indices[i][2] = nanIndex;
+			indices[i][3] = nanIndex;
 		}
 	}
 
@@ -95,7 +101,7 @@ namespace tofu
 			AnimationFrameCache &cache = frameCaches[frame.GetJointIndex()];
 			size_t cacheIndex = cache.indices[frame.GetChannelType()][2];
 
-			if (cacheIndex != SIZE_MAX && context->model->frames[cacheIndex].time > ticks) {
+			if (cacheIndex != nanIndex && context->model->frames[cacheIndex].time > ticks) {
 				break;
 			}
 
@@ -140,21 +146,32 @@ namespace tofu
 
 			Transform trans;
 
-			size_t *indices = frameCache.indices[kChannelTranslation];
+			// Template version
+			SetTransform(frameCache.indices[kChannelTranslation], model, trans, model->bones[i].transform, 
+				&Transform::SetTranslation, &Transform::GetTranslation, &AnimationState::LerpFrame, &AnimationState::CatmullRomFrame);
 
-			if (indices[1] != SIZE_MAX)
+			SetTransform(frameCache.indices[kChannelRotation], model, trans, model->bones[i].transform, 
+				&Transform::SetRotation, &Transform::GetRotation, &AnimationState::SlerpFrame, &AnimationState::SquadFrame);
+
+			SetTransform(frameCache.indices[kChannelScale], model, trans, model->bones[i].transform, 
+				&Transform::SetScale, &Transform::GetScale, &AnimationState::LerpFrame, &AnimationState::CatmullRomFrame);
+
+			// Original code
+			/*size_t *indices = frameCache.indices[kChannelTranslation];
+
+			if (indices[1] != nanIndex)
 			{
 				if (model->frames[indices[2]].time <= cache->ticks) {
-					trans.SetTranslation(CatmullRomIndex(model, indices[1], indices[2], indices[3], indices[3]));
+					trans.SetTranslation(CatmullRomFrame(model, indices[1], indices[2], indices[3], indices[3]));
 				}
 				else {
-					trans.SetTranslation(CatmullRomIndex(model, indices[0] == SIZE_MAX ? indices[1] : indices[0], indices[1], indices[2], indices[3]));
+					trans.SetTranslation(CatmullRomFrame(model, indices[0] == nanIndex ? indices[1] : indices[0], indices[1], indices[2], indices[3]));
 				}
 			}
-			else if (indices[2] != SIZE_MAX) {
-				trans.SetTranslation(LerpFromFrameIndex(model, indices[2], indices[3]));
+			else if (indices[2] != nanIndex) {
+				trans.SetTranslation(LerpFrame(model, indices[2], indices[3]));
 			}
-			else if (indices[3] != SIZE_MAX) {
+			else if (indices[3] != nanIndex) {
 				trans.SetTranslation(model->frames[indices[3]].value);
 			}
 			else {
@@ -163,19 +180,19 @@ namespace tofu
 
 			indices = frameCache.indices[kChannelRotation];
 
-			if (indices[1] != SIZE_MAX)
+			if (indices[1] != nanIndex)
 			{
 				if (model->frames[indices[2]].time <= cache->ticks) {
-					trans.SetRotation(SquadIndex(model, indices[1], indices[2], indices[3], indices[3]));
+					trans.SetRotation(SquadFrame(model, indices[1], indices[2], indices[3], indices[3]));
 				}
 				else {
-					trans.SetRotation(SquadIndex(model, indices[0] == SIZE_MAX ? indices[1] : indices[0], indices[1], indices[2], indices[3]));
+					trans.SetRotation(SquadFrame(model, indices[0] == nanIndex ? indices[1] : indices[0], indices[1], indices[2], indices[3]));
 				}
 			}
-			else if (indices[2] != SIZE_MAX) {
-				trans.SetRotation(SlerpFromFrameIndex(model, indices[2], indices[3]));
+			else if (indices[2] != nanIndex) {
+				trans.SetRotation(SlerpFrame(model, indices[2], indices[3]));
 			}
-			else if (indices[3] != SIZE_MAX) {
+			else if (indices[3] != nanIndex) {
 				quat q;
 				decompress(model->frames[indices[3]].value, q);
 				trans.SetRotation(q);
@@ -186,24 +203,24 @@ namespace tofu
 
 			indices = frameCache.indices[kChannelScale];
 
-			if (indices[1] != SIZE_MAX)
+			if (indices[1] != nanIndex)
 			{
 				if (model->frames[indices[2]].time <= cache->ticks) {
-					trans.SetScale(CatmullRomIndex(model, indices[1], indices[2], indices[3], indices[3]));
+					trans.SetScale(CatmullRomFrame(model, indices[1], indices[2], indices[3], indices[3]));
 				}
 				else {
-					trans.SetScale(CatmullRomIndex(model, indices[0] == SIZE_MAX ? indices[1] : indices[0], indices[1], indices[2], indices[3]));
+					trans.SetScale(CatmullRomFrame(model, indices[0] == nanIndex ? indices[1] : indices[0], indices[1], indices[2], indices[3]));
 				}
 			}
-			else if (indices[2] != SIZE_MAX) {
-				trans.SetScale(LerpFromFrameIndex(model, indices[2], indices[3]));
+			else if (indices[2] != nanIndex) {
+				trans.SetScale(LerpFrame(model, indices[2], indices[3]));
 			}
-			else if (indices[3] != SIZE_MAX) {
+			else if (indices[3] != nanIndex) {
 				trans.SetScale(model->frames[indices[3]].value);
 			}
 			else {
 				trans.SetScale(model->bones[i].transform.GetScale());
-			}
+			}*/
 
 			if (type == kAET_Blend) {
 				context.results[i].Blend(trans, weight);
@@ -214,6 +231,34 @@ namespace tofu
 			else {
 				assert(0);
 			}
+		}
+	}
+	
+	template<typename T, typename GetFuncType, typename LinearFuncType, typename CubicFuncType>
+	void AnimationState::SetTransform(size_t *indices, Model *model, Transform& trans, Transform& tPose, void(Transform::*set)(const T&), GetFuncType get, LinearFuncType linear, CubicFuncType cubic)
+	{
+		// cubic interpolation
+		if (indices[1] != nanIndex)
+		{
+			if (model->frames[indices[2]].time <= cache->ticks) {
+				(trans.*set)((this->*cubic)(model, indices[1], indices[2], indices[3], indices[3]));
+			}
+			else {
+				(trans.*set)((this->*cubic)(model, indices[0] == nanIndex ? indices[1] : indices[0], indices[1], indices[2], indices[3]));
+			}
+		}
+		// linear interpolation
+		else if (indices[2] != nanIndex) {
+			(trans.*set)((this->*linear)(model, indices[2], indices[3]));
+		}
+		else if (indices[3] != nanIndex) {
+			T t;
+			decompress(model->frames[indices[3]].value, t);
+			(trans.*set)(t);
+		}
+		else {
+			// set T-pose bone value
+			(trans.*set)((tPose.*get)());
 		}
 	}
 
@@ -228,7 +273,34 @@ namespace tofu
 		return anim->tickCount / anim->ticksPerSecond;
 	}
 
-	math::float3 AnimationState::CatmullRomIndex(Model *model, size_t i1, size_t i2, size_t i3, size_t i4) const
+	math::float3 AnimationState::LerpFrame(Model *model, size_t lhs, size_t rhs) const
+	{
+		ModelAnimFrame& f1 = model->frames[lhs];
+		ModelAnimFrame& f2 = model->frames[rhs];
+
+		float t = (cache->ticks - f1.time) / (f2.time - f1.time);
+		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
+
+		return math::mix(f1.value, f2.value, t);
+	}
+
+	math::quat AnimationState::SlerpFrame(Model *model, size_t lhs, size_t rhs) const
+	{
+		ModelAnimFrame& f1 = model->frames[lhs];
+		ModelAnimFrame& f2 = model->frames[rhs];
+
+		math::quat q1, q2;
+
+		decompress(f1.value, q1);
+		decompress(f2.value, q2);
+
+		float t = (cache->ticks - f1.time) / (f2.time - f1.time);
+		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
+
+		return math::slerp(q1, q2, t);
+	}
+
+	math::float3 AnimationState::CatmullRomFrame(Model *model, size_t i1, size_t i2, size_t i3, size_t i4) const
 	{
 		ModelAnimFrame& f1 = model->frames[i1];
 		ModelAnimFrame& f2 = model->frames[i2];
@@ -241,7 +313,7 @@ namespace tofu
 		return catmullRom(f1.value, f2.value, f3.value, f4.value, t);
 	}
 
-	math::quat AnimationState::SquadIndex(Model *model, size_t i1, size_t i2, size_t i3, size_t i4) const
+	math::quat AnimationState::SquadFrame(Model *model, size_t i1, size_t i2, size_t i3, size_t i4) const
 	{
 		ModelAnimFrame& f1 = model->frames[i1];
 		ModelAnimFrame& f2 = model->frames[i2];
@@ -250,44 +322,17 @@ namespace tofu
 
 		math::quat q1, q2, q3, q4;
 
-		float t = (cache->ticks - f2.time) / (f3.time - f2.time);
-		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
-
 		decompress(f1.value, q1);
 		decompress(f2.value, q2);
 		decompress(f3.value, q3);
 		decompress(f4.value, q4);
 
+		float t = (cache->ticks - f2.time) / (f3.time - f2.time);
+		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
+
 		// FIXME: change after cruve fitting
 		return math::slerp(q2, q3, t);
 		//return squad(q2, q3, intermediate(q1, q2, q3), intermediate(q2, q3, q4), t);
-	}
-
-	math::float3 AnimationState::LerpFromFrameIndex(Model *model, size_t lhs, size_t rhs) const
-	{
-		ModelAnimFrame& fa = model->frames[lhs];
-		ModelAnimFrame& fb = model->frames[rhs];
-
-		float t = (cache->ticks - fa.time) / (fb.time - fa.time);
-		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
-
-		return math::mix(fa.value, fb.value, t);
-	}
-
-	math::quat AnimationState::SlerpFromFrameIndex(Model *model, size_t lhs, size_t rhs) const
-	{
-		ModelAnimFrame& fa = model->frames[lhs];
-		ModelAnimFrame& fb = model->frames[rhs];
-
-		float t = (cache->ticks - fa.time) / (fb.time - fa.time);
-		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
-
-		math::quat a, b;
-
-		decompress(fa.value, a);
-		decompress(fb.value, b);
-
-		return math::slerp(a, b, t);
 	}
 
 	AnimationStateMachine::AnimationStateMachine(std::string name) :
@@ -310,7 +355,7 @@ namespace tofu
 	{
 		stateIndexTable[name] = static_cast<uint16_t>(states.size());
 
-		//// TODO: allocator
+		//// TODO:
 		//AnimationState *state = static_cast<AnimationState *>(
 		//	MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(sizeof(AnimationState), alignof(AnimationState)));
 

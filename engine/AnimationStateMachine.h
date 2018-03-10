@@ -128,10 +128,14 @@ namespace tofu
 
 		virtual float GetDurationInSecond(Model *model) override;
 
-		math::float3 CatmullRomIndex(Model * model, size_t i1, size_t i2, size_t i3, size_t i4) const;
-		math::quat SquadIndex(Model * model, size_t i1, size_t i2, size_t i3, size_t i4) const;
-		math::float3 LerpFromFrameIndex(Model * model, size_t lhs, size_t rhs) const;
-		math::quat SlerpFromFrameIndex(Model * model, size_t lhs, size_t rhs) const;
+	private:
+		template<typename T, typename GetFuncType, typename LinearFuncType, typename CubicFuncType>
+		void SetTransform(size_t * indices, Model * model, Transform & trans, Transform & tPose, void(Transform::* set)(const T &), GetFuncType get, LinearFuncType linear, CubicFuncType cubic);
+
+		math::float3 LerpFrame(Model * model, size_t lhs, size_t rhs) const;
+		math::quat SlerpFrame(Model * model, size_t lhs, size_t rhs) const;
+		math::float3 CatmullRomFrame(Model * model, size_t i1, size_t i2, size_t i3, size_t i4) const;
+		math::quat SquadFrame(Model * model, size_t i1, size_t i2, size_t i3, size_t i4) const;
 	};
 
 	class AnimationStateMachine : AnimNodeBase

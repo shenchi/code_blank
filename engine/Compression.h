@@ -232,5 +232,15 @@ namespace tofu {
 			out.z = in.z;
 			out.w = sqrt(abs(1 - in.x * in.x - in.y * in.y - in.z * in.z));
 		}
+
+		// temporary bridge method
+		void compress(const float3& in, float3& out) {
+			out = in;
+		}
+
+		// temporary bridge method
+		void decompress(const float3& in, float3& out) {
+			out = in;
+		}
 	}
 }
