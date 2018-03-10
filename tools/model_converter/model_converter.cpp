@@ -733,12 +733,12 @@ struct ModelFile
 	std::vector<ForSortingFrame>	frames;
 	std::vector<ModelAnimFrame>		orderedFrames;
 
-	std::vector<uint32_t>			humanBoneBindings;
+	std::vector<uint32_t>			humanBoneBindings; // humanBoneId ->boneId
 	std::vector<quat>				humanBoneWorldR;
 	std::vector<quat>				humanBoneLocalR;
 	std::vector<quat>				humanBoneCorrectionLocalR;
 	std::vector<float3>				humanBoneLocalT;
-	std::vector<uint32_t>			bonesHumanBoneIds;
+	std::vector<uint32_t>			bonesHumanBoneIds; // boneId -> humanBoneId
 	std::vector<bool>				boneHasOffsetMatrices;
 	float3							rootOffset;
 	float							hipsHeight;

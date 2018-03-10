@@ -57,31 +57,9 @@ CombatManager::CombatManager(bool _isPlayer, void* _companion, void* owner, Comb
 	// Populate allMoves
 	//allMoves
 
-	// Temp Stuff
-	defaultMove.AT = 0.7f;
-	defaultMove.ET = 0.2f;
-	defaultMove.ED = 1.0f;
-	defaultMove.HT = 0.2f;
-	defaultMove.Dmg = 3.f;
-	defaultMove.AD = 0.0f;
-	defaultMove.pos = kHigh;
-	defaultMove.dir = kDirForward;
-	defaultMove.power = kWeak;
-
-	allMoves.push_back(defaultMove);
-	allMoves.push_back(defaultMove);
-	allMoves.push_back(defaultMove);
-	allMoves.push_back(defaultMove);
-	allMoves.push_back(defaultMove);
-	allMoves.push_back(defaultMove);
-	allMoves.push_back(defaultMove);
-	allMoves.push_back(defaultMove);
-	allMoves.push_back(defaultMove);
-	allMoves.push_back(defaultMove);
-	allMoves.push_back(defaultMove);
-	allMoves.push_back(defaultMove);
-	allMoves.push_back(defaultMove);
-	allMoves.push_back(defaultMove);
+	// Setup the Combat Moves
+	SetMoves();
+	
 }
 
 CombatManager::~CombatManager()
@@ -807,13 +785,176 @@ void CombatManager::NextSwordSpecial()
 }
 // --------------------------------------------------------------------------------------------
 
-/*
-IEnumerator DelayBeforeDamage(float delay, float dmg)
+void CombatManager::SetMoves()
 {
-	yield return new WaitForSeconds(delay);
+	// Punch_Jab_L
+	defaultMove.AT = 0.7f;
+	defaultMove.AD = 0.0f;
+	defaultMove.ET = 0.2f;
+	defaultMove.ED = 1.0f;
+	defaultMove.HT = 0.2f;
+	defaultMove.Dmg = 3.f;
+	defaultMove.pos = kHigh;
+	defaultMove.dir = kDirForward;
+	defaultMove.power = kWeak;
+	allMoves.push_back(defaultMove);
 
-	this.GetComponent<Humanoid>().TakeDamag(dmg);
-}*/
+	// Punch_Jab_R
+	defaultMove.AT = 0.5f;
+	defaultMove.ET = 0.2f;
+	defaultMove.ED = 1.0f;
+	defaultMove.HT = 1.0f;
+	defaultMove.Dmg = 3.f;
+	defaultMove.AD = 0.0f;
+	defaultMove.pos = kHigh;
+	defaultMove.dir = kDirForward;
+	defaultMove.power = kWeak;
+	allMoves.push_back(defaultMove);
+
+	// Punch_Hook_L
+	defaultMove.AT = 0.65f;
+	defaultMove.ET = 0.2f;
+	defaultMove.ED = 1.0f;
+	defaultMove.HT = 0.2f;
+	defaultMove.Dmg = 5.0f;
+	defaultMove.AD = 0.0f;
+	defaultMove.pos = kHigh;
+	defaultMove.dir = kDirForward;
+	defaultMove.power = kWeak;
+	allMoves.push_back(defaultMove);
+
+	// Punch_Hook_R
+	defaultMove.AT = 0.65f;
+	defaultMove.ET = 0.2f;
+	defaultMove.ED = 1.0f;
+	defaultMove.HT = 0.5f;
+	defaultMove.Dmg = 5.0f;
+	defaultMove.AD = 0.0f;
+	defaultMove.pos = kHigh;
+	defaultMove.dir = kDirForward;
+	defaultMove.power = kWeak;
+	allMoves.push_back(defaultMove);
+
+	// Punch_Upper_Cut_L
+	defaultMove.AT = 0.8f;
+	defaultMove.ET = 0.5f;
+	defaultMove.ED = 1.0f;
+	defaultMove.HT = 1.0f;
+	defaultMove.Dmg = 7.0f;
+	defaultMove.AD = 0.0f;
+	defaultMove.pos = kHigh;
+	defaultMove.dir = kDirForward;
+	defaultMove.power = kWeak;
+	allMoves.push_back(defaultMove);
+	
+	// Punch_Upper_Cut_R
+	defaultMove.AT = 0.8f;
+	defaultMove.ET = 0.5f;
+	defaultMove.ED = 1.0f;
+	defaultMove.HT = 1.0f;
+	defaultMove.Dmg = 7.0f;
+	defaultMove.AD = 0.0f;
+	defaultMove.pos = kHigh;
+	defaultMove.dir = kDirForward;
+	defaultMove.power = kWeak;
+	allMoves.push_back(defaultMove);
+
+	// Kick_Straight_Mid_R
+	defaultMove.AT = 1.0f;
+	defaultMove.ET = 0.6f;
+	defaultMove.ED = 1.0f;
+	defaultMove.HT = 0.8f;
+	defaultMove.Dmg = 10.0f;
+	defaultMove.AD = 0.0f;
+	defaultMove.pos = kHigh;
+	defaultMove.dir = kDirForward;
+	defaultMove.power = kWeak;
+	allMoves.push_back(defaultMove);
+
+	// Kick_Axe_Kick
+	defaultMove.AT = 1.2f;
+	defaultMove.ET = 0.5f;
+	defaultMove.ED = 1.0f;
+	defaultMove.HT = 0.8f;
+	defaultMove.Dmg = 10.0f;
+	defaultMove.AD = 0.0f;
+	defaultMove.pos = kHigh;
+	defaultMove.dir = kDirForward;
+	defaultMove.power = kWeak;
+	allMoves.push_back(defaultMove);
+
+	// Kick_Horse_Kick
+	defaultMove.AT = 1.0f;
+	defaultMove.ET = 0.4f;
+	defaultMove.ED = 1.0f;
+	defaultMove.HT = 1.0f;
+	defaultMove.Dmg = 3.0f;
+	defaultMove.AD = 0.0f;
+	defaultMove.pos = kHigh;
+	defaultMove.dir = kDirForward;
+	defaultMove.power = kWeak;
+	allMoves.push_back(defaultMove);
+
+	// Sword_Attack_R
+	defaultMove.AT = 1.0f;
+	defaultMove.ET = 0.3f;
+	defaultMove.ED = 1.25f;
+	defaultMove.HT = 1.0f;
+	defaultMove.Dmg = 10.0f;
+	defaultMove.AD = 0.0f;
+	defaultMove.pos = kMid;
+	defaultMove.dir = kDirLeft;
+	defaultMove.power = kWeak;
+	allMoves.push_back(defaultMove);
+
+	// Sword_Attack_RL
+	defaultMove.AT = 0.8f;
+	defaultMove.ET = 0.3f;
+	defaultMove.ED = 1.25f;
+	defaultMove.HT = 1.0f;
+	defaultMove.Dmg = 10.0f;
+	defaultMove.AD = 0.0f;
+	defaultMove.pos = kHigh;
+	defaultMove.dir = kDirRight;
+	defaultMove.power = kWeak;
+	allMoves.push_back(defaultMove);
+
+	// Sword_Attack_Sp_U
+	defaultMove.AT = 1.5f;
+	defaultMove.ET = 0.5f;
+	defaultMove.ED = 1.25f;
+	defaultMove.HT = 1.0f;
+	defaultMove.Dmg = 15.0f;
+	defaultMove.AD = 0.0f;
+	defaultMove.pos = kHigh;
+	defaultMove.dir = kDirForward;
+	defaultMove.power = kPowerful;
+	allMoves.push_back(defaultMove);
+
+	// Sword_Attack_Combo_LL
+	defaultMove.AT = 2.0f;
+	defaultMove.ET = 0.5f;
+	defaultMove.ED = 1.25f;
+	defaultMove.HT = 0.8f;
+	defaultMove.Dmg = 20.0f;
+	defaultMove.AD = 0.0f;
+	defaultMove.pos = kHigh;
+	defaultMove.dir = kDirRight;
+	defaultMove.power = kPowerful;
+	allMoves.push_back(defaultMove);
+
+	// KB_Gun
+	defaultMove.AT = 1.0f;
+	defaultMove.ET = 0.5f;
+	defaultMove.ED = 1.0f;
+	defaultMove.HT = 0.5f;
+	defaultMove.Dmg = 10.0f;
+	defaultMove.AD = 0.0f;
+	defaultMove.pos = kMid;
+	defaultMove.dir = kDirForward;
+	defaultMove.power = kPowerful;
+	allMoves.push_back(defaultMove);
+}
 
 // Setters
 // Set the Move Direction

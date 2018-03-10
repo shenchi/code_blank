@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Tofu.h>
-#include <LightComponent.h>
 
 class SceneLoadingDemo : public tofu::Module
 {

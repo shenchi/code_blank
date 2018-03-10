@@ -116,6 +116,7 @@ namespace
 		tofu::VertexShaderHandle	vertexShader;
 		tofu::PixelShaderHandle		pixelShader;
 		D3D11_VIEWPORT				viewport;
+		uint8_t						stencilRef;
 	};
 }
 
@@ -651,8 +652,8 @@ namespace tofu
 					);
 
 					if (texDesc.Format == DXGI_FORMAT_D24_UNORM_S8_UINT && 0u != (params->bindingFlags & kBindingDepthStencil))
-						//texDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
-					    texDesc.Format = DXGI_FORMAT_R32_TYPELESS;
+						texDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
+					    //texDesc.Format = DXGI_FORMAT_R32_TYPELESS;
 					
 					D3D11_SUBRESOURCE_DATA subResData = {};
 					subResData.pSysMem = params->data;
@@ -669,8 +670,8 @@ namespace tofu
 						{
 							//textures[id].tex->GetDesc()
 							D3D11_SHADER_RESOURCE_VIEW_DESC desc = {};
-							//desc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
-							desc.Format = DXGI_FORMAT_R32_FLOAT;
+							desc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+							//desc.Format = DXGI_FORMAT_R32_FLOAT;
 							if (params->cubeMap == 1)
 							{
 								desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
@@ -739,8 +740,8 @@ namespace tofu
 						{
 							CD3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc(textures[id].tex,
 								D3D11_DSV_DIMENSION_TEXTURE2D,
-								DXGI_FORMAT_D32_FLOAT
-								//DXGI_FORMAT_D24_UNORM_S8_UINT
+								//DXGI_FORMAT_D32_FLOAT
+								DXGI_FORMAT_D24_UNORM_S8_UINT
 								);
 
 							DXCHECKED(device->CreateDepthStencilView(textures[id].tex, &dsvDesc, &(textures[id].dsv[0])));
@@ -963,6 +964,17 @@ namespace tofu
 				dsState.DepthEnable = params->depthEnable;
 				dsState.DepthWriteMask = (D3D11_DEPTH_WRITE_MASK)params->depthWrite;
 				dsState.DepthFunc = (D3D11_COMPARISON_FUNC)(params->depthFunc + 1);
+				dsState.StencilEnable = params->stencilEnable;
+				dsState.FrontFace.StencilFailOp = (D3D11_STENCIL_OP)params->frontFaceFailOp;
+				dsState.FrontFace.StencilDepthFailOp = (D3D11_STENCIL_OP)params->frontFaceDepthFailOp;
+				dsState.FrontFace.StencilPassOp = (D3D11_STENCIL_OP)params->frontFacePassOp;
+				dsState.FrontFace.StencilFunc = (D3D11_COMPARISON_FUNC)(params->frontFaceFunc + 1);
+				dsState.BackFace.StencilFailOp = (D3D11_STENCIL_OP)params->backFaceFailOp;
+				dsState.BackFace.StencilDepthFailOp = (D3D11_STENCIL_OP)params->backFaceDepthFailOp;
+				dsState.BackFace.StencilPassOp = (D3D11_STENCIL_OP)params->backFacePassOp;
+				dsState.BackFace.StencilFunc = (D3D11_COMPARISON_FUNC)(params->backFaceFunc + 1);
+				dsState.StencilReadMask = params->stencilReadMask;
+				dsState.StencilWriteMask = params->stencilWriteMask;
 				DXCHECKED(device->CreateDepthStencilState(&dsState, &(pipelineStates[id].depthStencilState)));
 
 				CD3D11_RASTERIZER_DESC rsState(D3D11_DEFAULT);
@@ -970,6 +982,14 @@ namespace tofu
 				DXCHECKED(device->CreateRasterizerState(&rsState, &(pipelineStates[id].rasterizerState)));
 
 				CD3D11_BLEND_DESC blendState(D3D11_DEFAULT);
+				blendState.RenderTarget[0].BlendEnable = params->blendEnable;
+				blendState.RenderTarget[0].SrcBlend = (D3D11_BLEND)params->srcBlend;
+				blendState.RenderTarget[0].DestBlend = (D3D11_BLEND)params->destBlend;
+				blendState.RenderTarget[0].BlendOp = (D3D11_BLEND_OP)params->blendOp;
+				blendState.RenderTarget[0].SrcBlendAlpha = (D3D11_BLEND)params->srcBlendAlpha;
+				blendState.RenderTarget[0].DestBlendAlpha = (D3D11_BLEND)params->destBlendAlpha;
+				blendState.RenderTarget[0].BlendOpAlpha = (D3D11_BLEND_OP)params->blendOpAlpha;
+				blendState.RenderTarget[0].RenderTargetWriteMask = (D3D11_COLOR_WRITE_ENABLE)params->blendWriteMask;
 				DXCHECKED(device->CreateBlendState(&blendState, &(pipelineStates[id].blendState)));
 
 				assert(true == params->vertexShader && nullptr != vertexShaders[params->vertexShader.id].shader);
@@ -985,11 +1005,15 @@ namespace tofu
 
 
 				pipelineStates[id].viewport = {
-					0.0f, 0.0f, (FLOAT)winWidth, (FLOAT)winHeight, 0.0f, 1.0f
+					params->viewport.topLeftX, params->viewport.topLeftY,
+					params->viewport.width, params->viewport.height,
+					params->viewport.minZ, params->viewport.maxZ
 				};
 
 				pipelineStates[id].vertexShader = params->vertexShader;
 				pipelineStates[id].pixelShader = params->pixelShader;
+
+				pipelineStates[id].stencilRef = params->stencilRef;
 
 				return kOK;
 			}
@@ -1064,7 +1088,7 @@ namespace tofu
 					context->PSSetShader((pso.pixelShader ? pixelShaders[pso.pixelShader.id].shader : nullptr), nullptr, 0);
 					context->RSSetState(pso.rasterizerState);
 					context->RSSetViewports(1, &(pso.viewport));
-					context->OMSetDepthStencilState(pso.depthStencilState, 0u);
+					context->OMSetDepthStencilState(pso.depthStencilState, pso.stencilRef);
 					context->OMSetBlendState(pso.blendState, nullptr, 0xffffffffu);
 
 					currentPipelineState = params->pipelineState;
@@ -1100,6 +1124,11 @@ namespace tofu
 
 					if (rebind)
 					{
+						// unbind textures;
+						ID3D11ShaderResourceView* srvs[kMaxTextureBindings] = { nullptr };
+						context->VSSetShaderResources(0, kMaxTextureBindings, srvs);
+						context->PSSetShaderResources(0, kMaxTextureBindings, srvs);
+
 						ID3D11RenderTargetView* rtvs[kMaxRenderTargetBindings] = {};
 						ID3D11DepthStencilView* dsv = nullptr;
 

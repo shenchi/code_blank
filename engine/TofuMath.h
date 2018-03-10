@@ -58,6 +58,10 @@ namespace tofu
 		typedef glm::ivec3 int3;
 		typedef glm::ivec4 int4;
 
+		typedef glm::bvec2 bool2;
+		typedef glm::bvec3 bool3;
+		typedef glm::bvec4 bool4;
+
 		typedef glm::tvec2<uint32_t, glm::highp> uint2;
 		typedef glm::tvec3<uint32_t, glm::highp> uint3;
 		typedef glm::tvec4<uint32_t, glm::highp> uint4;

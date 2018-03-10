@@ -17,7 +17,7 @@ Player::Player(CharacterDetails details, void* comp)
 	combatDetails.comboTimer = 0.0f;
 	combatDetails.maxComboTime = 2.0f;
 	combatDetails.dodgeTime = 0.0f;
-	combatDetails.rollTime = 0.5f;
+	combatDetails.rollTime = 1.5f;
 	combatDetails.rollSpeed = 3.0f;
 	combatDetails.hitTime = 1.0f;
 	combatDetails.hitMaxWalkSpeed = 1.0f;
@@ -44,15 +44,37 @@ Player::Player(CharacterDetails details, void* comp)
 
 		AnimationStateMachine *stateMachine = aPlayer->GetStateMachine();
 
+		// Idle Animations
 		AnimationState *idle = stateMachine->AddState("idle");
 		idle->animationName = "idle";
+		AnimationState *combat_idle = stateMachine->AddState("combat_idle");
+		combat_idle->animationName = "combat_idle";
+
+
+		// Movement Animations
 		AnimationState *walk = stateMachine->AddState("walk");
 		walk->animationName = "walk";
-		AnimationState *jump = stateMachine->AddState("jump");
-		jump->animationName = "jump";
 		AnimationState *run = stateMachine->AddState("run");
 		run->animationName = "run";
 
+
+		// Jump Animations
+		AnimationState *jump = stateMachine->AddState("jump");
+		jump->animationName = "jump";
+		AnimationState *jump_up = stateMachine->AddState("jump_up");
+		jump_up->animationName = "jump_up";
+		AnimationState *jump_air = stateMachine->AddState("jump_air");
+		jump_air->animationName = "jump_air";
+		AnimationState *jump_down = stateMachine->AddState("jump_down");
+		jump_down->animationName = "jump_down";
+
+
+		// Roll/Dodge Animations
+		AnimationState *kRoll = stateMachine->AddState("kRoll");
+		kRoll->animationName = "kRoll";
+
+
+		// Combat Animations
 		AnimationState *kPunchJabL = stateMachine->AddState("kPunchJabL");
 		kPunchJabL->animationName = "kPunchJabL";
 		AnimationState *kPunchJabR =  stateMachine->AddState("kPunchJabR");
@@ -124,8 +146,8 @@ Player::Player(CharacterDetails details, void* comp)
 	specialButtonDown = false;
 	attackButtonTimer = 0.0f;
 	specialButtonTimer = 0.0f;
-	minHoldTime = 0.4f;
-	maxHoldTime = 0.6f;
+	minHoldTime = 0.5f;
+	maxHoldTime = 1.5f; // Approximatelly measured in seconds
 
 	gun = new Gun();
 }
@@ -140,78 +162,33 @@ void Player::Update(float dT)
 	Character::Update(dT);
 	UpdateState(dT);
 	//combatManager->Update(dT);
+
+	// If attack button is still pressed, add to the timer
+	if (attackButtonDown)
+	{
+		attackButtonTimer += dT;
+	}
+
+	// If player has held the button beyond the max attack hold time auto trigger the attack
+	if(attackButtonTimer >= maxHoldTime && attackButtonDown)
+	{
+		combatManager->SpecialCombat();
+		attackButtonDown = false;
+	}
+	if (specialButtonTimer >= maxHoldTime && specialButtonDown)
+	{
+		combatManager->SwordSpecialCombat();
+		specialButtonDown = false;
+	}
+
+	// Handle charater movement only once per frame
+
+
 }
-
-/*
-// void Move(float vert, float hori, Quaternion camRot, bool jump, bool running, bool dash, bool aiming)
-// Player Movement
-void Player::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camRot)
-{
-	Update(dT);
-
-	if (math::length(inputDir) > 0.25f && !inAir)
-	{
-		math::float3 moveDir = camRot * inputDir;
-		moveDir.y = 0.0f;
-		moveDir = math::normalize(moveDir);
-		tPlayer->FaceTo(-moveDir);
-
-		speed += dT * kAccelerate;
-
-		if (!isSprinting)
-		{
-			if (speed > moveSpeedMultiplier)
-				speed = moveSpeedMultiplier;
-		}
-		else
-		{
-			if (speed > sprintSpeedMultiplier)
-				speed = sprintSpeedMultiplier;
-		}
-
-		if (speed > kMaxSpeed)
-			speed = kMaxSpeed;
-
-		tPlayer->Translate(moveDir * dT * speed);
-
-		if (!isSprinting)
-		{
-			aPlayer->CrossFade(1, 0.2f);
-		}
-		else if (isSprinting)
-		{
-			aPlayer->CrossFade(2, 0.3f);
-		}
-	}
-	else if(math::length(inputDir) < 0.25f && !inAir)
-	{
-		speed -= dT * kDeaccelerate;
-		if (speed < 0.0f) speed = 0.0f;
-
-		tPlayer->Translate(-tPlayer->GetForwardVector() * dT * speed);\
-
-		aPlayer->CrossFade(0, 0.2f);
-	}
-	else
-	{
-		aPlayer->CrossFade(0, 0.2f);
-	}
-
-	if (jump && !inAir)
-	{
-		
-	}
-	else if(inAir)
-	{
-		// Play falling animation here
-		
-	}
-}
-*/
 
 
 // Move the player character
-void Player::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camRot)
+void Player::MoveReg(float dT, bool _jump, math::float3 inputDir, math::quat camRot)
 //void Player::MoveReg(float vert, float hori, Quaternion camRot, bool jump, bool running, bool dash, bool aiming)
 {
 	
@@ -231,9 +208,9 @@ void Player::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camR
 	}
 
 
-	if (isGrounded && jump)
+	if (isGrounded && _jump)
 	{
-		HandleGroundedMovement(jump, lastMove, dT);
+		HandleGroundedMovement(_jump, lastMove, dT);
 	}
 
 	/*
@@ -309,7 +286,6 @@ void Player::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camR
 			//aPlayer->CrossFade(0, 0.2f);
 		}
 	}// End if Grounded
-	
 	else
 	{
 		moveSpeedMultiplier -= dT * kAirDeaccelerate;
@@ -323,13 +299,14 @@ void Player::MoveReg(float dT, bool jump, math::float3 inputDir, math::quat camR
 	
 
 	 // control and velocity handling is different when grounded and airborne:
-	if (isGrounded && !jump)
+	if (isGrounded && !_jump)
 	{
-		HandleGroundedMovement(jump, move, dT);
+		HandleGroundedMovement(_jump, move, dT);
 	}
-	else
+	else if(!isGrounded)
 	{
-		HandleAirborneMovement(lastMove, dT);
+		//HandleAirborneMovement(lastMove, dT);
+		HandleAirborneMovement(move, inputDir, dT);
 	}
 
 	lastMove = move;
@@ -387,10 +364,6 @@ void Player::MoveAim(float dT, tofu::math::float3 inputDir, math::quat camRot, t
 		//aPlayer->CrossFade(0, 0.2f);
 	}
 }
-
-
-
-
 
 
 // Update the Player's State
@@ -585,21 +558,22 @@ void Player::Attack(bool down, float dT)
 	if (!isAiming)
 	{
 		// Primary Attack
-		if (attackButtonDown)
-		{
-			attackButtonTimer += dT;
-		}
+		// Attack button pressed
 		if (!attackButtonDown && down) //Button 2
 		{
 			attackButtonDown = true;
 			attackButtonTimer = 0;
 		}
+		
+		// If attack button is released and timer is less than a hold time, use basic attack
 		if (attackButtonDown && !down && attackButtonTimer <= minHoldTime)
 		{
 			combatManager->BasicCombo();
 			attackButtonDown = false;
 		}
-		if ((!down && attackButtonDown && attackButtonTimer > minHoldTime) || (attackButtonTimer >= maxHoldTime && attackButtonDown))
+
+		// If attack button is released
+		if ((!down && attackButtonDown && attackButtonTimer > minHoldTime))
 		{
 			combatManager->SpecialCombat();
 			attackButtonDown = false;
@@ -683,27 +657,6 @@ void Player::Special(bool down, float dT)
 	// TODO
 	if (!isAiming)
 	{
-		// Primary Attack
-		if (attackButtonDown)
-		{
-			attackButtonTimer += dT;
-		}
-		if (!attackButtonDown && down) //Button 2
-		{
-			attackButtonDown = true;
-			attackButtonTimer = 0;
-		}
-		if (attackButtonDown && !down && attackButtonTimer <= minHoldTime)
-		{
-			combatManager->BasicCombo();
-			attackButtonDown = false;
-		}
-		if ((!down && attackButtonDown && attackButtonTimer > minHoldTime) || (attackButtonTimer >= maxHoldTime && attackButtonDown))
-		{
-			combatManager->SpecialCombat();
-			attackButtonDown = false;
-		}
-
 		// Special (Sword) Attack
 		if (specialButtonDown)
 		{
@@ -725,7 +678,7 @@ void Player::Special(bool down, float dT)
 		if (((CrossPlatformInputManager.GetButtonUp("Sword") && specialButtonDown && specialButtonTimer > minHoldTime)
 		|| (specialButtonTimer >= maxHoldTime && specialButtonDown)) && playerCharacter.SpecialBar > 49.9999f)
 		*/
-		if (((specialButtonDown && !down && specialButtonTimer > minHoldTime)	// TODO Add energy hook: playerCharacter.SpecialBar > 49.9999f
+		if ( ((specialButtonDown && !down && specialButtonTimer > minHoldTime)	// TODO Add energy hook: playerCharacter.SpecialBar > 49.9999f
 			|| (specialButtonTimer >= maxHoldTime && specialButtonDown)) )
 		{
 			combatManager->SwordSpecialCombat();
@@ -733,6 +686,7 @@ void Player::Special(bool down, float dT)
 		}
 	}
 }
+
 
 // Transistion to Vision Hack Mode
 void Player::VisionHack()
@@ -759,6 +713,7 @@ void Player::VisionHack()
         }
 	*/
 }
+
 
 // Produce an aiming list for the player
 // Return false if no enemies available to aim at

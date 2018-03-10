@@ -36,7 +36,7 @@ void PController::Update()
 
 	if (input->IsGamepadConnected())
 	{
-		if (input->IsButtonDown(ButtonId::kGamepadFaceRight))
+		if (input->IsButtonDown(ButtonId::kGamepadStart))
 		{
 			paused = !paused;
 		}

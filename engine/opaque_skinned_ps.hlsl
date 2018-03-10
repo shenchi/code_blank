@@ -57,7 +57,9 @@ float4 main(V2F input) : SV_TARGET
 			allPoLightColor += lightColor[i] * lightAmount;
 		}
 		else if (type[i].x == 3.0f) {
-
+			float3 position = lightPosition[i].xyz;
+			float lightAmount = saturate(dot(normalize(position - input.worldPos), refl));
+			allPoLightColor += lightColor[i] * lightAmount;
 		}
 
 	}

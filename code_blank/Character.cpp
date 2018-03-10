@@ -18,12 +18,53 @@ void Character::Init(bool isPlayer, void* comp, CombatManagerDetails combatDetai
 	combatManager = new CombatManager(isPlayer, comp, this, combatDetails);
 	gCharacter = new GameplayAnimationMachine(combatManager);
 	physics = tofu::PhysicsSystem::instance();
+	jumpTimer = 0.0f;
+	jumpDelay = 0.016f;
+	queueJump = false;
+	once = true;
 }
 
 
 void Character::Update(float dT)
 {
+	if (once)
+	{
+		once = false;
+		pCharacter->LockRotation(true, true, true);
+	}
 	combatManager->Update(dT);
+	if (jumpTimer > 0)
+	{
+		if (dT < 0.0159f)
+		{
+			jumpTimer -= 0.016f;
+		}
+		else
+		{
+			jumpTimer -= dT;
+		}
+	}
+
+	if (queueJump)
+	{
+		if (dT < 0.0159f)
+		{
+			jumpDelay -= 0.016f;
+		}
+		else
+		{
+			jumpDelay -= dT;
+		}
+	}
+	if(queueJump && jumpDelay < 0)
+	{
+		// Original Values 0.0f, 4.0f, 0.0f
+		pCharacter->ApplyImpulse(math::float3{ 0.0f, 5.0f, 0.0f });
+				
+		queueJump = false;
+
+		isGrounded = false;		
+	}
 }
 
 void Character::UpdateState(float dT)
@@ -35,9 +76,10 @@ void Character::UpdateState(float dT)
 // Handle movement on the ground
 void Character::HandleGroundedMovement(bool _jump, math::float3 move, float dT)
 {
-	// check whether conditions are right to allow a jump:
-	if (_jump && isGrounded)
+	// check whether conditions are right to allow a jump
+	if (_jump && !jump && isGrounded && jumpTimer < 0.001f)
 	{
+		jumpTimer = 0.5f;
 		//charAudio.Stop();
 		//charAudio.PlayOneShot(jumpFX);
 
@@ -46,29 +88,59 @@ void Character::HandleGroundedMovement(bool _jump, math::float3 move, float dT)
 
 		// TODO
 		// Current jump mechanic
-		//aCharacter->CrossFade(3, 0.001f);
-		pCharacter->ApplyImpulse(math::float3{ 0.0f, 4.0f, 0.0f });
+		// need to wait a frame before jumping
+		//pCharacter->ApplyImpulse(math::float3{ 0.0f, 4.0f, 0.0f });
+		queueJump = true;
+		jumpDelay = 0.768f;
+
+		combatManager->SetIsJumping(true);
+		jump = true;
+		stateTimer = 0;
 
 		//move.y = jumpPower * dT * move.y;
 
 		//tCharacter->Translate(math::float3{ move.x, 1.0f, move.z });
-		isGrounded = false;
+		//isGrounded = false;
 
 		//jump state
-		combatManager->SetIsJumping(true);
-		jump = true;
-		stateTimer = 0;
+		//combatManager->SetIsJumping(true);
+		//jump = true;
+		//stateTimer = 0;
 	}
-
+	
 	tCharacter->Translate(move);
-}//end ground movement
+	//math::float3 temp = { 0,0,0 };
+	//pCharacter->LockRotation(false, false, false);
+	//pCharacter->LockPosition(false, false, false);
+	//temp.x = move.x * 20.0f;
+	//temp.y = 0.0f;
+	//temp.z = move.z * 20.0f;
+	//pCharacter->SetVelocity(temp);
+	
+} // end ground movement
 
  // TODO
  // Needs fixing in the Unity version and then updated here
  // Handle airborne movement
-void Character::HandleAirborneMovement(math::float3 move, float dT)
+ 
+void Character::HandleAirborneMovement(math::float3 move, math::float3 inputDir, float dT)
 {
-	move += 10.0f * dT * move;
+	//float y = tCharacter->GetWorldPosition().y;
+
+	float y = move.y;
+
+	//move += 10.0f * dT * move;
+	if (move.x == 0)
+	{
+		move.x = dT * inputDir.x * 2.0f;
+	}
+
+	if (move.z == 0)
+	{
+		move.z = dT * inputDir.z * 2.0f;
+	}
+	move.y = y;
+
 	tCharacter->Translate(move);
 
 	// apply extra gravity from multiplier:
@@ -95,7 +167,7 @@ void Character::HandleAirborneMovement(math::float3 move, float dT)
 	*/
 	//tCharacter->Translate(math::float3{ vel.x, 0.0f, vel.z });
 
-}//end airborne movement
+} //end airborne movement
 
 
  // check to see if player is on the ground and its status
@@ -168,22 +240,22 @@ void Character::ForceMove(float speed, float dT, int direction)
 	if (direction == 0)
 	{
 		//tPlayer->Translate -= tPlayer->GetForwardVector() * speed * dT;
-		tCharacter->Translate(tCharacter->GetForwardVector() * dT * -speed);
+		tCharacter->Translate(tCharacter->GetForwardVector() * dT * speed);
 	}
 	else if (direction == 1)
 	{
 		//tPlayer->Translate += tPlayer->GetForwardVector() * speed * dT;
-		tCharacter->Translate(tCharacter->GetForwardVector() * dT * speed);
+		tCharacter->Translate(tCharacter->GetForwardVector() * dT * -speed);
 	}
 	else if (direction == 2)
 	{
 		//tPlayer->Translate += tPlayer->GetRightVector() * speed * dT;
-		tCharacter->Translate(tCharacter->GetRightVector() * dT * speed);
+		tCharacter->Translate(tCharacter->GetRightVector() * dT * -speed);
 	}
 	else if (direction == 3)
 	{
 		//tPlayer->Translate -= tPlayer->GetRightVector() * speed * dT;
-		tCharacter->Translate(tCharacter->GetRightVector() * dT * -speed);
+		tCharacter->Translate(tCharacter->GetRightVector() * dT * speed);
 	}
 }
 

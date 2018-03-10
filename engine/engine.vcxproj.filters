@@ -25,6 +25,9 @@
     <Filter Include="3rd_party\DirectXTK">
       <UniqueIdentifier>{93b0f2f7-7790-4e72-8352-9466047b047e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\new">
+      <UniqueIdentifier>{a23f65d8-7b38-45dc-b266-7a094d5e5d85}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimationComponent.h">
@@ -141,6 +144,12 @@
     <ClInclude Include="LightComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DeferredShading.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimationComponent.cpp">
@@ -232,12 +241,6 @@
     <FxCompile Include="Shaders\skybox_vs.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shaders\test_ps.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\test_vs.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="opaque_skinned_ps.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
@@ -247,8 +250,44 @@
     <FxCompile Include="Shaders\shadow_opaqueskinned_vs.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="bypass_vs.hlsl">
+      <Filter>Shaders\new</Filter>
+    </FxCompile>
+    <FxCompile Include="deferred_geometry_ps.hlsl">
+      <Filter>Shaders\new</Filter>
+    </FxCompile>
+    <FxCompile Include="deferred_geometry_skinned_vs.hlsl">
+      <Filter>Shaders\new</Filter>
+    </FxCompile>
+    <FxCompile Include="deferred_geometry_vs.hlsl">
+      <Filter>Shaders\new</Filter>
+    </FxCompile>
+    <FxCompile Include="deferred_lighting_ambient_ps.hlsl">
+      <Filter>Shaders\new</Filter>
+    </FxCompile>
+    <FxCompile Include="deferred_lighting_pointlight_ps.hlsl">
+      <Filter>Shaders\new</Filter>
+    </FxCompile>
+    <FxCompile Include="deferred_lighting_spotlight_ps.hlsl">
+      <Filter>Shaders\new</Filter>
+    </FxCompile>
+    <FxCompile Include="deferred_lighting_vs.hlsl">
+      <Filter>Shaders\new</Filter>
+    </FxCompile>
+    <FxCompile Include="shadow_vs.hlsl">
+      <Filter>Shaders\new</Filter>
+    </FxCompile>
+    <FxCompile Include="shadow_skinned_vs.hlsl">
+      <Filter>Shaders\new</Filter>
+    </FxCompile>
+    <FxCompile Include="post_process_tone_mapping_ps.hlsl">
+      <Filter>Shaders\new</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="PBR.hlsli">
+      <Filter>Shaders\new</Filter>
+    </None>
   </ItemGroup>
 </Project>

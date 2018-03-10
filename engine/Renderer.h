@@ -80,6 +80,66 @@ namespace tofu
 		kVertexFormatSkinned
 	};
 
+	enum StencilOp
+	{
+		kStencilOpKeep = 1,
+		kStencilOpZero,
+		kStencilOpReplace,
+		kStencilOpIncSat,
+		kStencilOpDecSat,
+		kStencilOpInvert,
+		kStencilOpInc,
+		kStencilOpDec,
+	};
+
+	enum Blend
+	{
+		kBlendZero = 1,
+		kBlendOne,
+		kBlendSrcColor,
+		kBlendInvSrcColor,
+		kBlendSrcAlpha,
+		kBlendInvSrcAlpha,
+		kBlendDestAlpha,
+		kBlendInvDestAlpha,
+		kBlendDestColor,
+		kBlendInvDestColor,
+		kBlendSrcAlphaSature,
+		kBlendFactor = 14,
+		kBlendInvFactor,
+		kBlendSrc1Color,
+		kBlendInvSrc1Color,
+		kBlendSrc1Alpha,
+		kBlendInvSrc1Alpha
+	};
+
+	enum BlendOp
+	{
+		kBlendOpAdd = 1,
+		kBlendOpSubtract,
+		kBlendOpRevSubtract,
+		kBlendOpMin,
+		kBlendOpMax
+	};
+
+	enum ColorWriteMask
+	{
+		kColorWriteNone = 0,
+		kColorWriteRed = 1,
+		kColorWriteGreen = 2,
+		kColorWriteBlue = 4,
+		kColorWriteAlpha = 8,
+		kColorWriteAll = kColorWriteRed | kColorWriteGreen | kColorWriteBlue | kColorWriteAlpha
+	};
+
+	enum TextureAdressMode
+	{
+		kTextureAddressWarp = 1,
+		kTextureAddressMirror,
+		kTextureAddressClamp,
+		kTextureAddressBorder
+	};
+
 	struct RendererCommandBuffer
 	{
 		uint32_t*			cmds;
@@ -141,15 +201,15 @@ namespace tofu
 	struct CreateSamplerParams
 	{
 		SamplerHandle		handle;
-		// TODO
+		
 		union
 		{
 			struct
 			{
-				uint32_t			textureAddressU : 2;
-				uint32_t			textureAddressV : 2;
-				uint32_t            textureAddressW : 2;
-				uint32_t			_reserved1 : 26;
+				uint32_t			textureAddressU : 3;
+				uint32_t			textureAddressV : 3;
+				uint32_t            textureAddressW : 3;
+				uint32_t			_reserved1 : 23;
 			};
 			uint32_t				textureAddress;
 		};
@@ -180,8 +240,32 @@ namespace tofu
 		{
 			struct
 			{
+				uint64_t			depthEnable : 1;
+				uint64_t			depthWrite : 1;
+				uint64_t			depthFunc : 3;
+				uint64_t			stencilEnable : 1;
+				uint64_t			frontFaceFailOp : 4;
+				uint64_t			frontFaceDepthFailOp : 4;
+				uint64_t			frontFacePassOp : 4;
+				uint64_t			frontFaceFunc : 3;
+				uint64_t			backFaceFailOp : 4;
+				uint64_t			backFaceDepthFailOp : 4;
+				uint64_t			backFacePassOp : 4;
+				uint64_t			backFaceFunc : 3;
+				uint64_t			_reserved1 : 4;
+				uint64_t			stencilRef : 8;
+				uint64_t			stencilReadMask : 8;
+				uint64_t			stencilWriteMask : 8;
+			};
+			uint64_t				depthStencilState;
+		};
+
+		union
+		{
+			struct
+			{
 				uint32_t			cullMode : 2;
-				uint32_t			_reserved1 : 30;
+				uint32_t			_reserved2 : 30;
 			};
 			uint32_t				rasterizerState;
 		};
@@ -190,13 +274,27 @@ namespace tofu
 		{
 			struct
 			{
-				uint32_t			depthEnable : 1;
-				uint32_t			depthWrite : 1;
-				uint32_t			depthFunc : 3;
-				uint32_t			_reserved2 : 27;
+				uint32_t			blendEnable : 1;
+				uint32_t			srcBlend : 5;
+				uint32_t			destBlend : 5;
+				uint32_t			blendOp : 3;
+				uint32_t			srcBlendAlpha : 5;
+				uint32_t			destBlendAlpha : 5;
+				uint32_t			blendOpAlpha : 3;
+				uint32_t			blendWriteMask : 5;
 			};
-			uint32_t				depthStencilState;
+			uint32_t				blendState;
 		};
+
+		struct
+		{
+			float					topLeftX;
+			float					topLeftY;
+			float					width;
+			float					height;
+			float					minZ;
+			float					maxZ;
+		}							viewport;
 
 		CreatePipelineStateParams()
 			:
@@ -204,10 +302,31 @@ namespace tofu
 			vertexFormat(kVertexFormatNormal),
 			vertexShader(),
 			pixelShader(),
-			cullMode(kCullBack),
 			depthEnable(1),
 			depthWrite(1),
-			depthFunc(kComparisonLess)
+			depthFunc(kComparisonLess),
+			stencilEnable(0),
+			frontFaceFailOp(kStencilOpKeep),
+			frontFaceDepthFailOp(kStencilOpKeep),
+			frontFacePassOp(kStencilOpKeep),
+			frontFaceFunc(kComparisonAlways),
+			backFaceFailOp(kStencilOpKeep),
+			backFaceDepthFailOp(kStencilOpKeep),
+			backFacePassOp(kStencilOpKeep),
+			backFaceFunc(kComparisonAlways),
+			stencilRef(0),
+			stencilReadMask(255u),
+			stencilWriteMask(255u),
+			cullMode(kCullBack),
+			blendEnable(0),
+			srcBlend(kBlendOne),
+			destBlend(kBlendZero),
+			blendOp(kBlendOpAdd),
+			srcBlendAlpha(kBlendOne),
+			destBlendAlpha(kBlendZero),
+			blendOpAlpha(kBlendOpAdd),
+			blendWriteMask(kColorWriteAll),
+			viewport()
 		{}
 	};
 
