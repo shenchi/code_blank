@@ -283,6 +283,12 @@
     <FxCompile Include="post_process_tone_mapping_ps.hlsl">
       <Filter>Shaders\new</Filter>
     </FxCompile>
+    <FxCompile Include="post_process_extract_bright_ps.hlsl">
+      <Filter>Shaders\new</Filter>
+    </FxCompile>
+    <FxCompile Include="post_process_blur_ps.hlsl">
+      <Filter>Shaders\new</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

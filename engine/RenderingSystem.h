@@ -119,6 +119,9 @@ namespace tofu
 		TextureHandle			gBuffer3;
 
 		TextureHandle			hdrTarget;
+		// For post processing
+		TextureHandle           brightPartTarget;
+		TextureHandle           blurBrightTarget;
 
 		BufferHandle			lightParamsAmbDirBuffer;
 		BufferHandle			lightParamsBuffer;

@@ -184,6 +184,8 @@ namespace tofu
 			"assets/deferred_lighting_ambient_ps.shader"));
 		
 		CHECKED(LoadPixelShader("assets/post_process_tone_mapping_ps.shader", materialPSs[kMaterialPostProcessToneMapping]));
+		CHECKED(LoadPixelShader("assets/post_process_extract_bright_ps.shader", materialPSs[kMaterialPostProcessExtractBright]));
+		CHECKED(LoadPixelShader("assets/post_process_blur_ps.shader", materialPSs[kMaterialPostProcessBlur]));
 
 		// constant buffers
 		{
@@ -518,6 +520,40 @@ namespace tofu
 			cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 		}
 
+		materialPSOs[kMaterialPostProcessExtractBright] = pipelineStateHandleAlloc.Allocate();
+		assert(materialPSOs[kMaterialPostProcessExtractBright]);
+		{
+			CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
+			params->handle = materialPSOs[kMaterialPostProcessExtractBright];
+			params->vertexShader = materialVSs[kMaterialDeferredLightingAmbient];
+			params->pixelShader = materialPSs[kMaterialPostProcessExtractBright];
+
+			params->depthEnable = 0;
+
+			params->cullMode = kCullBack;
+
+			params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
+
+			cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+		}
+
+		materialPSOs[kMaterialPostProcessBlur] = pipelineStateHandleAlloc.Allocate();
+		assert(materialPSOs[kMaterialPostProcessBlur]);
+		{
+			CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
+			params->handle = materialPSOs[kMaterialPostProcessBlur];
+			params->vertexShader = materialVSs[kMaterialDeferredLightingAmbient];
+			params->pixelShader = materialPSs[kMaterialPostProcessBlur];
+
+			params->depthEnable = 0;
+
+			params->cullMode = kCullBack;
+
+			params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
+
+			cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+		}
+
 		// create default sampler
 		{
 			defaultSampler = samplerHandleAlloc.Allocate();
@@ -602,8 +638,10 @@ namespace tofu
 		gBuffer3 = CreateTexture(kFormatR32g32b32a32Float, w, h, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
 
 		hdrTarget = CreateTexture(kFormatR32g32b32a32Float, w, h, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
+		brightPartTarget = CreateTexture(kFormatR32g32b32a32Float, w, h, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
+		blurBrightTarget = CreateTexture(kFormatR32g32b32a32Float, w, h, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
 
-		if (!gBuffer1 || !gBuffer2 || !gBuffer3 || !hdrTarget)
+		if (!gBuffer1 || !gBuffer2 || !gBuffer3 || !hdrTarget || !brightPartTarget || !blurBrightTarget)
 		{
 			return kErrUnknown;
 		}
@@ -2091,6 +2129,46 @@ cmdBuf->Add(RendererCommand::kCommandDraw, params);
 
 		// post-process effect
 		{
+			// Extract bright part
+			{
+				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
+				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
+
+				params->pipelineState = materialPSOs[kMaterialPostProcessExtractBright];
+
+				params->vertexBuffer = mesh.VertexBuffer;
+				params->indexBuffer = mesh.IndexBuffer;
+				params->startIndex = mesh.StartIndex;
+				params->startVertex = mesh.StartVertex;
+				params->indexCount = mesh.NumIndices;
+
+				params->psTextures[0] = hdrTarget;
+
+				params->renderTargets[0] = brightPartTarget;
+
+				cmdBuf->Add(RendererCommand::kCommandDraw, params);
+			}
+
+			// Blur
+			{
+				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
+				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
+
+				params->pipelineState = materialPSOs[kMaterialPostProcessBlur];
+
+				params->vertexBuffer = mesh.VertexBuffer;
+				params->indexBuffer = mesh.IndexBuffer;
+				params->startIndex = mesh.StartIndex;
+				params->startVertex = mesh.StartVertex;
+				params->indexCount = mesh.NumIndices;
+
+				params->psTextures[0] = brightPartTarget;
+
+				params->renderTargets[0] = blurBrightTarget;
+
+				cmdBuf->Add(RendererCommand::kCommandDraw, params);
+			}
+
 			// tone mapping
 			{
 				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
@@ -2105,7 +2183,7 @@ cmdBuf->Add(RendererCommand::kCommandDraw, params);
 				params->indexCount = mesh.NumIndices;
 
 				params->psTextures[0] = hdrTarget;
-				//params->psSamplers[0] = defaultSampler;
+				params->psTextures[1] = blurBrightTarget;
 
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
