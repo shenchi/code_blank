@@ -44,7 +44,7 @@
           },
           "components": [
             {
-              "model": "models/Sundries1_LJ_TrashBox2.model",
+              "model": "models/Sundries1_LJ_TrashBox2_box3.model",
               "materials": [
                 "trash_Base_Color"
               ],
@@ -114,7 +114,7 @@
           },
           "components": [
             {
-              "model": "models/Sundries1_LJ_TrashBox2.model",
+              "model": "models/Sundries1_LJ_TrashBox2_box3.model",
               "materials": [
                 "trash_Base_Color"
               ],
@@ -184,7 +184,7 @@
           },
           "components": [
             {
-              "model": "models/Sundries1_LJ_TrashBox1.model",
+              "model": "models/Sundries1_LJ_TrashBox1_box1.model",
               "materials": [
                 "trash_Base_Color"
               ],
@@ -254,7 +254,7 @@
           },
           "components": [
             {
-              "model": "models/Building1_LSJ_SecondFloor1.model",
+              "model": "models/Building1_LSJ_SecondFloor1_polySurface62.model",
               "materials": [
                 "building1_Texture"
               ],
@@ -347,7 +347,7 @@
           },
           "components": [
             {
-              "model": "models/Sundries1_LJ_TrashBox2.model",
+              "model": "models/Sundries1_LJ_TrashBox2_box3.model",
               "materials": [
                 "trash_Base_Color"
               ],
@@ -417,7 +417,7 @@
           },
           "components": [
             {
-              "model": "models/Sundries1_LJ_TrashBox2.model",
+              "model": "models/Sundries1_LJ_TrashBox2_box3.model",
               "materials": [
                 "trash_Base_Color"
               ],
@@ -487,7 +487,7 @@
           },
           "components": [
             {
-              "model": "models/Sundries1_LJ_TrashBox2.model",
+              "model": "models/Sundries1_LJ_TrashBox2_box3.model",
               "materials": [
                 "trash_Base_Color"
               ],
@@ -535,7 +535,7 @@
       },
       "components": [
         {
-          "model": "models/Building1_LSJ_SecondFloor2.model",
+          "model": "models/Building1_LSJ_SecondFloor2_polySurface54.model",
           "materials": [
             "building1_Texture"
           ],
@@ -553,7 +553,7 @@
             "y": 1.0,
             "z": 1.0
           },
-          "model": "models/Building1_LSJ_SecondFloor2.model",
+          "model": "models/Building1_LSJ_SecondFloor2_polySurface54.model",
           "type": "physics"
         }
       ],
@@ -580,37 +580,6 @@
         }
       },
       "components": null,
-      "children": null
-    },
-    {
-      "name": "Sphere",
-      "transform": {
-        "translate": {
-          "x": -64.18,
-          "y": 13.62,
-          "z": 888.738
-        },
-        "rotate": {
-          "x": 0.0,
-          "y": -0.9387423,
-          "z": 0.0,
-          "w": 0.34461996
-        },
-        "scale": {
-          "x": 0.16735515,
-          "y": 0.1673548,
-          "z": 0.167355165
-        }
-      },
-      "components": [
-        {
-          "model": "models/Unity_Builtin_Sphere.model",
-          "materials": [
-            "Texture_3"
-          ],
-          "type": "renderable"
-        }
-      ],
       "children": null
     },
     {
@@ -7457,8 +7426,8 @@
       "name": "Canvas",
       "transform": {
         "translate": {
-          "x": 693.0,
-          "y": 290.0,
+          "x": 539.5,
+          "y": 303.5,
           "z": 0.0
         },
         "rotate": {
@@ -7762,8 +7731,8 @@
           "name": "Objective",
           "transform": {
             "translate": {
-              "x": 510.8479,
-              "y": 267.25,
+              "x": 397.871826,
+              "y": 280.75,
               "z": 0.0
             },
             "rotate": {
@@ -7851,7 +7820,7 @@
           },
           "components": [
             {
-              "model": "models/Bigroad.model",
+              "model": "models/Bigroad_polySurface1.model",
               "materials": [
                 "lambert1"
               ],
@@ -8131,7 +8100,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_1.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -8162,7 +8131,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_2.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -8193,7 +8162,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_3.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -8268,7 +8237,7 @@
                   },
                   "components": [
                     {
-                      "model": "models/room_05_pack_square_night.model",
+                      "model": "models/room_05_pack_square_night_roof_element_4_1.model",
                       "materials": [
                         "room5_D_pack_night"
                       ],
@@ -8299,7 +8268,7 @@
                   },
                   "components": [
                     {
-                      "model": "models/room_05_pack_square_night.model",
+                      "model": "models/room_05_pack_square_night_roof_element_4_2.model",
                       "materials": [
                         "room5_D_pack_night"
                       ],
@@ -8330,7 +8299,7 @@
                   },
                   "components": [
                     {
-                      "model": "models/room_05_pack_square_night.model",
+                      "model": "models/room_05_pack_square_night_roof_element_4_3.model",
                       "materials": [
                         "room5_D_pack_night"
                       ],
@@ -8361,7 +8330,7 @@
                   },
                   "components": [
                     {
-                      "model": "models/room_05_pack_square_night.model",
+                      "model": "models/room_05_pack_square_night_roof_element_4_4.model",
                       "materials": [
                         "room5_D_pack_night"
                       ],
@@ -8394,7 +8363,7 @@
               },
               "components": [
                 {
-                  "model": "models/room_05_pack_square_night.model",
+                  "model": "models/room_05_pack_square_night_skyscraper_4.model",
                   "materials": [
                     "room5_D_pack_night"
                   ],
@@ -8471,7 +8440,7 @@
                   },
                   "components": [
                     {
-                      "model": "models/room_05_pack_square_night.model",
+                      "model": "models/room_05_pack_square_night_roof_element_5_1.model",
                       "materials": [
                         "room5_D_pack_night"
                       ],
@@ -8502,7 +8471,7 @@
                   },
                   "components": [
                     {
-                      "model": "models/room_05_pack_square_night.model",
+                      "model": "models/room_05_pack_square_night_roof_element_5_2.model",
                       "materials": [
                         "room5_D_pack_night"
                       ],
@@ -8533,7 +8502,7 @@
                   },
                   "components": [
                     {
-                      "model": "models/room_05_pack_square_night.model",
+                      "model": "models/room_05_pack_square_night_roof_element_5_3.model",
                       "materials": [
                         "room5_D_pack_night"
                       ],
@@ -8564,7 +8533,7 @@
                   },
                   "components": [
                     {
-                      "model": "models/room_05_pack_square_night.model",
+                      "model": "models/room_05_pack_square_night_roof_element_5_4.model",
                       "materials": [
                         "room5_D_pack_night"
                       ],
@@ -8597,7 +8566,7 @@
               },
               "components": [
                 {
-                  "model": "models/room_05_pack_square_night.model",
+                  "model": "models/room_05_pack_square_night_windows_glass_62.model",
                   "materials": [
                     "room5_D_pack_night"
                   ],
@@ -8630,7 +8599,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_6.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -8661,7 +8630,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_6.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -8714,7 +8683,7 @@
               },
               "components": [
                 {
-                  "model": "models/room_05_pack_square_night.model",
+                  "model": "models/room_05_pack_square_night_skyscraper_7.model",
                   "materials": [
                     "room5_D_pack_night"
                   ],
@@ -8769,7 +8738,7 @@
               },
               "components": [
                 {
-                  "model": "models/room_05_pack_square_night.model",
+                  "model": "models/room_05_pack_square_night_skyscraper_8.model",
                   "materials": [
                     "room5_D_pack_night"
                   ],
@@ -8824,7 +8793,7 @@
               },
               "components": [
                 {
-                  "model": "models/room_05_pack_square_night.model",
+                  "model": "models/room_05_pack_square_night_skyscraper_9.model",
                   "materials": [
                     "room5_D_pack_night"
                   ],
@@ -8857,7 +8826,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_10.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -8888,7 +8857,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_11.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -8919,7 +8888,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_12.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -8950,7 +8919,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_13.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -8981,7 +8950,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_13.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -9012,7 +8981,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_14.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -9043,7 +9012,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_14.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -9096,7 +9065,7 @@
               },
               "components": [
                 {
-                  "model": "models/room_05_pack_square_night.model",
+                  "model": "models/room_05_pack_square_night_skyscraper_15.model",
                   "materials": [
                     "room5_D_pack_night"
                   ],
@@ -9151,7 +9120,7 @@
               },
               "components": [
                 {
-                  "model": "models/room_05_pack_square_night.model",
+                  "model": "models/room_05_pack_square_night_skyscraper_16.model",
                   "materials": [
                     "room5_D_pack_night"
                   ],
@@ -9206,7 +9175,7 @@
               },
               "components": [
                 {
-                  "model": "models/room_05_pack_square_night.model",
+                  "model": "models/room_05_pack_square_night_skyscraper_17.model",
                   "materials": [
                     "room5_D_pack_night"
                   ],
@@ -9261,7 +9230,7 @@
               },
               "components": [
                 {
-                  "model": "models/room_05_pack_square_night.model",
+                  "model": "models/room_05_pack_square_night_skyscraper_18.model",
                   "materials": [
                     "room5_D_pack_night"
                   ],
@@ -9316,7 +9285,7 @@
               },
               "components": [
                 {
-                  "model": "models/room_05_pack_square_night.model",
+                  "model": "models/room_05_pack_square_night_skyscraper_19.model",
                   "materials": [
                     "room5_D_pack_night"
                   ],
@@ -9371,7 +9340,7 @@
               },
               "components": [
                 {
-                  "model": "models/room_05_pack_square_night.model",
+                  "model": "models/room_05_pack_square_night_skyscraper_20.model",
                   "materials": [
                     "room5_D_pack_night"
                   ],
@@ -9426,7 +9395,7 @@
               },
               "components": [
                 {
-                  "model": "models/room_05_pack_square_night.model",
+                  "model": "models/room_05_pack_square_night_skyscraper_21.model",
                   "materials": [
                     "room5_D_pack_night"
                   ],
@@ -9459,7 +9428,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_25.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -9490,7 +9459,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_26.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -9521,7 +9490,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_27.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -9552,7 +9521,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_28.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -9583,7 +9552,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_29.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -9614,7 +9583,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_30.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -9667,7 +9636,7 @@
               },
               "components": [
                 {
-                  "model": "models/room_05_pack_square_night.model",
+                  "model": "models/room_05_pack_square_night_skyscraper_31.model",
                   "materials": [
                     "room5_D_pack_night"
                   ],
@@ -9722,7 +9691,7 @@
               },
               "components": [
                 {
-                  "model": "models/room_05_pack_square_night.model",
+                  "model": "models/room_05_pack_square_night_skyscraper_32.model",
                   "materials": [
                     "room5_D_pack_night"
                   ],
@@ -9777,7 +9746,7 @@
               },
               "components": [
                 {
-                  "model": "models/room_05_pack_square_night.model",
+                  "model": "models/room_05_pack_square_night_skyscraper_33.model",
                   "materials": [
                     "room5_D_pack_night"
                   ],
@@ -9810,7 +9779,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_34.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -9841,7 +9810,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_35.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -9872,7 +9841,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_36.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -9903,7 +9872,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_37.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -9934,7 +9903,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_38.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -9965,7 +9934,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_39.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -10018,7 +9987,7 @@
               },
               "components": [
                 {
-                  "model": "models/room_05_pack_square_night.model",
+                  "model": "models/room_05_pack_square_night_skyscraper_40.model",
                   "materials": [
                     "room5_D_pack_night"
                   ],
@@ -10073,7 +10042,7 @@
               },
               "components": [
                 {
-                  "model": "models/room_05_pack_square_night.model",
+                  "model": "models/room_05_pack_square_night_skyscraper_41.model",
                   "materials": [
                     "room5_D_pack_night"
                   ],
@@ -10128,7 +10097,7 @@
               },
               "components": [
                 {
-                  "model": "models/room_05_pack_square_night.model",
+                  "model": "models/room_05_pack_square_night_skyscraper_42.model",
                   "materials": [
                     "room5_D_pack_night"
                   ],
@@ -10183,7 +10152,7 @@
               },
               "components": [
                 {
-                  "model": "models/room_05_pack_square_night.model",
+                  "model": "models/room_05_pack_square_night_skyscraper_43.model",
                   "materials": [
                     "room5_D_pack_night"
                   ],
@@ -10238,7 +10207,7 @@
               },
               "components": [
                 {
-                  "model": "models/room_05_pack_square_night.model",
+                  "model": "models/room_05_pack_square_night_skyscraper_44.model",
                   "materials": [
                     "room5_D_pack_night"
                   ],
@@ -10271,7 +10240,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_45.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -10302,7 +10271,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_45.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -10333,7 +10302,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_46.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -10364,7 +10333,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_47.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -10395,7 +10364,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_50.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -10426,7 +10395,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_8.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -10457,7 +10426,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_8.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -10488,7 +10457,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_8.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -10519,7 +10488,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_8.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -10550,7 +10519,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_9.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -10581,7 +10550,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_10.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -10612,7 +10581,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_11.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -10643,7 +10612,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_11.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -10674,7 +10643,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_11.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -10705,7 +10674,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_11.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -10736,7 +10705,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_11.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -10767,7 +10736,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_11.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -10798,7 +10767,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_16.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -10829,7 +10798,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_17.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -10860,7 +10829,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_18.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -10891,7 +10860,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_18.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -10922,7 +10891,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_18.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -10953,7 +10922,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_18.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -10984,7 +10953,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_19.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11015,7 +10984,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_19.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11046,7 +11015,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_19.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11077,7 +11046,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_19.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11108,7 +11077,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_19.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11139,7 +11108,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_19.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11170,7 +11139,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_20.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11201,7 +11170,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_20.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11232,7 +11201,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_20.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11263,7 +11232,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_21.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11294,7 +11263,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_21.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11325,7 +11294,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_21.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11356,7 +11325,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_21.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11387,7 +11356,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_21.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11418,7 +11387,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_window_glass_28.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11449,7 +11418,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_window_glass_28.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11480,7 +11449,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_window_glass_28.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11511,7 +11480,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_24.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11542,7 +11511,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_25.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11573,7 +11542,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_25.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11604,7 +11573,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_25.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11635,7 +11604,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_25.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11666,7 +11635,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_25.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11697,7 +11666,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_25.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11728,7 +11697,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_26.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11759,7 +11728,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_26.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11790,7 +11759,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_26.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11821,7 +11790,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_26.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11852,7 +11821,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_26.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11883,7 +11852,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_26.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11914,7 +11883,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_26.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11945,7 +11914,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_26.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -11976,7 +11945,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_27.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12007,7 +11976,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_27.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12038,7 +12007,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_28.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12069,7 +12038,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_28.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12100,7 +12069,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_28.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12131,7 +12100,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_29.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12162,7 +12131,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_30.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12193,7 +12162,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_31.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12224,7 +12193,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_31.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12255,7 +12224,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_31.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12286,7 +12255,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_31.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12317,7 +12286,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_31.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12348,7 +12317,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_31.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12379,7 +12348,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_31.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12410,7 +12379,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_31.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12441,7 +12410,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_31.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12472,7 +12441,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_31.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12503,7 +12472,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_31.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12534,7 +12503,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_31.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12565,7 +12534,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_32.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12596,7 +12565,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_32.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12627,7 +12596,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_32.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12658,7 +12627,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_32.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12689,7 +12658,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_32.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12720,7 +12689,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_32.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12751,7 +12720,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_32.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12782,7 +12751,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_33.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12813,7 +12782,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_33.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12844,7 +12813,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_33.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12875,7 +12844,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_33.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12906,7 +12875,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_33.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12937,7 +12906,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_33.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12968,7 +12937,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_33.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -12999,7 +12968,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_33.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13030,7 +12999,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_33.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13061,7 +13030,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_33.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13092,7 +13061,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_33.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13123,7 +13092,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_34.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13154,7 +13123,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_34.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13185,7 +13154,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_35.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13216,7 +13185,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_37.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13247,7 +13216,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_37.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13278,7 +13247,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_37.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13309,7 +13278,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_37.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13340,7 +13309,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_38.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13371,7 +13340,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_38.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13402,7 +13371,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_38.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13433,7 +13402,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_38.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13464,7 +13433,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_38.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13495,7 +13464,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_38.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13526,7 +13495,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_38.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13557,7 +13526,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_39.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13588,7 +13557,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_39.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13619,7 +13588,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_39.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13650,7 +13619,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_51.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13681,7 +13650,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_52.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13712,7 +13681,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_52.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13743,7 +13712,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_52.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13774,7 +13743,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_52.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13805,7 +13774,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_52.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13836,7 +13805,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_53.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13867,7 +13836,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_53.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13898,7 +13867,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_56.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13929,7 +13898,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_57.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13960,7 +13929,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_59.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -13991,7 +13960,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_59.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14022,7 +13991,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_59.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14053,7 +14022,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_60.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14084,7 +14053,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_60.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14115,7 +14084,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_60.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14146,7 +14115,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_60.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14177,7 +14146,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_60.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14208,7 +14177,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_60.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14239,7 +14208,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_61.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14270,7 +14239,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_61.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14301,7 +14270,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_61.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14332,7 +14301,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_61.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14363,7 +14332,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_61.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14394,7 +14363,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_64.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14424,7 +14393,7 @@
               },
               "components": [
                 {
-                  "model": "models/room_05_pack_square_night.model",
+                  "model": "models/room_05_pack_square_night_windows_glass_64.model",
                   "materials": [
                     "room5_R_pack_night"
                   ],
@@ -14457,7 +14426,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14488,7 +14457,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14519,7 +14488,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14550,7 +14519,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14581,7 +14550,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14612,7 +14581,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14643,7 +14612,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14674,7 +14643,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14705,7 +14674,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14736,7 +14705,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14767,7 +14736,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14798,7 +14767,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_26.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14829,7 +14798,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_3.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14860,7 +14829,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_30.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14891,7 +14860,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_26.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14922,7 +14891,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_6.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14953,7 +14922,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_28.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -14984,7 +14953,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_30.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -15015,7 +14984,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_11.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -15046,7 +15015,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_skyscraper_28.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -15077,7 +15046,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_4.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -15130,7 +15099,7 @@
               },
               "components": [
                 {
-                  "model": "models/room_05_pack_square_night.model",
+                  "model": "models/room_05_pack_square_night_building_7.model",
                   "materials": [
                     "room5_D_pack_night"
                   ],
@@ -15161,7 +15130,7 @@
               },
               "components": [
                 {
-                  "model": "models/room_05_pack_square_night.model",
+                  "model": "models/room_05_pack_square_night_windows_glass_7.model",
                   "materials": [
                     "room5_R_pack_night"
                   ],
@@ -15192,7 +15161,7 @@
               },
               "components": [
                 {
-                  "model": "models/room_05_pack_square_night.model",
+                  "model": "models/room_05_pack_square_night_building_7.model",
                   "materials": [
                     "room5_D_pack_night"
                   ],
@@ -15247,7 +15216,7 @@
               },
               "components": [
                 {
-                  "model": "models/room_05_pack_square_night.model",
+                  "model": "models/room_05_pack_square_night_building_7.model",
                   "materials": [
                     "room5_D_pack_night"
                   ],
@@ -15278,7 +15247,7 @@
               },
               "components": [
                 {
-                  "model": "models/room_05_pack_square_night.model",
+                  "model": "models/room_05_pack_square_night_windows_glass_7.model",
                   "materials": [
                     "room5_R_pack_night"
                   ],
@@ -15333,7 +15302,7 @@
               },
               "components": [
                 {
-                  "model": "models/room_05_pack_square_night.model",
+                  "model": "models/room_05_pack_square_night_building_7.model",
                   "materials": [
                     "room5_D_pack_night"
                   ],
@@ -15364,7 +15333,7 @@
               },
               "components": [
                 {
-                  "model": "models/room_05_pack_square_night.model",
+                  "model": "models/room_05_pack_square_night_windows_glass_7.model",
                   "materials": [
                     "room5_R_pack_night"
                   ],
@@ -15397,7 +15366,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_33.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -15428,7 +15397,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -15459,7 +15428,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_18.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -15490,7 +15459,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_19.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -15521,7 +15490,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_17.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -15552,7 +15521,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_33.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -15583,7 +15552,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -15614,7 +15583,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -15645,7 +15614,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -15676,7 +15645,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_9.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -15707,7 +15676,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -15738,7 +15707,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_11.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -15769,7 +15738,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -15800,7 +15769,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_33.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -15831,7 +15800,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_10.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -15862,7 +15831,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_31.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -15893,7 +15862,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_34.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -15924,7 +15893,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_38.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -15955,7 +15924,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_34.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -15986,7 +15955,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16017,7 +15986,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_33.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16048,7 +16017,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_32.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16079,7 +16048,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_33.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16110,7 +16079,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_37.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16141,7 +16110,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16172,7 +16141,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16203,7 +16172,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_60.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16234,7 +16203,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16265,7 +16234,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16296,7 +16265,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16327,7 +16296,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16358,7 +16327,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16389,7 +16358,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16420,7 +16389,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16451,7 +16420,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16482,7 +16451,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16513,7 +16482,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16544,7 +16513,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16575,7 +16544,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16606,7 +16575,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16637,7 +16606,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16668,7 +16637,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16699,7 +16668,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16730,7 +16699,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16761,7 +16730,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16792,7 +16761,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16823,7 +16792,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16854,7 +16823,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_18.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16885,7 +16854,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_18.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16916,7 +16885,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_18.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16947,7 +16916,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_18.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -16978,7 +16947,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_18.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17009,7 +16978,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_18.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17040,7 +17009,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_18.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17071,7 +17040,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_18.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17102,7 +17071,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_18.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17133,7 +17102,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_18.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17164,7 +17133,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_18.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17195,7 +17164,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_18.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17226,7 +17195,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_18.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17257,7 +17226,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_18.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17288,7 +17257,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_18.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17319,7 +17288,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_18.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17350,7 +17319,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_18.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17381,7 +17350,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_18.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17412,7 +17381,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_18.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17443,7 +17412,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_33.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17474,7 +17443,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_33.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17505,7 +17474,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_33.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17536,7 +17505,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_33.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17567,7 +17536,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_33.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17598,7 +17567,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_33.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17629,7 +17598,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_33.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17660,7 +17629,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_33.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17691,7 +17660,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_33.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17722,7 +17691,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_33.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17753,7 +17722,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_33.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17784,7 +17753,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_33.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17815,7 +17784,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17846,7 +17815,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17877,7 +17846,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17908,7 +17877,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17939,7 +17908,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -17970,7 +17939,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18001,7 +17970,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18032,7 +18001,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18063,7 +18032,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18094,7 +18063,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18125,7 +18094,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18156,7 +18125,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18187,7 +18156,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18218,7 +18187,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_17.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18249,7 +18218,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_17.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18280,7 +18249,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_17.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18311,7 +18280,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_17.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18342,7 +18311,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_17.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18373,7 +18342,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_17.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18404,7 +18373,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_17.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18435,7 +18404,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_17.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18466,7 +18435,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_17.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18497,7 +18466,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_17.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18528,7 +18497,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_17.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18559,7 +18528,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18590,7 +18559,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18621,7 +18590,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18652,7 +18621,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18683,7 +18652,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18714,7 +18683,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_66.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18745,7 +18714,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18776,7 +18745,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18807,7 +18776,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18838,7 +18807,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18869,7 +18838,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18900,7 +18869,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_17.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18931,7 +18900,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_17.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18962,7 +18931,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_17.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -18993,7 +18962,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_17.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -19024,7 +18993,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_17.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -19055,7 +19024,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_17.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -19086,7 +19055,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_17.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -19117,7 +19086,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_17.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -19148,7 +19117,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_17.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -19179,7 +19148,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_17.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -19210,7 +19179,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_17.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -19241,7 +19210,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_17.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -19272,7 +19241,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -19303,7 +19272,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -19334,7 +19303,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -19365,7 +19334,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -19396,7 +19365,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
@@ -19427,7 +19396,7 @@
           },
           "components": [
             {
-              "model": "models/room_05_pack_square_night.model",
+              "model": "models/room_05_pack_square_night_building_65.model",
               "materials": [
                 "room5_D_pack_night"
               ],
