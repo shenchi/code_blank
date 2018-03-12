@@ -98,6 +98,9 @@ namespace tofu
 			boneMatricesBuffer(),
 			boneMatricesBufferSize()
 			{ layers.push_back(std::move(AnimationLayer("Base"))); }
+		
+		template< class... Args >
+		TF_INLINE AnimationLayer *AddLayer(Args&&... args);
 
 		AnimationStateMachine* GetStateMachine(size_t layer = 0);
 
@@ -134,4 +137,11 @@ namespace tofu
 	};
 
 	typedef Component<AnimationComponentData> AnimationComponent;
+
+	template<class ...Args>
+	AnimationLayer * AnimationComponentData::AddLayer(Args && ...args)
+	{
+		layers.emplace_back(std::forward<Args>(args)...);
+		return &layers.back();
+	}
 }

@@ -11,9 +11,9 @@ namespace tofu
 {
 	enum AnimationEvaluationType
 	{
-		kAET_None,
 		kAET_Blend,
-		kAET_Additive
+		kAET_Additive,
+		kAET_Override
 	};
 
 	class Model;
@@ -34,7 +34,8 @@ namespace tofu
 	{
 		Model *model;
 		Transform *results;
-
+		std::vector<uint16_t> *selectedJoints = nullptr;
+	
 		EvaluateContext(Model *model);
 		~EvaluateContext();
 	};
@@ -126,6 +127,8 @@ namespace tofu
 		virtual void Update(UpdateContext& context) override;
 		virtual void Evaluate(EvaluateContext& context, float weight, AnimationEvaluationType type) override;
 
+		TF_INLINE void InternalEvaluate(uint16_t i, EvaluateContext & context, float weight, AnimationEvaluationType type);
+
 		virtual float GetDurationInSecond(Model *model) override;
 
 	private:
@@ -186,6 +189,11 @@ namespace tofu
 
 		virtual void Update(Model *model);
 		virtual void Evaluate(EvaluateContext& context);
+
+		AnimationStateMachine *GetStateMachine() { return &stateMachine; }
+
+		// FIXME:
+		std::vector<uint16_t> *selectedJoints = nullptr;
 
 	private:
 		std::string name;

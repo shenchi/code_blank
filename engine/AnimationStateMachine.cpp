@@ -18,6 +18,7 @@ namespace tofu
 {
 	EvaluateContext::EvaluateContext(Model * model) :model(model)
 	{
+		// FIXME: Chi
 		// TODO: move all memory allocation to allocator
 		//results = static_cast<Transform *>(MemoryAllocator::Allocators[kAllocFrameBasedMem]
 		//	.Allocate(sizeof(Transform) * model->header->NumBones, alignof(AnimationState)));
@@ -138,99 +139,124 @@ namespace tofu
 
 	void AnimationState::Evaluate(EvaluateContext & context, float weight, AnimationEvaluationType type)
 	{
-		for (size_t i = 0; i < cache->frameCaches.size(); i++)
-		{
-			AnimationFrameCache &frameCache = cache->frameCaches[i];
-
-			Model *model = context.model;
-
-			Transform trans;
-
-			// Template version
-			SetTransform(frameCache.indices[kChannelTranslation], model, trans, model->bones[i].transform, 
-				&Transform::SetTranslation, &Transform::GetTranslation, &AnimationState::LerpFrame, &AnimationState::CatmullRomFrame);
-
-			SetTransform(frameCache.indices[kChannelRotation], model, trans, model->bones[i].transform, 
-				&Transform::SetRotation, &Transform::GetRotation, &AnimationState::SlerpFrame, &AnimationState::SquadFrame);
-
-			SetTransform(frameCache.indices[kChannelScale], model, trans, model->bones[i].transform, 
-				&Transform::SetScale, &Transform::GetScale, &AnimationState::LerpFrame, &AnimationState::CatmullRomFrame);
-
-			// Original code
-			/*size_t *indices = frameCache.indices[kChannelTranslation];
-
-			if (indices[1] != nanIndex)
+		// only apply the result to selected joints
+		if (context.selectedJoints) {
+			for (auto i : *context.selectedJoints) {
+				InternalEvaluate(i, context, weight, type);
+			}
+		}
+		else {
+			for (uint16_t i = 0; i < context.model->header->NumBones; i++)
 			{
-				if (model->frames[indices[2]].time <= cache->ticks) {
-					trans.SetTranslation(CatmullRomFrame(model, indices[1], indices[2], indices[3], indices[3]));
-				}
-				else {
-					trans.SetTranslation(CatmullRomFrame(model, indices[0] == nanIndex ? indices[1] : indices[0], indices[1], indices[2], indices[3]));
-				}
+				InternalEvaluate(i, context, weight, type);
 			}
-			else if (indices[2] != nanIndex) {
-				trans.SetTranslation(LerpFrame(model, indices[2], indices[3]));
-			}
-			else if (indices[3] != nanIndex) {
-				trans.SetTranslation(model->frames[indices[3]].value);
-			}
-			else {
-				trans.SetTranslation(model->bones[i].transform.GetTranslation());
-			}
+		}
+	}
 
-			indices = frameCache.indices[kChannelRotation];
+	/**
+	Evaluate the animation frame of a joint in this state, then apply the result to the evaluation context.
 
-			if (indices[1] != nanIndex)
-			{
-				if (model->frames[indices[2]].time <= cache->ticks) {
-					trans.SetRotation(SquadFrame(model, indices[1], indices[2], indices[3], indices[3]));
-				}
-				else {
-					trans.SetRotation(SquadFrame(model, indices[0] == nanIndex ? indices[1] : indices[0], indices[1], indices[2], indices[3]));
-				}
-			}
-			else if (indices[2] != nanIndex) {
-				trans.SetRotation(SlerpFrame(model, indices[2], indices[3]));
-			}
-			else if (indices[3] != nanIndex) {
-				quat q;
-				decompress(model->frames[indices[3]].value, q);
-				trans.SetRotation(q);
-			}
-			else {
-				trans.SetRotation(model->bones[i].transform.GetRotation());
-			}
+	@param i the joint index
+	@param context the evaluation package
+	@param weight 0.0f ~ 1.0f
+	@param type the way to apply the result to the evaluation context
+	*/
+	void AnimationState::InternalEvaluate(uint16_t i, EvaluateContext & context, float weight, AnimationEvaluationType type)
+	{
+		Model *model = context.model;
 
-			indices = frameCache.indices[kChannelScale];
+		AnimationFrameCache &frameCache = cache->frameCaches[i];
 
-			if (indices[1] != nanIndex)
-			{
-				if (model->frames[indices[2]].time <= cache->ticks) {
-					trans.SetScale(CatmullRomFrame(model, indices[1], indices[2], indices[3], indices[3]));
-				}
-				else {
-					trans.SetScale(CatmullRomFrame(model, indices[0] == nanIndex ? indices[1] : indices[0], indices[1], indices[2], indices[3]));
-				}
-			}
-			else if (indices[2] != nanIndex) {
-				trans.SetScale(LerpFrame(model, indices[2], indices[3]));
-			}
-			else if (indices[3] != nanIndex) {
-				trans.SetScale(model->frames[indices[3]].value);
-			}
-			else {
-				trans.SetScale(model->bones[i].transform.GetScale());
-			}*/
+		Transform trans;
 
-			if (type == kAET_Blend) {
-				context.results[i].Blend(trans, weight);
-			}
-			else if (type == kAET_Additive) {
-				context.results[i].Additive(trans, weight);
-			}
-			else {
-				assert(0);
-			}
+		// Template version
+		SetTransform(frameCache.indices[kChannelTranslation], model, trans, model->bones[i].transform,
+			&Transform::SetTranslation, &Transform::GetTranslation, &AnimationState::LerpFrame, &AnimationState::CatmullRomFrame);
+
+		SetTransform(frameCache.indices[kChannelRotation], model, trans, model->bones[i].transform,
+			&Transform::SetRotation, &Transform::GetRotation, &AnimationState::SlerpFrame, &AnimationState::SquadFrame);
+
+		SetTransform(frameCache.indices[kChannelScale], model, trans, model->bones[i].transform,
+			&Transform::SetScale, &Transform::GetScale, &AnimationState::LerpFrame, &AnimationState::CatmullRomFrame);
+
+		//// Original code
+		//size_t *indices = frameCache.indices[kChannelTranslation];
+
+		//if (indices[1] != nanIndex)
+		//{
+		//if (model->frames[indices[2]].time <= cache->ticks) {
+		//trans.SetTranslation(CatmullRomFrame(model, indices[1], indices[2], indices[3], indices[3]));
+		//}
+		//else {
+		//trans.SetTranslation(CatmullRomFrame(model, indices[0] == nanIndex ? indices[1] : indices[0], indices[1], indices[2], indices[3]));
+		//}
+		//}
+		//else if (indices[2] != nanIndex) {
+		//trans.SetTranslation(LerpFrame(model, indices[2], indices[3]));
+		//}
+		//else if (indices[3] != nanIndex) {
+		//trans.SetTranslation(model->frames[indices[3]].value);
+		//}
+		//else {
+		//trans.SetTranslation(model->bones[i].transform.GetTranslation());
+		//}
+
+		//indices = frameCache.indices[kChannelRotation];
+
+		//if (indices[1] != nanIndex)
+		//{
+		//if (model->frames[indices[2]].time <= cache->ticks) {
+		//trans.SetRotation(SquadFrame(model, indices[1], indices[2], indices[3], indices[3]));
+		//}
+		//else {
+		//trans.SetRotation(SquadFrame(model, indices[0] == nanIndex ? indices[1] : indices[0], indices[1], indices[2], indices[3]));
+		//}
+		//}
+		//else if (indices[2] != nanIndex) {
+		//trans.SetRotation(SlerpFrame(model, indices[2], indices[3]));
+		//}
+		//else if (indices[3] != nanIndex) {
+		//quat q;
+		//decompress(model->frames[indices[3]].value, q);
+		//trans.SetRotation(q);
+		//}
+		//else {
+		//trans.SetRotation(model->bones[i].transform.GetRotation());
+		//}
+
+		//indices = frameCache.indices[kChannelScale];
+
+		//if (indices[1] != nanIndex)
+		//{
+		//if (model->frames[indices[2]].time <= cache->ticks) {
+		//trans.SetScale(CatmullRomFrame(model, indices[1], indices[2], indices[3], indices[3]));
+		//}
+		//else {
+		//trans.SetScale(CatmullRomFrame(model, indices[0] == nanIndex ? indices[1] : indices[0], indices[1], indices[2], indices[3]));
+		//}
+		//}
+		//else if (indices[2] != nanIndex) {
+		//trans.SetScale(LerpFrame(model, indices[2], indices[3]));
+		//}
+		//else if (indices[3] != nanIndex) {
+		//trans.SetScale(model->frames[indices[3]].value);
+		//}
+		//else {
+		//trans.SetScale(model->bones[i].transform.GetScale());
+		//}
+
+		if (type == kAET_Blend) {
+			context.results[i].Blend(trans, weight);
+		}
+		else if (type == kAET_Additive) {
+			context.results[i].Additive(trans, weight);
+		}
+		else if (type == kAET_Override) {
+			context.results[i] = Transform();
+			context.results[i].Blend(trans, weight);
+		}
+		else {
+			assert(0);
 		}
 	}
 	
@@ -345,7 +371,6 @@ namespace tofu
 	AnimationStateMachine::~AnimationStateMachine()
 	{
 		for (AnimNodeBase* node : states) {
-			// FIXME: Chi
 			//node->~AnimNodeBase();
 			delete node;
 		}
@@ -413,15 +438,17 @@ namespace tofu
 
 				elapsedTime = 0.f;
 
+				// set the duration of the transition
 				transitionDuration = entry.normalizedDuration * current->GetDurationInSecond(context.model);
 				break;
 			}
 		}
 
-		// update current animation play back time
+		// update animation play back time
 		elapsedTime += Time::DeltaTime;
 
 		if (transitionDuration) {
+			// transition finished
 			if (elapsedTime > transitionDuration) {
 				transitionDuration = 0.f;
 			}
@@ -446,6 +473,17 @@ namespace tofu
 				for (auto i = 0; i < context.model->header->NumBones; i++) {
 					context.results[i] *= 1.0f - weight;
 				}
+			}
+			else if (type == kAET_Override) {
+				for (auto i = 0; i < context.model->header->NumBones; i++) {
+					context.results[i] = Transform();
+				}
+			}
+			else if (type == kAET_Additive) {
+
+			}
+			else {
+				assert(0);
 			}
 
 			previous->Evaluate(context, (1.0f - alpha) * weight, kAET_Additive);
@@ -475,6 +513,7 @@ namespace tofu
 
 	void AnimationLayer::Evaluate(EvaluateContext & context)
 	{
+		context.selectedJoints = selectedJoints;
 		stateMachine.Evaluate(context, weight, type);
 	}
 
