@@ -51,7 +51,9 @@ namespace tofu
 
 		TextureHandle CreateTexture(const char* filename);
 
-		TextureHandle CreateTexture(PixelFormat format, uint32_t width, uint32_t height, uint32_t pitch = 0, void* data = nullptr, uint32_t binding = kBindingShaderResource);
+		TextureHandle CreateTexture(PixelFormat format, uint32_t width, uint32_t height, uint32_t arraySize = 1, uint32_t pitch = 0, void* data = nullptr, uint32_t binding = kBindingShaderResource);
+
+		TextureHandle CreateTexture(TextureHandle source, uint32_t startIndex, uint32_t arraySize = 1, uint32_t binding = kBindingShaderResource, PixelFormat format = kFormatAuto);
 
 		TextureHandle CreateTexture(PixelFormat format, uint32_t width, uint32_t height, uint32_t depth, uint32_t pitch = 0, uint32_t slicePitch = 0, void* data = nullptr, uint32_t binding = kBindingShaderResource);
 
@@ -131,6 +133,9 @@ namespace tofu
 		BufferHandle			pointLightTransformBuffer;
 		BufferHandle			spotLightTransformBuffer;
 		BufferHandle			shadowMatricesBuffer;
+
+		TextureHandle			shadowMapArray;
+		TextureHandle			shadowMaps[kMaxShadowCastingLights];
 
 		// resources for volumetric fog
 		TextureHandle			scatterTex;

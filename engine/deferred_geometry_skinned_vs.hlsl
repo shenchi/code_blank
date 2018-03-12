@@ -6,12 +6,18 @@ cbuffer InstanceConstants : register (b0)
 
 cbuffer FrameConstants : register (b1)
 {
-	matrix	matView;
-	matrix	matProj;
-	matrix	matViewInv;
-	matrix	matProjInv;
-	float4	cameraPos;
-	float4	bufferSize;
+	float4x4		matView;
+	float4x4		matProj;
+	float4x4		matViewInv;
+	float4x4		matProjInv;
+	float4			cameraPos;
+	float4			bufferSize;
+	float4			leftTopRay;
+	float4			rightTopRay;
+	float4			leftBottomRay;
+	float4			rightBottomRay;
+	float4			perspectiveParams;
+	float			padding3[4 * 9];
 };
 
 

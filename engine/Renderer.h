@@ -182,15 +182,22 @@ namespace tofu
 	{
 		TextureHandle		handle;
 
-		uint32_t			dynamic : 1;
-		uint32_t			cubeMap : 1;
-		// if set, data: file's content; width: file's size, other fields are ignored
-		uint32_t			isFile : 1;
-		uint32_t			isSlice : 1; // it's a slice (resource view) of another resource
-		uint32_t			_reserved : 4;
-		uint32_t			format : 8;
-		uint32_t			arraySize : 8;
-		uint32_t			bindingFlags : 8;
+		union
+		{
+			struct
+			{
+				uint32_t	dynamic : 1;
+				uint32_t	cubeMap : 1;
+				// if set, data: file's content; width: file's size, other fields are ignored
+				uint32_t	isFile : 1;
+				uint32_t	isSlice : 1; // it's a slice (resource view) of another resource
+				uint32_t	_reserved : 4;
+				uint32_t	format : 8;
+				uint32_t	arraySize : 8;
+				uint32_t	bindingFlags : 8;
+			};
+			uint32_t		attributes;
+		};
 		union
 		{
 			uint32_t		width;
@@ -205,6 +212,18 @@ namespace tofu
 		uint32_t			pitch;
 		uint32_t			slicePitch;
 		void*				data;
+
+		CreateTextureParams()
+			:
+			handle(),
+			attributes(),
+			width(),
+			height(),
+			depth(),
+			pitch(),
+			slicePitch(),
+			data()
+		{}
 
 		TF_INLINE void InitAsTextureFromFile(TextureHandle handle, void* data, uint32_t size)
 		{
@@ -474,6 +493,7 @@ namespace tofu
 		uint32_t				startIndex;
 		uint32_t				startVertex;
 		uint32_t				indexCount;
+		uint32_t				instanceCount;
 		ConstantBufferBinding	vsConstantBuffers[kMaxConstantBufferBindings];
 		ConstantBufferBinding	psConstantBuffers[kMaxConstantBufferBindings];
 		BaseHandle				vsShaderResources[kMaxTextureBindings];
@@ -493,6 +513,7 @@ namespace tofu
 			startIndex(),
 			startVertex(),
 			indexCount(),
+			instanceCount(),
 			vsConstantBuffers(),
 			psConstantBuffers(),
 			vsShaderResources(),

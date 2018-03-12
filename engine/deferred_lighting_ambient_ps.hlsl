@@ -1,11 +1,16 @@
+struct DirectionalLight
+{
+	float4					direction;
+	float4					color;
+	float					intensity;
+	float					_padding1;
+	float					_padding2;
+	float					_padding3;
+};
+
 cbuffer LightParametersDirectionalAndAmbient : register(b0)
 {
-	struct
-	{
-		float4				direction;
-		float4				color;
-	}						directionalLights[8];
-
+	DirectionalLight		directionalLights[8];
 	float4					ambient;
 };
 
@@ -30,7 +35,7 @@ float4 main(float4 clipPos : SV_POSITION) : SV_TARGET
 	for (uint i = 0; i < numDirectionalLights; i++)
 	{
 		float NdotL = max(0, dot(worldNormal, -directionalLights[i].direction.xyz));
-		color += NdotL * directionalLights[i].color.rgb * albedo;
+		color += NdotL * directionalLights[i].color.rgb * directionalLights[i].intensity * albedo;
 	}
 	
 	return float4(color, 1);

@@ -1,39 +1,65 @@
-cbuffer LightParameters : register (b0)
+struct SpotLight
 {
-	float4x4				transform;
-	float4x4				matLightView;
-	float4x4				matLightProj;
 	float4					direction;
 	float4					color;
-	float					range;
 	float					intensity;
+	float					range;
 	float					spotAngle;
-	float					padding[1 * 4 + 1];
+	uint					shadowId;
+};
+
+struct LightVP
+{
+	float4x4				matView;
+	float4x4				matProj;
+	float4x4				_padding1;
+	float4x4				_padding2;
+};
+
+cbuffer PointLightTransforms : register (b0)
+{
+	float4x4				transforms[1024];
 };
 
 cbuffer FrameConstants : register (b1)
 {
-	matrix					matView;
-	matrix					matProj;
-	matrix					matViewInv;
-	matrix					matProjInv;
+	float4x4				matView;
+	float4x4				matProj;
+	float4x4				matViewInv;
+	float4x4				matProjInv;
 	float4					cameraPos;
 	float4					bufferSize;
+	float4					leftTopRay;
+	float4					rightTopRay;
+	float4					leftBottomRay;
+	float4					rightBottomRay;
+	float4					perspectiveParams;
+	float					padding3[4 * 9];
 };
+
+cbuffer SpotLightParams : register (b2)
+{
+	SpotLight				lights[1024];
+};
+
+cbuffer ShadowTransforms : register (b3)
+{
+	LightVP					matLightVPs[16];
+}
 
 Texture2D gBuffer1 : register(t0);
 Texture2D gBuffer2 : register(t1);
 Texture2D gBuffer3 : register(t2);
-Texture2D shadowMap : register(t3);
+Texture2DArray shadowMap : register(t3);
 
 SamplerState samp : register(s0);
 SamplerState shadowSamp : register(s1);
 
 #include "PBR.hlsli"
 
-float4 main(float4 clipPos : SV_POSITION) : SV_TARGET
+float4 main(float4 clipPos : SV_POSITION, uint iid : SV_InstanceID) : SV_TARGET
 {
-	float3 lightPos = transform[3].rgb;
+	float3 lightPos = transforms[iid][3].rgb;
 	float2 screenPos = clipPos.xy - 0.5;
 
 	float4 texel = gBuffer2.Load(int3(screenPos, 0)).rgba;
@@ -56,8 +82,10 @@ float4 main(float4 clipPos : SV_POSITION) : SV_TARGET
 
 	float3 viewDir = normalize(cameraPos.xyz - worldPos.xyz);
 	
+	SpotLight light = lights[iid];
+
 	float3 lightDir = lightPos - worldPos.xyz;
-	float dist = length(lightDir) / range;
+	float dist = length(lightDir) / light.range;
 	lightDir = normalize(lightDir);
 
 	float NdotL = max(dot(lightDir, worldNormal), 0);
@@ -70,36 +98,47 @@ float4 main(float4 clipPos : SV_POSITION) : SV_TARGET
 	float NdotV = max(dot(worldNormal, viewDir), 0);
 
 	// * for spot light - begin
-	float DdotL = dot(-direction.xyz, lightDir);
+	float DdotL = dot(-light.direction.xyz, lightDir);
 
-	float r = 1 - spotAngle;
+	float r = 1 - light.spotAngle;
 	atten *= pow(max(0, 1 - (1 - DdotL) / r), 2.0);
 	// * for spot light - end
 
 	// pbr
-	float3 radiance = color.rgb  * atten * intensity;
+	float3 radiance = light.color.rgb  * atten * light.intensity;
 	float3 Lo = LightingModel(radiance, albedo, NdotH, HdotV, NdotV, NdotL, metallic, roughness);
 
 	// shadow
-	float4 lightSpacePos = mul(mul(worldPos, matLightView), matLightProj);
-	lightSpacePos /= lightSpacePos.w;
-	lightSpacePos.xy = lightSpacePos.xy * 0.5 + 0.5;
-	lightSpacePos.y = 1 - lightSpacePos.y;
-
-	float currentDepth = lightSpacePos.z;
-	float bias = max(0.001 * (1.0 - NdotL), 0.0001);
-	currentDepth -= 0.00001;
 	float shadow = 0;
+	if (light.shadowId < 16)
+	{
+		uint shadowId = light.shadowId;
+		float4 lightSpacePos = mul(mul(worldPos, 
+			matLightVPs[shadowId].matView),
+			matLightVPs[shadowId].matProj);
 
-	for (int i = -3; i < 4; i++) {
-		for (int j = -3; j < 4; j++) {
-			float cloestDepth = shadowMap.Sample(shadowSamp, lightSpacePos.xy + float2(i, j) * 0.0009765625).r;
-			shadow += (currentDepth > cloestDepth ? 1 : 0);
+		lightSpacePos /= lightSpacePos.w;
+		lightSpacePos.xy = lightSpacePos.xy * 0.5 + 0.5;
+		lightSpacePos.y = 1 - lightSpacePos.y;
+
+		float currentDepth = lightSpacePos.z;
+		float bias = max(0.001 * (1.0 - NdotL), 0.0001);
+		currentDepth -= 0.00001;
+
+		lightSpacePos.z = shadowId;
+
+		for (int i = -2; i < 3; i++) {
+			for (int j = -2; j < 3; j++) {
+				float3 uv = lightSpacePos.xyz;
+				uv.xy += float2(i, j) * 0.0009765625;
+				float cloestDepth = shadowMap.Sample(shadowSamp, uv).r;
+				shadow += (currentDepth > cloestDepth ? 1 : 0);
+			}
 		}
+		shadow /= 25;
 	}
-	shadow /= 25;
 
-	float3 finalColor = max(Lo, 0) * max(1 - shadow, 0);
+	float3 finalColor = max(Lo, 0) *max(1 - shadow, 0);
 
 	return float4(finalColor, 1);
 }

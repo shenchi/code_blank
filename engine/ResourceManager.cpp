@@ -39,15 +39,15 @@ namespace tofu
 
 			*(data3) = math::float4{ 0, 0, 0, 0 };
 
-			TextureHandle defaultAlbedoTex = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 16, data1);
+			TextureHandle defaultAlbedoTex = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 1, 16, data1);
 			if (!defaultAlbedoTex)
 				return kErrUnknown;
 
-			TextureHandle defaultNormalMap = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 16, data2);
+			TextureHandle defaultNormalMap = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 1, 16, data2);
 			if (!defaultNormalMap)
 				return kErrUnknown;
 
-			TextureHandle defaultMetallicGlossMap = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 16, data3);
+			TextureHandle defaultMetallicGlossMap = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 1, 16, data3);
 			if (!defaultNormalMap)
 				return kErrUnknown;
 

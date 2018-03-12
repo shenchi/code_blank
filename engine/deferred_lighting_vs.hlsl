@@ -1,24 +1,22 @@
-cbuffer LightParameters : register (b0)
+cbuffer LightTransforms : register (b0)
 {
-	float4x4				transform;
-	float4x4				matLightView;
-	float4x4				matLightProj;
-	float4					direction;
-	float4					color;
-	float					range;
-	float					intensity;
-	float					spotAngle;
-	float					padding[1 * 4 + 1];
+	float4x4				transforms[1024];
 };
 
 cbuffer FrameConstants : register (b1)
 {
-	matrix	matView;
-	matrix	matProj;
-	matrix	matViewInv;
-	matrix	matProjInv;
-	float4	cameraPos;
-	float4	bufferSize;
+	float4x4				matView;
+	float4x4				matProj;
+	float4x4				matViewInv;
+	float4x4				matProjInv;
+	float4					cameraPos;
+	float4					bufferSize;
+	float4					leftTopRay;
+	float4					rightTopRay;
+	float4					leftBottomRay;
+	float4					rightBottomRay;
+	float4					perspectiveParams;
+	float					padding3[4 * 9];
 };
 
 struct Input
@@ -29,8 +27,19 @@ struct Input
 	float2 uv		: TEXCOORD0;
 };
 
-float4 main(Input input) : SV_POSITION
+struct Output
 {
-	matrix matMVP = mul(mul(transform, matView), matProj);
-	return mul(float4(input.position, 1.0f), matMVP);
+	float4 position : SV_POSITION;
+	uint   instanceId : SV_InstanceID;
+};
+
+Output main(Input input, uint iid : SV_InstanceID)
+{
+	Output output;
+	matrix matMVP = mul(mul(transforms[iid], matView), matProj);
+
+	output.position = mul(float4(input.position, 1.0f), matMVP);
+	output.instanceId = iid;
+
+	return output;
 }

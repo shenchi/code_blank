@@ -21,7 +21,7 @@
 #pragma comment(lib, "dxgi.lib")
 
 #define RELEASE(x) if (nullptr != (x)) { (x)->Release(); (x) = nullptr; }
-#define C(x, ret) if ((x) != S_OK) { return (ret); }
+#define C(x, ret) if ((x) != S_OK) { __debugbreak(); return (ret); }
 #define DXCHECKED(x) C(x, kErrUnknown)
 
 namespace
@@ -693,7 +693,7 @@ namespace tofu
 							params->arraySize
 						);
 
-						DXCHECKED(device->CreateShaderResourceView(textures[id].tex, &desc, &(textures[id].srv)));
+						DXCHECKED(device->CreateShaderResourceView(tex2d, &desc, &(textures[id].srv)));
 					}
 
 					if (bindingFlags & kBindingUnorderedAccess)
@@ -706,7 +706,7 @@ namespace tofu
 							params->arraySize
 						);
 
-						DXCHECKED(device->CreateUnorderedAccessView(textures[id].tex, &desc, &(textures[id].uav)));
+						DXCHECKED(device->CreateUnorderedAccessView(tex2d, &desc, &(textures[id].uav)));
 					}
 
 					if (bindingFlags & kBindingRenderTarget)
@@ -719,10 +719,10 @@ namespace tofu
 							params->arraySize
 						);
 
-						DXCHECKED(device->CreateRenderTargetView(textures[id].tex, &desc, &(textures[id].rtv)));
+						DXCHECKED(device->CreateRenderTargetView(tex2d, &desc, &(textures[id].rtv)));
 					}
 
-					if (bindingFlags & kBindingRenderTarget)
+					if (bindingFlags & kBindingDepthStencil)
 					{
 						CD3D11_DEPTH_STENCIL_VIEW_DESC desc(tex2d,
 							D3D11_DSV_DIMENSION_TEXTURE2DARRAY,
@@ -735,7 +735,7 @@ namespace tofu
 						if (desc.Format == DXGI_FORMAT_R24G8_TYPELESS)
 							desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
-						DXCHECKED(device->CreateDepthStencilView(textures[id].tex, &desc, &(textures[id].dsv)));
+						DXCHECKED(device->CreateDepthStencilView(tex2d, &desc, &(textures[id].dsv)));
 					}
 
 					textures[id].tex = tex2d;
@@ -795,7 +795,7 @@ namespace tofu
 
 					);
 
-					if (texDesc.Format == DXGI_FORMAT_D24_UNORM_S8_UINT && 0u != (params->bindingFlags & kBindingDepthStencil))
+					if (texDesc.Format == DXGI_FORMAT_D24_UNORM_S8_UINT && 0u != (params->bindingFlags & kBindingShaderResource))
 						texDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
 					//texDesc.Format = DXGI_FORMAT_R32_TYPELESS;
 
@@ -872,7 +872,7 @@ namespace tofu
 					if (params->bindingFlags & kBindingDepthStencil)
 					{
 						DXGI_FORMAT dsvForamt = PixelFormatTable[params->format];
-						bool isTypeLess = (params->bindingFlags & kBindingShaderResource);
+						bool isTypeLess = ((params->bindingFlags & kBindingShaderResource) != 0);
 						if (isTypeLess)
 						{
 							dsvForamt = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -889,7 +889,7 @@ namespace tofu
 						}
 						else
 						{
-							CD3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
+							D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
 							dsvDesc.Format = dsvForamt;
 							if (params->cubeMap == 1)
 							{
@@ -1564,7 +1564,14 @@ namespace tofu
 					context->IASetIndexBuffer(ib.buf, DXGI_FORMAT_R16_UINT, 0);
 
 					// draw it!
-					context->DrawIndexed(params->indexCount, params->startIndex, params->startVertex);
+					if (params->instanceCount > 0)
+					{
+						context->DrawIndexedInstanced(params->indexCount, params->instanceCount, params->startIndex, params->startVertex, 0);
+					}
+					else
+					{
+						context->DrawIndexed(params->indexCount, params->startIndex, params->startVertex);
+					}
 				}
 				//context->RSSetState(0);
 				return kOK;

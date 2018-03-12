@@ -4,18 +4,14 @@ cbuffer InstanceConstants : register (b0)
 	matrix	matWorld_IT;
 };
 
-cbuffer LightParameters : register (b1)
+cbuffer ShadowMatrices : register (b1)
 {
-	float4x4	transform;
 	float4x4	matView;
 	float4x4	matProj;
-	float4		direction;
-	float4		color;
-	float		range;
-	float		intensity;
-	float		spotAngle;
-	float		padding[1 * 4 + 1];
+	float4x4	padding1;
+	float4x4	padding2;
 };
+
 
 struct Input
 {

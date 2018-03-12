@@ -226,7 +226,7 @@ namespace tofu
 		CHECKED(InitBuiltinMaterial(kMaterialDeferredLightingAmbient,
 			"assets/bypass_vs.shader",
 			"assets/deferred_lighting_ambient_ps.shader"));
-		
+
 		CHECKED(LoadPixelShader("assets/post_process_tone_mapping_ps.shader", materialPSs[kMaterialPostProcessToneMapping]));
 
 		CHECKED(LoadPixelShader("assets/volumetric_fog_apply_ps.shader", materialPSs[kMaterialPostProcessVolumetricFog]));
@@ -364,7 +364,7 @@ namespace tofu
 				assert(nullptr != params);
 				params->handle = shadowMatricesBuffer;
 				params->bindingFlags = kBindingConstantBuffer;
-				params->size = sizeof(math::float4x4) * kMaxShadowCastingLights;
+				params->size = sizeof(math::float4x4) * kMaxShadowCastingLights * 4;
 				params->dynamic = 1;
 
 				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
@@ -677,7 +677,7 @@ namespace tofu
 				cmdBuf->Add(RendererCommand::kCommandCreateSampler, params);
 			}
 		}
-		
+
 
 		builtinQuad = CreateModel("assets/quad.model");
 		assert(nullptr != builtinQuad);
@@ -713,18 +713,28 @@ namespace tofu
 		// TODO when back buffer size changed !
 		int32_t w, h;
 		renderer->GetFrameBufferSize(w, h);
-		gBuffer1 = CreateTexture(kFormatR32g32b32a32Float, w, h, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
-		gBuffer2 = CreateTexture(kFormatR32g32b32a32Float, w, h, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
-		gBuffer3 = CreateTexture(kFormatR32g32b32a32Float, w, h, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
+		gBuffer1 = CreateTexture(kFormatR32g32b32a32Float, w, h, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
+		gBuffer2 = CreateTexture(kFormatR32g32b32a32Float, w, h, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
+		gBuffer3 = CreateTexture(kFormatR32g32b32a32Float, w, h, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
 
-		hdrTarget = CreateTexture(kFormatR32g32b32a32Float, w, h, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
+		hdrTarget = CreateTexture(kFormatR32g32b32a32Float, w, h, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
 
 		if (!gBuffer1 || !gBuffer2 || !gBuffer3 || !hdrTarget)
 		{
 			return kErrUnknown;
 		}
 
-		scatterTex = CreateTexture(kFormatR32g32b32a32Float, 160, 90, 0, nullptr, kBindingShaderResource | kBindingUnorderedAccess);
+		shadowMapArray = CreateTexture(kFormatD24UnormS8Uint, 1024, 1024, kMaxShadowCastingLights, 0, nullptr, kBindingShaderResource | kBindingDepthStencil);
+
+		if (!shadowMapArray) return kErrUnknown;
+
+		for (uint32_t i = 0; i < kMaxShadowCastingLights; i++)
+		{
+			shadowMaps[i] = CreateTexture(shadowMapArray, i, 1, kBindingDepthStencil);
+			if (!shadowMaps[i]) return kErrUnknown;
+		}
+
+		scatterTex = CreateTexture(kFormatR32g32b32a32Float, 160, 90, 1, 0, nullptr, kBindingShaderResource | kBindingUnorderedAccess);
 
 		if (!scatterTex)
 		{
@@ -835,27 +845,27 @@ namespace tofu
 			{
 				LightComponentData& comp = lights[i];
 
-					// TODO culling
-                    TransformComponent t = comp.entity.GetComponent<TransformComponent>();
-					if (comp.type == kLightTypeDirectional) {
-                        data->lightDirection[i] = math::float4{ (t->GetForwardVector()).x,
-						(t->GetForwardVector()).y,
-						( t->GetForwardVector()).z ,0.0f };
-						data->type[i].x = 1.0f;
-					}
-					else if (comp.type == kLightTypePoint) {
-						data->type[i].x = 2.0f;
-						data->lightPosition[i] = math::float4(t->GetWorldPosition(),0);
-					}
-					else {
-						data->type[i].x = 3.0f;
-						data->lightPosition[i] = math::float4(t->GetWorldPosition(), 0);
-					}
-	                data->lightColor[i] = comp.lightColor;
+				// TODO culling
+				TransformComponent t = comp.entity.GetComponent<TransformComponent>();
+				if (comp.type == kLightTypeDirectional) {
+					data->lightDirection[i] = math::float4{ (t->GetForwardVector()).x,
+					(t->GetForwardVector()).y,
+					(t->GetForwardVector()).z ,0.0f };
+					data->type[i].x = 1.0f;
 				}
-				data->count = lightsCount;
-				data->camPos = camPos;
-				
+				else if (comp.type == kLightTypePoint) {
+					data->type[i].x = 2.0f;
+					data->lightPosition[i] = math::float4(t->GetWorldPosition(), 0);
+				}
+				else {
+					data->type[i].x = 3.0f;
+					data->lightPosition[i] = math::float4(t->GetWorldPosition(), 0);
+				}
+				data->lightColor[i] = comp.lightColor;
+			}
+			data->count = lightsCount;
+			data->camPos = camPos;
+
 
 			UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
 			assert(nullptr != params);
@@ -1000,7 +1010,7 @@ namespace tofu
 
 
 		// Generate shadow map
-		
+
 		for (uint32_t i = 0; i < lightsCount; ++i) {
 			if (lights[i].castShadow) {
 				FrameConstants* data = reinterpret_cast<FrameConstants*>(
@@ -1034,8 +1044,8 @@ namespace tofu
 					lightPos = t->GetWorldPosition();
 					forward = t->GetForwardVector();
 					lightView = math::lookTo(lightPos, forward * 10.0f, math::float3{ 0, 1, 0 });
-				//	lightView = math::lookAtLH(lightPos, lightPos - forward * 5.0f, math::float3{ 0, 1, 0 });
-				//	lightView = glm::lookAtLH(lightPos, lightPos - forward * 5.0f, glm::vec3(0, 1, 0));
+					//	lightView = math::lookAtLH(lightPos, lightPos - forward * 5.0f, math::float3{ 0, 1, 0 });
+					//	lightView = glm::lookAtLH(lightPos, lightPos - forward * 5.0f, glm::vec3(0, 1, 0));
 					lightProject = glm::perspective(45.0f * 3.1415f / 180.0f, 16.0f / 9.0f, 0.01f, 100.0f);
 					break;
 				}
@@ -1176,7 +1186,7 @@ namespace tofu
 					}
 					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
 					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
-			    // 	params->vsConstantBuffers[1] = { shadowDepthBuffer[indexShadow], 0, 16 };
+					// 	params->vsConstantBuffers[1] = { shadowDepthBuffer[indexShadow], 0, 16 };
 					params->psConstantBuffers[0] = { lightingConstantBuffer,0, 4096 };
 					params->psShaderResources[0] = skyboxTex;
 					params->psShaderResources[1] = mat->mainTex;
@@ -1188,13 +1198,13 @@ namespace tofu
 				case kMaterialTypeOpaque:
 					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
 					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 16 };
-				//	params->vsConstantBuffers[1] = { shadowDepthBuffer[indexShadow], 0, 16 };
+					//	params->vsConstantBuffers[1] = { shadowDepthBuffer[indexShadow], 0, 16 };
 					params->vsConstantBuffers[2] = { shadowDepthBuffer[indexShadow], 0, 16 };
 					params->psConstantBuffers[0] = { lightingConstantBuffer,0, 4096 };
 					params->psShaderResources[0] = skyboxTex;
 					params->psShaderResources[1] = mat->mainTex;
 					params->psShaderResources[2] = mat->normalMap;
-			     	params->psShaderResources[3] = lights[indexShadow].depthMap;
+					params->psShaderResources[3] = lights[indexShadow].depthMap;
 					params->psShaderResources[4] = mat->roughnessMap;
 					params->psShaderResources[5] = mat->metallicMap;
 					params->psShaderResources[6] = mat->aoMap;
@@ -1428,7 +1438,7 @@ namespace tofu
 		return handle;
 	}
 
-	TextureHandle RenderingSystem::CreateTexture(PixelFormat format, uint32_t width, uint32_t height, uint32_t pitch, void* data, uint32_t binding)
+	TextureHandle RenderingSystem::CreateTexture(PixelFormat format, uint32_t width, uint32_t height, uint32_t arraySize, uint32_t pitch, void* data, uint32_t binding)
 	{
 		TextureHandle handle = textureHandleAlloc.Allocate();
 		if (!handle)
@@ -1438,7 +1448,24 @@ namespace tofu
 
 		CreateTextureParams* params = MemoryAllocator::Allocate<CreateTextureParams>(allocNo);
 
-		params->InitAsTexture2D(handle, width, height, format, data, pitch, binding);
+		params->InitAsTexture2D(handle, width, height, format, data, pitch, arraySize, binding);
+
+		cmdBuf->Add(RendererCommand::kCommandCreateTexture, params);
+
+		return handle;
+	}
+
+	TextureHandle RenderingSystem::CreateTexture(TextureHandle source, uint32_t startIndex, uint32_t arraySize, uint32_t binding, PixelFormat format)
+	{
+		TextureHandle handle = textureHandleAlloc.Allocate();
+		if (!handle)
+		{
+			return handle;
+		}
+
+		CreateTextureParams* params = MemoryAllocator::Allocate<CreateTextureParams>(allocNo);
+
+		params->InitAsTexture2DSlice(handle, source, startIndex, arraySize, format, binding);
 
 		cmdBuf->Add(RendererCommand::kCommandCreateTexture, params);
 
@@ -1689,7 +1716,7 @@ namespace tofu
 
 			const Transform& worldTrans = t->GetWorldTransform();
 			data->leftTopRay = worldTrans.TransformVector(math::float4{ -farClipMaxX, farClipMaxY, data->perspectiveParams.w, 0 });
-			data->rightTopRay =worldTrans.TransformVector(math::float4{ farClipMaxX, farClipMaxY, data->perspectiveParams.w, 0 });
+			data->rightTopRay = worldTrans.TransformVector(math::float4{ farClipMaxX, farClipMaxY, data->perspectiveParams.w, 0 });
 			data->leftBottomRay = worldTrans.TransformVector(math::float4{ -farClipMaxX, -farClipMaxY, data->perspectiveParams.w, 0 });
 			data->rightBottomRay = worldTrans.TransformVector(math::float4{ farClipMaxX, -farClipMaxY, data->perspectiveParams.w, 0 });
 
@@ -1876,8 +1903,10 @@ namespace tofu
 					if (numDirectionalLights >= kMaxDirectionalLights)
 						continue;
 
-					ambDirLightParams->directionalLights[numDirectionalLights].color = comp.lightColor * comp.intensity;
-					ambDirLightParams->directionalLights[numDirectionalLights].direction = math::float4(dir, 0);
+					DirectionalLight& light = ambDirLightParams->directionalLights[numDirectionalLights];
+					light.color = comp.lightColor;
+					light.direction = math::float4(dir, 0);
+					light.intensity = comp.intensity;
 					numDirectionalLights++;
 				}
 				else if (comp.type == kLightTypePoint)
@@ -1890,8 +1919,8 @@ namespace tofu
 					light.intensity = comp.intensity;
 					light.range = comp.range;
 
-					pointLightTransform[numPointLights] = 
-						math::scale(math::float4x4(1.0f), math::float3(comp.range)) * 
+					pointLightTransform[numPointLights] =
+						math::scale(math::float4x4(1.0f), math::float3(comp.range)) *
 						lightTransform;
 
 					numPointLights++;
@@ -1911,8 +1940,8 @@ namespace tofu
 					light.shadowId = UINT32_MAX;
 
 					float scale = math::tan(math::radians(comp.spotAngle * 0.5f)) * comp.range;
-					spotLightTransform[numSpotLights] = 
-						math::scale(math::float4x4(1.0f), math::float3(scale, scale, comp.range)) * 
+					spotLightTransform[numSpotLights] =
+						math::scale(math::float4x4(1.0f), math::float3(scale, scale, comp.range)) *
 						lightTransform;
 
 					if (comp.castShadow && numShadowCastingLights < kMaxShadowCastingLights)
@@ -2054,7 +2083,7 @@ namespace tofu
 			{
 				ClearParams* params = MemoryAllocator::Allocate<ClearParams>(allocNo);
 				params->renderTargets[0] = TextureHandle();
-				params->depthRenderTarget = lights[lightIdx].depthMap;
+				params->depthRenderTarget = shadowMaps[iLight];
 				cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
 			}
 
@@ -2103,7 +2132,7 @@ namespace tofu
 						params->vsConstantBuffers[1] = { shadowMatricesBuffer, static_cast<uint16_t>(iLight * 16), 16 };
 
 						params->renderTargets[0] = TextureHandle();
-						params->depthRenderTarget = lights[lightIdx].depthMap;
+						params->depthRenderTarget = shadowMaps[iLight];
 
 						break;
 					default:
@@ -2195,8 +2224,10 @@ namespace tofu
 		// Lighting Pass
 
 		{
+			// occluding
+
 			// go through all point lights
-			for (uint32_t i = 0; i < numPointLights; i++)
+			if (numPointLights > 0)
 			{
 				Mesh& mesh = meshes[builtinSphere->meshes[0].id];
 				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
@@ -2210,21 +2241,16 @@ namespace tofu
 				params->startVertex = mesh.StartVertex;
 				params->indexCount = mesh.NumIndices;
 
-				params->vsConstantBuffers[0] = { pointLightBuffer, static_cast<uint16_t>(pointLights[i] * 16), 16 };
-				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 32 };
+				params->instanceCount = numPointLights;
 
-				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
-
-				params->psShaderResources[0] = gBuffer1;
-				params->psShaderResources[1] = gBuffer2;
-				params->psShaderResources[2] = gBuffer3;
-				params->psSamplers[0] = defaultSampler;
+				params->vsConstantBuffers[0] = { pointLightTransformBuffer, 0, 0 };
+				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
 
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
 
 			// go through all spot lights
-			for (uint32_t i = 0; i < numSpotLights; i++)
+			if (numSpotLights > 0)
 			{
 				Mesh& mesh = meshes[builtinCone->meshes[0].id];
 				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
@@ -2238,22 +2264,19 @@ namespace tofu
 				params->startVertex = mesh.StartVertex;
 				params->indexCount = mesh.NumIndices;
 
-				params->vsConstantBuffers[0] = { pointLightBuffer, static_cast<uint16_t>(spotLights[i] * 16), 16 };
-				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 32 };
+				params->instanceCount = numSpotLights;
 
-				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
+				params->vsConstantBuffers[0] = { spotLightTransformBuffer, 0, 0 };
+				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
 
-				params->psShaderResources[0] = gBuffer1;
-				params->psShaderResources[1] = gBuffer2;
-				params->psShaderResources[2] = gBuffer3;
-params->psSamplers[0] = defaultSampler;
-
-cmdBuf->Add(RendererCommand::kCommandDraw, params);
+				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
 			/**/
 
+			// shading
+
 			// go through all point lights
-			for (uint32_t i = 0; i < numPointLights; i++)
+			if (numPointLights > 0)
 			{
 				Mesh& mesh = meshes[builtinSphere->meshes[0].id];
 				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
@@ -2267,11 +2290,14 @@ cmdBuf->Add(RendererCommand::kCommandDraw, params);
 				params->startVertex = mesh.StartVertex;
 				params->indexCount = mesh.NumIndices;
 
-				params->vsConstantBuffers[0] = { pointLightBuffer, static_cast<uint16_t>(pointLights[i] * 16), 16 };
+				params->instanceCount = numPointLights;
+
+				params->vsConstantBuffers[0] = { pointLightTransformBuffer, 0, 0 };
 				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
 
 				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
 				params->psConstantBuffers[1] = params->vsConstantBuffers[1];
+				params->psConstantBuffers[2] = { pointLightBuffer, 0, 0 };
 
 				params->psShaderResources[0] = gBuffer1;
 				params->psShaderResources[1] = gBuffer2;
@@ -2284,7 +2310,7 @@ cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
 
 			// go through all spot lights
-			for (uint32_t i = 0; i < numSpotLights; i++)
+			if (numSpotLights > 0)
 			{
 				Mesh& mesh = meshes[builtinCone->meshes[0].id];
 				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
@@ -2298,17 +2324,21 @@ cmdBuf->Add(RendererCommand::kCommandDraw, params);
 				params->startVertex = mesh.StartVertex;
 				params->indexCount = mesh.NumIndices;
 
-				params->vsConstantBuffers[0] = { pointLightBuffer, static_cast<uint16_t>(spotLights[i] * 16), 16 };
+				params->instanceCount = numSpotLights;
+
+				params->vsConstantBuffers[0] = { spotLightTransformBuffer, 0, 0 };
 				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
 
 				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
 				params->psConstantBuffers[1] = params->vsConstantBuffers[1];
+				params->psConstantBuffers[2] = { spotLightBuffer, 0, 0 };
+				params->psConstantBuffers[3] = { shadowMatricesBuffer, 0, 0 };
 
 				params->psShaderResources[0] = gBuffer1;
 				params->psShaderResources[1] = gBuffer2;
 				params->psShaderResources[2] = gBuffer3;
 
-				params->psShaderResources[3] = lights[spotLights[i]].depthMap;
+				params->psShaderResources[3] = shadowMapArray;
 
 				params->psSamplers[0] = defaultSampler;
 				params->psSamplers[1] = shadowSampler;
@@ -2318,6 +2348,7 @@ cmdBuf->Add(RendererCommand::kCommandDraw, params);
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
 
+			/**/
 			// ambient light & directional lights
 			{
 				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
@@ -2342,6 +2373,7 @@ cmdBuf->Add(RendererCommand::kCommandDraw, params);
 
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
+			/**/
 		}
 
 		// TODO: Transparent Pass
