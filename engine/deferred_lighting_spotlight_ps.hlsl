@@ -13,12 +13,12 @@ cbuffer LightParameters : register (b0)
 
 cbuffer FrameConstants : register (b1)
 {
-	matrix	matView;
-	matrix	matProj;
-	matrix	matViewInv;
-	matrix	matProjInv;
-	float4	cameraPos;
-	float4	bufferSize;
+	matrix					matView;
+	matrix					matProj;
+	matrix					matViewInv;
+	matrix					matProjInv;
+	float4					cameraPos;
+	float4					bufferSize;
 };
 
 Texture2D gBuffer1 : register(t0);

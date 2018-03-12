@@ -79,8 +79,8 @@ namespace
 		ID3D11Resource*				tex;
 		ID3D11ShaderResourceView*	srv;
 		ID3D11UnorderedAccessView*	uav;
-		ID3D11RenderTargetView*		rtv[6];
-		ID3D11DepthStencilView*		dsv[6];
+		ID3D11RenderTargetView*		rtv;
+		ID3D11DepthStencilView*		dsv;
 		uint32_t					dynamic : 1;
 		uint32_t					cubeMap : 1;
 		uint32_t					_padding : 6;
@@ -188,20 +188,14 @@ namespace tofu
 				{
 					Texture& rt = textures[kMaxTextures + 1];
 					RELEASE(rt.srv);
-					for (uint32_t i = 0; i < 6; i++)
-					{
-						RELEASE(rt.rtv[i]);
-						RELEASE(rt.dsv[i]);
-					}
+					RELEASE(rt.rtv);
+					RELEASE(rt.dsv);
 					RELEASE(rt.tex);
 
 					Texture& ds = textures[kMaxTextures];
 					RELEASE(ds.srv);
-					for (uint32_t i = 0; i < 6; i++)
-					{
-						RELEASE(ds.rtv[i]);
-						RELEASE(ds.dsv[i]);
-					}
+					RELEASE(ds.rtv);
+					RELEASE(ds.dsv);
 					RELEASE(ds.tex);
 				}
 
@@ -266,9 +260,7 @@ namespace tofu
 
 			PipelineStateHandle			currentPipelineState;
 			TextureHandle				renderTargets[kMaxRenderTargetBindings];
-			uint32_t					renderTargetSubIds[kMaxRenderTargetBindings];
 			TextureHandle				depthRenderTarget;
-			uint32_t					depthRenderTargetSubId;
 
 			typedef int32_t(RendererDX11::*cmd_callback_t)(void*);
 
@@ -415,7 +407,7 @@ namespace tofu
 				rt.arraySize = 1;
 				rt.bindingFlags = kBindingRenderTarget;
 
-				if (S_OK != (hr = device->CreateRenderTargetView(backbufferTex, nullptr, &(rt.rtv[0]))))
+				if (S_OK != (hr = device->CreateRenderTargetView(backbufferTex, nullptr, &(rt.rtv))))
 				{
 					return -1;
 				}
@@ -447,14 +439,14 @@ namespace tofu
 					return -1;
 				}
 
-				if (S_OK != (hr = device->CreateDepthStencilView(depthStencilTex, nullptr, &(ds.dsv[0]))))
+				if (S_OK != (hr = device->CreateDepthStencilView(depthStencilTex, nullptr, &(ds.dsv))))
 				{
 					return -1;
 				}
 				ds.tex = depthStencilTex;
 
 				// set render targets
-				context->OMSetRenderTargets(1, &(rt.rtv[0]), ds.dsv[0]);
+				context->OMSetRenderTargets(1, &(rt.rtv), ds.dsv);
 
 				for (uint32_t i = 0; i < kMaxRenderTargetBindings; i++)
 				{
@@ -679,6 +671,75 @@ namespace tofu
 
 					textures[id].tex = tex2d;
 				}
+				else if (params->isSlice)
+				{
+					if (!params->sliceSource || nullptr == textures[params->sliceSource.id].tex)
+						return kErrUnknown;
+
+					Texture& sourceTex = textures[params->sliceSource.id];
+					if (sourceTex.arraySize == 1 || sourceTex.arraySize < params->arraySize)
+						return kErrUnknown;
+
+					DXCHECKED(sourceTex.tex->QueryInterface<ID3D11Texture2D>(&tex2d));
+
+					if (bindingFlags & kBindingShaderResource)
+					{
+						CD3D11_SHADER_RESOURCE_VIEW_DESC desc(tex2d,
+							D3D11_SRV_DIMENSION_TEXTURE2DARRAY,
+							PixelFormatTable[params->format],
+							0,
+							1,
+							params->sliceStartArrayIndex,
+							params->arraySize
+						);
+
+						DXCHECKED(device->CreateShaderResourceView(textures[id].tex, &desc, &(textures[id].srv)));
+					}
+
+					if (bindingFlags & kBindingUnorderedAccess)
+					{
+						CD3D11_UNORDERED_ACCESS_VIEW_DESC desc(tex2d,
+							D3D11_UAV_DIMENSION_TEXTURE2DARRAY,
+							PixelFormatTable[params->format],
+							0,
+							params->sliceStartArrayIndex,
+							params->arraySize
+						);
+
+						DXCHECKED(device->CreateUnorderedAccessView(textures[id].tex, &desc, &(textures[id].uav)));
+					}
+
+					if (bindingFlags & kBindingRenderTarget)
+					{
+						CD3D11_RENDER_TARGET_VIEW_DESC desc(tex2d,
+							D3D11_RTV_DIMENSION_TEXTURE2DARRAY,
+							PixelFormatTable[params->format],
+							0,
+							params->sliceStartArrayIndex,
+							params->arraySize
+						);
+
+						DXCHECKED(device->CreateRenderTargetView(textures[id].tex, &desc, &(textures[id].rtv)));
+					}
+
+					if (bindingFlags & kBindingRenderTarget)
+					{
+						CD3D11_DEPTH_STENCIL_VIEW_DESC desc(tex2d,
+							D3D11_DSV_DIMENSION_TEXTURE2DARRAY,
+							PixelFormatTable[params->format],
+							0,
+							params->sliceStartArrayIndex,
+							params->arraySize
+						);
+
+						if (desc.Format == DXGI_FORMAT_R24G8_TYPELESS)
+							desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+
+						DXCHECKED(device->CreateDepthStencilView(textures[id].tex, &desc, &(textures[id].dsv)));
+					}
+
+					textures[id].tex = tex2d;
+				}
 				else if (params->depth > 0) // texture 3d
 				{
 					uint32_t bindingFlags = params->bindingFlags & (kBindingShaderResource | kBindingUnorderedAccess);
@@ -763,15 +824,19 @@ namespace tofu
 								desc.TextureCube.MipLevels = 1;
 								desc.TextureCube.MostDetailedMip = 0;
 							}
+							else if (params->arraySize > 1)
+							{
+								desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+								desc.Texture2DArray.ArraySize = params->arraySize;
+								desc.Texture2DArray.FirstArraySlice = 0;
+								desc.Texture2DArray.MipLevels = 1;
+								desc.Texture2DArray.MostDetailedMip = 0;
+							}
 							else
 							{
 								desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 								desc.Texture2D.MipLevels = 1;
 								desc.Texture2D.MostDetailedMip = 0;
-
-
-								// TODO: we don't expect array here
-								assert(params->arraySize == 1);
 							}
 
 							DXCHECKED(device->CreateShaderResourceView(textures[id].tex, &desc, &(textures[id].srv)));
@@ -786,63 +851,69 @@ namespace tofu
 					{
 						DXCHECKED(device->CreateUnorderedAccessView(textures[id].tex, nullptr, &(textures[id].uav)));
 					}
-				}
 
-				if (params->bindingFlags & kBindingRenderTarget)
-				{
-					if (params->cubeMap == 1)
+					if (params->bindingFlags & kBindingRenderTarget)
 					{
-						CD3D11_RENDER_TARGET_VIEW_DESC rtvDesc(tex2d,
-							D3D11_RTV_DIMENSION_TEXTURE2DARRAY,
-							PixelFormatTable[params->format],
-							0, 0, 1);
-
-						for (uint32_t i = 0; i < 6; i++)
+						if (params->cubeMap == 1)
 						{
-							rtvDesc.Texture2DArray.FirstArraySlice = i;
-							DXCHECKED(device->CreateRenderTargetView(textures[id].tex, &rtvDesc, &(textures[id].rtv[i])));
-						}
-					}
-					else
-					{
-						DXCHECKED(device->CreateRenderTargetView(textures[id].tex, nullptr, &(textures[id].rtv[0])));
-					}
-				}
+							CD3D11_RENDER_TARGET_VIEW_DESC rtvDesc(tex2d,
+								D3D11_RTV_DIMENSION_TEXTURE2DARRAY,
+								PixelFormatTable[params->format],
+								0, 0, 6);
 
-				if (params->bindingFlags & kBindingDepthStencil)
-				{
-					if (params->cubeMap == 1)
-					{
-						CD3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc(tex2d,
-							D3D11_DSV_DIMENSION_TEXTURE2DARRAY,
-							PixelFormatTable[params->format],
-							0, 0, 1);
-
-						for (uint32_t i = 0; i < 6; i++)
-						{
-							dsvDesc.Texture2DArray.FirstArraySlice = i;
-							DXCHECKED(device->CreateDepthStencilView(textures[id].tex, &dsvDesc, &(textures[id].dsv[i])));
-						}
-					}
-					else
-					{
-						if (params->format == kFormatD24UnormS8Uint && params->bindingFlags & kBindingShaderResource)
-						{
-							CD3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc(tex2d,
-								D3D11_DSV_DIMENSION_TEXTURE2D,
-								//DXGI_FORMAT_D32_FLOAT
-								DXGI_FORMAT_D24_UNORM_S8_UINT
-							);
-
-							DXCHECKED(device->CreateDepthStencilView(textures[id].tex, &dsvDesc, &(textures[id].dsv[0])));
-
+							DXCHECKED(device->CreateRenderTargetView(textures[id].tex, &rtvDesc, &(textures[id].rtv)));
 						}
 						else
 						{
-							DXCHECKED(device->CreateDepthStencilView(textures[id].tex, nullptr, &(textures[id].dsv[0])));
+							DXCHECKED(device->CreateRenderTargetView(textures[id].tex, nullptr, &(textures[id].rtv)));
 						}
 					}
-					//DXCHECKED(device->CreateDepthStencilView(textures[id].tex, nullptr, &(textures[id].dsv)));
+
+					if (params->bindingFlags & kBindingDepthStencil)
+					{
+						DXGI_FORMAT dsvForamt = PixelFormatTable[params->format];
+						bool isTypeLess = (params->bindingFlags & kBindingShaderResource);
+						if (isTypeLess)
+						{
+							dsvForamt = DXGI_FORMAT_D24_UNORM_S8_UINT;
+						}
+
+						if (params->cubeMap == 1)
+						{
+							CD3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc(tex2d,
+								D3D11_DSV_DIMENSION_TEXTURE2DARRAY,
+								dsvForamt,
+								0, 0, 6);
+
+							DXCHECKED(device->CreateDepthStencilView(textures[id].tex, &dsvDesc, &(textures[id].dsv)));
+						}
+						else
+						{
+							CD3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
+							dsvDesc.Format = dsvForamt;
+							if (params->cubeMap == 1)
+							{
+								dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
+								dsvDesc.Texture2DArray.ArraySize = 6;
+								dsvDesc.Texture2DArray.FirstArraySlice = 0;
+								dsvDesc.Texture2DArray.MipSlice = 0;
+							}
+							else if (params->arraySize > 1)
+							{
+								dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
+								dsvDesc.Texture2DArray.ArraySize = params->arraySize;
+								dsvDesc.Texture2DArray.FirstArraySlice = 0;
+								dsvDesc.Texture2DArray.MipSlice = 0;
+							}
+							else
+							{
+								dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+								dsvDesc.Texture2D.MipSlice = 0;
+							}
+
+							DXCHECKED(device->CreateDepthStencilView(textures[id].tex, &dsvDesc, &(textures[id].dsv)));
+						}
+					}
 				}
 
 				if (nullptr != tex2d)
@@ -853,7 +924,7 @@ namespace tofu
 					textures[id].dynamic = params->dynamic;
 					textures[id].cubeMap = ((desc.MiscFlags & D3D11_RESOURCE_MISC_TEXTURECUBE) != 0 ? 1 : params->cubeMap);
 					textures[id].format = params->isFile ? kFormatAuto : params->format;
-					textures[id].arraySize = desc.ArraySize;
+					textures[id].arraySize = params->isSlice ? params->arraySize : desc.ArraySize;
 					textures[id].bindingFlags = bindingFlags;
 					textures[id].width = desc.Width;
 					textures[id].height = desc.Height;
@@ -941,14 +1012,8 @@ namespace tofu
 
 				RELEASE(textures[id].srv);
 				RELEASE(textures[id].uav);
-				for (uint32_t i = 0; i < 6; i++)
-				{
-					RELEASE(textures[id].rtv[i]);
-				}
-				for (uint32_t i = 0; i < 6; i++)
-				{
-					RELEASE(textures[id].dsv[i]);
-				}
+				RELEASE(textures[id].rtv);
+				RELEASE(textures[id].dsv);
 				RELEASE(textures[id].tex);
 
 				textures[id] = {};
@@ -1213,20 +1278,18 @@ namespace tofu
 					}
 
 					uint32_t id = params->renderTargets[i].id;
-					uint32_t subId = params->renderTargetSubIds[i];
-					assert(nullptr != textures[id].rtv[subId]);
+					assert(nullptr != textures[id].rtv);
 
-					context->ClearRenderTargetView(textures[id].rtv[subId], params->clearColor);
+					context->ClearRenderTargetView(textures[id].rtv, params->clearColor);
 				}
 
 				if (params->depthRenderTarget)
 				{
 					uint32_t id = params->depthRenderTarget.id;
-					uint32_t subId = params->depthRenderTargetSubId;
-					assert(nullptr != textures[id].dsv[subId]);
+					assert(nullptr != textures[id].dsv);
 
 					context->ClearDepthStencilView(
-						textures[id].dsv[subId],
+						textures[id].dsv,
 						D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
 						params->clearDepth,
 						params->clearStencil);
@@ -1267,8 +1330,7 @@ namespace tofu
 
 					bool rebind = false;
 
-					if (params->depthRenderTarget.id != depthRenderTarget.id ||
-						params->depthRenderTargetSubId != depthRenderTargetSubId)
+					if (params->depthRenderTarget.id != depthRenderTarget.id)
 					{
 						rebind = true;
 					}
@@ -1276,8 +1338,7 @@ namespace tofu
 					{
 						for (uint32_t i = 0; i < kMaxRenderTargetBindings; i++)
 						{
-							if (params->renderTargets[i].id != renderTargets[i].id ||
-								params->renderTargetSubIds[i] != renderTargetSubIds[i])
+							if (params->renderTargets[i].id != renderTargets[i].id)
 							{
 								rebind = true;
 								break;
@@ -1298,29 +1359,26 @@ namespace tofu
 						for (uint32_t i = 0; i < kMaxRenderTargetBindings; i++)
 						{
 							renderTargets[i] = params->renderTargets[i];
-							renderTargetSubIds[i] = params->renderTargetSubIds[i];
 							if (renderTargets[i])
 							{
 								Texture& tex = textures[renderTargets[i].id];
-								uint32_t subId = renderTargetSubIds[i];
-								if (nullptr == tex.rtv[subId] ||
+								if (nullptr == tex.rtv ||
 									!(tex.bindingFlags & kBindingRenderTarget))
 									return kErrUnknown;
 
-								rtvs[i] = tex.rtv[subId];
+								rtvs[i] = tex.rtv;
 							}
 						}
 
 						depthRenderTarget = params->depthRenderTarget;
-						depthRenderTargetSubId = params->depthRenderTargetSubId;
 						if (depthRenderTarget)
 						{
 							Texture& tex = textures[depthRenderTarget.id];
-							if (nullptr == tex.dsv[depthRenderTargetSubId] ||
+							if (nullptr == tex.dsv ||
 								!(tex.bindingFlags & kBindingDepthStencil))
 								return kErrUnknown;
 
-							dsv = tex.dsv[depthRenderTargetSubId];
+							dsv = tex.dsv;
 						}
 
 						context->OMSetRenderTargets(kMaxRenderTargetBindings, rtvs, dsv);

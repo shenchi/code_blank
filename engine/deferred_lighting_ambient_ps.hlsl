@@ -1,11 +1,12 @@
 cbuffer LightParametersDirectionalAndAmbient : register(b0)
 {
-	float4					ambient;
 	struct
 	{
 		float4				direction;
 		float4				color;
 	}						directionalLights[8];
+
+	float4					ambient;
 };
 
 Texture2D gBuffer1 : register(t0);

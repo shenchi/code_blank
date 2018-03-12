@@ -17,55 +17,94 @@
 
 namespace
 {
+	using tofu::math::float4x4;
+	using tofu::math::float4;
+	using tofu::math::float3;
+
 	struct FrameConstants							// 32 shader constants in total
 	{
-		tofu::math::float4x4	matView;			// 4 shader constants
-		tofu::math::float4x4	matProj;			// 4 shader constants
-		tofu::math::float4x4	matViewInv;			// 4 shader constants
-		tofu::math::float4x4	matProjInv;			// 4 shader constants
-		tofu::math::float4		cameraPos;			// 1 shader constants
-		tofu::math::float4		bufferSize;			// 1 shader constants
-		tofu::math::float4		leftTopRay;			// 1 shader constants
-		tofu::math::float4		rightTopRay;		// 1 shader constants
-		tofu::math::float4		leftBottomRay;		// 1 shader constants
-		tofu::math::float4		rightBottomRay;		// 1 shader constants
-		tofu::math::float4		perspectiveParams;	// 1 shader constants (fov, aspect, zNear, zFar)
-		float					padding3[4 * 9];	// p shader constants
+		float4x4				matView;			// 4 shader constants
+		float4x4				matProj;			// 4 shader constants
+		float4x4				matViewInv;			// 4 shader constants
+		float4x4				matProjInv;			// 4 shader constants
+		float4					cameraPos;			// 1 shader constants
+		float4					bufferSize;			// 1 shader constants
+		float4					leftTopRay;			// 1 shader constants
+		float4					rightTopRay;		// 1 shader constants
+		float4					leftBottomRay;		// 1 shader constants
+		float4					rightBottomRay;		// 1 shader constants
+		float4					perspectiveParams;	// 1 shader constants (fov, aspect, zNear, zFar)
+		float					padding3[4 * 9];	// 9 shader constants
 	};
 
 	struct LightingConstants {                      // 16 shader constants in total
-		tofu::math::float4	    lightColor[256];			// 1 shader constants
-		tofu::math::float4	    lightDirection[256];	    // float4 for alignment, actually it's float3, 1 shader constants
+		float4					lightColor[256];			// 1 shader constants
+		float4					lightDirection[256];	    // float4 for alignment, actually it's float3, 1 shader constants
 		float                   count;
-		tofu::math::float3      camPos;
-		tofu::math::float4      lightPosition[256];
-		tofu::math::float4      type[256];
-		tofu::math::float4		_reserv1[3071];
+		float3					camPos;
+		float4					lightPosition[256];
+		float4					type[256];
+		float4					_reserv1[3071];
+	};
+
+	struct DirectionalLight
+	{
+		float4					direction;
+		float4					color;
+		float					intensity;
+		float					_padding1;
+		float					_padding2;
+		float					_padding3;
+	};
+
+	struct PointLight
+	{
+		float4					color;
+		float					intensity;
+		float					range;
+		float					_padding1;
+		float					_padding2;
+	};
+
+	struct SpotLight
+	{
+		float4					direction;
+		float4					color;
+		float					intensity;
+		float					range;
+		float					spotAngle;
+		uint32_t				shadowId;
+	};
+
+	struct PointLightParams
+	{
+		PointLight				lights[tofu::kMaxPointLights];
+	};
+
+	struct SpotLightParams
+	{
+		SpotLight				lights[tofu::kMaxSpotLights];
 	};
 
 	// parameters for lights in lighting pass (deferred shading)
 	// make sure this structure to be 16 shader constants (float4) in size;
-	struct LightParameters
-	{
-		tofu::math::float4x4	transform;		// 4
-		tofu::math::float4x4	matView;		// 4
-		tofu::math::float4x4	matProj;		// 4
-		tofu::math::float4		direction;		// 1
-		tofu::math::float4		color;			// 1
-		float					range;
-		float					intensity;
-		float					spotAngle;
-		float					padding[1 * 4 + 1];
-	};
+	//struct LightParameters
+	//{
+	//	float4x4				transform;		// 4
+	//	float4x4				matView;		// 4
+	//	float4x4				matProj;		// 4
+	//	float4					direction;		// 1
+	//	float4					color;			// 1
+	//	float					range;
+	//	float					intensity;
+	//	float					spotAngle;
+	//	float					padding[1 * 4 + 1];
+	//};
 
 	struct LightParametersDirectionalAndAmbient
 	{
-		tofu::math::float4		ambient;
-		struct
-		{
-			tofu::math::float4	direction;
-			tofu::math::float4	color;
-		}						directionalLights[tofu::kMaxDirectionalLights];
+		DirectionalLight		directionalLights[tofu::kMaxDirectionalLights];
+		float4					ambient;
 	};
 }
 
@@ -253,12 +292,12 @@ namespace tofu
 				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
 			}
 
-			lightParamsAmbDirBuffer = bufferHandleAlloc.Allocate();
-			assert(lightParamsAmbDirBuffer);
+			ambientDirLightBuffer = bufferHandleAlloc.Allocate();
+			assert(ambientDirLightBuffer);
 			{
 				CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
 				assert(nullptr != params);
-				params->handle = lightParamsAmbDirBuffer;
+				params->handle = ambientDirLightBuffer;
 				params->bindingFlags = kBindingConstantBuffer;
 				params->size = sizeof(LightParametersDirectionalAndAmbient);
 				params->dynamic = 1;
@@ -266,19 +305,70 @@ namespace tofu
 				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
 			}
 
-			lightParamsBuffer = bufferHandleAlloc.Allocate();
-			assert(lightParamsBuffer);
+			pointLightBuffer = bufferHandleAlloc.Allocate();
+			assert(pointLightBuffer);
 			{
 				CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
 				assert(nullptr != params);
-				params->handle = lightParamsBuffer;
+				params->handle = pointLightBuffer;
 				params->bindingFlags = kBindingConstantBuffer;
-				params->size = sizeof(LightParameters) * kMaxEntities;
+				params->size = sizeof(PointLightParams);
 				params->dynamic = 1;
 
 				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
 			}
 
+			spotLightBuffer = bufferHandleAlloc.Allocate();
+			assert(spotLightBuffer);
+			{
+				CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
+				assert(nullptr != params);
+				params->handle = spotLightBuffer;
+				params->bindingFlags = kBindingConstantBuffer;
+				params->size = sizeof(SpotLightParams);
+				params->dynamic = 1;
+
+				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
+			}
+
+			pointLightTransformBuffer = bufferHandleAlloc.Allocate();
+			assert(pointLightTransformBuffer);
+			{
+				CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
+				assert(nullptr != params);
+				params->handle = pointLightTransformBuffer;
+				params->bindingFlags = kBindingConstantBuffer;
+				params->size = sizeof(math::float4x4) * kMaxPointLights;
+				params->dynamic = 1;
+
+				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
+			}
+
+			spotLightTransformBuffer = bufferHandleAlloc.Allocate();
+			assert(spotLightTransformBuffer);
+			{
+				CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
+				assert(nullptr != params);
+				params->handle = spotLightTransformBuffer;
+				params->bindingFlags = kBindingConstantBuffer;
+				params->size = sizeof(math::float4x4) * kMaxSpotLights;
+				params->dynamic = 1;
+
+				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
+			}
+
+			shadowMatricesBuffer = bufferHandleAlloc.Allocate();
+			assert(shadowMatricesBuffer);
+			{
+				CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
+				assert(nullptr != params);
+				params->handle = shadowMatricesBuffer;
+				params->bindingFlags = kBindingConstantBuffer;
+				params->size = sizeof(math::float4x4) * kMaxShadowCastingLights;
+				params->dynamic = 1;
+
+				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
+			}
 		}
 
 		int32_t bufferWidth, bufferHeight;
@@ -1721,28 +1811,49 @@ namespace tofu
 		LightComponentData* lights = LightComponent::GetAllComponents();
 		uint32_t lightsCount = LightComponent::GetNumComponents();
 
-		LightParameters* lightParams = reinterpret_cast<LightParameters*>(
-			MemoryAllocator::Allocators[allocNo].Allocate(sizeof(LightParameters) * (kMaxEntities + 1), 16)
-			);
-		assert(nullptr != lightParams);
-
-		LightParametersDirectionalAndAmbient* lightParams2 = reinterpret_cast<LightParametersDirectionalAndAmbient*>(
-			MemoryAllocator::Allocators[allocNo].Allocate(sizeof(LightParametersDirectionalAndAmbient), 16)
-			);
-		assert(nullptr != lightParams2);
-
 		assert(lightsCount <= kMaxEntities);
 
-		uint32_t* pointLights = reinterpret_cast<uint32_t*>(MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxEntities, 4));
-		uint32_t* spotLights = reinterpret_cast<uint32_t*>(MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxEntities, 4));
-		uint32_t* shadowLights = reinterpret_cast<uint32_t*>(MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxShadowCastingLights, 4));
+		LightParametersDirectionalAndAmbient* ambDirLightParams = reinterpret_cast<LightParametersDirectionalAndAmbient*>(
+			MemoryAllocator::Allocators[allocNo].Allocate(sizeof(LightParametersDirectionalAndAmbient), 16)
+			);
+		assert(nullptr != ambDirLightParams);
+
+		PointLightParams* pointLightParams = reinterpret_cast<PointLightParams*>(
+			MemoryAllocator::Allocators[allocNo].Allocate(sizeof(PointLightParams), 16)
+			);
+		assert(nullptr != pointLightParams);
+
+		SpotLightParams* spotLightParams = reinterpret_cast<SpotLightParams*>(
+			MemoryAllocator::Allocators[allocNo].Allocate(sizeof(SpotLightParams), 16)
+			);
+		assert(nullptr != spotLightParams);
+
+		math::float4x4* pointLightTransform = reinterpret_cast<math::float4x4*>(
+			MemoryAllocator::Allocators[allocNo].Allocate(sizeof(math::float4x4) * kMaxPointLights, 16)
+			);
+		assert(nullptr != pointLightTransform);
+
+		math::float4x4* spotLightTransform = reinterpret_cast<math::float4x4*>(
+			MemoryAllocator::Allocators[allocNo].Allocate(sizeof(math::float4x4) * kMaxSpotLights, 16)
+			);
+		assert(nullptr != spotLightTransform);
+
+		math::float4x4* shadowMatrices = reinterpret_cast<math::float4x4*>(
+			MemoryAllocator::Allocators[allocNo].Allocate(sizeof(math::float4x4) * kMaxShadowCastingLights * 4, 16)
+			);
+		assert(nullptr != shadowMatrices);
+
+
+		//uint32_t* pointLights = reinterpret_cast<uint32_t*>(MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxEntities, 4));
+		//uint32_t* spotLights = reinterpret_cast<uint32_t*>(MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxEntities, 4));
+		//uint32_t* shadowLights = reinterpret_cast<uint32_t*>(MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxShadowCastingLights, 4));
 
 		uint32_t numDirectionalLights = 0;
 		uint32_t numPointLights = 0;
 		uint32_t numSpotLights = 0;
 		uint32_t numShadowCastingLights = 0;
 		{
-			lightParams2->ambient = math::float4(0.1f, 0.1f, 0.1f, 1.0f);
+			ambDirLightParams->ambient = math::float4(0.1f, 0.1f, 0.1f, 1.0f);
 
 			for (uint32_t i = 0; i <= lightsCount; ++i)
 			{
@@ -1754,65 +1865,138 @@ namespace tofu
 				assert(t);
 
 #ifdef TOFU_USE_GLM
-				lightParams[i].transform = math::transpose(t->GetWorldTransform().GetMatrix());
+				math::float4x4 lightTransform = math::transpose(t->GetWorldTransform().GetMatrix());
 #else
-				lightParams[i].transform = t->GetWorldTransform().GetMatrix();
+				math::float4x4 lightTransform = t->GetWorldTransform().GetMatrix();
 #endif
 				math::float3 dir = t->GetForwardVector();
-				lightParams[i].direction = math::float4{ dir.x, dir.y, dir.z, 0 };
-				lightParams[i].color = comp.lightColor;
-				lightParams[i].range = comp.range;
-				lightParams[i].intensity = comp.intensity;
-				lightParams[i].spotAngle = math::cos(math::radians(comp.spotAngle * 0.5f));
 
 				if (comp.type == kLightTypeDirectional)
 				{
-					if (numDirectionalLights < kMaxDirectionalLights)
-					{
-						lightParams2->directionalLights[numDirectionalLights].color = comp.lightColor * comp.intensity;
-						lightParams2->directionalLights[numDirectionalLights].direction = lightParams[i].direction;
-						numDirectionalLights++;
-					}
+					if (numDirectionalLights >= kMaxDirectionalLights)
+						continue;
+
+					ambDirLightParams->directionalLights[numDirectionalLights].color = comp.lightColor * comp.intensity;
+					ambDirLightParams->directionalLights[numDirectionalLights].direction = math::float4(dir, 0);
+					numDirectionalLights++;
 				}
 				else if (comp.type == kLightTypePoint)
 				{
-					pointLights[numPointLights++] = i;
-					lightParams[i].transform = math::scale(math::float4x4(1.0f), math::float3(comp.range)) * lightParams[i].transform;
+					if (numPointLights >= kMaxPointLights)
+						continue;
+
+					auto& light = pointLightParams->lights[numPointLights];
+					light.color = comp.lightColor;
+					light.intensity = comp.intensity;
+					light.range = comp.range;
+
+					pointLightTransform[numPointLights] = 
+						math::scale(math::float4x4(1.0f), math::float3(comp.range)) * 
+						lightTransform;
+
+					numPointLights++;
 				}
 				else if (comp.type == kLightTypeSpot)
 				{
-					spotLights[numSpotLights++] = i;
-					float scale = math::tan(math::radians(comp.spotAngle * 0.5f)) * comp.range;
-					lightParams[i].transform = math::scale(math::float4x4(1.0f), math::float3(scale, scale, comp.range)) * lightParams[i].transform;
+					if (numSpotLights >= kMaxSpotLights)
+						continue;
 
-					if (comp.castShadow)
+					auto& light = spotLightParams->lights[numSpotLights];
+
+					light.direction = math::float4(dir, 0);
+					light.color = comp.lightColor;
+					light.intensity = comp.intensity;
+					light.range = comp.range;
+					light.spotAngle = math::cos(math::radians(comp.spotAngle * 0.5f));
+					light.shadowId = UINT32_MAX;
+
+					float scale = math::tan(math::radians(comp.spotAngle * 0.5f)) * comp.range;
+					spotLightTransform[numSpotLights] = 
+						math::scale(math::float4x4(1.0f), math::float3(scale, scale, comp.range)) * 
+						lightTransform;
+
+					if (comp.castShadow && numShadowCastingLights < kMaxShadowCastingLights)
 					{
-						shadowLights[numShadowCastingLights++] = i;
 						math::float3 lightWorldPos = t->GetWorldPosition();
-						lightParams[i].matView = math::transpose(math::lookTo(lightWorldPos, dir, t->GetUpVector()));
-						lightParams[i].matProj = math::transpose(math::perspective(math::radians(comp.spotAngle), 1.0f, 0.01f, comp.range));
+
+						shadowMatrices[numShadowCastingLights * 4] = math::transpose(
+							math::lookTo(lightWorldPos, dir, t->GetUpVector())
+						);
+
+						shadowMatrices[numShadowCastingLights * 4 + 1] = math::transpose(
+							math::perspective(math::radians(comp.spotAngle), 1.0f, 0.01f, comp.range)
+						);
+
+						light.shadowId = numShadowCastingLights++;
 					}
+
+					numSpotLights++;
 				}
 			}
 
-			lightParams2->ambient.w = float(numDirectionalLights);
+			ambDirLightParams->ambient.w = float(numDirectionalLights);
 
 			{
 				UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
 				assert(nullptr != params);
-				params->handle = lightParamsBuffer;
-				params->data = lightParams;
-				params->size = sizeof(LightParameters) * lightsCount;
+				params->handle = ambientDirLightBuffer;
+				params->data = ambDirLightParams;
+				params->size = sizeof(LightParametersDirectionalAndAmbient);
 
 				cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
 			}
 
+			if (numPointLights > 0)
 			{
 				UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
 				assert(nullptr != params);
-				params->handle = lightParamsAmbDirBuffer;
-				params->data = lightParams2;
-				params->size = sizeof(LightParametersDirectionalAndAmbient);
+				params->handle = pointLightBuffer;
+				params->data = pointLightParams;
+				params->size = sizeof(PointLightParams);
+
+				cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
+			}
+
+			if (numSpotLights > 0)
+			{
+				UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
+				assert(nullptr != params);
+				params->handle = spotLightBuffer;
+				params->data = spotLightParams;
+				params->size = sizeof(SpotLightParams);
+
+				cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
+			}
+
+			if (numPointLights > 0)
+			{
+				UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
+				assert(nullptr != params);
+				params->handle = pointLightTransformBuffer;
+				params->data = pointLightTransform;
+				params->size = sizeof(math::float4x4) * numPointLights;
+
+				cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
+			}
+
+			if (numSpotLights > 0)
+			{
+				UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
+				assert(nullptr != params);
+				params->handle = spotLightTransformBuffer;
+				params->data = spotLightTransform;
+				params->size = sizeof(math::float4x4) * numSpotLights;
+
+				cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
+			}
+
+			if (numShadowCastingLights > 0)
+			{
+				UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
+				assert(nullptr != params);
+				params->handle = shadowMatricesBuffer;
+				params->data = shadowMatrices;
+				params->size = sizeof(math::float4x4) * numShadowCastingLights * 4;
 
 				cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
 			}
@@ -1864,7 +2048,7 @@ namespace tofu
 
 		for (uint32_t iLight = 0; iLight < numShadowCastingLights; iLight++)
 		{
-			uint32_t lightIdx = shadowLights[iLight];
+			//uint32_t lightIdx = shadowLights[iLight];
 
 			// clear depth map
 			{
@@ -1916,7 +2100,7 @@ namespace tofu
 						// fall through
 					case kMaterialTypeOpaque:
 						params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(iObject * 16), 16 };
-						params->vsConstantBuffers[1] = { lightParamsBuffer, static_cast<uint16_t>(lightIdx * 16), 16 };
+						params->vsConstantBuffers[1] = { shadowMatricesBuffer, static_cast<uint16_t>(iLight * 16), 16 };
 
 						params->renderTargets[0] = TextureHandle();
 						params->depthRenderTarget = lights[lightIdx].depthMap;
@@ -2026,7 +2210,7 @@ namespace tofu
 				params->startVertex = mesh.StartVertex;
 				params->indexCount = mesh.NumIndices;
 
-				params->vsConstantBuffers[0] = { lightParamsBuffer, static_cast<uint16_t>(pointLights[i] * 16), 16 };
+				params->vsConstantBuffers[0] = { pointLightBuffer, static_cast<uint16_t>(pointLights[i] * 16), 16 };
 				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 32 };
 
 				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
@@ -2054,7 +2238,7 @@ namespace tofu
 				params->startVertex = mesh.StartVertex;
 				params->indexCount = mesh.NumIndices;
 
-				params->vsConstantBuffers[0] = { lightParamsBuffer, static_cast<uint16_t>(spotLights[i] * 16), 16 };
+				params->vsConstantBuffers[0] = { pointLightBuffer, static_cast<uint16_t>(spotLights[i] * 16), 16 };
 				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 32 };
 
 				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
@@ -2083,7 +2267,7 @@ cmdBuf->Add(RendererCommand::kCommandDraw, params);
 				params->startVertex = mesh.StartVertex;
 				params->indexCount = mesh.NumIndices;
 
-				params->vsConstantBuffers[0] = { lightParamsBuffer, static_cast<uint16_t>(pointLights[i] * 16), 16 };
+				params->vsConstantBuffers[0] = { pointLightBuffer, static_cast<uint16_t>(pointLights[i] * 16), 16 };
 				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
 
 				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
@@ -2114,7 +2298,7 @@ cmdBuf->Add(RendererCommand::kCommandDraw, params);
 				params->startVertex = mesh.StartVertex;
 				params->indexCount = mesh.NumIndices;
 
-				params->vsConstantBuffers[0] = { lightParamsBuffer, static_cast<uint16_t>(spotLights[i] * 16), 16 };
+				params->vsConstantBuffers[0] = { pointLightBuffer, static_cast<uint16_t>(spotLights[i] * 16), 16 };
 				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
 
 				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
@@ -2147,7 +2331,7 @@ cmdBuf->Add(RendererCommand::kCommandDraw, params);
 				params->startVertex = mesh.StartVertex;
 				params->indexCount = mesh.NumIndices;
 
-				params->psConstantBuffers[0] = { lightParamsAmbDirBuffer, 0, 0 };
+				params->psConstantBuffers[0] = { ambientDirLightBuffer, 0, 0 };
 
 				params->psShaderResources[0] = gBuffer1;
 				params->psShaderResources[1] = gBuffer2;

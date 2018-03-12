@@ -125,8 +125,12 @@ namespace tofu
 
 		TextureHandle			hdrTarget;
 
-		BufferHandle			lightParamsAmbDirBuffer;
-		BufferHandle			lightParamsBuffer;
+		BufferHandle			ambientDirLightBuffer;
+		BufferHandle			pointLightBuffer;
+		BufferHandle			spotLightBuffer;
+		BufferHandle			pointLightTransformBuffer;
+		BufferHandle			spotLightTransformBuffer;
+		BufferHandle			shadowMatricesBuffer;
 
 		// resources for volumetric fog
 		TextureHandle			scatterTex;

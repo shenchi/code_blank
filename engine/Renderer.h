@@ -181,16 +181,26 @@ namespace tofu
 	struct CreateTextureParams
 	{
 		TextureHandle		handle;
+
 		uint32_t			dynamic : 1;
 		uint32_t			cubeMap : 1;
 		// if set, data: file's content; width: file's size, other fields are ignored
 		uint32_t			isFile : 1;
-		uint32_t			_reserved : 5;
+		uint32_t			isSlice : 1; // it's a slice (resource view) of another resource
+		uint32_t			_reserved : 4;
 		uint32_t			format : 8;
 		uint32_t			arraySize : 8;
 		uint32_t			bindingFlags : 8;
-		uint32_t			width;
-		uint32_t			height;
+		union
+		{
+			uint32_t		width;
+			TextureHandle	sliceSource;
+		};
+		union
+		{
+			uint32_t		height;
+			uint32_t		sliceStartArrayIndex;
+		};
 		uint32_t			depth;
 		uint32_t			pitch;
 		uint32_t			slicePitch;
@@ -205,22 +215,22 @@ namespace tofu
 			width = static_cast<uint32_t>(size);
 		}
 
-		TF_INLINE void InitAsTexture2D(TextureHandle handle, uint32_t width, uint32_t height, PixelFormat format = kFormatR8g8b8a8Unorm, uint32_t binding = kBindingShaderResource)
+		TF_INLINE void InitAsTexture2D(TextureHandle handle, uint32_t width, uint32_t height, PixelFormat format = kFormatR8g8b8a8Unorm, uint32_t arraySize = 1, uint32_t binding = kBindingShaderResource)
 		{
 			this->handle = handle;
 			this->bindingFlags = binding;
 			this->format = format;
-			this->arraySize = 1;
+			this->arraySize = arraySize;
 			this->width = width;
 			this->height = height;
 		}
 
-		TF_INLINE void InitAsTexture2D(TextureHandle handle, uint32_t width, uint32_t height, PixelFormat format, void* data, uint32_t pitch, uint32_t binding = kBindingShaderResource)
+		TF_INLINE void InitAsTexture2D(TextureHandle handle, uint32_t width, uint32_t height, PixelFormat format, void* data, uint32_t pitch, uint32_t arraySize = 1, uint32_t binding = kBindingShaderResource)
 		{
 			this->handle = handle;
 			this->bindingFlags = binding;
 			this->format = format;
-			this->arraySize = 1;
+			this->arraySize = arraySize;
 			this->width = width;
 			this->height = height;
 			this->pitch = pitch;
@@ -236,6 +246,17 @@ namespace tofu
 			this->arraySize = 6;
 			this->width = width;
 			this->height = height;
+		}
+
+		TF_INLINE void InitAsTexture2DSlice(TextureHandle handle, TextureHandle sliceSource, uint32_t startArrayIndex, uint32_t arraySize, PixelFormat format = kFormatAuto, uint32_t binding = kBindingShaderResource)
+		{
+			this->handle = handle;
+			this->bindingFlags = binding;
+			this->format = format;
+			this->arraySize = arraySize;
+			this->isSlice = 1;
+			this->sliceSource = sliceSource;
+			this->sliceStartArrayIndex = startArrayIndex;
 		}
 
 		TF_INLINE void InitAsTexture3D(TextureHandle handle, uint32_t width, uint32_t height, uint32_t depth, PixelFormat format = kFormatR8g8b8a8Unorm, uint32_t binding = kBindingShaderResource)
@@ -260,6 +281,7 @@ namespace tofu
 			this->slicePitch = slicePitch;
 			this->data = data;
 		}
+
 	};
 
 	struct UpdateTextureParams
@@ -412,20 +434,16 @@ namespace tofu
 	struct ClearParams
 	{
 		TextureHandle		renderTargets[kMaxRenderTargetBindings];
-		uint32_t			renderTargetSubIds[kMaxRenderTargetBindings];
 		float				clearColor[4];
 		TextureHandle		depthRenderTarget;
-		uint32_t			depthRenderTargetSubId;
 		float				clearDepth;
 		uint8_t				clearStencil;
 
 		inline ClearParams()
 			:
 			renderTargets(),
-			renderTargetSubIds(),
 			clearColor(),
 			depthRenderTarget(kMaxTextures),
-			depthRenderTargetSubId(0),
 			clearDepth(1.0f),
 			clearStencil(0u)
 		{
@@ -463,9 +481,7 @@ namespace tofu
 		SamplerHandle			vsSamplers[kMaxSamplerBindings];
 		SamplerHandle			psSamplers[kMaxSamplerBindings];
 		TextureHandle			renderTargets[kMaxRenderTargetBindings];
-		uint32_t				renderTargetSubIds[kMaxRenderTargetBindings];
 		TextureHandle			depthRenderTarget;
-		uint32_t				depthRenderTargetSubId;
 
 		static const TextureHandle DefaultRenderTarget;
 
@@ -484,9 +500,7 @@ namespace tofu
 			vsSamplers(),
 			psSamplers(),
 			renderTargets(),
-			renderTargetSubIds(),
-			depthRenderTarget(DefaultRenderTarget),
-			depthRenderTargetSubId(0)
+			depthRenderTarget(DefaultRenderTarget)
 		{
 			renderTargets[0] = DefaultRenderTarget;
 		}
