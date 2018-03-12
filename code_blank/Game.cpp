@@ -376,7 +376,6 @@ bool Game::LoadScene(sceneType num)
 			}
 			assert(player != NULL);
 
-
 			//*********************************************************************************************
 			//temp for test
 			/*enemy01 = new Enemy(math::float3{ 10.0f, 1.0f, 0.0f });
@@ -389,6 +388,29 @@ bool Game::LoadScene(sceneType num)
 			// enemyList.pushback(enemy01);
 
 			player->GetCombatManager()->SetEnemyList(enemyList);
+
+			// Test stair
+			{
+				Entity e = Entity::Create();
+
+				tStair = e.AddComponent<TransformComponent>();
+				tStair->SetLocalPosition(math::float3{ 53.0f, 1.0f, -38.0f });
+				//tStair->SetLocalScale(math::float3{ 10000.f,10000.f,10000.f });
+
+				RenderingComponent r = e.AddComponent<RenderingComponent>();
+
+				Model* model = RenderingSystem::instance()->CreateModel("assets/stairs.model");
+
+				Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
+				TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
+				TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/stone_wall_normalmap.texture");
+
+				material->SetTexture(diffuse);
+				material->SetNormalMap(normalMap);
+
+				r->SetMaterial(material);
+				r->SetModel(model);
+			}
 
 			break;
 		}

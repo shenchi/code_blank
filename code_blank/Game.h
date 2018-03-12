@@ -32,6 +32,8 @@ private:
 	tofu::TransformComponent tBox7;
 	tofu::TransformComponent tGround;
 
+	tofu::TransformComponent tStair;
+
 	// Class variables
 	//tofu::CameraComponent cam;
 	Camera* cam;

@@ -1809,14 +1809,14 @@ int main(int argc, char* argv[])
 	//	"../../assets/KB_Punches.fbx",
 	//};
 
-	////argc = 3;
-	////
-	////char* tempArgv[6] =
-	////{
-	////	"",
-	////	"../../cube.model",
-	////	"../../assets/cube.fbx",
-	////};
+	/*argc = 3;
+	
+	char* tempArgv[6] =
+	{
+		"",
+		"stairs.model",
+		"stairs.obj",
+	};*/
 
 	////////char* tempArgv[6] =
 	////////{
