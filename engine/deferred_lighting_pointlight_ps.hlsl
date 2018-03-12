@@ -73,7 +73,8 @@ float4 main(float4 clipPos : SV_POSITION, uint iid : SV_InstanceID) : SV_TARGET
 	lightDir = normalize(lightDir);
 
 	float NdotL = max(dot(lightDir, worldNormal), 0);
-	float atten = 1 / (dist * dist) * (1 - step(1, dist));
+	float atten = (1 / (dist * dist)) * (1 - step(1, dist));
+	atten *= (1 - dist);
 
 	float3 H = normalize(lightDir + viewDir);
 	float NdotH = max(dot(worldNormal, H), 0);
