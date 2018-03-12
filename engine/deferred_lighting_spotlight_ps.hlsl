@@ -125,17 +125,15 @@ float4 main(float4 clipPos : SV_POSITION, uint iid : SV_InstanceID) : SV_TARGET
 		float bias = max(0.001 * (1.0 - NdotL), 0.0001);
 		currentDepth -= 0.00001;
 
-		lightSpacePos.z = shadowId;
-
-		for (int i = -2; i < 3; i++) {
-			for (int j = -2; j < 3; j++) {
-				float3 uv = lightSpacePos.xyz;
-				uv.xy += float2(i, j) * 0.0009765625;
-				float cloestDepth = shadowMap.Sample(shadowSamp, uv).r;
+		for (int i = -3; i < 4; i++) {
+			for (int j = -3; j < 4; j++) {
+				float cloestDepth = shadowMap.Sample(
+					shadowSamp, 
+					float3(lightSpacePos.xy + float2(i, j) * 0.0009765625, shadowId)).r;
 				shadow += (currentDepth > cloestDepth ? 1 : 0);
 			}
 		}
-		shadow /= 25;
+		shadow /= 49;
 	}
 
 	float3 finalColor = max(Lo, 0) *max(1 - shadow, 0);
