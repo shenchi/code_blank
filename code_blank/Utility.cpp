@@ -10,7 +10,7 @@ namespace
 	constexpr float Accelerate = 6.67f;
 	constexpr float Deaccelerate = 10.0f;
 	constexpr float WalkSpeed = 3.0f; 
-	constexpr float RunSpeed = 6.0f;
+	constexpr float RunSpeed = 20.0f;
 }
 
 namespace Utility
@@ -26,6 +26,8 @@ namespace Utility
 		camera = entity.AddComponent<CameraComponent>();
 		camera->SetFOV(60.0f);
 		camera->SetSkybox(skybox);
+		camera->SetZNear(1.0f);
+		camera->SetZFar(500.0f);
 
 		pitch = 0.0f;
 		yaw = 0.0f;
@@ -47,7 +49,7 @@ namespace Utility
 
 		if (input->IsGamepadConnected())
 		{
-			if (input->IsButtonDown(ButtonId::kGamepadStart))
+			if (input->IsButtonDown(ButtonId::kGamepadStart) || input->IsButtonDown(ButtonId::kKeyEscape))
 			{
 				Engine::instance()->Quit();
 			}

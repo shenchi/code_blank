@@ -16,6 +16,8 @@ Camera::Camera()
 
 	SetPosition(math::float3{ 0, 0, -2 });
 	SetFov(60.0f);
+	cam->SetZNear(1.0f);
+	cam->SetZFar(500.0f);
 
 	distMod = math::float3{ 0.0f, 2.0f, 0.0f };
 

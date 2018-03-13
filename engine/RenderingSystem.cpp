@@ -1922,9 +1922,12 @@ namespace tofu
 				params->psShaderResources[0] = gBuffer1;
 				params->psShaderResources[1] = gBuffer2;
 				params->psShaderResources[2] = gBuffer3;
-				params->psShaderResources[3] = camera.skybox->skyboxDiffMap;
-				params->psShaderResources[4] = camera.skybox->skyboxSpecMap;
-				params->psShaderResources[5] = camera.skybox->lutMap;
+				if (nullptr != camera.skybox)
+				{
+					params->psShaderResources[3] = camera.skybox->skyboxDiffMap;
+					params->psShaderResources[4] = camera.skybox->skyboxSpecMap;
+					params->psShaderResources[5] = camera.skybox->lutMap;
+				}
 
 				params->psSamplers[0] = defaultSampler;
 				params->psSamplers[1] = lutSampler;

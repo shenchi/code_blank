@@ -23,26 +23,31 @@ void GameplayAnimationMachine::Play(CharacterState state, uint32_t parameter, si
 	{
 	case kIdleOutCombat:
 		aComp->CrossFade("idle", 0.05f, 0);
+		aComp->CrossFade("idle", 0.05f, 1);
 		//aComp->CrossFade("Idle_OutCombat", 0.2f, layerMask);
 		//aComp->CrossFade(0, 0.2f);
 		break;
 	case kIdleInCombat:
 		aComp->CrossFade("combat_idle", 0.03f, 0);
+		aComp->CrossFade("combat_idle", 0.03f, 1);
 		//aComp->Play("idle", 0);
 		//aComp->CrossFade("Idle_InCombat", 0.2f, layerMask);
 		break;
 	case kWalk:
 		aComp->CrossFade("walk", 0.2f, 0);
+		aComp->CrossFade("walk", 0.2f, 1);
 		//aComp->CrossFade("Run", 0.1f, layerMask);
 		//aComp->CrossFade(1, 0.2f);
 		break;
 	case kRun:
 		aComp->CrossFade("run", 0.1f, 0);
+		aComp->CrossFade("run", 0.1f, 1);
 		//aComp->Play("Sprint", layerMask);
 		//aComp->CrossFade(2, 0.3f);
 		break;
 	case kJumpUp:
 		aComp->CrossFade("jump", 0.5f, 0);
+		aComp->CrossFade("jump", 0.5f, 1);
 		//aComp->CrossFade("jump_up", 0.2f, 0);
 		//aComp->Play("Jump_Up", layerMask);
 		//aComp->CrossFade(3, 0.5f);
@@ -108,6 +113,7 @@ void GameplayAnimationMachine::Play(CharacterState state, uint32_t parameter, si
 		break;
 	case kRoll:
 		aComp->CrossFade("kRoll", 0.5f, 0);
+		aComp->CrossFade("kRoll", 0.5f, 1);
 		//aComp->Play("Roll", layerMask);
 		break;
 	case kAttack:
@@ -117,30 +123,38 @@ void GameplayAnimationMachine::Play(CharacterState state, uint32_t parameter, si
 			{
 			case kNone:
 				aComp->CrossFade("", -1, 0);
+				aComp->CrossFade("", -1, 1);
 				break;
 			case kPunchJabL:
 				aComp->CrossFade("kPunchJabL", 0.2f, 0);
+				aComp->CrossFade("kPunchJabL", 0.2f, 1);
 				break;
 			case kPunchJabR:
 				aComp->CrossFade("kPunchJabR", 0.2f, 0);
+				aComp->CrossFade("kPunchJabR", 0.2f, 1);
 				break;
 			case kPunchHookL:
 				aComp->CrossFade("kPunchHookL", 0.2f, 0);
+				aComp->CrossFade("kPunchHookL", 0.2f, 1);
 				break;
 			case kPunchHookR:
 				aComp->CrossFade("kPunchHookR", 0.2f, 0);
+				aComp->CrossFade("kPunchHookR", 0.2f, 1);
 				break;
 			case kPunchUpperCutL:
 				assert(false);
 				aComp->CrossFade("kPunchUpperCutL", 0.2f, 0);
+				aComp->CrossFade("kPunchUpperCutL", 0.2f, 1);
 				break;
 			case kPunchUpperCutR:
 				assert(false);
 				aComp->CrossFade("kPunchUpperCutR", 0.2f, 0);
+				aComp->CrossFade("kPunchUpperCutR", 0.2f, 1);
 				break;
 			case kKickStraightMidR:
 				// 5 Basic Attacks
 				aComp->CrossFade("kKickStraightMidR", 0.2f, 0);
+				aComp->CrossFade("kKickStraightMidR", 0.2f, 1);
 				break;
 			case kKickKnee:
 				// Currently not used
@@ -150,28 +164,36 @@ void GameplayAnimationMachine::Play(CharacterState state, uint32_t parameter, si
 			case kKickAxeKick:
 				// Press and Hold Attack
 				aComp->CrossFade("kKickAxeKick", 0.2f, 0);
+				aComp->CrossFade("kKickAxeKick", 0.2f, 1);
 				break;
 			case kKickHorseKick:
 				// 5 Basic attacks and then hold attack
 				aComp->CrossFade("kKickHorseKick", 0.2f, 0);
+				aComp->CrossFade("kKickHorseKick", 0.2f, 1);
 				break;
 			case kSwordAttackR:
 				aComp->CrossFade("", 0.2f, 0);
+				aComp->CrossFade("", 0.2f, 1);
 				break;
 			case kSwordAttackRL:
 				aComp->CrossFade("", 0.2f, 0);
+				aComp->CrossFade("", 0.2f, 1);
 				break;
 			case kSwordAttackSpU:
 				aComp->CrossFade("", 0.2f, 0);
+				aComp->CrossFade("", 0.2f, 1);
 				break;
 			case kSwordAttackComboLL:
 				aComp->CrossFade("", 0.2f, 0);
+				aComp->CrossFade("", 0.2f, 1);
 				break;
 			case kGunShoot:
 				aComp->CrossFade("", 0.2f, 0);
+				aComp->CrossFade("", 0.2f, 1);
 				break;
 			case kNumberOfItems:
 				aComp->CrossFade("", 0.2f, 0);
+				aComp->CrossFade("", 0.2f, 1);
 				break;
 			default:
 				break;

@@ -1,505 +1,1148 @@
 {
     "models": [
         {
+            "name": "Sundries1_LJ_TrashBox2_box3",
+            "guid": "4cced8b4d5bf3b643a47190276c921f6"
+        },
+        {
+            "name": "Sundries1_LJ_TrashBox1_box1",
+            "guid": "c5d5025a13b2ddb40adec41836283ea7"
+        },
+        {
+            "name": "Building1_LSJ_SecondFloor1_polySurface62",
+            "guid": "efa2aee1c086f884da7ba6bbf75b0b41"
+        },
+        {
+            "name": "Building1_LSJ_SecondFloor2_polySurface54",
+            "guid": "295a40cb3d48ea24084a7a1d354aa125"
+        },
+        {
             "name": "Unity_Builtin_Quad",
             "guid": "0000000000000000e000000000000000"
         },
         {
-            "name": "FloorTile_Slab_10x10",
-            "guid": "ea2f01651cae4b54988d1b3f8b7a17e7"
+            "name": "Bigroad_polySurface1",
+            "guid": "6b7873c4f7b149148baadf427c3fdbda"
         },
         {
-            "name": "Building1_CFT_wholeBuilding",
-            "guid": "6849c45d1922e334aa13443b0b8ecb15"
-        },
-        {
-            "name": "Unity_Builtin_Plane",
+            "name": "Unity_Builtin_Cube",
             "guid": "0000000000000000e000000000000000"
         },
         {
-            "name": "Building1_ZLJ_Main",
-            "guid": "7093e350d83b98947ad131f89c0838c1"
+            "name": "room_05_pack_square_night_skyscraper_1",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
         },
         {
-            "name": "OfficeBuilding1_PZY",
-            "guid": "231721c4f1004fd468b8cf3631e855c0"
+            "name": "room_05_pack_square_night_skyscraper_2",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
         },
         {
-            "name": "Bulidng2_CFT_wholeBuilding",
-            "guid": "7220ba33e003b174eb833b7d9f94b94e"
+            "name": "room_05_pack_square_night_skyscraper_3",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
         },
         {
-            "name": "Building1_LSJ_SecondFloor3",
-            "guid": "4e505f4e83baeaa428944b9d9b47a439"
+            "name": "room_05_pack_square_night_roof_element_4_1",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
         },
         {
-            "name": "Building1_LSJ_SecondFloor1",
-            "guid": "efa2aee1c086f884da7ba6bbf75b0b41"
+            "name": "room_05_pack_square_night_roof_element_4_2",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
         },
         {
-            "name": "Building1_LSJ_SecondFloor2",
-            "guid": "295a40cb3d48ea24084a7a1d354aa125"
+            "name": "room_05_pack_square_night_roof_element_4_3",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
         },
         {
-            "name": "Sundries1_LJ_TrashBox1",
-            "guid": "c5d5025a13b2ddb40adec41836283ea7"
+            "name": "room_05_pack_square_night_roof_element_4_4",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
         },
         {
-            "name": "Sundries1_LJ_TrashBox2",
-            "guid": "4cced8b4d5bf3b643a47190276c921f6"
+            "name": "room_05_pack_square_night_skyscraper_4",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
         },
         {
-            "name": "Unity_Builtin_Sphere",
-            "guid": "0000000000000000e000000000000000"
+            "name": "room_05_pack_square_night_roof_element_5_1",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
         },
         {
-            "name": "barrel",
-            "guid": "435b7e69285c59b4588a39e3308b6576"
+            "name": "room_05_pack_square_night_roof_element_5_2",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
         },
         {
-            "name": "Wooden_Barrel",
-            "guid": "97b231c8dc21ff1478b5250f44398a44"
+            "name": "room_05_pack_square_night_roof_element_5_3",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_roof_element_5_4",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_windows_glass_62",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_6",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_7",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_8",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_9",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_10",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_11",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_12",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_13",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_14",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_15",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_16",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_17",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_18",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_19",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_20",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_21",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_25",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_26",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_27",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_28",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_29",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_30",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_31",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_32",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_33",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_34",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_35",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_36",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_37",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_38",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_39",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_40",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_41",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_42",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_43",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_44",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_45",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_46",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_47",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_50",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_8",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_9",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_10",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_11",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_16",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_17",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_18",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_19",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_20",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_21",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_window_glass_28",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_24",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_25",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_26",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_27",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_28",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_29",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_30",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_31",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_32",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_33",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_34",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_35",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_37",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_38",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_39",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_51",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_52",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_53",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_56",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_57",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_59",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_60",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_61",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_64",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_windows_glass_64",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_65",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_66",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_6",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_4",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_building_7",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "room_05_pack_square_night_windows_glass_7",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
         }
     ],
     "materials": [
         {
-            "Name": "icn_back01",
-            "GUID": "585d1bdccdfa97d45a4da24f8dd046c7",
-            "AlbedoMap": "textures/icn_back01",
+            "Name": "trash_Base_Color",
+            "GUID": "885a9133670b8f2448cf3ef6ee3980df",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Sundries1_LJ_D",
             "NormalMap": "",
             "MetallicGlossMap": "",
-            "OcclusionMap": ""
-        },
-        {
-            "Name": "Floor1",
-            "GUID": "a279ff533c8c0d1408b26d70a2693428",
-            "AlbedoMap": "textures/Floor1_Diff+Spec",
-            "NormalMap": "textures/Floor1_Bump",
-            "MetallicGlossMap": "",
-            "OcclusionMap": ""
-        },
-        {
-            "Name": "123",
-            "GUID": "855e219e032cb0447964bca6857cf03f",
-            "AlbedoMap": "textures/Building1_CFT_D",
-            "NormalMap": "textures/Building1_CFT_N",
-            "MetallicGlossMap": "",
-            "OcclusionMap": ""
-        },
-        {
-            "Name": "New Material",
-            "GUID": "2379478269ddd904b9b61c457688bdc3",
-            "AlbedoMap": "",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": ""
-        },
-        {
-            "Name": "BuildingLongji_pCube558Shape",
-            "GUID": "0602e1544b7b85b438d7c04de92004f5",
-            "AlbedoMap": "textures/Building1_ZLJ_D",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": ""
-        },
-        {
-            "Name": "lambert1",
-            "GUID": "fcc18fa35a4162b42b07a546622342cb",
-            "AlbedoMap": "textures/OfficeBuilding1_PZY_D",
-            "NormalMap": "textures/OfficeBuilding1_PZY_N",
-            "MetallicGlossMap": "",
-            "OcclusionMap": ""
-        },
-        {
-            "Name": "typeBlinn",
-            "GUID": "f599901ccc885b24e848004d352c709f",
-            "AlbedoMap": "",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": ""
-        },
-        {
-            "Name": "ID3",
-            "GUID": "452c1534d236c984f9756aba8ba7f8f1",
-            "AlbedoMap": "textures/Building2_CFT_D",
-            "NormalMap": "textures/Building2_CFT_N",
-            "MetallicGlossMap": "",
-            "OcclusionMap": ""
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
         },
         {
             "Name": "building1_Texture",
             "GUID": "a462b6aae0285a3439a947c4e22c8b16",
+            "Type": "Opaque",
             "AlbedoMap": "textures/building1_LSJ_D",
             "NormalMap": "",
             "MetallicGlossMap": "",
-            "OcclusionMap": ""
-        },
-        {
-            "Name": "trash_Base_Color",
-            "GUID": "885a9133670b8f2448cf3ef6ee3980df",
-            "AlbedoMap": "textures/Sundries1_LJ_D",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": ""
-        },
-        {
-            "Name": "Arrow",
-            "GUID": "390501efc93bf4040b222b69e8095777",
-            "AlbedoMap": "textures/Arrow",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": ""
-        },
-        {
-            "Name": "Arrow2",
-            "GUID": "63d36547b831e184ab92ef27b8ce7afc",
-            "AlbedoMap": "textures/Arrow2",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": ""
-        },
-        {
-            "Name": "Tut00",
-            "GUID": "127503d4b636a0040ab43506a5292549",
-            "AlbedoMap": "textures/Tut00",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": ""
-        },
-        {
-            "Name": "Tut05A",
-            "GUID": "6298d74d023d62e40bed7fc4f94494f4",
-            "AlbedoMap": "textures/Tut05A",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": ""
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
         },
         {
             "Name": "Tut01",
             "GUID": "94bfeadd3a24d7a469dd57077b1cbfd3",
+            "Type": "Transparent",
             "AlbedoMap": "textures/Tut01",
             "NormalMap": "",
             "MetallicGlossMap": "",
-            "OcclusionMap": ""
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
         },
         {
             "Name": "Tut02",
             "GUID": "fa0838bc760bef44ebcccf8f8f84fa5f",
+            "Type": "Transparent",
             "AlbedoMap": "textures/Tut02",
             "NormalMap": "",
             "MetallicGlossMap": "",
-            "OcclusionMap": ""
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
         },
         {
             "Name": "Tut03",
             "GUID": "cd58defb383496f419e5d6ce99a91318",
+            "Type": "Transparent",
             "AlbedoMap": "textures/Tut03",
             "NormalMap": "",
             "MetallicGlossMap": "",
-            "OcclusionMap": ""
-        },
-        {
-            "Name": "Tut03A",
-            "GUID": "a808525e91fa7df42b5100537cc7f294",
-            "AlbedoMap": "textures/Tut03A",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": ""
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
         },
         {
             "Name": "Tut04",
             "GUID": "707cb3dcedd51a242affb7c2b77c3a8b",
+            "Type": "Transparent",
             "AlbedoMap": "textures/Tut04",
             "NormalMap": "",
             "MetallicGlossMap": "",
-            "OcclusionMap": ""
-        },
-        {
-            "Name": "Tut04A",
-            "GUID": "1e0361aeb1433a94992f430f9f2ac41b",
-            "AlbedoMap": "textures/Tut04A",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": ""
-        },
-        {
-            "Name": "Tut05",
-            "GUID": "1ff8ef8455f121346b41a2b549c4cca9",
-            "AlbedoMap": "textures/Tut05",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": ""
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
         },
         {
             "Name": "Tut06",
             "GUID": "96efafdd0583f9a45b76255f5045269c",
+            "Type": "Transparent",
             "AlbedoMap": "textures/Tut06",
             "NormalMap": "",
             "MetallicGlossMap": "",
-            "OcclusionMap": ""
-        },
-        {
-            "Name": "Tut06A",
-            "GUID": "e962c269e91cbb54fbeea4739dc18c35",
-            "AlbedoMap": "textures/Tut06A",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": ""
-        },
-        {
-            "Name": "Tut06B",
-            "GUID": "2494f9aa0ce423a43bbbff30c0e847e6",
-            "AlbedoMap": "textures/Tut06B",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": ""
-        },
-        {
-            "Name": "Tut06C",
-            "GUID": "86e8c5c5fdf228d45be45c0790f26ca0",
-            "AlbedoMap": "textures/Tut06C",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": ""
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
         },
         {
             "Name": "Tut06D",
             "GUID": "934651716a784664a8400fe2b5082b0a",
+            "Type": "Transparent",
             "AlbedoMap": "textures/Tut06D",
             "NormalMap": "",
             "MetallicGlossMap": "",
-            "OcclusionMap": ""
-        },
-        {
-            "Name": "Tut06E",
-            "GUID": "219b12168a30e6144b794930ccb720f7",
-            "AlbedoMap": "textures/Tut06E",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": ""
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
         },
         {
             "Name": "Tut06F",
             "GUID": "ccac11483c0220c469eabd056d7dad1c",
+            "Type": "Transparent",
             "AlbedoMap": "textures/Tut06F",
             "NormalMap": "",
             "MetallicGlossMap": "",
-            "OcclusionMap": ""
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
         },
         {
             "Name": "Tut06G",
             "GUID": "47d183ac7807bc94bad524ec1fde4b3a",
+            "Type": "Transparent",
             "AlbedoMap": "textures/Tut06G",
             "NormalMap": "",
             "MetallicGlossMap": "",
-            "OcclusionMap": ""
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
         },
         {
             "Name": "Tut07",
             "GUID": "b586efeeb5506a84086a677aaf32bcc4",
+            "Type": "Transparent",
             "AlbedoMap": "textures/Tut07",
             "NormalMap": "",
             "MetallicGlossMap": "",
-            "OcclusionMap": ""
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
         },
         {
             "Name": "Tut07A 1",
             "GUID": "bb716238352b6014b823b292a393abb0",
+            "Type": "Transparent",
             "AlbedoMap": "textures/Tut07A",
             "NormalMap": "",
             "MetallicGlossMap": "",
-            "OcclusionMap": ""
-        },
-        {
-            "Name": "Tut07B",
-            "GUID": "e6425c4ecf367fd4b9944c2924f596c1",
-            "AlbedoMap": "textures/Tut07B",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": ""
-        },
-        {
-            "Name": "Tut07C",
-            "GUID": "fcb5c30ff9d7bdd41bc3d1790063400e",
-            "AlbedoMap": "textures/Tut07C",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": ""
-        },
-        {
-            "Name": "Texture_3",
-            "GUID": "61d04e4673d5eee4db4b4a56100bc2bd",
-            "AlbedoMap": "textures/Texture_3_Diffuse",
-            "NormalMap": "textures/Texture_3_Normal",
-            "MetallicGlossMap": "",
-            "OcclusionMap": ""
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
         },
         {
             "Name": "Tut08",
             "GUID": "cf1f80a00e32b5e42b9c11aabfd32502",
+            "Type": "Transparent",
             "AlbedoMap": "textures/Tut08",
             "NormalMap": "",
             "MetallicGlossMap": "",
-            "OcclusionMap": ""
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
         },
         {
             "Name": "Tut08A",
             "GUID": "8b2c91c1a24fadf4e89904b6a2bf6a64",
+            "Type": "Transparent",
             "AlbedoMap": "textures/Tut08A",
             "NormalMap": "",
             "MetallicGlossMap": "",
-            "OcclusionMap": ""
-        },
-        {
-            "Name": "Tut08B",
-            "GUID": "8f6ccc488ef37b24c9d06430fca07142",
-            "AlbedoMap": "textures/Tut08B",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": ""
-        },
-        {
-            "Name": "Tut08C",
-            "GUID": "ec1b7c1e95164044d8addfd6b82642ce",
-            "AlbedoMap": "textures/Tut08C",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": ""
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
         },
         {
             "Name": "Tut09",
             "GUID": "15f9acff693642e459a2a12ac48f5b77",
+            "Type": "Transparent",
             "AlbedoMap": "textures/Tut09",
             "NormalMap": "",
             "MetallicGlossMap": "",
-            "OcclusionMap": ""
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
         },
         {
             "Name": "Tut09A",
             "GUID": "0f29824036156bc40a6c3ef5691b18e5",
+            "Type": "Transparent",
             "AlbedoMap": "textures/Tut09A",
             "NormalMap": "",
             "MetallicGlossMap": "",
-            "OcclusionMap": ""
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
         },
         {
             "Name": "Tut09B",
             "GUID": "cc6d16f023d1505469d0e0b261c58ffc",
+            "Type": "Transparent",
             "AlbedoMap": "textures/Tut09B",
             "NormalMap": "",
             "MetallicGlossMap": "",
-            "OcclusionMap": ""
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "icn_back01",
+            "GUID": "585d1bdccdfa97d45a4da24f8dd046c7",
+            "Type": "Transparent",
+            "AlbedoMap": "textures/icn_back01",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "Arrow",
+            "GUID": "390501efc93bf4040b222b69e8095777",
+            "Type": "Transparent",
+            "AlbedoMap": "textures/Arrow",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "Arrow2",
+            "GUID": "63d36547b831e184ab92ef27b8ce7afc",
+            "Type": "Transparent",
+            "AlbedoMap": "textures/Arrow2",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "lambert1",
+            "GUID": "42343a108fa14ef4fbc6f0dcace7c2f9",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/FogPlane_lambert1_BaseColor",
+            "NormalMap": "textures/FogPlane_lambert1_Normal",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "textures/FogPlane_lambert1_OcclusionRoughnessMetallic",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "Building",
+            "GUID": "40b205f8d63d0594ca593b6179edd6fa",
+            "Type": "Opaque",
+            "AlbedoMap": "",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "room5_D_pack_night",
+            "GUID": "469db4161a09a5f40a3cd9820772645c",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/room_05_night_buildings",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "room5_R_pack_night",
+            "GUID": "64bca8c2aa87e2a4d83924e6dea5489d",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Room_5_Night",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.8117647171020508,
+                "g": 0.8117647171020508,
+                "b": 0.8117647171020508,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
         },
         {
             "Name": "unity_builtin_extra",
             "GUID": "0000000000000000f000000000000000",
+            "Type": "Opaque",
             "AlbedoMap": "",
             "NormalMap": "",
             "MetallicGlossMap": "",
-            "OcclusionMap": ""
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.9999999403953552
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
         },
         {
-            "Name": "Flamable_2",
-            "GUID": "012983db11badba469a5632ea0db7d55",
-            "AlbedoMap": "textures/barrel_low_DefaultMaterial_AlbedoTransparency",
-            "NormalMap": "textures/barrel_low_DefaultMaterial_Normal",
-            "MetallicGlossMap": "textures/barrel_low_DefaultMaterial_MetallicSmoothness",
-            "OcclusionMap": "textures/barrel_low_DefaultMaterial_AO"
-        },
-        {
-            "Name": "Wooden_Barrel",
-            "GUID": "a58a2f593b7af2847a5d745657b73736",
-            "AlbedoMap": "textures/Barrel_AlbedoTransparency",
-            "NormalMap": "textures/Barrel_Normal",
-            "MetallicGlossMap": "textures/Barrel_MetallicSmoothness",
-            "OcclusionMap": "textures/Barrel_Occlusion"
+            "Name": "Floor4",
+            "GUID": "60e77cd03775de043ba0f88012917586",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Floor1_Diff+Spec",
+            "NormalMap": "textures/Floor1_Bump",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.4632353186607361,
+                "g": 0.4632353186607361,
+                "b": 0.4632353186607361,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 10.0,
+                "y": 10.0,
+                "z": 0.0,
+                "w": 0.0
+            }
         }
     ],
     "textures": [
         {
-            "Path": "textures/icn_back01",
-            "GUID": "b741c0d2eb916de40982ae97b859174c",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 7,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Floor1_Diff+Spec",
-            "GUID": "cc39a17532b382042b971e892c29aee4",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Floor1_Bump",
-            "GUID": "d4953f7c4b5211a4d880b0889f5e31b4",
-            "Dimension": "tex2d",
-            "WrapMode": "",
-            "FilterMode": "",
-            "MipmapCount": 0,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Building1_CFT_D",
-            "GUID": "4d281d6482c94ac4b9770fd9915af37c",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Building1_CFT_N",
-            "GUID": "cf58f4f8d6894084f9213bdb0005b8d5",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Building1_ZLJ_D",
-            "GUID": "bba78fb9b94aa9f43bea977507e394d3",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/OfficeBuilding1_PZY_D",
-            "GUID": "a294a6b69a171e44fbc4c071cd9e0f88",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/OfficeBuilding1_PZY_N",
-            "GUID": "473b8d3f4549b6d45ac39183565f4271",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Building2_CFT_D",
-            "GUID": "4820ac2c2fc83df459f0db2b3b0e0c32",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Building2_CFT_N",
-            "GUID": "fc66245a39874c84ba76d3f3facdf40f",
+            "Path": "textures/Sundries1_LJ_D",
+            "GUID": "1bbb4474bffd52c45b5c9d3171bde100",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
@@ -513,51 +1156,6 @@
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
             "MipmapCount": 12,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Sundries1_LJ_D",
-            "GUID": "1bbb4474bffd52c45b5c9d3171bde100",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Arrow",
-            "GUID": "87c379e0434c34848a9e1a516c99eb7e",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 9,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Arrow2",
-            "GUID": "9102272b74170504eb184de7688d09a8",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 9,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut00",
-            "GUID": "fdc0fac5a0fe1dd45ad2a6a9696c8e13",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut05A",
-            "GUID": "400bf18ad2a29d64b8e5d591343a0993",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
             "MipmapBias": 0.0
         },
         {
@@ -588,35 +1186,8 @@
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Tut03A",
-            "GUID": "9529732b08d065a469e30f2ff2ad37aa",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
             "Path": "textures/Tut04",
             "GUID": "ca02d6d783db1614a85dc2a5312695e4",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut04A",
-            "GUID": "d8be5e718431f92478123f1c6795edf2",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut05",
-            "GUID": "0befe9465d94e004aa9748327d612a44",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
@@ -633,44 +1204,8 @@
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Tut06A",
-            "GUID": "30b286b71ac21f449854508eb7aa0c0d",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut06B",
-            "GUID": "eac6d83e0fcaf7e4c82d2732d10fd347",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut06C",
-            "GUID": "4cdcbe221ef12994aa7ca5791156f076",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
             "Path": "textures/Tut06D",
             "GUID": "8f0a8359322f86540ad16cb6591c3c9e",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut06E",
-            "GUID": "915a5c1755ee80942a923b277c4ecba8",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
@@ -714,42 +1249,6 @@
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Tut07B",
-            "GUID": "aa40b4e2ef7242043af065b1e7d71340",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut07C",
-            "GUID": "af32f6738deeadb439405e21fb1f3a48",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Texture_3_Diffuse",
-            "GUID": "a9b9afdc8b980b3489d42061c898b42a",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Texture_3_Normal",
-            "GUID": "e2b3f903a09e3d346bdf3462343109bd",
-            "Dimension": "tex2d",
-            "WrapMode": "",
-            "FilterMode": "",
-            "MipmapCount": 0,
-            "MipmapBias": 0.0
-        },
-        {
             "Path": "textures/Tut08",
             "GUID": "5c492154a2be96a49b67bbe261ab6644",
             "Dimension": "tex2d",
@@ -761,24 +1260,6 @@
         {
             "Path": "textures/Tut08A",
             "GUID": "44f01c89e0aaef844bfc6b8c4da0d52d",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut08B",
-            "GUID": "50a4c395b455eb9489eb848af3083014",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Tut08C",
-            "GUID": "2505928f6a2bb4e4fbd4ffa90ab7744c",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
@@ -813,8 +1294,35 @@
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/barrel_low_DefaultMaterial_AlbedoTransparency",
-            "GUID": "b696d9f35328844498a4c35e81649364",
+            "Path": "textures/icn_back01",
+            "GUID": "b741c0d2eb916de40982ae97b859174c",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 7,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Arrow",
+            "GUID": "87c379e0434c34848a9e1a516c99eb7e",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 9,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Arrow2",
+            "GUID": "9102272b74170504eb184de7688d09a8",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 9,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/FogPlane_lambert1_BaseColor",
+            "GUID": "8123107de2f01124c88cd646986567c7",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
@@ -822,8 +1330,8 @@
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/barrel_low_DefaultMaterial_Normal",
-            "GUID": "34436d83e2c7b93489f4a6643a4d4c2b",
+            "Path": "textures/FogPlane_lambert1_Normal",
+            "GUID": "f8c17f0de93fca545b986a248c41813a",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
@@ -831,8 +1339,8 @@
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/barrel_low_DefaultMaterial_MetallicSmoothness",
-            "GUID": "4027cb7daea0e344dae0dbc0d4c2782d",
+            "Path": "textures/FogPlane_lambert1_OcclusionRoughnessMetallic",
+            "GUID": "b15f6a2e368150e479ec9a85f3c232fb",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
@@ -840,48 +1348,39 @@
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/barrel_low_DefaultMaterial_AO",
-            "GUID": "3965cfcb4804ac047902586bb331d4c9",
+            "Path": "textures/room_05_night_buildings",
+            "GUID": "4f064624c6df39e43b7a797af84839e0",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
-            "FilterMode": "bilinear",
+            "FilterMode": "trilinear",
             "MipmapCount": 12,
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Barrel_AlbedoTransparency",
-            "GUID": "2df604705792cac44bc3b6b777b85670",
+            "Path": "textures/Room_5_Night",
+            "GUID": "8b0e62f4907e1b44eb4711252e2140f0",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
+            "WrapMode": "clamp",
+            "FilterMode": "trilinear",
             "MipmapCount": 12,
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Barrel_Normal",
-            "GUID": "d8a35f85444b45b43ad463c22373e39d",
+            "Path": "textures/Floor1_Diff+Spec",
+            "GUID": "cc39a17532b382042b971e892c29aee4",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "MipmapCount": 11,
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Barrel_MetallicSmoothness",
-            "GUID": "ee2d3edcf24f9a247b0891a6583744dc",
+            "Path": "textures/Floor1_Bump",
+            "GUID": "d4953f7c4b5211a4d880b0889f5e31b4",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Barrel_Occlusion",
-            "GUID": "8509f52e4fb8e7f47a3f72ba3c4bbe96",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         }
     ]

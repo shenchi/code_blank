@@ -469,21 +469,17 @@ namespace tofu
 		if (transitionDuration) {
 			float alpha = elapsedTime / transitionDuration;
 
-			if (type == kAET_Blend) {
-				for (auto i = 0; i < context.model->header->NumBones; i++) {
-					context.results[i] *= 1.0f - weight;
+			// only apply to selected joints
+			if (context.selectedJoints) {
+				for (auto i : *context.selectedJoints) {
+					InternalEvaluate(i, context, weight, type);
 				}
-			}
-			else if (type == kAET_Override) {
-				for (auto i = 0; i < context.model->header->NumBones; i++) {
-					context.results[i] = Transform();
-				}
-			}
-			else if (type == kAET_Additive) {
-
 			}
 			else {
-				assert(0);
+				for (uint16_t i = 0; i < context.model->header->NumBones; i++)
+				{
+					InternalEvaluate(i, context, weight, type);
+				}
 			}
 
 			previous->Evaluate(context, (1.0f - alpha) * weight, kAET_Additive);
@@ -491,6 +487,24 @@ namespace tofu
 		}
 		else {
 			current->Evaluate(context, weight, type);
+		}
+	}
+
+	// preprocess evaluation
+	void AnimationStateMachine::InternalEvaluate(uint16_t i, EvaluateContext & context, float weight, AnimationEvaluationType type)
+	{
+		if (type == kAET_Blend) {
+			context.results[i] *= 1.0f - weight;
+		}
+		else if (type == kAET_Override) {
+			context.results[i] = Transform();
+			context.results[i].SetScale(0.0f, 0.0f, 0.0f);
+		}
+		else if (type == kAET_Additive) {
+
+		}
+		else {
+			assert(0);
 		}
 	}
 
