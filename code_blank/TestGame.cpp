@@ -134,7 +134,7 @@ int32_t TestGame::Init()
 		lSun->SetType(LightType::kLightTypeDirectional);
 		math::float4 sunColor = math::float4{ 1.0f, 0.0f, 0.0f, 1.0f };
 		lSun->SetColor(sunColor);
-		lSun->CreateDepthMap();
+		lSun->SetCastShadow(true);
 	}
 	// Moon light 
 	{
@@ -149,7 +149,7 @@ int32_t TestGame::Init()
 		//lMoon->SetType(LightType::kLightTypePoint);
 		math::float4 moonColor = math::float4{ 0.0f, 0.0f, 1.0f, 1.0f };
 		lMoon->SetColor(moonColor);
-		//lMoon->CreateDepthMap();
+		//lMoon->SetCastShadow(true);
 	}
 	// Spot light
 	{
@@ -163,7 +163,7 @@ int32_t TestGame::Init()
 		lBulb->SetType(LightType::kLightTypeSpot);
 		math::float4 bulbColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
 		lBulb->SetColor(bulbColor);
-		lBulb->CreateDepthMap();
+		lBulb->SetCastShadow(true);
 	}
 	{
 		Entity e = Entity::Create();

@@ -27,8 +27,7 @@ namespace tofu
 			range(1.0f),
 			intensity(1.0f),
 			spotAngle(45.0f),
-			castShadow(false),
-			depthMap()
+			castShadow(false)
 		{}
 		
 		void SetType(LightType t) { type = t; }
@@ -41,8 +40,7 @@ namespace tofu
 
 		void SetSpotAngle(float angle) { spotAngle = angle; }
 
-		void CreateDepthMap();
-
+		void SetCastShadow(bool s) { castShadow = s; }
 
 	private:
 		Entity				entity;
@@ -52,10 +50,6 @@ namespace tofu
 		float				intensity;
 		float				spotAngle;
 		bool				castShadow;
-
-
-		TextureHandle  depthMap;
-        
 	};
 
 	typedef Component<LightComponentData> LightComponent;

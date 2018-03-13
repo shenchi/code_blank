@@ -98,10 +98,7 @@ namespace tofu
 		uint32_t				transformBufferSize;
 
 		BufferHandle			frameConstantBuffer;
-
-		BufferHandle            lightingConstantBuffer;
-		BufferHandle            shadowDepthBuffer[kMaxLights];
-
+		
 		Mesh					meshes[kMaxMeshes];
 		Model					models[kMaxModels];
 		Material				materials[kMaxMaterials];
@@ -127,7 +124,6 @@ namespace tofu
 
 		TextureHandle			hdrTarget;
 		TextureHandle			hdrTarget2;
-		TextureHandle			hdrTarget3;
 
 		BufferHandle			ambientDirLightBuffer;
 		BufferHandle			pointLightBuffer;

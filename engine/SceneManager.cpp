@@ -219,10 +219,7 @@ namespace tofu
 				l->SetRange(comp["range"].GetFloat());
 				l->SetIntensity(comp["intensity"].GetFloat());
 				l->SetSpotAngle(comp["spotAngle"].GetFloat());
-				if (comp["castShadow"].GetBool())
-				{
-					l->CreateDepthMap();
-				}
+				l->SetCastShadow(comp["castShadow"].GetBool());
 			}
 		}
 
