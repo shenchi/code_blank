@@ -32,7 +32,7 @@ int32_t Game::Init()
 {
 	uint32_t ret;	
 
-	debugMode = true;
+	debugMode = false;
 
 	if (!debugMode)
 	{

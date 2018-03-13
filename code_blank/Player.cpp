@@ -43,7 +43,9 @@ Player::Player(CharacterDetails details, void* comp)
 		aPlayer = e.AddComponent<AnimationComponent>();
 
 		AnimationStateMachine *stateMachine = aPlayer->GetStateMachine();
-
+		
+		// Base Layer Animations
+		{
 		// Idle Animations
 		AnimationState *idle = stateMachine->AddState("idle");
 		idle->animationName = "idle";
@@ -77,9 +79,9 @@ Player::Player(CharacterDetails details, void* comp)
 		// Combat Animations
 		AnimationState *kPunchJabL = stateMachine->AddState("kPunchJabL");
 		kPunchJabL->animationName = "kPunchJabL";
-		AnimationState *kPunchJabR =  stateMachine->AddState("kPunchJabR");
+		AnimationState *kPunchJabR = stateMachine->AddState("kPunchJabR");
 		kPunchJabR->animationName = "kPunchJabR";
-		AnimationState *kPunchHookL  = stateMachine->AddState("kPunchHookL");
+		AnimationState *kPunchHookL = stateMachine->AddState("kPunchHookL");
 		kPunchHookL->animationName = "kPunchHookL";
 		AnimationState *kPunchHookR = stateMachine->AddState("kPunchHookR");
 		kPunchHookR->animationName = "kPunchHookR";
@@ -95,6 +97,75 @@ Player::Player(CharacterDetails details, void* comp)
 		kKickStraightMidR->animationName = "kKickStraightMidR";
 		AnimationState *kKickKnee = stateMachine->AddState("kKickKnee");
 		kKickKnee->animationName = "kKickKnee";
+		}
+
+		// Upper Layer Animations
+		{
+			AnimationLayer *upperLayer = aPlayer->AddLayer("Upper", 1.0f, kAET_Override);
+			upperLayer->selectedJoints = new std::vector<uint16_t>();
+
+			for (int i = 3; i <= 55; i++) {
+				upperLayer->selectedJoints->push_back(i);
+			}
+
+			AnimationStateMachine *stateMachine = upperLayer->GetStateMachine();
+
+			// Idle Animations
+			AnimationState *idle = stateMachine->AddState("idle");
+			idle->animationName = "idle";
+			AnimationState *combat_idle = stateMachine->AddState("combat_idle");
+			combat_idle->animationName = "combat_idle";
+
+
+			// Movement Animations
+			AnimationState *walk = stateMachine->AddState("walk");
+			walk->animationName = "walk";
+			AnimationState *run = stateMachine->AddState("run");
+			run->animationName = "run";
+
+
+			// Jump Animations
+			AnimationState *jump = stateMachine->AddState("jump");
+			jump->animationName = "jump";
+			AnimationState *jump_up = stateMachine->AddState("jump_up");
+			jump_up->animationName = "jump_up";
+			AnimationState *jump_air = stateMachine->AddState("jump_air");
+			jump_air->animationName = "jump_air";
+			AnimationState *jump_down = stateMachine->AddState("jump_down");
+			jump_down->animationName = "jump_down";
+
+
+			// Roll/Dodge Animations
+			AnimationState *kRoll = stateMachine->AddState("kRoll");
+			kRoll->animationName = "kRoll";
+
+
+			// Combat Animations
+			AnimationState *kPunchJabL = stateMachine->AddState("kPunchJabL");
+			kPunchJabL->animationName = "kPunchJabL";
+			AnimationState *kPunchJabR = stateMachine->AddState("kPunchJabR");
+			kPunchJabR->animationName = "kPunchJabR";
+			AnimationState *kPunchHookL = stateMachine->AddState("kPunchHookL");
+			kPunchHookL->animationName = "kPunchHookL";
+			AnimationState *kPunchHookR = stateMachine->AddState("kPunchHookR");
+			kPunchHookR->animationName = "kPunchHookR";
+			AnimationState *kPunchUpperCutL = stateMachine->AddState("kPunchUpperCutL");
+			kPunchUpperCutL->animationName = "kPunchUpperCutL";
+			AnimationState *kPunchUpperCutR = stateMachine->AddState("kPunchUpperCutR");
+			kPunchUpperCutR->animationName = "kPunchUpperCutR";
+			AnimationState *kKickAxeKick = stateMachine->AddState("kKickAxeKick");
+			kKickAxeKick->animationName = "kKickAxeKick";
+			AnimationState *kKickHorseKick = stateMachine->AddState("kKickHorseKick");
+			kKickHorseKick->animationName = "kKickHorseKick";
+			AnimationState *kKickStraightMidR = stateMachine->AddState("kKickStraightMidR");
+			kKickStraightMidR->animationName = "kKickStraightMidR";
+			AnimationState *kKickKnee = stateMachine->AddState("kKickKnee");
+			kKickKnee->animationName = "kKickKnee";
+		}
+
+
+
+
 
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaqueSkinned);
 		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");
