@@ -575,24 +575,47 @@ namespace tofu
 		builtinCone = CreateModel("assets/cone.model");
 		assert(nullptr != builtinCone);
 
-		/*{
-			testRT = textureHandleAlloc.Allocate();
-			if (!testRT)
+		{
+			math::float4* data1 = reinterpret_cast<math::float4*>(
+				MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(
+					sizeof(math::float4), sizeof(math::float4)));
+
+			math::float4* data2 = reinterpret_cast<math::float4*>(
+				MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(
+					sizeof(math::float4), sizeof(math::float4)));
+
+			math::float4* data3 = reinterpret_cast<math::float4*>(
+				MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(
+					sizeof(math::float4), sizeof(math::float4)));
+
+			if (nullptr == data1 || nullptr == data2)
+			{
+				return kErrUnknown;
+			}
+
+			*(data1) = math::float4{ 1, 1, 1, 1 };
+
+			*(data2) = math::float4{ 0.5f, 0.5f, 1, 1 };
+
+			*(data3) = math::float4{ 0, 0, 0, 0 };
+
+			TextureHandle whiteTex = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 16, data1);
+			if (!whiteTex)
 				return kErrUnknown;
 
-			CreateTextureParams* params = MemoryAllocator::Allocate<CreateTextureParams>(allocNo);
-			params->handle = testRT;
-			params->format = kFormatR8g8b8a8Unorm;
-			params->arraySize = 1;
-			params->bindingFlags = kBindingShaderResource | kBindingRenderTarget;
+			TextureHandle normalUpTex = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 16, data2);
+			if (!normalUpTex)
+				return kErrUnknown;
 
-			int32_t w, h;
-			renderer->GetFrameBufferSize(w, h);
-			params->width = w;
-			params->height = h;
+			TextureHandle blackTex = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 16, data3);
+			if (!normalUpTex)
+				return kErrUnknown;
 
-			cmdBuf->Add(RendererCommand::kCommandCreateTexture, params);
-		}*/
+			defaultAlbedoMap = whiteTex;
+			defaultNormalMap = normalUpTex;
+			defaultMetallicGlossMap = blackTex;
+			defaultOcclusionMap = whiteTex;
+		}
 
 		// TODO when back buffer size changed !
 		int32_t w, h;
@@ -1654,7 +1677,7 @@ namespace tofu
 		{
 			lightParams2->ambient = math::float4(0.1f, 0.1f, 0.1f, 1.0f);
 
-			for (uint32_t i = 0; i <= lightsCount; ++i)
+			for (uint32_t i = 0; i < lightsCount; ++i)
 			{
 				LightComponentData& comp = lights[i];
 
@@ -1899,10 +1922,10 @@ namespace tofu
 				case kMaterialTypeOpaque:
 					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
 					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 32 };
-					params->psTextures[0] = mat->mainTex;
-					params->psTextures[1] = mat->normalMap;
-					params->psTextures[2] = mat->metallicGlossMap;
-					params->psTextures[3] = mat->occlusionMap;
+					params->psTextures[0] = mat->mainTex ? mat->mainTex : defaultAlbedoMap;
+					params->psTextures[1] = mat->normalMap ? mat->normalMap : defaultNormalMap;
+					params->psTextures[2] = mat->metallicGlossMap ? mat->metallicGlossMap : defaultMetallicGlossMap;
+					params->psTextures[3] = mat->occlusionMap ? mat->occlusionMap : defaultOcclusionMap;
 					params->psSamplers[0] = defaultSampler;
 
 					params->renderTargets[0] = gBuffer1;

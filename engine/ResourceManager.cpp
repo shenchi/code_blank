@@ -15,48 +15,6 @@ namespace tofu
 	{
 		CHECKED(LoadConfig());
 
-		{
-			math::float4* data1 = reinterpret_cast<math::float4*>(
-				MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(
-					sizeof(math::float4), sizeof(math::float4)));
-
-			math::float4* data2 = reinterpret_cast<math::float4*>(
-				MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(
-					sizeof(math::float4), sizeof(math::float4)));
-
-			math::float4* data3 = reinterpret_cast<math::float4*>(
-				MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(
-					sizeof(math::float4), sizeof(math::float4)));
-
-			if (nullptr == data1 || nullptr == data2)
-			{
-				return kErrUnknown;
-			}
-
-			*(data1) = math::float4{ 1, 1, 1, 1 };
-
-			*(data2) = math::float4{ 0.5f, 0.5f, 1, 1 };
-
-			*(data3) = math::float4{ 0, 0, 0, 0 };
-
-			TextureHandle defaultAlbedoTex = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 16, data1);
-			if (!defaultAlbedoTex)
-				return kErrUnknown;
-
-			TextureHandle defaultNormalMap = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 16, data2);
-			if (!defaultNormalMap)
-				return kErrUnknown;
-
-			TextureHandle defaultMetallicGlossMap = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 16, data3);
-			if (!defaultNormalMap)
-				return kErrUnknown;
-
-			SetDefaultAlbedoMap(defaultAlbedoTex);
-			SetDefaultNormalMap(defaultNormalMap);
-			SetDefaultMetallicGlossMap(defaultMetallicGlossMap);
-			SetDefaultOcclusionMap(defaultAlbedoTex);
-		}
-
 		return kOK;
 	}
 
@@ -78,7 +36,7 @@ namespace tofu
 
 		const Value& matConfig = config["materials"][(SizeType)iter->second];
 
-		TextureHandle albedo = defaultAlbedoMap;
+		TextureHandle albedo = TextureHandle();
 		const char* albedoTexPath = matConfig["AlbedoMap"].GetString();
 		if (nullptr != albedoTexPath && albedoTexPath[0] != 0)
 		{
@@ -89,7 +47,7 @@ namespace tofu
 			}
 		}
 
-		TextureHandle normal = defaultNormalMap;
+		TextureHandle normal = TextureHandle();
 		const char* normalMapPath = matConfig["NormalMap"].GetString();
 		if (nullptr != normalMapPath && normalMapPath[0] != 0)
 		{
@@ -100,7 +58,7 @@ namespace tofu
 			}
 		}
 
-		TextureHandle metallicGloss = defaultMetallicGlossMap;
+		TextureHandle metallicGloss = TextureHandle();
 		const char* metallicMapPath = matConfig["MetallicGlossMap"].GetString();
 		if (nullptr != metallicMapPath && metallicMapPath[0] != 0)
 		{
@@ -111,7 +69,7 @@ namespace tofu
 			}
 		}
 
-		TextureHandle occlusion = defaultOcclusionMap;
+		TextureHandle occlusion = TextureHandle();
 		const char* occlusionPath = matConfig["OcclusionMap"].GetString();
 		if (nullptr != occlusionPath && occlusionPath[0] != 0)
 		{

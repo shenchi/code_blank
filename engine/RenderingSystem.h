@@ -111,6 +111,11 @@ namespace tofu
 		Model*					builtinSphere;
 		Model*					builtinCone;
 
+		TextureHandle			defaultAlbedoMap;
+		TextureHandle			defaultNormalMap;
+		TextureHandle			defaultMetallicGlossMap;
+		TextureHandle			defaultOcclusionMap;
+
 		RendererCommandBuffer*	cmdBuf;
 
 		// resources for deferred shading
