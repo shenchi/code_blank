@@ -126,6 +126,7 @@ namespace tofu
 		TextureHandle			gBuffer3;
 
 		TextureHandle			hdrTarget;
+		TextureHandle			hdrTarget2;
 
 		BufferHandle			ambientDirLightBuffer;
 		BufferHandle			pointLightBuffer;
@@ -138,8 +139,11 @@ namespace tofu
 		TextureHandle			shadowMaps[kMaxShadowCastingLights];
 
 		// resources for volumetric fog
-		TextureHandle			scatterTex;
+		ComputeShaderHandle		injectionShader;
 		ComputeShaderHandle		scatterShader;
+
+		TextureHandle			injectionTex;
+		TextureHandle			scatterTex;
 	};
 
 }

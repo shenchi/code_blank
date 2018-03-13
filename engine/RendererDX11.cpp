@@ -749,7 +749,7 @@ namespace tofu
 						params->width,
 						params->height,
 						params->depth,
-						0U,
+						1U,
 						bindingFlags,
 						(params->dynamic == 1 ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT),
 						(params->dynamic == 1 ? D3D11_CPU_ACCESS_WRITE : 0U),
@@ -785,7 +785,7 @@ namespace tofu
 						params->width,
 						params->height,
 						params->arraySize,
-						0U,
+						1U,
 						bindingFlags,
 						(params->dynamic == 1 ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT),
 						(params->dynamic == 1 ? D3D11_CPU_ACCESS_WRITE : 0U),
@@ -1697,6 +1697,11 @@ namespace tofu
 
 				context->Dispatch(params->threadGroupCountX, params->threadGroupCountY, params->threadGroupCountZ);
 
+				{
+					// texture bindings
+					ID3D11ShaderResourceView* srvs[kMaxTextureBindings] = {};
+					context->CSSetShaderResources(0, kMaxTextureBindings, srvs);
+				}
 				{
 					// rw texture bindings
 					ID3D11UnorderedAccessView* uavs[kMaxTextureBindings] = {};

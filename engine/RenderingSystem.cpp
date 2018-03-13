@@ -79,11 +79,13 @@ namespace
 	struct PointLightParams
 	{
 		PointLight				lights[tofu::kMaxPointLights];
+		uint32_t				numLights;
 	};
 
 	struct SpotLightParams
 	{
 		SpotLight				lights[tofu::kMaxSpotLights];
+		uint32_t				numLights;
 	};
 
 	// parameters for lights in lighting pass (deferred shading)
@@ -231,6 +233,7 @@ namespace tofu
 
 		CHECKED(LoadPixelShader("assets/volumetric_fog_apply_ps.shader", materialPSs[kMaterialPostProcessVolumetricFog]));
 
+		CHECKED(LoadComputeShader("assets/volumetric_fog_inject_lights_cs.shader", injectionShader));
 		CHECKED(LoadComputeShader("assets/volumetric_fog_scatter_cs.shader", scatterShader));
 
 		// constant buffers
@@ -718,8 +721,8 @@ namespace tofu
 		gBuffer3 = CreateTexture(kFormatR32g32b32a32Float, w, h, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
 
 		hdrTarget = CreateTexture(kFormatR32g32b32a32Float, w, h, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
-
-		if (!gBuffer1 || !gBuffer2 || !gBuffer3 || !hdrTarget)
+		hdrTarget2 = CreateTexture(kFormatR32g32b32a32Float, w, h, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
+		if (!gBuffer1 || !gBuffer2 || !gBuffer3 || !hdrTarget || !hdrTarget2)
 		{
 			return kErrUnknown;
 		}
@@ -734,9 +737,10 @@ namespace tofu
 			if (!shadowMaps[i]) return kErrUnknown;
 		}
 
-		scatterTex = CreateTexture(kFormatR32g32b32a32Float, 160, 90, 1, 0, nullptr, kBindingShaderResource | kBindingUnorderedAccess);
+		injectionTex = CreateTexture(kFormatR32g32b32a32Float, 160, 90, 128, 0, 0, nullptr, kBindingShaderResource | kBindingUnorderedAccess);
+		scatterTex = CreateTexture(kFormatR32g32b32a32Float, 160, 90, 128, 0, 0, nullptr, kBindingShaderResource | kBindingUnorderedAccess);
 
-		if (!scatterTex)
+		if (!injectionTex || !scatterTex)
 		{
 			return kErrUnknown;
 		}
@@ -1963,6 +1967,9 @@ namespace tofu
 				}
 			}
 
+			pointLightParams->numLights = numPointLights;
+			spotLightParams->numLights = numSpotLights;
+
 			ambDirLightParams->ambient.w = float(numDirectionalLights);
 
 			{
@@ -2380,29 +2387,29 @@ namespace tofu
 
 		// post-process effect
 		{
-			// tone mapping
+			
+			/**/
 			{
-				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
-				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
+				ComputeParams* params = MemoryAllocator::Allocate<ComputeParams>(allocNo);
 
-				params->pipelineState = materialPSOs[kMaterialPostProcessToneMapping];
+				params->shader = injectionShader;
+				params->constantBuffers[0] = { spotLightTransformBuffer, 0, 0 };
+				params->constantBuffers[1] = { frameConstantBuffer, 0, 0 };
+				params->constantBuffers[2] = { spotLightBuffer, 0, 0 };
+				params->rwShaderResources[0] = injectionTex;
 
-				params->vertexBuffer = mesh.VertexBuffer;
-				params->indexBuffer = mesh.IndexBuffer;
-				params->startIndex = mesh.StartIndex;
-				params->startVertex = mesh.StartVertex;
-				params->indexCount = mesh.NumIndices;
+				params->threadGroupCountX = 10;
+				params->threadGroupCountY = 10;
+				params->threadGroupCountZ = 32;
 
-				params->psShaderResources[0] = hdrTarget;
-				//params->psSamplers[0] = defaultSampler;
-
-				cmdBuf->Add(RendererCommand::kCommandDraw, params);
+				cmdBuf->Add(RendererCommand::kCommandCompute, params);
 			}
 
 			{
 				ComputeParams* params = MemoryAllocator::Allocate<ComputeParams>(allocNo);
 
 				params->shader = scatterShader;
+				params->shaderResources[0] = injectionTex;
 				params->rwShaderResources[0] = scatterTex;
 
 				params->threadGroupCountX = 10;
@@ -2412,7 +2419,7 @@ namespace tofu
 				cmdBuf->Add(RendererCommand::kCommandCompute, params);
 			}
 
-			/*
+			/**/
 			// volumetric fog
 			{
 				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
@@ -2428,12 +2435,35 @@ namespace tofu
 
 				params->psConstantBuffers[0] = { frameConstantBuffer, 0, 0 };
 
-				params->psTextures[0] = scatterTex;
+				params->psShaderResources[0] = hdrTarget;
+				params->psShaderResources[1] = gBuffer2;
+				params->psShaderResources[2] = scatterTex;
 				params->psSamplers[0] = defaultSampler;
+
+				params->renderTargets[0] = hdrTarget2;
 
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
 			/**/
+
+			// tone mapping
+			{
+				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
+				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
+
+				params->pipelineState = materialPSOs[kMaterialPostProcessToneMapping];
+
+				params->vertexBuffer = mesh.VertexBuffer;
+				params->indexBuffer = mesh.IndexBuffer;
+				params->startIndex = mesh.StartIndex;
+				params->startVertex = mesh.StartVertex;
+				params->indexCount = mesh.NumIndices;
+
+				params->psShaderResources[0] = hdrTarget2;
+				//params->psSamplers[0] = defaultSampler;
+
+				cmdBuf->Add(RendererCommand::kCommandDraw, params);
+			}
 		}
 
 		return kOK;

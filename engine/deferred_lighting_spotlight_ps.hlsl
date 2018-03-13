@@ -40,6 +40,7 @@ cbuffer FrameConstants : register (b1)
 cbuffer SpotLightParams : register (b2)
 {
 	SpotLight				lights[1024];
+	uint					numLights;
 };
 
 cbuffer ShadowTransforms : register (b3)
@@ -89,7 +90,7 @@ float4 main(float4 clipPos : SV_POSITION, uint iid : SV_InstanceID) : SV_TARGET
 	lightDir = normalize(lightDir);
 
 	float NdotL = max(dot(lightDir, worldNormal), 0);
-	float atten = 1 / (dist * dist);
+	float atten = (1 / (dist * dist)) * (1 - step(1, dist));;
 
 	float3 H = normalize(lightDir + viewDir);
 	float NdotH = max(dot(worldNormal, H), 0);

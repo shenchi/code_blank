@@ -31,6 +31,7 @@ cbuffer FrameConstants : register (b1)
 cbuffer PointLightParams : register (b2)
 {
 	PointLight				lights[1024];
+	uint					numLights;
 };
 
 Texture2D gBuffer1 : register(t0);
