@@ -127,6 +127,7 @@ namespace tofu
 
 		TextureHandle			hdrTarget;
 		TextureHandle			hdrTarget2;
+		TextureHandle			hdrTarget3;
 
 		BufferHandle			ambientDirLightBuffer;
 		BufferHandle			pointLightBuffer;

@@ -283,12 +283,6 @@
     <FxCompile Include="post_process_tone_mapping_ps.hlsl">
       <Filter>Shaders\new</Filter>
     </FxCompile>
-    <FxCompile Include="post_process_extract_bright_ps.hlsl">
-      <Filter>Shaders\new</Filter>
-    </FxCompile>
-    <FxCompile Include="post_process_blur_ps.hlsl">
-      <Filter>Shaders\new</Filter>
-    </FxCompile>
     <FxCompile Include="volumetric_fog_scatter_cs.hlsl">
       <Filter>Shaders\new</Filter>
     </FxCompile>
@@ -296,6 +290,12 @@
       <Filter>Shaders\new</Filter>
     </FxCompile>
     <FxCompile Include="volumetric_fog_inject_lights_cs.hlsl">
+      <Filter>Shaders\new</Filter>
+    </FxCompile>
+    <FxCompile Include="post_process_blur_ps.hlsl">
+      <Filter>Shaders\new</Filter>
+    </FxCompile>
+    <FxCompile Include="post_process_extract_bright_ps.hlsl">
       <Filter>Shaders\new</Filter>
     </FxCompile>
   </ItemGroup>
