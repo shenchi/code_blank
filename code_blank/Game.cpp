@@ -393,9 +393,9 @@ bool Game::LoadScene(sceneType num)
 			{
 				Entity e = Entity::Create();
 
-				tStair = e.AddComponent<TransformComponent>();
-				tStair->SetLocalPosition(math::float3{ 53.0f, 1.0f, -38.0f });
-				//tStair->SetLocalScale(math::float3{ 10000.f,10000.f,10000.f });
+				tStair = e.AddComponent<TransformComponent>();	
+				tStair->SetLocalPosition(math::float3{ 43.0f, 1.0f, -38.0f });
+				tStair->SetLocalScale(math::float3{ 0.001f,0.001f,0.001f });
 
 				RenderingComponent r = e.AddComponent<RenderingComponent>();
 
@@ -410,8 +410,11 @@ bool Game::LoadScene(sceneType num)
 
 				r->SetMaterial(material);
 				r->SetModel(model);
-			}
 
+				pStair = e.AddComponent<PhysicsComponent>();
+				pStair->SetMeshCollider(model);
+				//pStair->SetColliderOrigin(math::float3{ 0.0f, 100.0f, 0.0f });
+			}
 			break;
 		}
 		case 7:
