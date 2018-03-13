@@ -41,5 +41,7 @@ Output main(Input input, uint iid : SV_InstanceID)
 	output.position = mul(float4(input.position, 1.0f), matMVP);
 	output.instanceId = iid;
 
+	//output.position.z = max(output.position.z, 0.001);
+
 	return output;
 }

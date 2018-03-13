@@ -80,12 +80,14 @@ namespace
 	{
 		PointLight				lights[tofu::kMaxPointLights];
 		uint32_t				numLights;
+		float					padding[3];
 	};
 
 	struct SpotLightParams
 	{
 		SpotLight				lights[tofu::kMaxSpotLights];
 		uint32_t				numLights;
+		float					padding[3];
 	};
 
 	// parameters for lights in lighting pass (deferred shading)
@@ -1715,14 +1717,15 @@ namespace tofu
 			data->bufferSize = math::float4(float(bufferWidth), float(bufferHeight), 0, 0);
 
 			data->perspectiveParams = math::float4{ camera.GetFOV(), camera.GetAspect(), camera.GetZNear(), camera.GetZFar() };
-			float farClipMaxY = math::radians(data->perspectiveParams.x * 0.5f) * data->perspectiveParams.w;
+			float farClipZ = data->perspectiveParams.w;
+			float farClipMaxY = math::radians(data->perspectiveParams.x) * 0.5f * farClipZ;
 			float farClipMaxX = farClipMaxY * data->perspectiveParams.y;
 
 			const Transform& worldTrans = t->GetWorldTransform();
-			data->leftTopRay = worldTrans.TransformVector(math::float4{ -farClipMaxX, farClipMaxY, data->perspectiveParams.w, 0 });
-			data->rightTopRay = worldTrans.TransformVector(math::float4{ farClipMaxX, farClipMaxY, data->perspectiveParams.w, 0 });
-			data->leftBottomRay = worldTrans.TransformVector(math::float4{ -farClipMaxX, -farClipMaxY, data->perspectiveParams.w, 0 });
-			data->rightBottomRay = worldTrans.TransformVector(math::float4{ farClipMaxX, -farClipMaxY, data->perspectiveParams.w, 0 });
+			data->leftTopRay = worldTrans.TransformVector(math::float4{ -farClipMaxX, farClipMaxY, farClipZ, 0 });
+			data->rightTopRay = worldTrans.TransformVector(math::float4{ farClipMaxX, farClipMaxY, farClipZ, 0 });
+			data->leftBottomRay = worldTrans.TransformVector(math::float4{ -farClipMaxX, -farClipMaxY, farClipZ, 0 });
+			data->rightBottomRay = worldTrans.TransformVector(math::float4{ farClipMaxX, -farClipMaxY, farClipZ, 0 });
 
 			camPos = data->cameraPos;
 
@@ -1959,6 +1962,10 @@ namespace tofu
 						shadowMatrices[numShadowCastingLights * 4 + 1] = math::transpose(
 							math::perspective(math::radians(comp.spotAngle), 1.0f, 0.01f, comp.range)
 						);
+
+						shadowMatrices[numShadowCastingLights * 4 + 2] =
+							shadowMatrices[numShadowCastingLights * 4] *
+							shadowMatrices[numShadowCastingLights * 4 + 1];
 
 						light.shadowId = numShadowCastingLights++;
 					}
@@ -2393,9 +2400,12 @@ namespace tofu
 				ComputeParams* params = MemoryAllocator::Allocate<ComputeParams>(allocNo);
 
 				params->shader = injectionShader;
-				params->constantBuffers[0] = { spotLightTransformBuffer, 0, 0 };
-				params->constantBuffers[1] = { frameConstantBuffer, 0, 0 };
-				params->constantBuffers[2] = { spotLightBuffer, 0, 0 };
+				params->constantBuffers[0] = { frameConstantBuffer, 0, 0 };
+				params->constantBuffers[1] = { spotLightTransformBuffer, 0, 0 };
+				params->constantBuffers[2] = { pointLightTransformBuffer, 0, 0 };
+				params->constantBuffers[3] = { spotLightBuffer, 0, 0 };
+				params->constantBuffers[4] = { pointLightBuffer, 0, 0 };
+
 				params->rwShaderResources[0] = injectionTex;
 
 				params->threadGroupCountX = 10;

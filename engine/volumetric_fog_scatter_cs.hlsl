@@ -14,7 +14,7 @@ void main( uint3 DTid : SV_DispatchThreadID )
 		float4 lightDensity = lightDensityVolume[pos];
 
 		float density = max(lightDensity.w, 0.000001);
-		float transmittance = exp(density / 128.0);
+		float transmittance = exp(-density / 128.0);
 
 		float3 integral = lightDensity.xyz  * (1.0 - transmittance) / density;
 
@@ -22,5 +22,6 @@ void main( uint3 DTid : SV_DispatchThreadID )
 		v.w *= transmittance;
 
 		scatterVolume[pos] = v;
+		//scatterVolume[pos] = lightDensity;
 	}
 }

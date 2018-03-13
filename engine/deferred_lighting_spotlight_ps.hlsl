@@ -12,7 +12,7 @@ struct LightVP
 {
 	float4x4				matView;
 	float4x4				matProj;
-	float4x4				_padding1;
+	float4x4				matVP;
 	float4x4				_padding2;
 };
 
@@ -114,9 +114,7 @@ float4 main(float4 clipPos : SV_POSITION, uint iid : SV_InstanceID) : SV_TARGET
 	if (light.shadowId < 16)
 	{
 		uint shadowId = light.shadowId;
-		float4 lightSpacePos = mul(mul(worldPos, 
-			matLightVPs[shadowId].matView),
-			matLightVPs[shadowId].matProj);
+		float4 lightSpacePos = mul(worldPos, matLightVPs[shadowId].matVP);
 
 		lightSpacePos /= lightSpacePos.w;
 		lightSpacePos.xy = lightSpacePos.xy * 0.5 + 0.5;
@@ -131,7 +129,7 @@ float4 main(float4 clipPos : SV_POSITION, uint iid : SV_InstanceID) : SV_TARGET
 				float cloestDepth = shadowMap.Sample(
 					shadowSamp, 
 					float3(lightSpacePos.xy + float2(i, j) * 0.0009765625, shadowId)).r;
-				shadow += (currentDepth > cloestDepth ? 1 : 0);
+				shadow += step(cloestDepth, currentDepth);// (currentDepth > cloestDepth ? 1 : 0);
 			}
 		}
 		shadow /= 49;

@@ -35,9 +35,9 @@ float4 main(float4 pos : SV_POSITION) : SV_TARGET
 
 	if (z > 0)
 	{
+		z = min(z, 1);
 		float4 fog = scatterVolume.Sample(samp, float3(uv, z));
 		color = color * fog.a + fog;
-		//color *= fog.a;
 	}
 
 	return color;

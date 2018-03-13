@@ -24,9 +24,7 @@ namespace tofu
 
 	float3 Transform::TransformVector(const float3 & v) const
 	{
-		float3 ret = rotation * (v * scale);
-
-		return normalize(ret);
+		return rotation * (v * scale);
 	}
 	
 	float4 Transform::TransformVector(const float4 & v) const
