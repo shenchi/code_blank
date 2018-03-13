@@ -127,7 +127,7 @@ namespace tofu
 		virtual void Update(UpdateContext& context) override;
 		virtual void Evaluate(EvaluateContext& context, float weight, AnimationEvaluationType type) override;
 
-		TF_INLINE void InternalEvaluate(uint16_t i, EvaluateContext & context, float weight, AnimationEvaluationType type);
+		
 
 		virtual float GetDurationInSecond(Model *model) override;
 
@@ -139,6 +139,8 @@ namespace tofu
 		math::quat SlerpFrame(Model * model, size_t lhs, size_t rhs) const;
 		math::float3 CatmullRomFrame(Model * model, size_t i1, size_t i2, size_t i3, size_t i4) const;
 		math::quat SquadFrame(Model * model, size_t i1, size_t i2, size_t i3, size_t i4) const;
+
+		TF_INLINE void InternalEvaluate(uint16_t i, EvaluateContext & context, float weight, AnimationEvaluationType type);
 	};
 
 	class AnimationStateMachine : AnimNodeBase
@@ -179,6 +181,9 @@ namespace tofu
 		virtual void Evaluate(EvaluateContext& context, float weight, AnimationEvaluationType type) override;
 
 		virtual float GetDurationInSecond(Model *model) override;
+
+	private:
+		TF_INLINE void InternalEvaluate(uint16_t i, EvaluateContext & context, float weight, AnimationEvaluationType type);
 	};
 
 	class AnimationLayer {
