@@ -7,14 +7,98 @@
 		[
 			{
 				"name": "idle",
+				"source": "archer_idle.fbx",
+				"avatar": "archer_avatar.json",
+				"clip": "mixamo.com"
+			},
+			{
+				"name": "combat_idle",
 				"source": "KB_Movement.fbx",
 				"avatar": "KB_avatar.json",
-				"clip": "Armature|Armature|KB_Idle_3|KB_Idle_3:BaseAnimation"
+				"clip": "Armature|Armature|KB_Idle_1|KB_Idle_1:BaseAnimation"
 			},
 			{
 				"name": "walk",
 				"source": "archer_walking.fbx",
 				"avatar": "archer_avatar.json",
+				"clip": "mixamo.com"
+			},
+			{
+				"name": "jump",
+				"source": "archer_jump.fbx",
+				"avatar": "archer_avatar.json",
+				"clip": "mixamo.com"
+			},
+			{
+				"name": "run",
+				"source": "archer_running.fbx",
+				"avatar": "archer_avatar.json",
+				"clip": "mixamo.com"
+			},
+			{
+				"name": "kPunchJabL",
+				"source": "KB_Punches.fbx",
+				"avatar": "KB_avatar.json",
+				"clip": "Armature|Armature|KB_p_Jab_L_1|KB_p_Jab_L_1:BaseAnimation"
+			},
+			{
+				"name": "kPunchJabR",
+				"source": "KB_Punches.fbx",
+				"avatar": "KB_avatar.json",
+				"clip": "Armature|Armature|KB_p_Jab_R_1|KB_p_Jab_R_1:BaseAnimation"
+			},
+			{
+				"name": "kPunchHookL",
+				"source": "KB_Punches.fbx",
+				"avatar": "KB_avatar.json",
+				"clip": "Armature|Armature|KB_p_Hook_L|KB_p_Hook_L:BaseAnimation"
+			},
+			{
+				"name": "kPunchHookR",
+				"source": "KB_Punches.fbx",
+				"avatar": "KB_avatar.json",
+				"clip": "Armature|Armature|KB_p_Hook_R|KB_p_Hook_R:BaseAnimation"
+			},
+			{
+				"name": "kPunchUpperCutL",
+				"source": "KB_Punches.fbx",
+				"avatar": "KB_avatar.json",
+				"clip": "Armature|Armature|KB_p_Uppercut_L|KB_p_Uppercut_L:BaseAnimation"
+			},
+			{
+				"name": "kPunchUpperCutR",
+				"source": "KB_Punches.fbx",
+				"avatar": "KB_avatar.json",
+				"clip": "Armature|Armature|KB_p_Uppercut_R|KB_p_Uppercut_R:BaseAnimation"
+			},
+			{
+				"name": "kKickAxeKick",
+				"source": "KB_Kicks.fbx",
+				"avatar": "KB_Jumping_avatar.json",
+				"clip": "KB_AxeKick"
+			},
+			{
+				"name": "kKickHorseKick",
+				"source": "KB_Kicks.fbx",
+				"avatar": "KB_Jumping_avatar.json",
+				"clip": "KB_m_HighKickRound_R_1"
+			},
+			{
+				"name": "kKickStraightMidR",
+				"source": "KB_Kicks.fbx",
+				"avatar": "KB_Jumping_avatar.json",
+				"clip": "KB_p_MidKickStraight_R"
+			},
+			{
+				"name": "kKickKnee",
+				"source": "KB_Kicks.fbx",
+				"avatar": "KB_Jumping_avatar.json",
+				"clip": "KB_m_KneeRight"
+			},
+            {
+				"name": "kRoll",
+				"source": "Roll.fbx",
+				"avatar": "mixamo_avatar.json",
 				"clip": "mixamo.com"
 			}
 		]

@@ -1,12 +1,9 @@
-#include <Engine.h>
 #include "Game.h"
-
-#include <RenderingSystem.h>
-#include <RenderingComponent.h>
-#include <PhysicsComponent.h>
-#include <InputSystem.h>
+#include "PhysicsSystem.h"
 
 using namespace tofu;
+
+typedef const rapidjson::Value& value_t;
 
 InputSystem* input;
 
@@ -14,11 +11,15 @@ Game::~Game()
 {
 	//*********************************************************************************************
 	//temp for test
-	delete enemy01;
+	/*delete enemy01;
 	delete enemy02;
-	delete enemy03;
+	delete enemy03;*/
 	//*********************************************************************************************
 
+	if (enemyList != nullptr)
+	{
+		delete enemyList;
+	}
 	delete comp;
 	delete cam;
 	delete player;
@@ -28,7 +29,7 @@ Game::~Game()
 // Intialization of Game components
 int32_t Game::Init()
 {
-	uint32_t ret;
+	uint32_t ret;	
 
 	// Create a camera
 	cam = new Camera();
@@ -39,6 +40,7 @@ int32_t Game::Init()
 
 	comp = NULL;
 	player = NULL;
+	enemyList = nullptr;
 
 	// Load the initial scene (Defalut is Intro)
 	// Load other scenes here for fast testing
@@ -73,11 +75,11 @@ int32_t Game::Update()
 	// should pause?
 	if (pControl->GetPause())
 	{
-		// Temp for Testing
+		//Temp for Testing
 		Engine::instance()->Quit();
 
-		// TODO
-		// Pause the game and load the pasue menu
+		 //TODO
+		 //Pause the game and load the pasue menu
 	}
 
 	// Switch for game state
@@ -168,6 +170,7 @@ int32_t Game::Update()
 		comp->Update(Time::DeltaTime, player->GetPosition(), player->GetForward());
 		cam->Update();
 		pControl->UpdateP(Time::DeltaTime);
+		player->Update(Time::DeltaTime);
 
 		//*******************************************************************************
 		// Temp Enemy control code
@@ -179,22 +182,22 @@ int32_t Game::Update()
 		
 		timePassed = Time::TotalTime - startTime;
 		
-		if (timePassed > 0 && timePassed <= 10)	// Move Forward
-		{
-			enemy01->Move(Time::DeltaTime, false, math::float3{0, 0, 1});
-		}
-		else if (timePassed > 10 && timePassed <= 20) // Move Left
-		{
-			enemy01->Move(Time::DeltaTime, false, math::float3{-1, 0, 0 });
-		}
-		else if (timePassed > 20 && timePassed <= 30) // Move Backward
-		{
-			enemy01->Move(Time::DeltaTime, false, math::float3{0, 0, -1});
-		}
-		else if (timePassed > 30 && timePassed <= 40) // Move Right
-		{
-			enemy01->Move(Time::DeltaTime, false, math::float3{1, 0, 0});
-		}
+		//if (timePassed > 0 && timePassed <= 10)	// Move Forward
+		//{
+		//	enemy01->Move(Time::DeltaTime, false, math::float3{0, 0, 1});
+		//}
+		//else if (timePassed > 10 && timePassed <= 20) // Move Left
+		//{
+		//	enemy01->Move(Time::DeltaTime, false, math::float3{-1, 0, 0 });
+		//}
+		//else if (timePassed > 20 && timePassed <= 30) // Move Backward
+		//{
+		//	enemy01->Move(Time::DeltaTime, false, math::float3{0, 0, -1});
+		//}
+		//else if (timePassed > 30 && timePassed <= 40) // Move Right
+		//{
+		//	enemy01->Move(Time::DeltaTime, false, math::float3{1, 0, 0});
+		//}
 
 		if (timePassed > 40)
 		{
@@ -204,7 +207,6 @@ int32_t Game::Update()
 
 		assert(!(timePassed < 0) && timePassed < 50);
 		//*******************************************************************************
-
 
 		break;
 	}
@@ -301,106 +303,125 @@ bool Game::LoadScene(sceneType num)
 		}
 		case 6:
 		{
-			{
-				Material* skyboxMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeSkybox);
-				TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/craterlake.texture");
-				skyboxMat->SetTexture(tex);
+			// Setup the Scene
+			CHECKED(sceneMgr.Init());
+			CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial.json"));
 
-				cam->SetSkybox(skyboxMat);
-				cam->SetClearColor(math::float4{ 0.0f, 0.0f, 0.0f, 1.0f });
-			}
-			{
-				Entity e = Entity::Create();
+			//// Dummy light
+			//{
+			//	Entity e = Entity::Create();
 
-				tBox6 = e.AddComponent<TransformComponent>();
+			//	TransformComponent tSun = e.AddComponent<TransformComponent>();
+			//	tSun->SetLocalPosition(math::float3{ 58.0f, 3.0f, -41.0f });
+			//	tSun->SetLocalRotation(math::angleAxis(3.14f / 4, math::float3{ 1.0f, 0.0f, 0.0f }));
 
-				RenderingComponent r = e.AddComponent<RenderingComponent>();
+			//	LightComponent lSun = e.AddComponent<LightComponent>();
+			//	lSun->SetType(LightType::kLightTypeDirectional);
+			//	math::float4 sunColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
+			//	lSun->SetColor(sunColor);
+			//	lSun->CreateDepthMap();
+			//}
 
-				Model* cubeModel = RenderingSystem::instance()->CreateModel("assets/cube.model");
-
-				Material* cubeMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
-				TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
-
-				cubeMat->SetTexture(diffuse);
-
-				r->SetMaterial(cubeMat);
-				r->SetModel(cubeModel);
-
-				tBox6->SetLocalPosition(math::float3{ -2.0f, 1.0f, 0.0f });
-				PhysicsComponent ph = e.AddComponent<PhysicsComponent>();
-			}
+			// Moon light 
 			{
 				Entity e = Entity::Create();
 
-				tBox7 = e.AddComponent<TransformComponent>();
-				tBox7->SetLocalPosition(math::float3{ 0, 10, 10 });
+				TransformComponent tMoon = e.AddComponent<TransformComponent>();
 
-				RenderingComponent r = e.AddComponent<RenderingComponent>();
+				//tMoon->SetLocalRotation(math::angleAxis(3.14f / 2.0f, math::float3{ 1.0f,0.0f, 0.0f }));
 
-				Model* model = RenderingSystem::instance()->CreateModel("assets/cube.model");
-
-				Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
-				TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
-				TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/stone_wall_normalmap.texture");
-
-				material->SetTexture(diffuse);
-				material->SetNormalMap(normalMap);
-
-				r->SetMaterial(material);
-				r->SetModel(model);
-
-				tBox7->SetLocalPosition(math::float3{ 2.0f, 1.0f, 0.0f });
-				PhysicsComponent ph = e.AddComponent<PhysicsComponent>();
+				LightComponent lMoon = e.AddComponent<LightComponent>();
+				lMoon->SetType(LightType::kLightTypeDirectional);
+				lMoon->SetIntensity(2.0f);
+				math::float4 moonColor = math::float4{ 0.1f, 0.1f, 0.1f, 1.0f };
+				lMoon->SetColor(moonColor);
 			}
+
+			//// Spot light
+			//{
+			//	Entity e = Entity::Create();
+
+			//	TransformComponent tBulb = e.AddComponent<TransformComponent>();
+			//	tBulb->SetLocalPosition(math::float3{ 53.0f, 4.0f, -38.0f });
+			//	tBulb->SetLocalRotation(math::angleAxis(3.14f / 2.0f, math::float3{ 1.0f,0.0f, 0.0f }));
+			//	LightComponent lBulb = e.AddComponent<LightComponent>();
+			//	lBulb->SetType(LightType::kLightTypeSpot);
+			//	
+			//	lBulb->SetRange(5.0f);
+			//	math::float4 bulbColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
+			//	lBulb->SetIntensity(4.5f);
+			//	lBulb->SetColor(bulbColor);
+			//	lBulb->CreateDepthMap();
+			//}
+
+			CharacterDetails playerDetails = {};
+			playerDetails.capsuleColliderSize = { 50.0f, 100.0f };
+			playerDetails.colliderOrigin = { 0.0f, 100.0f, 0.0f };
+			playerDetails.health = 200.0f;
+			playerDetails.jumpPower = 4.0f;
+			playerDetails.position = { 53.0f, 1.0f, -38.0f };
+			playerDetails.scale = { 0.01f, 0.01f, 0.01f };
+			playerDetails.sprintSpeed = 10.0f;
+			playerDetails.tag = "player";
+			playerDetails.walkSpeed = 5.0f;
+			playerDetails.rollDodgeCost = 10.0f;
+
+			// Setup the Player's Companion
+			if (comp == NULL)
 			{
-				Entity e = Entity::Create();
-
-				tGround = e.AddComponent<TransformComponent>();
-
-				RenderingComponent r = e.AddComponent<RenderingComponent>();
-
-				Model* model = RenderingSystem::instance()->CreateModel("assets/ground.model");
-
-				Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
-				TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
-				TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/stone_wall_normalmap.texture");
-
-				material->SetTexture(diffuse);
-				material->SetNormalMap(normalMap);
-
-				r->SetMaterial(material);
-				r->SetModel(model);
-
-				PhysicsComponent ph = e.AddComponent<PhysicsComponent>();
-				ph->SetStatic(true);
-				ph->SetBoxCollider(math::float3{ 25.0f, 0.5f, 25.0f });
-				ph->SetColliderOrigin(math::float3{ 0.0f, -0.5f, 0.0f });
+				comp = new Companion(playerDetails.position);
+				pControl->SetCompanion(comp);
 			}
 
 			// Setup the Player
 			if (player == NULL)
 			{
-				player = new Player();
+				player = new Player(playerDetails, comp);
 				pControl->SetPlayer(player);
-			}
-			assert(player != NULL);
-
-			// Setup the Player's Companion
-			if (comp == NULL)
-			{
-				comp = new Companion(player->GetPosition());
-				pControl->SetCompanion(comp);
 			}
 			assert(player != NULL);
 
 			//*********************************************************************************************
 			//temp for test
-			enemy01 = new Enemy(math::float3{ 10.0f, 1.0f, 0.0f });
+			/*enemy01 = new Enemy(math::float3{ 10.0f, 1.0f, 0.0f });
 			enemy02 = new Enemy(math::float3{ -10.0f, 1.0f, -10.0f });
-			enemy03 = new Enemy(math::float3{ -10.0f, 1.0f, 10.0f });
+			enemy03 = new Enemy(math::float3{ -10.0f, 1.0f, 10.0f });*/
 			//*********************************************************************************************
 
-			break;
+			// Add each enemy to the enemy list
+			// enemyList = new std::vector<Character*>();
+			// enemyList.pushback(enemy01);
+
+			player->GetCombatManager()->SetEnemyList(enemyList);
+
+			//// Test stair
+			//{
+			//	Entity e = Entity::Create();
+
+			//	tStair = e.AddComponent<TransformComponent>();	
+			//	tStair->SetLocalPosition(math::float3{ 43.0f, 0.0f, -38.0f });
+			//	tStair->SetLocalScale(math::float3{ 0.001f, 0.0006f, 0.001f });
+
+			//	RenderingComponent r = e.AddComponent<RenderingComponent>();
+
+			//	Model* model = RenderingSystem::instance()->CreateModel("assets/stairs.model");
+
+			//	Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
+			//	TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
+			//	TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/stone_wall_normalmap.texture");
+
+			//	material->SetTexture(diffuse);
+			//	material->SetNormalMap(normalMap);
+
+			//	r->SetMaterial(material);
+			//	r->SetModel(model);
+
+			//	pStair = e.AddComponent<PhysicsComponent>();
+			//	pStair->SetMeshCollider(model);
+			//	pStair->SetStatic(true);
+			//	//pStair->SetColliderOrigin(math::float3{ 0.0f, 100.0f, 0.0f });
+			//}
+			//break;
 		}
 		case 7:
 		{

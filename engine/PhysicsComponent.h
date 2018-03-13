@@ -148,6 +148,7 @@ namespace tofu
 		bool IsCollided() const { return isCollided; }
 
 		void SetVelocity(const math::float3& vel);
+		const math::float3 GetVelocity();
 		void ApplyForce(const math::float3& force);
 		void ApplyImpulse(const math::float3& impulse);
 

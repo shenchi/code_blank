@@ -698,24 +698,47 @@ namespace tofu
 		builtinCone = CreateModel("assets/cone.model");
 		assert(nullptr != builtinCone);
 
-		/*{
-			testRT = textureHandleAlloc.Allocate();
-			if (!testRT)
+		{
+			math::float4* data1 = reinterpret_cast<math::float4*>(
+				MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(
+					sizeof(math::float4), sizeof(math::float4)));
+
+			math::float4* data2 = reinterpret_cast<math::float4*>(
+				MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(
+					sizeof(math::float4), sizeof(math::float4)));
+
+			math::float4* data3 = reinterpret_cast<math::float4*>(
+				MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(
+					sizeof(math::float4), sizeof(math::float4)));
+
+			if (nullptr == data1 || nullptr == data2)
+			{
+				return kErrUnknown;
+			}
+
+			*(data1) = math::float4{ 1, 1, 1, 1 };
+
+			*(data2) = math::float4{ 0.5f, 0.5f, 1, 1 };
+
+			*(data3) = math::float4{ 0, 0, 0, 0 };
+
+			TextureHandle whiteTex = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 1, 16, data1);
+			if (!whiteTex)
 				return kErrUnknown;
 
-			CreateTextureParams* params = MemoryAllocator::Allocate<CreateTextureParams>(allocNo);
-			params->handle = testRT;
-			params->format = kFormatR8g8b8a8Unorm;
-			params->arraySize = 1;
-			params->bindingFlags = kBindingShaderResource | kBindingRenderTarget;
+			TextureHandle normalUpTex = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 1, 16, data2);
+			if (!normalUpTex)
+				return kErrUnknown;
 
-			int32_t w, h;
-			renderer->GetFrameBufferSize(w, h);
-			params->width = w;
-			params->height = h;
+			TextureHandle blackTex = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 1, 16, data3);
+			if (!normalUpTex)
+				return kErrUnknown;
 
-			cmdBuf->Add(RendererCommand::kCommandCreateTexture, params);
-		}*/
+			defaultAlbedoMap = whiteTex;
+			defaultNormalMap = normalUpTex;
+			defaultMetallicGlossMap = blackTex;
+			defaultOcclusionMap = whiteTex;
+		}
 
 		// TODO when back buffer size changed !
 		int32_t w, h;
@@ -918,7 +941,7 @@ namespace tofu
 			// transpose matrix, model convertor is using row-major layout
 			for (uint32_t iBone = 0; iBone < header->NumBones; iBone++)
 			{
-				model.bones[iBone].transform = math::transpose(model.bones[iBone].transform);
+				model.bones[iBone].transformMatrix = math::transpose(model.bones[iBone].transformMatrix);
 				model.bones[iBone].offsetMatrix = math::transpose(model.bones[iBone].offsetMatrix);
 			}
 #endif
@@ -933,11 +956,6 @@ namespace tofu
 					model.animationTable[model.animations[i].name] = i;
 				}
 
-				// FIXME: Test only
-				model.animationTable["idle"] = 0;
-				model.animationTable["walk"] = 1;
-				model.animationTable["jump"] = 2;
-				model.animationTable["run"] = 3;
 
 				model.frames = reinterpret_cast<model::ModelAnimFrame*>(
 					model.animations + header->NumAnimations
@@ -1220,7 +1238,7 @@ namespace tofu
 
 		c.boneMatricesBuffer = bufferHandle;
 		c.boneMatricesBufferSize = static_cast<uint32_t>(sizeof(math::float4x4)) * model->header->NumBones;
-
+		
 		CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
 		assert(nullptr != params);
 		params->handle = bufferHandle;
@@ -1412,7 +1430,7 @@ namespace tofu
 		{
 			ambDirLightParams->ambient = math::float4(0.1f, 0.1f, 0.1f, 1.0f);
 
-			for (uint32_t i = 0; i <= lightsCount; ++i)
+			for (uint32_t i = 0; i < lightsCount; ++i)
 			{
 				LightComponentData& comp = lights[i];
 
@@ -1737,11 +1755,10 @@ namespace tofu
 					// fall through
 				case kMaterialTypeOpaque:
 					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
-					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 32 };
-					params->psShaderResources[0] = mat->mainTex;
-					params->psShaderResources[1] = mat->normalMap;
-					params->psShaderResources[2] = mat->metallicGlossMap;
-					params->psShaderResources[3] = mat->occlusionMap;
+					params->psShaderResources[0] = mat->mainTex ? mat->mainTex : defaultAlbedoMap;
+					params->psShaderResources[1] = mat->normalMap ? mat->normalMap : defaultNormalMap;
+					params->psShaderResources[2] = mat->metallicGlossMap ? mat->metallicGlossMap : defaultMetallicGlossMap;
+					params->psShaderResources[3] = mat->occlusionMap ? mat->occlusionMap : defaultOcclusionMap;
 					params->psSamplers[0] = defaultSampler;
 
 					params->renderTargets[0] = gBuffer1;

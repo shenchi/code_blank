@@ -188,7 +188,7 @@ int32_t RenderingTest::Update()
 
 		tPlayer->Translate(moveDir * Time::DeltaTime * speed);
 
-		anim->CrossFade(1, 0.3f);
+		anim->CrossFade("walk", 0.3f, 0);
 	}
 	else
 	{
@@ -196,7 +196,7 @@ int32_t RenderingTest::Update()
 		if (speed < 0.0f) speed = 0.0f;
 		tPlayer->Translate(tPlayer->GetForwardVector() * Time::DeltaTime * speed);
 
-		anim->CrossFade(0, 0.1f);
+		anim->CrossFade("idle", 0.1f);
 	}
 
 	return kOK;

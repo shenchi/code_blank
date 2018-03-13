@@ -8,9 +8,10 @@
 #include <Windows.h>
 #include <cassert>
 
-//#include "TestGame.h"
+#include "Game.h"
 //#include "SceneLoadingDemo.h"
 #include "RenderingTest.h"
+//#include "CubemapProbeDemo.h"
 
 using tofu::kOK;
 
@@ -23,12 +24,14 @@ int CALLBACK WinMain(
 #ifdef _DEBUG
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
-	//_CrtSetBreakAlloc(8423);
+	//_CrtSetBreakAlloc(132852);
 #endif
 
 	tofu::Engine engine;
 	CHECKED(engine.Init("config.lua"));
+	//CHECKED(engine.AddModule(new SceneLoadingDemo()));
 	CHECKED(engine.AddModule(new RenderingTest()));
-	//CHECKED(engine.AddModule(new TestGame()));
+	//CHECKED(engine.AddModule(new Game()));
+
 	return engine.Run();
 }

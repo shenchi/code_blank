@@ -17,6 +17,13 @@ PController::PController()
 	paused = false;
 	isAiming = false;
 	isHacking = false;
+
+	attackButtonDown = false;
+	dodgeButtonDown = false;
+	specialButtonDown = false;
+
+	// Default control scheme: 1, 1, 1, -1
+	SetControlMods(1, 1, -1, 1);
 }
 
 // Destructor
@@ -29,7 +36,7 @@ void PController::Update()
 
 	if (input->IsGamepadConnected())
 	{
-		if (input->IsButtonDown(ButtonId::kGamepadFaceRight))
+		if (input->IsButtonDown(ButtonId::kGamepadStart))
 		{
 			paused = !paused;
 		}
@@ -45,7 +52,7 @@ void PController::UpdateP(float dT)
 
 	if (input->IsGamepadConnected())
 	{
-		inputDir.z = -input->GetLeftStickY();
+		inputDir.z = input->GetLeftStickY();
 		inputDir.x = input->GetLeftStickX();
 	}
 
@@ -75,28 +82,57 @@ void PController::UpdateP(float dT)
 	bool jump = input->IsButtonDown(ButtonId::kKeySpace)
 		|| input->IsButtonDown(ButtonId::kGamepadFaceDown);
 
-	if (input->IsButtonDown(kMouseLButton)	// Attack
-		|| (input->IsButtonDown(kGamepadFaceLeft)) )
+	// Basic Attack
+	if ( (input->IsButtonDown(kMouseLButton) || (input->IsButtonDown(kGamepadFaceLeft)) )
+		&& !attackButtonDown )
 	{
-		player->Attack();
+		player->Attack(true, dT);
+		attackButtonDown = true;
+	}
+	else if( !(input->IsButtonDown(kMouseLButton) || (input->IsButtonDown(kGamepadFaceLeft))) 
+		&&  attackButtonDown)
+	{ 
+		player->Attack(false, dT);
+		attackButtonDown = false; 
 	}
 
-	if (input->IsButtonDown(kMouseRButton)	// Dodge
-		|| (input->IsButtonDown(kGamepadFaceRight)) )
+	// Dodge
+	if ( (input->IsButtonDown(kMouseRButton) || (input->IsButtonDown(kGamepadFaceRight)))
+		&& !dodgeButtonDown )
 	{
-		player->Dodge();
+		player->Dodge(inputDir);
+		dodgeButtonDown = true;
+	}
+	else if (!(input->IsButtonDown(kMouseRButton) || (input->IsButtonDown(kGamepadFaceRight)))
+		&& dodgeButtonDown)
+	{
+		dodgeButtonDown = false;
 	}
 
-	if (input->IsButtonDown(kKeyLeftControl) // Dash
-		|| (input->GetRightTrigger() > 0) )
+	if(!input->IsButtonDown(kKeyLeftShift)	// Stop Sprinting
+		&& (input->GetRightTrigger() < 0.0001) )
 	{
-		player->Dash();
+		player->Sprint(false);
+	}
+	else if (input->IsButtonDown(kKeyLeftShift) // Sprint
+		|| (input->GetRightTrigger() > 0))
+	{
+		player->Sprint(true);
 	}
 
-	if (input->IsButtonDown(kKeyE)	// Sword
-		|| (input->IsButtonDown(kGamepadFaceUp)) )
+
+	// Sword Attack
+	if ((input->IsButtonDown(kKeyE) || (input->IsButtonDown(kGamepadFaceUp)))
+		&& !specialButtonDown)
 	{
-		player->Special();
+		player->Special(true, dT);
+		specialButtonDown = true;
+	}
+	else if (!(input->IsButtonDown(kKeyE) || (input->IsButtonDown(kGamepadFaceUp)))
+		&& specialButtonDown)
+	{
+		player->Special(false, dT);
+		specialButtonDown = false;
 	}
 
 	if (input->IsButtonDown(kKeyQ)	// Vision Hack
@@ -111,14 +147,17 @@ void PController::UpdateP(float dT)
 		player->Interact();
 	}
 	
-	if (input->IsButtonDown(kKeyLeftShift)	// Aim Mode
-		|| (input->GetLeftTrigger() > 0) )
+	// Aim Mode
+	if ( (input->IsButtonDown(kKeyLeftShift) || (input->GetLeftTrigger() > 0) )
+		&& !isAiming )
 	{
-		player->Aim();
-		isAiming = true;
+		//player->Aim(true);
+		//isAiming = true;
+		
 	}
-	else
+	else if(isAiming)
 	{
+		player->Aim(false);
 		isAiming = false;
 	}
 
@@ -138,19 +177,21 @@ void PController::UpdateP(float dT)
 			yaw = input->GetRightStickX();
 		}
 
+		// Camera control modification based on player settings
+		pitch = pitch * pitchMod;
+		yaw = yaw * yawMod;
+
 		cam->Rotate(math::float2{pitch, yaw});
 		cam->UpdateTarget(player->GetPosition());
 	}
 	else
 	{
-		// TODO
-		// Aiming mode camera control
-		// If target is available (close enough and in right view angle) snap to
-		// Possibly from a list of nearby enemies
-
 		cam->UpdateTarget(player->GetPosition());
 	}
 
+	// Final adjustment to movement based on any custom axis changes from player
+	inputDir.x = inputDir.x * xAxisMod;
+	inputDir.z = inputDir.z * zAxisMod;
 
 	if (!isHacking && !isAiming)
 	{
@@ -166,6 +207,7 @@ void PController::UpdateP(float dT)
 		// player hacking mode movement control
 	}
 }
+
 
 //-------------------------------------------------------------------------------------------------
 // Setters
@@ -189,6 +231,16 @@ void PController::SetPlayer(Player* _player)
 {
 	assert(_player != NULL);
 	player = _player;
+}
+
+// Set the custom player axis controls
+// player left/right, player forward/backward, cam up/down, cam left/right
+void PController::SetControlMods(int _xAxisMod, int _zAxisMod, int _pitchMod, int _yawMod)
+{
+	xAxisMod = _xAxisMod;
+	zAxisMod = _zAxisMod;
+	pitchMod = _pitchMod;
+	yawMod = _yawMod;
 }
 
 //-------------------------------------------------------------------------------------------------

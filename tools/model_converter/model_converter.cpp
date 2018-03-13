@@ -19,6 +19,7 @@
 #include "../../engine/ModelFormat.h"
 #include "../../engine/TofuMath.h"
 #include "../../engine/Compression.h"
+#include "../../engine/Transform.h"
 
 //using tofu::math::float2;
 //using tofu::math::float3;
@@ -423,6 +424,75 @@ const char* HumanBone::name(uint32_t id)
 	return HumanBoneNames[id];
 }
 
+enum FbxNodeName
+{
+	fbxTranslation,
+	fbxRotationOffset,
+	fbxRotationPivot,
+	fbxPreRotation,
+	fbxRotation,
+	fbxPostRotation,
+	fbxRotationPivotInverse,
+	fbxScalingOffset,
+	fbxScalingPivot,
+	fbxScaling,
+	fbxScalingPivotInverse,
+	fbxNodeMax
+};
+
+std::unordered_map<std::string, uint32_t> fbxNodeNameTable =
+{
+	{ "Translation", fbxTranslation },
+	{ "RotationOffset", fbxRotationOffset },
+	{ "RotationPivot", fbxRotationPivot },
+	{ "PreRotation", fbxPreRotation },
+	{ "Rotation", fbxRotation },
+	{ "PostRotation", fbxPostRotation },
+	{ "PivotInverse", fbxRotationPivotInverse },
+	{ "ScalingOffset", fbxScalingOffset },
+	{ "ScalingPivot", fbxScalingPivot },
+	{ "Scaling", fbxScaling },
+	{ "ScalingPivotInverse", fbxScalingPivotInverse },
+};
+
+struct FbxNode
+{
+	float4x4 matrices[fbxNodeMax];
+
+	FbxNode()
+	{
+		for (uint32_t i = 0; i < fbxNodeMax; i++)
+			matrices[i] = float4x4(1.0f);
+	}
+
+	void SetMatrix(FbxNodeName id, const float4x4& matrix) { matrices[id] = matrix; }
+
+	void SetMatrix(const char* name, const float4x4& matrix)
+	{
+		auto iter = fbxNodeNameTable.find(name);
+		if (iter == fbxNodeNameTable.end())
+		{
+			assert(false);
+			return;
+		}
+
+		SetMatrix((FbxNodeName)(iter->second), matrix);
+	}
+
+	float4x4 GetMatrix() const 
+	{
+		mat4 ret = matrices[0];
+		for (uint32_t i = 1; i < fbxNodeMax; i++)
+		{
+			ret = matrices[i] * ret;
+		}
+
+		return ret;
+	}
+};
+
+typedef std::unordered_map<std::string, FbxNode> FbxNodeTable;
+
 struct ModelFile;
 bool CorrectHumanBoneRotation(const ModelFile & dstModel, const ModelFile & srcModel, quat& rotation, uint32_t humanBoneId);
 
@@ -517,9 +587,9 @@ inline bool IsEqual(const float4x4& a, const aiMatrix4x4& b)
 	return true;
 }
 
-uint32_t loadBoneHierarchy(aiNode* node, BoneTree& bones, BoneTable& table, uint32_t parentId = UINT16_MAX, uint32_t lastSibling = UINT16_MAX)
+uint16_t loadBoneHierarchy(const aiNode* node, BoneTree& bones, BoneTable& table, FbxNodeTable& fbxNodeTable, uint16_t parentId = UINT16_MAX, uint16_t lastSibling = UINT16_MAX)
 {
-	uint32_t boneId = static_cast<uint32_t>(bones.size());
+	uint16_t boneId = static_cast<uint16_t>(bones.size());
 	bones.push_back(Bone());
 	Bone& bone = bones[boneId];
 	bone.id = boneId;
@@ -533,20 +603,78 @@ uint32_t loadBoneHierarchy(aiNode* node, BoneTree& bones, BoneTable& table, uint
 
 	if (node->mName.length > 0)
 	{
-		strncpy(bone.name, node->mName.C_Str(), 127);
-		bone.name[127] = 0;
-
-		table.insert(std::make_pair(node->mName.C_Str(), boneId));
+		strncpy_s(bone.name, 128, node->mName.C_Str(), _TRUNCATE);
 	}
 
-	CopyMatrix(bone.transform, node->mTransformation);
+	CopyMatrix(bone.transformMatrix, node->mTransformation);
 	bone.offsetMatrix = float4x4(1.0f);
 
-	uint32_t firstChild = UINT16_MAX;
-	uint32_t lastChild = UINT16_MAX;
-	for (uint32_t i = 0; i < node->mNumChildren; i++)
+	// deal with "$AssimpFbx$" issue
 	{
-		uint32_t id = loadBoneHierarchy(node->mChildren[i], bones, table, boneId, lastChild);
+		std::string bonename(node->mName.C_Str());
+		size_t idx = bonename.find("$AssimpFbx$");
+		if (idx != std::string::npos)
+		{
+			std::string basename = bonename.substr(0, idx - 1);
+			size_t transIdx = idx + 12;
+			std::string transname = bonename.substr(transIdx);
+
+			bonename = basename;
+
+			if (fbxNodeTable.find(basename) == fbxNodeTable.end())
+			{
+				fbxNodeTable.insert(std::pair<std::string, FbxNode>(basename, FbxNode()));
+			}
+
+			FbxNode& fbxNode = fbxNodeTable[basename];
+			fbxNode.SetMatrix(transname.c_str(), bone.transformMatrix);
+
+			strncpy_s(bone.name, 128, basename.c_str(), _TRUNCATE);
+
+			while (node->mNumChildren > 0)
+			{
+				const aiNode* child = node->mChildren[0];
+
+				std::string childbonename(child->mName.C_Str());
+
+				if (childbonename != bonename)
+				{
+					idx = childbonename.find("$AssimpFbx$");
+					if (idx == std::string::npos) break;
+
+					basename = childbonename.substr(0, idx - 1);
+					if (basename != bonename) break;
+				}
+
+				node = child;
+
+				const aiMatrix4x4& m = node->mTransformation;
+				mat4 mat = mat4(
+					m.a1, m.a2, m.a3, m.a4,
+					m.b1, m.b2, m.b3, m.b4,
+					m.c1, m.c2, m.c3, m.c4,
+					m.d1, m.d2, m.d3, m.d4
+				);
+
+				if (childbonename != bonename)
+				{
+					transIdx = idx + 12;
+					transname = childbonename.substr(transIdx);
+					fbxNode.SetMatrix(transname.c_str(), mat);
+				}
+
+				bone.transformMatrix = mat * bone.transformMatrix;
+			}
+		}
+	}
+
+	table.insert(std::make_pair(bone.name, boneId));
+
+	uint16_t firstChild = UINT16_MAX;
+	uint16_t lastChild = UINT16_MAX;
+	for (uint16_t i = 0; i < node->mNumChildren; i++)
+	{
+		uint16_t id = loadBoneHierarchy(node->mChildren[i], bones, table, fbxNodeTable, boneId, lastChild);
 		if (firstChild == UINT16_MAX)
 		{
 			firstChild = id;
@@ -554,6 +682,14 @@ uint32_t loadBoneHierarchy(aiNode* node, BoneTree& bones, BoneTable& table, uint
 		lastChild = id;
 	}
 	bones[boneId].firstChild = firstChild;
+
+	for (int i = 0; i < bones.size(); i++) {
+		tofu::math::float3 t, s;
+		tofu::math::quat q;
+
+		tofu::math::decompose(bones[i].transformMatrix, t, q, s);
+		bones[i].transform = std::move(tofu::Transform(t, q, s));
+	}
 
 	return boneId;
 }
@@ -580,7 +716,6 @@ bool SortingFrameComp(ForSortingFrame i, ForSortingFrame j) {
 	else {
 		return i.usedTime < j.usedTime;
 	}
-
 }
 
 struct ModelFile
@@ -607,6 +742,8 @@ struct ModelFile
 	std::vector<bool>				boneHasOffsetMatrices;
 	float3							rootOffset;
 	float							hipsHeight;
+
+	FbxNodeTable					fbxNodeTable;
 
 
 	int Init(const char* filename, bool withAnim = true)
@@ -647,8 +784,8 @@ struct ModelFile
 		// gathering bone information
 		if (scene->mRootNode->mNumChildren > 0) {
 			// load bone hierarchy	
-			loadBoneHierarchy(scene->mRootNode, bones, boneTable);
-			header.NumBones = static_cast<uint32_t>(bones.size());
+			loadBoneHierarchy(scene->mRootNode, bones, boneTable, fbxNodeTable);
+			header.NumBones = static_cast<uint16_t>(bones.size());
 			boneHasOffsetMatrices.resize(bones.size(), false);
 		}
 
@@ -763,6 +900,11 @@ struct ModelFile
 					}
 				}
 
+				if (mesh->mNumBones > kModelMaxJointIndex) {
+					printf("too many bones.");
+					return __LINE__;
+				}
+
 				for (uint32_t j = 0; j < mesh->mNumBones; ++j)
 				{
 					aiBone* bone = mesh->mBones[j];
@@ -873,13 +1015,49 @@ struct ModelFile
 				0
 			};
 
-			strncpy(animation.name, anim->mName.C_Str(), 127);
-			animation.name[127] = 0;
+			strncpy_s(animation.name, 128, anim->mName.C_Str(), _TRUNCATE);
 
 			for (uint32_t iChan = 0; iChan < anim->mNumChannels; iChan++)
 			{
 				aiNodeAnim* chan = anim->mChannels[iChan];
 				std::string boneName(chan->mNodeName.C_Str());
+
+				bool omitT = false, omitR = false, omitS = false;
+				FbxNode* fbxNode = nullptr;
+
+				size_t idx = boneName.find("$AssimpFbx$");
+				if (idx != std::string::npos)
+				{
+					size_t transIdx = idx + 12;
+					std::string transname = boneName.substr(transIdx);
+					boneName = boneName.substr(0, idx - 1);
+					if (transname == "Translation")
+					{
+						omitR = true; omitS = true;
+					}
+					else if (transname == "Rotation")
+					{
+						omitT = true; omitS = true;
+					}
+					else if (transname == "Scaling")
+					{
+						omitT = true; omitR = true;
+					}
+					else
+					{
+						assert(false);
+						printf("unable to recognize this channel %s\n", boneName.c_str());
+						return __LINE__;
+					}
+
+					auto iter = fbxNodeTable.find(boneName);
+					if (iter != fbxNodeTable.end())
+					{
+						fbxNode = &(iter->second);
+					}
+					assert(fbxNode != nullptr);
+				}
+
 				auto iter = boneTable.find(boneName);
 				if (iter == boneTable.end())
 				{
@@ -893,72 +1071,89 @@ struct ModelFile
 				uint32_t numS = chan->mNumScalingKeys;
 
 				// translation keys
-				for (uint32_t iFrame = 0; iFrame < numT; iFrame++)
+				if (!omitT)
 				{
-					aiVectorKey& key = chan->mPositionKeys[iFrame];
-					aiVectorKey& sortKey = chan->mPositionKeys[iFrame < 2 ? 0 : iFrame - 2];
+					for (uint32_t iFrame = 0; iFrame < numT; iFrame++)
+					{
+						aiVectorKey& key = chan->mPositionKeys[iFrame];
+						aiVectorKey& sortKey = chan->mPositionKeys[iFrame < 2 ? 0 : iFrame - 2];
 
-					ForSortingFrame temp;
-					temp.usedTime = static_cast<uint16_t>(round(sortKey.mTime));
+						ForSortingFrame temp;
+						temp.usedTime = static_cast<uint16_t>(round(sortKey.mTime));
 
-					ModelAnimFrame &frame = temp.frame;
-					frame.time = static_cast<uint16_t>(round(key.mTime));
-					frame.SetJointIndex(boneId);
-					frame.SetChannelType(kChannelTranslation);
-					frame.value.x = key.mValue.x;
-					frame.value.y = key.mValue.y;
-					frame.value.z = key.mValue.z;
+						ModelAnimFrame &frame = temp.frame;
+						frame.time = static_cast<uint16_t>(round(key.mTime));
+						frame.SetJointIndex(boneId);
+						frame.SetChannelType(kChannelTranslation);
+						frame.value.x = key.mValue.x;
+						frame.value.y = key.mValue.y;
+						frame.value.z = key.mValue.z;
 
-					frames.push_back(temp);
+						frames.push_back(temp);
+					}
 				}
 
 				// rotation keys
-				for (uint32_t iFrame = 0; iFrame < numT; iFrame++)
+				if (!omitR)
 				{
-					aiQuatKey& key = chan->mRotationKeys[iFrame];
-					aiQuatKey& sortKey = chan->mRotationKeys[iFrame < 2 ? 0 : iFrame - 2];
+					for (uint32_t iFrame = 0; iFrame < numR; iFrame++)
+					{
+						aiQuatKey& key = chan->mRotationKeys[iFrame];
+						aiQuatKey& sortKey = chan->mRotationKeys[iFrame < 2 ? 0 : iFrame - 2];
 
-					ForSortingFrame temp;
-					temp.usedTime = static_cast<uint16_t>(round(sortKey.mTime));
+						ForSortingFrame temp;
+						temp.usedTime = static_cast<uint16_t>(round(sortKey.mTime));
 
-					ModelAnimFrame &frame = temp.frame;
-					frame.time = static_cast<uint16_t>(round(key.mTime));
-					frame.SetJointIndex(boneId);
-					frame.SetChannelType(kChannelRotation);
+						ModelAnimFrame &frame = temp.frame;
+						frame.time = static_cast<uint16_t>(round(key.mTime));
+						frame.SetJointIndex(boneId);
+						frame.SetChannelType(kChannelRotation);
 
-					quat q;
-					q.x = key.mValue.x;
-					q.y = key.mValue.y;
-					q.z = key.mValue.z;
-					q.w = key.mValue.w;
+						quat q;
+						q.x = key.mValue.x;
+						q.y = key.mValue.y;
+						q.z = key.mValue.z;
+						q.w = key.mValue.w;
 
-					//CompressQuaternion(q, *reinterpret_cast<uint32_t*>(&frame.value.x));
+						if (nullptr != fbxNode)
+						{
+							mat4 rot = fbxNode->matrices[fbxRotationPivotInverse] *
+								fbxNode->matrices[fbxPostRotation] *
+								transpose(mat4_cast(q)) *
+								fbxNode->matrices[fbxPreRotation] *
+								fbxNode->matrices[fbxRotationPivot] *
+								fbxNode->matrices[fbxRotationOffset];
 
-					bool negativeW;
-					CompressQuaternion(q, frame.value, negativeW);
-					frame.SetSignedBit(negativeW);
+							vec3 t, s;
+							decompose(transpose(rot), t, q, s);
+						}
 
-					frames.push_back(temp);
+						compress(q, frame.value);
+						frames.push_back(temp);
+					}
 				}
 
 				// scale keys
-				for (uint32_t iFrame = 0; iFrame < numT; iFrame++)
+				if (!omitS)
 				{
-					aiVectorKey& key = chan->mScalingKeys[iFrame];
-					aiVectorKey& sortKey = chan->mScalingKeys[iFrame < 2 ? 0 : iFrame - 2];
+					for (uint32_t iFrame = 0; iFrame < numS; iFrame++)
+					{
+						aiVectorKey& key = chan->mScalingKeys[iFrame];
+						aiVectorKey& sortKey = chan->mScalingKeys[iFrame < 2 ? 0 : iFrame - 2];
 
-					ForSortingFrame temp;
-					temp.usedTime = static_cast<uint16_t>(round(sortKey.mTime));
+						ForSortingFrame temp;
+						temp.usedTime = static_cast<uint16_t>(round(sortKey.mTime));
 
-					ModelAnimFrame &frame = temp.frame;
-					frame.time = static_cast<uint16_t>(round(key.mTime));
-					frame.SetJointIndex(boneId);
-					frame.SetChannelType(kChannelScale);
-					frame.value.x = key.mValue.x;
-					frame.value.y = key.mValue.y;
-					frame.value.z = key.mValue.z;
+						ModelAnimFrame &frame = temp.frame;
+						frame.time = static_cast<uint16_t>(round(key.mTime));
+						frame.SetJointIndex(boneId);
+						frame.SetChannelType(kChannelScale);
+						frame.value.x = key.mValue.x;
+						frame.value.y = key.mValue.y;
+						frame.value.z = key.mValue.z;
 
-					frames.push_back(temp);
+						frames.push_back(temp);
+					}
 				}
 			}
 
@@ -1046,7 +1241,7 @@ struct ModelFile
 						}
 						else
 						{
-							decompose(transpose(bones[iter->second].transform), trans, rot, scale);
+							decompose(transpose(bones[iter->second].transformMatrix), trans, rot, scale);
 
 							// column-majored
 							humanBoneWorldMatrices[i] = humanBoneWorldMatrices[p] * translate(mat4(1.0f), trans);
@@ -1293,17 +1488,15 @@ struct ModelFile
 			auto type = frame.GetChannelType();
 			if (type == tofu::model::kChannelRotation)
 			{
-				quat q(1, 0, 0, 0);
-				DecompressQuaternion(q, frame.value, frame.GetSignedBit());
+				quat q;
+				decompress(frame.value, q);
 
 				if (!CorrectHumanBoneRotation(*this, other, q, humanBoneId))
 				{
 					return __LINE__;
 				}
 
-				bool sign;
-				CompressQuaternion(q, frame.value, sign);
-				frame.SetSignedBit(sign);
+				compress(q, frame.value);
 			}
 			else if (type == tofu::model::kChannelTranslation)
 			{
@@ -1563,7 +1756,17 @@ int execute_config(const char* configFilename)
 	return 0;
 }
 
-int list_animations(const char* filename)
+void list_bones(const aiNode* node, std::string indent = "")
+{
+	printf("%s%s\n", indent.c_str(), node->mName.C_Str());
+
+	for (uint32_t i = 0; i < node->mNumChildren; i++)
+	{
+		list_bones(node->mChildren[i], indent + "  ");
+	}
+}
+
+int list_information(const char* filename)
 {
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(filename, 0);
@@ -1574,7 +1777,9 @@ int list_animations(const char* filename)
 		return __LINE__;
 	}
 
-	printf("contains %d animations:\n");
+	list_bones(scene->mRootNode);
+
+	printf("contains %d animations:\n", scene->mNumAnimations);
 	for (uint32_t i = 0; i < scene->mNumAnimations; i++)
 	{
 		printf("[%5d] %s\n", i, scene->mAnimations[i]->mName.C_Str());
@@ -1604,14 +1809,14 @@ int main(int argc, char* argv[])
 	//	"../../assets/KB_Punches.fbx",
 	//};
 
-	////argc = 3;
-	////
-	////char* tempArgv[6] =
-	////{
-	////	"",
-	////	"../../cube.model",
-	////	"../../assets/cube.fbx",
-	////};
+	/*argc = 3;
+	
+	char* tempArgv[6] =
+	{
+		"",
+		"stairs.model",
+		"stairs.obj",
+	};*/
 
 	////////char* tempArgv[6] =
 	////////{
@@ -1637,7 +1842,7 @@ int main(int argc, char* argv[])
 		}
 		else
 		{
-			return list_animations(argv[1]);
+			return list_information(argv[1]);
 		}
 	}
 	else

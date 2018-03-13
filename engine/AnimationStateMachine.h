@@ -11,12 +11,12 @@ namespace tofu
 {
 	enum AnimationEvaluationType
 	{
-		kAET_None,
-		kAET_Additive
+		kAET_Blend,
+		kAET_Additive,
+		kAET_Override
 	};
 
 	class Model;
-	class AnimNodeBase;
 
 	struct AnimationTransitionEntry
 	{
@@ -33,8 +33,9 @@ namespace tofu
 	struct EvaluateContext
 	{
 		Model *model;
-		Transform *transforms;
-
+		Transform *results;
+		std::vector<uint16_t> *selectedJoints = nullptr;
+	
 		EvaluateContext(Model *model);
 		~EvaluateContext();
 	};
@@ -78,17 +79,23 @@ namespace tofu
 	{
 
 	public:
-		std::string	name;
+		std::string name;
 
 	public:
+		AnimNodeBase() = default;
 		AnimNodeBase(std::string name);
+		AnimNodeBase& operator=(AnimNodeBase other) { swap(*this, other); return *this; }
+		AnimNodeBase(AnimNodeBase& other) = delete;
+		AnimNodeBase(AnimNodeBase&& other) noexcept : AnimNodeBase() { swap(*this, other); }
 		virtual ~AnimNodeBase() {}
+
+		friend void swap(AnimNodeBase& lhs, AnimNodeBase& rhs) noexcept;
 
 		virtual void Enter(Model *model) {}
 		virtual void Exit() {}
 
 		virtual void Update(UpdateContext& context) {}
-		virtual void Evaluate(EvaluateContext& context, float weight) {}
+		virtual void Evaluate(EvaluateContext& context, float weight, AnimationEvaluationType type) {}
 
 		virtual float GetDurationInSecond(Model *model) { return 0.f; }
 	};
@@ -98,28 +105,40 @@ namespace tofu
 		friend class AnimationStateMachine;
 
 	public:
-		std::string	animationName;
-
 		bool isLoop = true;
 		float playbackSpeed = 1.0f;
 
-		AnimationStateCache* cache;
+		AnimationStateCache* cache = nullptr;
+
+		std::string	animationName = "";
 	public:
-		AnimationState(std::string name = "state") : AnimNodeBase(name) {}
+		AnimationState() = default;
+		AnimationState(std::string name) : AnimNodeBase(name) {}
+		AnimationState& operator=(AnimationState other) { swap(*this, other); return *this; }
+		AnimationState(AnimationState& other) = delete;
+		AnimationState(AnimationState&& other) noexcept : AnimationState() { swap(*this, other); }
 		virtual ~AnimationState();
+
+		friend void swap(AnimationState& lhs, AnimationState& rhs) noexcept;
 
 		virtual void Enter(Model *model) override;
 		virtual void Exit() override;
 
 		virtual void Update(UpdateContext& context) override;
-		virtual void Evaluate(EvaluateContext& context, float weight) override;
+		virtual void Evaluate(EvaluateContext& context, float weight, AnimationEvaluationType type) override;
+
+		TF_INLINE void InternalEvaluate(uint16_t i, EvaluateContext & context, float weight, AnimationEvaluationType type);
 
 		virtual float GetDurationInSecond(Model *model) override;
 
-		math::float3 CatmullRomIndex(Model * model, size_t i1, size_t i2, size_t i3, size_t i4) const;
-		math::quat SquadIndex(Model * model, size_t i1, size_t i2, size_t i3, size_t i4) const;
-		math::float3 LerpFromFrameIndex(Model * model, size_t lhs, size_t rhs) const;
-		math::quat SlerpFromFrameIndex(Model * model, size_t lhs, size_t rhs) const;
+	private:
+		template<typename T, typename GetFuncType, typename LinearFuncType, typename CubicFuncType>
+		void SetTransform(size_t * indices, Model * model, Transform & trans, Transform & tPose, void(Transform::* set)(const T &), GetFuncType get, LinearFuncType linear, CubicFuncType cubic);
+
+		math::float3 LerpFrame(Model * model, size_t lhs, size_t rhs) const;
+		math::quat SlerpFrame(Model * model, size_t lhs, size_t rhs) const;
+		math::float3 CatmullRomFrame(Model * model, size_t i1, size_t i2, size_t i3, size_t i4) const;
+		math::quat SquadFrame(Model * model, size_t i1, size_t i2, size_t i3, size_t i4) const;
 	};
 
 	class AnimationStateMachine : AnimNodeBase
@@ -129,21 +148,24 @@ namespace tofu
 		std::vector<AnimNodeBase*> states;
 		std::unordered_map<std::string, uint16_t> stateIndexTable;
 
-		AnimNodeBase *previous;
-		AnimNodeBase *current;
+		AnimNodeBase *previous = nullptr;
+		AnimNodeBase *current = nullptr;
 
 		// Elapsed time since entering the current state
-		float elapsedTime;
+		float elapsedTime = 0.f;
+		float transitionDuration = 0.f;
 
-		float transitionDuration;
 		std::list<AnimationTransitionEntry> transitions;
 
 	public:
-		AnimationStateMachine(std::string name = "machine");
-		// TODO::
-		//AnimationStateMachine(const AnimationStateMachine& other);
-		AnimationStateMachine(AnimationStateMachine && other) noexcept;
+		AnimationStateMachine() = default;
+		AnimationStateMachine(std::string name);
+		AnimationStateMachine& operator=(AnimationStateMachine other) { swap(*this, other); return *this; }
+		AnimationStateMachine(AnimationStateMachine& other) = delete;
+		AnimationStateMachine(AnimationStateMachine&& other) noexcept : AnimationStateMachine() { swap(*this, other); }
 		virtual ~AnimationStateMachine();
+
+		friend void swap(AnimationStateMachine& lhs, AnimationStateMachine& rhs) noexcept;
 
 		void Play(std::string name);
 		void CrossFade(std::string name, float normalizedTransitionDuration);
@@ -154,7 +176,7 @@ namespace tofu
 		virtual void Exit() override;
 
 		virtual void Update(UpdateContext& context) override;
-		virtual void Evaluate(EvaluateContext& context, float weight) override;
+		virtual void Evaluate(EvaluateContext& context, float weight, AnimationEvaluationType type) override;
 
 		virtual float GetDurationInSecond(Model *model) override;
 	};
@@ -163,14 +185,21 @@ namespace tofu
 		friend class AnimationComponentData;
 
 	public:
-		AnimationLayer(std::string name, float weight = 1.0f);
+		AnimationLayer(std::string name, float weight = 1.0f, AnimationEvaluationType type = kAET_Blend);
 
 		virtual void Update(Model *model);
 		virtual void Evaluate(EvaluateContext& context);
 
+		AnimationStateMachine *GetStateMachine() { return &stateMachine; }
+
+		// FIXME:
+		std::vector<uint16_t> *selectedJoints = nullptr;
+
 	private:
 		std::string name;
 		float weight;
+		AnimationEvaluationType type;
+
 		AnimationStateMachine stateMachine;
 	};
 }

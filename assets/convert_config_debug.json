@@ -1,0 +1,28 @@
+[
+	{
+		"target": "archer.model",
+		"source": "archer_idle.fbx",
+		"avatar": "archer_avatar.json",
+		"animations":
+		[
+			{
+				"name": "idle",
+				"source": "archer_idle.fbx",
+				"avatar": "archer_avatar.json",
+				"clip": "mixamo.com"
+			},
+			{
+				"name": "walk",
+				"source": "archer_walking.fbx",
+				"avatar": "archer_avatar.json",
+				"clip": "mixamo.com"
+			},
+			{
+				"name": "kick",
+				"source": "KB_Kicks.fbx",
+				"avatar": "KB_Jumping_avatar.json",
+				"clip": "KB_p_MidKickStraight_R"
+			}
+		]
+	}
+]

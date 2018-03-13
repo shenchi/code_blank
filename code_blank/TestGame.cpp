@@ -280,7 +280,7 @@ int32_t TestGame::Update()
 		pPlayer->SetVelocity(moveDir * speed);
 		//tPlayer->Translate(moveDir * Time::DeltaTime * speed);
 
-		anim->CrossFade(1, 0.3f);
+		anim->CrossFade("walk", 0.3f);
 	}
 	else
 	{
@@ -290,7 +290,7 @@ int32_t TestGame::Update()
 		pPlayer->SetVelocity(tPlayer->GetForwardVector() * speed);
 		//tPlayer->Translate(tPlayer->GetForwardVector() * Time::DeltaTime * speed);
 
-		anim->CrossFade(0, 0.2f);
+		anim->CrossFade("idle", 0.2f);
 	}
 
 	if (jump && !inAir)

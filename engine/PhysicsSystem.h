@@ -11,6 +11,12 @@ class btDiscreteDynamicsWorld;
 
 namespace tofu
 {
+	struct RayTestResult
+	{
+		math::float3		hitWorldPosition;
+		math::float3		hitWorldNormal;
+	};
+
 	class PhysicsSystem : public Module
 	{
 		SINGLETON_DECL(PhysicsSystem)
@@ -23,7 +29,10 @@ namespace tofu
 			pairCache(nullptr),
 			solver(nullptr),
 			world(nullptr)
-		{}
+		{
+			assert(nullptr == _instance);
+			_instance = this;
+		}
 
 	public:
 		int32_t Init() override;
@@ -33,6 +42,8 @@ namespace tofu
 		int32_t Update() override;
 
 		void SetGravity(const math::float3& g);
+
+		bool RayTest(const math::float3& start, const math::float3& end, RayTestResult* result = nullptr);
 
 	private:
 		btDefaultCollisionConfiguration*		config;

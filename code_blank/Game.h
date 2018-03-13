@@ -1,11 +1,10 @@
 #pragma once
 
-#include <Module.h>
-#include <Entity.h>
-#include "Camera.h"
+#include <Tofu.h>
+#include "Character.h"
 #include "PController.h"
+#include "Camera.h"
 #include "Enemy.h"
-#include <TransformComponent.h>
 
 // Game: The main game loop.
 // Runs all things game related.
@@ -33,12 +32,17 @@ private:
 	tofu::TransformComponent tBox7;
 	tofu::TransformComponent tGround;
 
+	tofu::TransformComponent tStair;
+	tofu::PhysicsComponent pStair;
+
 	// Class variables
 	//tofu::CameraComponent cam;
 	Camera* cam;
 	Player* player;
 	Companion* comp;
 	PController* pControl;
+
+	std::vector<Character*>* enemyList;
 
 	enum sceneType
 	{
@@ -55,6 +59,7 @@ private:
 		credits = 10,
 	};
 
+	tofu::SceneManager sceneMgr;
 	sceneType currentScene;
 	sceneType lastScene;
 
@@ -68,9 +73,9 @@ private:
 
 	//*********************************************************************************************
 	//temp for test
-	Enemy* enemy01;
-	Enemy* enemy02;
-	Enemy* enemy03;
+	//Enemy* enemy01;
+	//Enemy* enemy02;
+	//Enemy* enemy03;
 	float timePassed;
 	float startTime;
 	bool loopStart;

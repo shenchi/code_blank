@@ -39,12 +39,30 @@ int32_t SceneLoadingDemo::Init()
 
 		anim = e.AddComponent<AnimationComponent>();
 
-		AnimationStateMachine *stateMachine = anim->GetStateMachine();
+		{
+			AnimationStateMachine *stateMachine = anim->GetStateMachine();
 
-		AnimationState *idle = stateMachine->AddState("idle");
-		idle->animationName = "idle";
-		AnimationState *walk = stateMachine->AddState("walk");
-		walk->animationName = "walk";
+			AnimationState *idle = stateMachine->AddState("idle");
+			idle->animationName = "idle";
+			AnimationState *walk = stateMachine->AddState("walk");
+			walk->animationName = "walk";
+			AnimationState *kick = stateMachine->AddState("kick");
+			kick->animationName = "kick";
+		}
+
+		{
+			AnimationLayer *upperLayer = anim->AddLayer("Upper", 1.0f, kAET_Override);
+			upperLayer->selectedJoints = new std::vector<uint16_t>();
+
+			for (int i = 3; i <= 55; i++) {
+				upperLayer->selectedJoints->push_back(i);
+			}
+
+			AnimationStateMachine *stateMachine = upperLayer->GetStateMachine();
+
+			AnimationState *walk = stateMachine->AddState("idle");
+			walk->animationName = "idle";
+		}
 
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaqueSkinned);
 
@@ -215,15 +233,16 @@ int32_t SceneLoadingDemo::Update()
 
 		tPlayer->Translate(moveDir * Time::DeltaTime * speed);
 
-		anim->CrossFade(1, 0.3f);
+		anim->CrossFade("walk", 0.3f);
 	}
 	else
 	{
 		speed -= Time::DeltaTime * Deaccelerate;
 		if (speed < 0.0f) speed = 0.0f;
-		tPlayer->Translate(tPlayer->GetForwardVector() * Time::DeltaTime * speed);
+		tPlayer->Translate(-tPlayer->GetForwardVector() * Time::DeltaTime * speed);
 
-		anim->CrossFade(0, 0.1f);
+		anim->CrossFade("idle", 0.1f);
+		anim->CrossFade("idle", 0.1f, 1);
 	}
 
 	return kOK;

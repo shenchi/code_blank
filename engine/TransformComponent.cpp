@@ -47,6 +47,5 @@ namespace tofu
 			(*i)->UpdateTransfromInHierachy();
 		}
 	}
-
 }
 
