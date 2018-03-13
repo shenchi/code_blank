@@ -1755,6 +1755,7 @@ namespace tofu
 					// fall through
 				case kMaterialTypeOpaque:
 					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
+					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
 					params->psShaderResources[0] = mat->mainTex ? mat->mainTex : defaultAlbedoMap;
 					params->psShaderResources[1] = mat->normalMap ? mat->normalMap : defaultNormalMap;
 					params->psShaderResources[2] = mat->metallicGlossMap ? mat->metallicGlossMap : defaultMetallicGlossMap;
@@ -1972,7 +1973,7 @@ namespace tofu
 			params->startIndex = mesh.StartIndex;
 			params->startVertex = mesh.StartVertex;
 			params->indexCount = mesh.NumIndices;
-			params->vsConstantBuffers[0] = { frameConstantBuffer, 0, 16 };
+			params->vsConstantBuffers[0] = { frameConstantBuffer, 0, 0 };
 
 			params->psShaderResources[0] = skyboxTex;
 			params->psSamplers[0] = defaultSampler;

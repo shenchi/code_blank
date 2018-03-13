@@ -61,7 +61,7 @@ float4 main(float4 clipPos : SV_POSITION) : SV_TARGET
 	float roughness = 1 - gBuffer3.Load(int3(screenPos, 0)).a;
 
 	float3 ambientPBR = EnvironmentLight(worldNormal, viewDir, albedo, ao, metallic, roughness, skyDiff, skySpec, BrdfLut, samp, sampForLUT);
-	color += ambientPBR;
+	color += ambientPBR * ambient.xyz;
 	
 	return float4(color, 1);
 }
