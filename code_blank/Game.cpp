@@ -394,34 +394,34 @@ bool Game::LoadScene(sceneType num)
 
 			player->GetCombatManager()->SetEnemyList(enemyList);
 
-			// Test stair
-			{
-				Entity e = Entity::Create();
+			//// Test stair
+			//{
+			//	Entity e = Entity::Create();
 
-				tStair = e.AddComponent<TransformComponent>();	
-				tStair->SetLocalPosition(math::float3{ 43.0f, 0.0f, -38.0f });
-				tStair->SetLocalScale(math::float3{ 0.001f, 0.0006f, 0.001f });
+			//	tStair = e.AddComponent<TransformComponent>();	
+			//	tStair->SetLocalPosition(math::float3{ 43.0f, 0.0f, -38.0f });
+			//	tStair->SetLocalScale(math::float3{ 0.001f, 0.0006f, 0.001f });
 
-				RenderingComponent r = e.AddComponent<RenderingComponent>();
+			//	RenderingComponent r = e.AddComponent<RenderingComponent>();
 
-				Model* model = RenderingSystem::instance()->CreateModel("assets/stairs.model");
+			//	Model* model = RenderingSystem::instance()->CreateModel("assets/stairs.model");
 
-				Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
-				TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
-				TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/stone_wall_normalmap.texture");
+			//	Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
+			//	TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
+			//	TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/stone_wall_normalmap.texture");
 
-				material->SetTexture(diffuse);
-				material->SetNormalMap(normalMap);
+			//	material->SetTexture(diffuse);
+			//	material->SetNormalMap(normalMap);
 
-				r->SetMaterial(material);
-				r->SetModel(model);
+			//	r->SetMaterial(material);
+			//	r->SetModel(model);
 
-				pStair = e.AddComponent<PhysicsComponent>();
-				pStair->SetMeshCollider(model);
-				pStair->SetStatic(true);
-				//pStair->SetColliderOrigin(math::float3{ 0.0f, 100.0f, 0.0f });
-			}
-			break;
+			//	pStair = e.AddComponent<PhysicsComponent>();
+			//	pStair->SetMeshCollider(model);
+			//	pStair->SetStatic(true);
+			//	//pStair->SetColliderOrigin(math::float3{ 0.0f, 100.0f, 0.0f });
+			//}
+			//break;
 		}
 		case 7:
 		{
