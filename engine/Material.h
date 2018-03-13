@@ -20,6 +20,8 @@ namespace tofu
 		kMaterialDeferredLightingSpotLight,
 		kMaterialDeferredLightingAmbient,
 		kMaterialPostProcessToneMapping,
+		kMaterialPostProcessExtractBright,
+		kMaterialPostProcessBlur,
 		kMaterialPostProcessVolumetricFog,
 		kMaxMaterialTypes
 	};

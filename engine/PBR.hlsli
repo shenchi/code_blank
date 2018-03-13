@@ -62,3 +62,26 @@ float3 LightingModel(float3 radiance, float3 albedo, float NdotH, float HdotV, f
 
 	return Lo;
 }
+
+float3 EnvironmentLight(float3 N, float3 V, float3 albedo, float ao, float metallic, float roughness, 
+	TextureCube irradianceMap, TextureCube prefilterMap, Texture2D brdfLUT, SamplerState samp, SamplerState samplerForLUT) {
+	// Add environment diffuse 
+	float3 F0 = float3(0.04, 0.04, 0.04);
+	float3 F = FresnelSchlickRoughness(max(dot(N, V), 0), F0, roughness);
+	float3 kS = F;
+	float3 kD = 1.0 - kS;
+	kD *= 1.0 - metallic;
+	float3 irradiance = irradianceMap.SampleLevel(samp, N, 0).rgb;
+	float3 diffuse = irradiance * albedo;
+
+	float3 R = reflect(-V, N);
+	const float MAX_REFLECTION_LOD = 4.0;
+	float3 prefilteredColor = prefilterMap.SampleLevel(samp, R, roughness * MAX_REFLECTION_LOD).rgb;
+
+	float2 envBRDF = brdfLUT.SampleLevel(samplerForLUT, float2(max(dot(N, V), 0), roughness), 0).rg;
+	float3 specular = prefilteredColor * (F*envBRDF.x + envBRDF.y);
+
+
+	float3 ambient = (kD * diffuse + specular) * ao;
+	return ambient;
+}

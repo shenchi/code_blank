@@ -19,6 +19,7 @@ private:
 	tofu::TransformComponent	tPlayer;
 	tofu::TransformComponent	tCamera;
 	tofu::PhysicsComponent		pPlayer;
+	tofu::TransformComponent	tBox;
 	// Dummy light
 	tofu::TransformComponent    tSun;
 	tofu::LightComponent        lSun;

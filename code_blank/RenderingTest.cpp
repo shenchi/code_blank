@@ -71,8 +71,15 @@ int32_t RenderingTest::Init()
 		tCamera->SetLocalPosition(math::float3{ 0, 0, -2 });
 
 		Material* skyboxMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeSkybox);
-		TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/craterlake.texture");
+		TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/textures/test/darkcity - Copy.texture");
+		TextureHandle skyboxDiff = RenderingSystem::instance()->CreateTexture("assets/textures/test/diffuseIrradianceMapd - Copy.texture");
+		TextureHandle skyboxSpec = RenderingSystem::instance()->CreateTexture("assets/textures/test/prefilteredMapd - Copy.texture");
+		TextureHandle lut = RenderingSystem::instance()->CreateTexture("assets/textures/test/BrdfLUT-Copy.texture");
+
 		skyboxMat->SetTexture(tex);
+		skyboxMat->SetSkyboxDiff(skyboxDiff);
+		skyboxMat->SetSkyboxSpecMap(skyboxSpec);
+		skyboxMat->SetLUTMap(lut);
 
 		cam->SetSkybox(skyboxMat);
 	}
