@@ -479,15 +479,13 @@ namespace tofu
 
 				params->depthEnable = 1;
 				params->depthWrite = 0;
-				params->depthFunc = kComparisonGEqual;
+				
 				params->stencilEnable = 1;
-				//params->backFaceDepthFailOp = kStencilOpDecSat;
-				//params->backFaceFunc = kComparisonEqual;
-				params->backFacePassOp = kStencilOpReplace;
-				params->backFaceFunc = kComparisonAlways;
-				params->stencilRef = 1u;
 
-				params->cullMode = kCullFront;
+				params->backFaceDepthFailOp = kStencilOpInc;
+				params->frontFaceDepthFailOp = kStencilOpDec;
+
+				params->cullMode = kCullNone;
 
 				params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
 
@@ -502,14 +500,13 @@ namespace tofu
 				params->vertexShader = materialVSs[kMaterialDeferredLightingPointLight];
 				params->pixelShader = materialPSs[kMaterialDeferredLightingPointLight];
 
-				params->depthEnable = 1;
-				params->depthWrite = 0;
-				params->depthFunc = kComparisonLEqual;
-				params->stencilEnable = 1;
-				params->frontFaceFunc = kComparisonEqual;
-				params->stencilRef = 1u;
+				params->depthEnable = 0;
 
-				params->cullMode = kCullBack;
+				params->stencilEnable = 1;
+				params->frontFaceFunc = kComparisonNotEqual;
+				params->stencilRef = 0u;
+
+				params->cullMode = kCullFront;
 
 				params->blendEnable = 1;
 				params->srcBlend = kBlendOne;
@@ -528,14 +525,13 @@ namespace tofu
 				params->vertexShader = materialVSs[kMaterialDeferredLightingPointLight];
 				params->pixelShader = materialPSs[kMaterialDeferredLightingSpotLight];
 
-				params->depthEnable = 1;
-				params->depthWrite = 0;
-				params->depthFunc = kComparisonLEqual;
-				params->stencilEnable = 1;
-				params->frontFaceFunc = kComparisonEqual;
-				params->stencilRef = 1u;
+				params->depthEnable = 0;
 
-				params->cullMode = kCullBack;
+				params->stencilEnable = 1;
+				params->frontFaceFunc = kComparisonNotEqual;
+				params->stencilRef = 0u;
+
+				params->cullMode = kCullFront;
 
 				params->blendEnable = 1;
 				params->srcBlend = kBlendOne;
