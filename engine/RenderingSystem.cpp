@@ -2,6 +2,8 @@
 
 #include <cassert>
 
+#include "Engine.h"
+
 #include "Renderer.h"
 
 #include "MemoryAllocator.h"
@@ -14,6 +16,7 @@
 #include "RenderingComponent.h"
 #include "AnimationComponent.h"
 #include "LightComponent.h"
+
 
 namespace
 {
@@ -99,6 +102,17 @@ namespace
 	{
 		DirectionalLight		directionalLights[tofu::kMaxDirectionalLights];
 		float4					ambient;
+	};
+
+	struct VolumetricFogParams
+	{
+		float4					fogParams;
+		float3					windDir;
+		float					time;
+		float					noiseScale;
+		float					noiseBase;
+		float					noiseAmp;
+		float					density;
 	};
 }
 
@@ -231,112 +245,24 @@ namespace tofu
 
 		// constant buffers
 		{
-			transformBuffer = bufferHandleAlloc.Allocate();
-			assert(transformBuffer);
 			transformBufferSize = sizeof(math::float4x4) * 4 * kMaxEntities;
+			transformBuffer = CreateConstantBuffer(transformBufferSize);
 
-			{
-				CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
-				assert(nullptr != params);
-				params->handle = transformBuffer;
-				params->bindingFlags = kBindingConstantBuffer;
-				params->size = transformBufferSize;
-				params->dynamic = 1;
+			frameConstantBuffer = CreateConstantBuffer(sizeof(FrameConstants));
 
-				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
-			}
+			ambientDirLightBuffer = CreateConstantBuffer(sizeof(LightParametersDirectionalAndAmbient));
 
-			frameConstantBuffer = bufferHandleAlloc.Allocate();
-			assert(frameConstantBuffer);
+			pointLightBuffer = CreateConstantBuffer(sizeof(PointLightParams));
 
-			{
-				CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
-				assert(nullptr != params);
-				params->handle = frameConstantBuffer;
-				params->bindingFlags = kBindingConstantBuffer;
-				params->size = sizeof(FrameConstants);
-				params->dynamic = 1;
+			spotLightBuffer = CreateConstantBuffer(sizeof(SpotLightParams));
 
-				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
-			}
+			pointLightTransformBuffer = CreateConstantBuffer(sizeof(math::float4x4) * kMaxPointLights);
 
-			ambientDirLightBuffer = bufferHandleAlloc.Allocate();
-			assert(ambientDirLightBuffer);
-			{
-				CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
-				assert(nullptr != params);
-				params->handle = ambientDirLightBuffer;
-				params->bindingFlags = kBindingConstantBuffer;
-				params->size = sizeof(LightParametersDirectionalAndAmbient);
-				params->dynamic = 1;
+			spotLightTransformBuffer = CreateConstantBuffer(sizeof(math::float4x4) * kMaxSpotLights);
 
-				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
-			}
+			shadowMatricesBuffer = CreateConstantBuffer(sizeof(math::float4x4) * kMaxShadowCastingLights * 4);
 
-			pointLightBuffer = bufferHandleAlloc.Allocate();
-			assert(pointLightBuffer);
-			{
-				CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
-				assert(nullptr != params);
-				params->handle = pointLightBuffer;
-				params->bindingFlags = kBindingConstantBuffer;
-				params->size = sizeof(PointLightParams);
-				params->dynamic = 1;
-
-				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
-			}
-
-			spotLightBuffer = bufferHandleAlloc.Allocate();
-			assert(spotLightBuffer);
-			{
-				CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
-				assert(nullptr != params);
-				params->handle = spotLightBuffer;
-				params->bindingFlags = kBindingConstantBuffer;
-				params->size = sizeof(SpotLightParams);
-				params->dynamic = 1;
-
-				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
-			}
-
-			pointLightTransformBuffer = bufferHandleAlloc.Allocate();
-			assert(pointLightTransformBuffer);
-			{
-				CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
-				assert(nullptr != params);
-				params->handle = pointLightTransformBuffer;
-				params->bindingFlags = kBindingConstantBuffer;
-				params->size = sizeof(math::float4x4) * kMaxPointLights;
-				params->dynamic = 1;
-
-				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
-			}
-
-			spotLightTransformBuffer = bufferHandleAlloc.Allocate();
-			assert(spotLightTransformBuffer);
-			{
-				CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
-				assert(nullptr != params);
-				params->handle = spotLightTransformBuffer;
-				params->bindingFlags = kBindingConstantBuffer;
-				params->size = sizeof(math::float4x4) * kMaxSpotLights;
-				params->dynamic = 1;
-
-				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
-			}
-
-			shadowMatricesBuffer = bufferHandleAlloc.Allocate();
-			assert(shadowMatricesBuffer);
-			{
-				CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
-				assert(nullptr != params);
-				params->handle = shadowMatricesBuffer;
-				params->bindingFlags = kBindingConstantBuffer;
-				params->size = sizeof(math::float4x4) * kMaxShadowCastingLights * 4;
-				params->dynamic = 1;
-
-				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
-			}
+			fogParamsBuffer = CreateConstantBuffer(sizeof(VolumetricFogParams));
 		}
 
 		int32_t bufferWidth, bufferHeight;
@@ -479,7 +405,7 @@ namespace tofu
 
 				params->depthEnable = 1;
 				params->depthWrite = 0;
-				
+
 				params->stencilEnable = 1;
 
 				params->backFaceDepthFailOp = kStencilOpInc;
@@ -745,7 +671,7 @@ namespace tofu
 
 		hdrTarget = CreateTexture(kFormatR32g32b32a32Float, w, h, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
 		hdrTarget2 = CreateTexture(kFormatR32g32b32a32Float, w, h, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
-		
+
 		if (!gBuffer1 || !gBuffer2 || !gBuffer3 || !hdrTarget || !hdrTarget2)
 		{
 			return kErrUnknown;
@@ -1082,7 +1008,7 @@ namespace tofu
 		return mat;
 	}
 
-	TextureHandle RenderingSystem::CreateDepthMap(uint32_t width, uint32_t height)
+	/*TextureHandle RenderingSystem::CreateDepthMap(uint32_t width, uint32_t height)
 	{
 		TextureHandle handle = textureHandleAlloc.Allocate();
 		if (!handle)
@@ -1101,6 +1027,39 @@ namespace tofu
 		cmdBuf->Add(RendererCommand::kCommandCreateTexture, params);
 
 		return handle;
+	}*/
+
+	BufferHandle RenderingSystem::CreateConstantBuffer(uint32_t size, bool dynamic)
+	{
+		BufferHandle handle = bufferHandleAlloc.Allocate();
+		assert(handle);
+
+		{
+			CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
+			assert(nullptr != params);
+			params->handle = handle;
+			params->bindingFlags = kBindingConstantBuffer;
+			params->size = size;
+			params->dynamic = dynamic ? 1 : 0;
+
+			cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
+		}
+
+		return handle;
+	}
+
+	int32_t RenderingSystem::UpdateConstantBuffer(BufferHandle buffer, uint32_t size, void* data)
+	{
+		UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
+		assert(nullptr != params);
+
+		params->handle = buffer;
+		params->data = data;
+		params->size = size;
+
+		cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
+
+		return kOK;
 	}
 
 	int32_t RenderingSystem::InitBuiltinMaterial(MaterialType matType, const char * vsFile, const char * psFile)
@@ -1234,7 +1193,7 @@ namespace tofu
 
 		c.boneMatricesBuffer = bufferHandle;
 		c.boneMatricesBufferSize = static_cast<uint32_t>(sizeof(math::float4x4)) * model->header->NumBones;
-		
+
 		CreateBufferParams* params = MemoryAllocator::Allocate<CreateBufferParams>(allocNo);
 		assert(nullptr != params);
 		params->handle = bufferHandle;
@@ -1301,13 +1260,7 @@ namespace tofu
 
 			camPos = data->cameraPos;
 
-			UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
-			assert(nullptr != params);
-			params->handle = frameConstantBuffer;
-			params->data = data;
-			params->size = sizeof(FrameConstants);
-
-			cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
+			UpdateConstantBuffer(frameConstantBuffer, sizeof(FrameConstants), data);
 		}
 
 		// clear default render target and depth buffer
@@ -1325,7 +1278,7 @@ namespace tofu
 			cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
 		}
 
-	
+
 
 		// get all renderables in system
 		RenderingComponentData* renderables = RenderingComponent::GetAllComponents();
@@ -1369,13 +1322,7 @@ namespace tofu
 		// upload transform matrices
 		if (numActiveRenderables > 0)
 		{
-			UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
-			assert(nullptr != params);
-			params->handle = transformBuffer;
-			params->data = transformArray;
-			params->size = sizeof(math::float4x4) * 4 * numActiveRenderables;
-
-			cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
+			UpdateConstantBuffer(transformBuffer, sizeof(math::float4x4) * 4 * numActiveRenderables, transformArray);
 		}
 
 		// get all lights
@@ -1516,70 +1463,50 @@ namespace tofu
 
 			ambDirLightParams->ambient.w = float(numDirectionalLights);
 
-			{
-				UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
-				assert(nullptr != params);
-				params->handle = ambientDirLightBuffer;
-				params->data = ambDirLightParams;
-				params->size = sizeof(LightParametersDirectionalAndAmbient);
-
-				cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
-			}
+			UpdateConstantBuffer(ambientDirLightBuffer, sizeof(LightParametersDirectionalAndAmbient), ambDirLightParams);
 
 			if (numPointLights > 0)
 			{
-				UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
-				assert(nullptr != params);
-				params->handle = pointLightBuffer;
-				params->data = pointLightParams;
-				params->size = sizeof(PointLightParams);
-
-				cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
+				UpdateConstantBuffer(pointLightBuffer, sizeof(PointLightParams), pointLightParams);
 			}
 
 			if (numSpotLights > 0)
 			{
-				UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
-				assert(nullptr != params);
-				params->handle = spotLightBuffer;
-				params->data = spotLightParams;
-				params->size = sizeof(SpotLightParams);
-
-				cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
+				UpdateConstantBuffer(spotLightBuffer, sizeof(SpotLightParams), spotLightParams);
 			}
 
 			if (numPointLights > 0)
 			{
-				UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
-				assert(nullptr != params);
-				params->handle = pointLightTransformBuffer;
-				params->data = pointLightTransform;
-				params->size = sizeof(math::float4x4) * numPointLights;
-
-				cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
+				UpdateConstantBuffer(pointLightTransformBuffer, sizeof(math::float4x4) * numPointLights, pointLightTransform);
 			}
 
 			if (numSpotLights > 0)
 			{
-				UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
-				assert(nullptr != params);
-				params->handle = spotLightTransformBuffer;
-				params->data = spotLightTransform;
-				params->size = sizeof(math::float4x4) * numSpotLights;
-
-				cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
+				UpdateConstantBuffer(spotLightTransformBuffer, sizeof(math::float4x4) * numSpotLights, spotLightTransform);
 			}
 
 			if (numShadowCastingLights > 0)
 			{
-				UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
-				assert(nullptr != params);
-				params->handle = shadowMatricesBuffer;
-				params->data = shadowMatrices;
-				params->size = sizeof(math::float4x4) * numShadowCastingLights * 4;
-
-				cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
+				UpdateConstantBuffer(shadowMatricesBuffer, sizeof(math::float4x4) * numShadowCastingLights * 4, shadowMatrices);
 			}
+		}
+
+		// update volumetric fog
+		{
+			VolumetricFogParams* params = reinterpret_cast<VolumetricFogParams*>(
+				MemoryAllocator::Allocators[allocNo].Allocate(sizeof(VolumetricFogParams), 16)
+				);
+			assert(nullptr != params);
+
+			params->fogParams = {1, 0, 0, 0};
+			params->windDir = math::normalize(math::float3{1, 0, 1}) * 2.0f;
+			params->time = Time::TotalTime;
+			params->noiseScale = 2;
+			params->noiseBase = 0;
+			params->noiseAmp = 1;
+			params->density = 2;
+
+			UpdateConstantBuffer(fogParamsBuffer, sizeof(VolumetricFogParams), params);
 		}
 
 		// update skinned mesh animation bone matrices
@@ -1615,13 +1542,7 @@ namespace tofu
 			anim.FillInBoneMatrices(boneMatrices, anim.boneMatricesBufferSize);
 
 			// upload bone matrices
-			UpdateBufferParams* params = MemoryAllocator::Allocate<UpdateBufferParams>(allocNo);
-			assert(nullptr != params);
-			params->handle = anim.boneMatricesBuffer;
-			params->data = boneMatrices;
-			params->size = anim.boneMatricesBufferSize;
-
-			cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
+			UpdateConstantBuffer(anim.boneMatricesBuffer, anim.boneMatricesBufferSize, boneMatrices);
 		}
 
 		// Shadow Maps
@@ -1981,17 +1902,18 @@ namespace tofu
 
 		// post-process effect
 		{
-			
+
 			/**/
 			{
 				ComputeParams* params = MemoryAllocator::Allocate<ComputeParams>(allocNo);
 
 				params->shader = injectionShader;
-				params->constantBuffers[0] = { frameConstantBuffer, 0, 0 };
-				params->constantBuffers[1] = { spotLightTransformBuffer, 0, 0 };
-				params->constantBuffers[2] = { pointLightTransformBuffer, 0, 0 };
-				params->constantBuffers[3] = { spotLightBuffer, 0, 0 };
-				params->constantBuffers[4] = { pointLightBuffer, 0, 0 };
+				params->constantBuffers[0] = { fogParamsBuffer, 0, 0 };
+				params->constantBuffers[1] = { frameConstantBuffer, 0, 0 };
+				params->constantBuffers[2] = { spotLightTransformBuffer, 0, 0 };
+				params->constantBuffers[3] = { pointLightTransformBuffer, 0, 0 };
+				params->constantBuffers[4] = { spotLightBuffer, 0, 0 };
+				params->constantBuffers[5] = { pointLightBuffer, 0, 0 };
 
 				params->rwShaderResources[0] = injectionTex;
 

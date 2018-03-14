@@ -1,4 +1,15 @@
-cbuffer FrameConstants : register (b0)
+cbuffer VolumetricFogParams : register (b0)
+{
+	float4					fogParams;
+	float3					windDir;
+	float					time;
+	float					noiseScale;
+	float					noiseBase;
+	float					noiseAmp;
+	float					density;
+}
+
+cbuffer FrameConstants : register (b1)
 {
 	float4x4				matView;
 	float4x4				matProj;
@@ -14,12 +25,12 @@ cbuffer FrameConstants : register (b0)
 	float4					padding3[9];
 };
 
-cbuffer SpotLightTransforms : register (b1)
+cbuffer SpotLightTransforms : register (b2)
 {
 	float4x4				spotLightTransfomrs[1024];
 };
 
-cbuffer PointLightTransforms : register (b2)
+cbuffer PointLightTransforms : register (b3)
 {
 	float4x4				pointLightTransfomrs[1024];
 };
@@ -34,7 +45,7 @@ struct SpotLight
 	uint					shadowId;
 };
 
-cbuffer SpotLightParams : register (b3)
+cbuffer SpotLightParams : register (b4)
 {
 	SpotLight				spotLights[1024];
 	uint					numSpotLight;
@@ -49,29 +60,27 @@ struct PointLight
 	float					_padding2;
 };
 
-cbuffer PointLightParams : register (b4)
+cbuffer PointLightParams : register (b5)
 {
 	PointLight				pointLights[1024];
 	uint					numPointLight;
 };
 
-//struct LightVP
-//{
-//	float4x4				matView;
-//	float4x4				matProj;
-//	float4x4				matVP;
-//	float4x4				_padding2;
-//};
-//
-//cbuffer ShadowTransforms : register (b3)
-//{
-//	LightVP					matLightVPs[16];
-//}
-//
-//Texture2DArray shadowMaps : register(t0);
-//SamplerState shadowSamp : register(s0);
-
 RWTexture3D<float4> lightDensityVolume : register (u0);
+
+float hash(float n) { return frac(sin(n) * 753.5453123); }
+float noisep(float3 x)
+{
+	float3 p = floor(x);
+	float3 f = frac(x);
+	f = f*f*(3.0 - 2.0*f);
+
+	float n = p.x + p.y*157.0 + 113.0*p.z;
+	return lerp(lerp(lerp(hash(n + 0.0), hash(n + 1.0), f.x),
+		lerp(hash(n + 157.0), hash(n + 158.0), f.x), f.y),
+		lerp(lerp(hash(n + 113.0), hash(n + 114.0), f.x),
+			lerp(hash(n + 270.0), hash(n + 271.0), f.x), f.y), f.z);
+}
 
 float3 SpotLights(float3 pos)
 {
@@ -90,24 +99,6 @@ float3 SpotLights(float3 pos)
 		float r = 1 - spotLights[i].spotAngle;
 		atten *= pow(max(0, 1 - (1 - DdotL) / r), 2.0);
 		
-		/*uint shadowId = spotLights[i].shadowId;
-		if (shadowId < 16)
-		{
-			float4 lightSpacePos = mul(float4(pos, 1), matLightVPs[shadowId].matVP);
-
-			lightSpacePos /= lightSpacePos.w;
-			lightSpacePos.xy = lightSpacePos.xy * 0.5 + 0.5;
-			lightSpacePos.y = 1 - lightSpacePos.y;
-
-			float currentDepth = lightSpacePos.z;
-			currentDepth -= 0.00001;
-			float cloestDepth = shadowMaps.SampleLevel(
-				shadowSamp, float3(lightSpacePos.xy, shadowId), 0).r;
-
-			float shadow = step(cloestDepth, currentDepth);
-			atten *= (1 - shadow);
-		}*/
-
 		color += atten * spotLights[i].color.rgb * spotLights[i].intensity;
 	}
 
@@ -125,12 +116,6 @@ float3 PointLights(float3 pos)
 		float distNorm = dot(L, L) / (pointLights[i].range * pointLights[i].range);
 		float atten = (1 / (1 + distNorm)) * (1 - step(1, distNorm)) * (1 - distNorm);
 
-		//L = normalize(L);
-		//float DdotL = dot(-spotLights[i].direction.xyz, L);
-
-		//float r = 1 - spotLights[i].spotAngle;
-		//atten *= pow(max(0, 1 - (1 - DdotL) / r), 2.0);
-
 		color += atten * pointLights[i].color.rgb * pointLights[i].intensity;
 	}
 
@@ -139,8 +124,21 @@ float3 PointLights(float3 pos)
 
 float Density(float3 pos)
 {
-	return 2;
-	//return max(exp(pos.y), 0);
+	float fog = fogParams.x;
+
+	fog += max(exp(fogParams.y * (-fogParams.y + fogParams.z)) * fogParams.w, 0);
+
+	float3 scroll = windDir * time;
+	float3 q = (pos - scroll) * noiseScale;
+
+	float f = 0.75 * noisep(q);
+
+	q = (q + scroll * noiseScale) * 2.01;
+
+	f += 0.25 * noisep(q);
+	f = noiseBase + f * noiseAmp;
+
+	return max(fog * f * density, 0);
 }
 
 [numthreads(16, 9, 4)]

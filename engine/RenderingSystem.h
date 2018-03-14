@@ -59,8 +59,12 @@ namespace tofu
 
 		Material* CreateMaterial(MaterialType type);
 
-		TextureHandle CreateDepthMap( uint32_t width, uint32_t height);
+		//TextureHandle CreateDepthMap( uint32_t width, uint32_t height);
 	private:
+
+		BufferHandle CreateConstantBuffer(uint32_t size, bool dynamic = true);
+
+		int32_t UpdateConstantBuffer(BufferHandle buffer, uint32_t size, void* data);
 
 		int32_t InitBuiltinMaterial(MaterialType matType, const char* vsFile, const char* psFile);
 
@@ -146,6 +150,8 @@ namespace tofu
 
 		TextureHandle			injectionTex;
 		TextureHandle			scatterTex;
+
+		BufferHandle			fogParamsBuffer;
 	};
 
 }
