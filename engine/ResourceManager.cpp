@@ -80,7 +80,13 @@ namespace tofu
 			}
 		}
 
-		Material* mat = RenderingSystem::instance()->CreateMaterial(kMaterialTypeOpaque);
+		const char* typeStr = matConfig["Type"].GetString();
+		MaterialType materialType = kMaterialTypeOpaque;
+		if (strcmp(typeStr, "Transparent") == 0)
+		{
+			materialType = kMaterialDeferredTransparent;
+		}
+		Material* mat = RenderingSystem::instance()->CreateMaterial(materialType);
 		mat->SetTexture(albedo);
 		mat->SetNormalMap(normal);
 		mat->SetMetallicGlossMap(metallicGloss);

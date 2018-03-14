@@ -1,6 +1,7 @@
 #include "RenderingSystem.h"
 
 #include <cassert>
+#include <algorithm>
 
 #include "Engine.h"
 
@@ -1347,7 +1348,7 @@ namespace tofu
 		uint32_t numActiveEntities = 0;
 		uint32_t numActiveObjects = 0;
 		uint32_t numOpaqueObjects = 0;
-		//uint32_t numTransparentObjects = 0;
+		uint32_t numTransparentObjects = 0;
 
 		// fill in transform matrix for active renderables
 		for (uint32_t i = 0; i < renderableCount; ++i)
@@ -1384,13 +1385,23 @@ namespace tofu
 				obj.submesh = j;
 				obj.renderableId = i;
 				obj.transformIdx = idx;
+
+				if (obj.materialType == kMaterialDeferredTransparent || obj.materialType == kMaterialDeferredTransparentSkinned)
+				{
+					numTransparentObjects++;
+				}
+				else
+				{
+					numOpaqueObjects++;
+				}
 			}
 		}
 
-		// TODO
-		numOpaqueObjects = numActiveObjects;
-
 		// sorting rendering objects
+		std::sort(activeObjects, activeObjects + numActiveObjects, [](RenderingObject& a, RenderingObject& b)
+		{
+			return a.materialType < b.materialType;
+		});
 
 		// upload transform matrices
 		if (numActiveEntities > 0)
@@ -1764,7 +1775,6 @@ namespace tofu
 			}
 
 			cmdBuf->Add(RendererCommand::kCommandDraw, params);
-
 		}
 
 		// Lighting Pass
@@ -1931,45 +1941,55 @@ namespace tofu
 			/**/
 		}
 
-		// TODO: Transparent Pass
-
-
-
-		TextureHandle skyboxTex = TextureHandle();
-
-		if (nullptr == camera.skybox)
+		// Transparent Pass
+		for (uint32_t i = numOpaqueObjects; i < numActiveObjects; ++i)
 		{
-			ClearParams* params = MemoryAllocator::Allocate<ClearParams>(allocNo);
+			RenderingObject& obj = activeObjects[i];
 
-			const math::float4& clearColor = camera.GetClearColor();
+			assert(obj.model);
 
-			params->clearColor[0] = clearColor.x;
-			params->clearColor[1] = clearColor.y;
-			params->clearColor[2] = clearColor.z;
-			params->clearColor[3] = clearColor.w;
+			Model& model = models[obj.model.id];
+			uint32_t iMesh = obj.submesh;
 
-			cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
-		}
-		else
-		{
-			assert(camera.skybox->type == kMaterialTypeSkybox);
-			skyboxTex = camera.skybox->mainTex;
+			assert(model.meshes[iMesh]);
+			Mesh& mesh = meshes[model.meshes[iMesh].id];
 
-			Mesh& mesh = meshes[builtinCube->meshes[0].id];
+			const Material* mat = &materials[obj.material.id];
 
 			DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
-			params->pipelineState = materialPSOs[kMaterialTypeSkybox];
+			params->pipelineState = materialPSOs[mat->type];
 			params->vertexBuffer = mesh.VertexBuffer;
 			params->indexBuffer = mesh.IndexBuffer;
 			params->startIndex = mesh.StartIndex;
 			params->startVertex = mesh.StartVertex;
 			params->indexCount = mesh.NumIndices;
-			params->vsConstantBuffers[0] = { frameConstantBuffer, 0, 0 };
 
-			params->psShaderResources[0] = skyboxTex;
-			params->psSamplers[0] = defaultSampler;
+			switch (mat->type)
+			{
+			case kMaterialDeferredTransparentSkinned:
+				(void*)0;
+				{
+					Entity entity = renderables[obj.renderableId].entity;
+					AnimationComponent anim = entity.GetComponent<AnimationComponent>();
+					if (!anim || !anim->boneMatricesBuffer)
+					{
+						return kErrUnknown;
+					}
+					params->vsConstantBuffers[2] = { anim->boneMatricesBuffer, 0, 0 };
+				}
+				// fall through
+			case kMaterialDeferredTransparent:
+				params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(obj.transformIdx * 16), 16 };
+				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
+				params->psShaderResources[0] = mat->mainTex ? mat->mainTex : defaultAlbedoMap;
+				params->psSamplers[0] = defaultSampler;
 
-			params->renderTargets[0] = hdrTarget;
+				params->renderTargets[0] = hdrTarget;
+				break;
+			default:
+				assert(false && "this material type is not applicable for entities");
+				break;
+			}
 
 			cmdBuf->Add(RendererCommand::kCommandDraw, params);
 		}
