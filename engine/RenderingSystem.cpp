@@ -105,6 +105,14 @@ namespace
 
 namespace tofu
 {
+	struct RenderingObject
+	{
+		uint32_t		materialType;
+		ModelHandle		model;
+		uint32_t		submesh;
+		MaterialHandle	material;
+	};
+
 	SINGLETON_IMPL(RenderingSystem);
 
 	RenderingSystem::RenderingSystem()
@@ -122,7 +130,8 @@ namespace tofu
 		pipelineStateHandleAlloc(),
 		frameNo(0),
 		allocNo(0),
-		transformBuffer(),
+		transformBufferOpaque(),
+		transformBufferTransparent(),
 		transformBufferSize(0),
 		frameConstantBuffer(),
 		meshes(),
@@ -221,6 +230,8 @@ namespace tofu
 			"assets/bypass_vs.shader",
 			"assets/deferred_lighting_ambient_ps.shader"));
 
+		CHECKED(LoadPixelShader("assets/deferred_transparent_ps.shader", materialPSs[kMaterialDeferredTransparent]));
+
 		CHECKED(LoadPixelShader("assets/post_process_tone_mapping_ps.shader", materialPSs[kMaterialPostProcessToneMapping]));
 		CHECKED(LoadPixelShader("assets/post_process_extract_bright_ps.shader", materialPSs[kMaterialPostProcessExtractBright]));
 		CHECKED(LoadPixelShader("assets/post_process_blur_ps.shader", materialPSs[kMaterialPostProcessBlur]));
@@ -233,7 +244,8 @@ namespace tofu
 		// constant buffers
 		{
 			transformBufferSize = sizeof(math::float4x4) * 4 * kMaxEntities;
-			transformBuffer = CreateConstantBuffer(transformBufferSize);
+			transformBufferOpaque = CreateConstantBuffer(transformBufferSize);
+			transformBufferTransparent = CreateConstantBuffer(transformBufferSize);
 
 			frameConstantBuffer = CreateConstantBuffer(sizeof(FrameConstants));
 
@@ -471,6 +483,43 @@ namespace tofu
 			params->blendEnable = 1;
 			params->srcBlend = kBlendOne;
 			params->destBlend = kBlendOne;
+
+			params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
+
+			cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+		}
+
+		materialPSOs[kMaterialDeferredTransparent] = pipelineStateHandleAlloc.Allocate();
+		assert(materialPSOs[kMaterialDeferredTransparent]);
+		{
+			CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
+			params->handle = materialPSOs[kMaterialDeferredTransparent];
+			params->vertexShader = materialVSs[kMaterialDeferredGeometryOpaque];
+			params->pixelShader = materialPSs[kMaterialDeferredTransparent];
+
+			params->depthWrite = 0;
+			params->blendEnable = 1;
+			params->srcBlend = kBlendSrcAlpha;
+			params->destBlend = kBlendInvSrcAlpha;
+			
+			params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
+
+			cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+		}
+
+		materialPSOs[kMaterialDeferredTransparentSkinned] = pipelineStateHandleAlloc.Allocate();
+		assert(materialPSOs[kMaterialDeferredTransparentSkinned]);
+		{
+			CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
+			params->handle = materialPSOs[kMaterialDeferredTransparentSkinned];
+			params->vertexShader = materialVSs[kMaterialDeferredGeometryOpaqueSkinned];
+			params->pixelShader = materialPSs[kMaterialDeferredTransparent];
+			params->vertexFormat = kVertexFormatSkinned;
+
+			params->depthWrite = 0;
+			params->blendEnable = 1;
+			params->srcBlend = kBlendSrcAlpha;
+			params->destBlend = kBlendInvSrcAlpha;
 
 			params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
 
@@ -1275,18 +1324,28 @@ namespace tofu
 		uint32_t renderableCount = RenderingComponent::GetNumComponents();
 
 		// buffer for transform matrices
-		math::float4x4* transformArray = reinterpret_cast<math::float4x4*>(
+		math::float4x4* transformArrayOpaque = reinterpret_cast<math::float4x4*>(
+			MemoryAllocator::Allocators[allocNo].Allocate(transformBufferSize, 4)
+			);
+
+		math::float4x4* transformArrayTransparent = reinterpret_cast<math::float4x4*>(
 			MemoryAllocator::Allocators[allocNo].Allocate(transformBufferSize, 4)
 			);
 
 		// list of active renderables (used for culling)
-		uint32_t* activeRenderables = reinterpret_cast<uint32_t*>(
+		uint32_t* opaqueObjects = reinterpret_cast<uint32_t*>(
 			MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxEntities, 4)
 			);
 
-		assert(nullptr != transformArray && nullptr != activeRenderables);
+		uint32_t* transparentObjects = reinterpret_cast<uint32_t*>(
+			MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxEntities, 4)
+			);
 
-		uint32_t numActiveRenderables = 0;
+		assert(nullptr != transformArrayOpaque && nullptr != transformArrayTransparent &&
+			nullptr != opaqueObjects && nullptr != transparentObjects);
+
+		uint32_t numOpaqueObjects = 0;
+		uint32_t numTransparentObjects = 0;
 
 		// fill in transform matrix for active renderables
 		for (uint32_t i = 0; i < renderableCount; ++i)
@@ -1298,21 +1357,28 @@ namespace tofu
 
 			// TODO culling
 
-			uint32_t idx = numActiveRenderables++;
-			activeRenderables[idx] = i;
+			comp.m
+
+			uint32_t idx = numOpaqueObjects++;
+			opaqueObjects[idx] = i;
 
 #ifdef TOFU_USE_GLM
-			transformArray[idx * 4] = math::transpose(transform->GetWorldTransform().GetMatrix());
+			transformArrayOpaque[idx * 4] = math::transpose(transform->GetWorldTransform().GetMatrix());
 #else
 			transformArray[idx * 4] = transform->GetWorldTransform().GetMatrix();
 #endif
-			transformArray[idx * 4 + 1] = math::transpose(math::inverse(transformArray[idx * 4]));
+			transformArrayOpaque[idx * 4 + 1] = math::transpose(math::inverse(transformArrayOpaque[idx * 4]));
+
 		}
 
 		// upload transform matrices
-		if (numActiveRenderables > 0)
+		if (numOpaqueObjects > 0)
 		{
-			UpdateConstantBuffer(transformBuffer, sizeof(math::float4x4) * 4 * numActiveRenderables, transformArray);
+			UpdateConstantBuffer(transformBufferOpaque, sizeof(math::float4x4) * 4 * numOpaqueObjects, transformArrayOpaque);
+		}
+		if (numTransparentObjects > 0)
+		{
+			UpdateConstantBuffer(transformBufferTransparent, sizeof(math::float4x4) * 4 * numTransparentObjects, transformArrayTransparent);
 		}
 
 		// get all lights
@@ -1491,7 +1557,7 @@ namespace tofu
 			params->fogParams = {1, 0, 0, 0};
 			params->windDir = math::normalize(math::float3{1, 0, 1}) * 2.0f;
 			params->time = Time::TotalTime;
-			params->noiseScale = 1.3;
+			params->noiseScale = 1.3f;
 			params->noiseBase = 0;
 			params->noiseAmp = 1;
 			params->density = 2;
@@ -1553,9 +1619,9 @@ namespace tofu
 			}
 
 			// TODO: culling
-			for (uint32_t iObject = 0; iObject < numActiveRenderables; iObject++)
+			for (uint32_t iObject = 0; iObject < numOpaqueObjects; iObject++)
 			{
-				RenderingComponentData& comp = renderables[activeRenderables[iObject]];
+				RenderingComponentData& comp = renderables[opaqueObjects[iObject]];
 
 				assert(nullptr != comp.model);
 				assert(0 != comp.numMaterials);
@@ -1593,7 +1659,7 @@ namespace tofu
 						}
 						// fall through
 					case kMaterialTypeOpaque:
-						params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(iObject * 16), 16 };
+						params->vsConstantBuffers[0] = { transformBufferOpaque, static_cast<uint16_t>(iObject * 16), 16 };
 						params->vsConstantBuffers[1] = { shadowMatricesBuffer, static_cast<uint16_t>(iLight * 16), 16 };
 
 						params->renderTargets[0] = TextureHandle();
@@ -1623,9 +1689,9 @@ namespace tofu
 		}
 
 		// generate draw call for active renderables in command buffer
-		for (uint32_t i = 0; i < numActiveRenderables; ++i)
+		for (uint32_t i = 0; i < numOpaqueObjects; ++i)
 		{
-			RenderingComponentData& comp = renderables[activeRenderables[i]];
+			RenderingComponentData& comp = renderables[opaqueObjects[i]];
 
 			assert(nullptr != comp.model);
 			assert(0 != comp.numMaterials);
@@ -1664,7 +1730,7 @@ namespace tofu
 					}
 					// fall through
 				case kMaterialTypeOpaque:
-					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(i * 16), 16 };
+					params->vsConstantBuffers[0] = { transformBufferOpaque, static_cast<uint16_t>(i * 16), 16 };
 					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
 					params->psShaderResources[0] = mat->mainTex ? mat->mainTex : defaultAlbedoMap;
 					params->psShaderResources[1] = mat->normalMap ? mat->normalMap : defaultNormalMap;

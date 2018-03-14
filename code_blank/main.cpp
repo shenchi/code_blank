@@ -10,7 +10,7 @@
 
 #include "Game.h"
 //#include "SceneLoadingDemo.h"
-//#include "RenderingTest.h"
+#include "RenderingTest.h"
 //#include "CubemapProbeDemo.h"
 
 using tofu::kOK;
