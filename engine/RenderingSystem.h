@@ -98,8 +98,7 @@ namespace tofu
 		size_t					frameNo;
 		uint32_t				allocNo;
 
-		BufferHandle			transformBufferOpaque;
-		BufferHandle			transformBufferTransparent;
+		BufferHandle			transformBuffer;
 		uint32_t				transformBufferSize;
 
 		BufferHandle			frameConstantBuffer;

@@ -111,6 +111,8 @@ namespace tofu
 		ModelHandle		model;
 		uint32_t		submesh;
 		MaterialHandle	material;
+		uint32_t		transformIdx;
+		uint32_t		renderableId;
 	};
 
 	SINGLETON_IMPL(RenderingSystem);
@@ -130,8 +132,7 @@ namespace tofu
 		pipelineStateHandleAlloc(),
 		frameNo(0),
 		allocNo(0),
-		transformBufferOpaque(),
-		transformBufferTransparent(),
+		transformBuffer(),
 		transformBufferSize(0),
 		frameConstantBuffer(),
 		meshes(),
@@ -244,8 +245,7 @@ namespace tofu
 		// constant buffers
 		{
 			transformBufferSize = sizeof(math::float4x4) * 4 * kMaxEntities;
-			transformBufferOpaque = CreateConstantBuffer(transformBufferSize);
-			transformBufferTransparent = CreateConstantBuffer(transformBufferSize);
+			transformBuffer = CreateConstantBuffer(transformBufferSize);
 
 			frameConstantBuffer = CreateConstantBuffer(sizeof(FrameConstants));
 
@@ -501,7 +501,7 @@ namespace tofu
 			params->blendEnable = 1;
 			params->srcBlend = kBlendSrcAlpha;
 			params->destBlend = kBlendInvSrcAlpha;
-			
+
 			params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
 
 			cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
@@ -1258,7 +1258,7 @@ namespace tofu
 		}
 
 
-		math::float3 camPos; 
+		math::float3 camPos;
 		float farClipZ = 0.0f;
 		float nearClipZ = 0.0f;
 		{
@@ -1324,28 +1324,30 @@ namespace tofu
 		uint32_t renderableCount = RenderingComponent::GetNumComponents();
 
 		// buffer for transform matrices
-		math::float4x4* transformArrayOpaque = reinterpret_cast<math::float4x4*>(
+		math::float4x4* transformArray = reinterpret_cast<math::float4x4*>(
 			MemoryAllocator::Allocators[allocNo].Allocate(transformBufferSize, 4)
 			);
 
-		math::float4x4* transformArrayTransparent = reinterpret_cast<math::float4x4*>(
-			MemoryAllocator::Allocators[allocNo].Allocate(transformBufferSize, 4)
-			);
 
 		// list of active renderables (used for culling)
-		uint32_t* opaqueObjects = reinterpret_cast<uint32_t*>(
+		RenderingObject* activeObjects = reinterpret_cast<RenderingObject*>(
+			MemoryAllocator::Allocators[allocNo].Allocate(sizeof(RenderingObject) * kMaxEntities * 2, 4)
+			);
+
+		/*uint32_t* opaqueObjects = reinterpret_cast<uint32_t*>(
 			MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxEntities, 4)
 			);
 
 		uint32_t* transparentObjects = reinterpret_cast<uint32_t*>(
 			MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxEntities, 4)
-			);
+			);*/
 
-		assert(nullptr != transformArrayOpaque && nullptr != transformArrayTransparent &&
-			nullptr != opaqueObjects && nullptr != transparentObjects);
+		assert(nullptr != transformArray && nullptr != activeObjects);
 
+		uint32_t numActiveEntities = 0;
+		uint32_t numActiveObjects = 0;
 		uint32_t numOpaqueObjects = 0;
-		uint32_t numTransparentObjects = 0;
+		//uint32_t numTransparentObjects = 0;
 
 		// fill in transform matrix for active renderables
 		for (uint32_t i = 0; i < renderableCount; ++i)
@@ -1357,28 +1359,43 @@ namespace tofu
 
 			// TODO culling
 
-			comp.m
-
-			uint32_t idx = numOpaqueObjects++;
-			opaqueObjects[idx] = i;
+			// fill transform matrices;
+			uint32_t idx = numActiveEntities++;
 
 #ifdef TOFU_USE_GLM
-			transformArrayOpaque[idx * 4] = math::transpose(transform->GetWorldTransform().GetMatrix());
+			transformArray[idx * 4] = math::transpose(transform->GetWorldTransform().GetMatrix());
 #else
-			transformArray[idx * 4] = transform->GetWorldTransform().GetMatrix();
+			transformArrayOpaque[idx * 4] = transform->GetWorldTransform().GetMatrix();
 #endif
-			transformArrayOpaque[idx * 4 + 1] = math::transpose(math::inverse(transformArrayOpaque[idx * 4]));
+			transformArray[idx * 4 + 1] = math::transpose(math::inverse(transformArray[idx * 4]));
 
+			// add all submeshes into the queue
+			uint32_t numMeshes = comp.model->numMeshes;
+			uint32_t numMaterials = comp.numMaterials;
+			for (uint32_t j = 0; j < numMeshes; ++j)
+			{
+				Material* mat = comp.materials[j < numMaterials ? j : (numMaterials - 1)];
+
+				RenderingObject& obj = activeObjects[numActiveObjects++];
+
+				obj.model = comp.model->handle;
+				obj.material = mat->handle;
+				obj.materialType = mat->type;
+				obj.submesh = j;
+				obj.renderableId = i;
+				obj.transformIdx = idx;
+			}
 		}
+
+		// TODO
+		numOpaqueObjects = numActiveObjects;
+
+		// sorting rendering objects
 
 		// upload transform matrices
-		if (numOpaqueObjects > 0)
+		if (numActiveEntities > 0)
 		{
-			UpdateConstantBuffer(transformBufferOpaque, sizeof(math::float4x4) * 4 * numOpaqueObjects, transformArrayOpaque);
-		}
-		if (numTransparentObjects > 0)
-		{
-			UpdateConstantBuffer(transformBufferTransparent, sizeof(math::float4x4) * 4 * numTransparentObjects, transformArrayTransparent);
+			UpdateConstantBuffer(transformBuffer, sizeof(math::float4x4) * 4 * numActiveEntities, transformArray);
 		}
 
 		// get all lights
@@ -1554,8 +1571,8 @@ namespace tofu
 				);
 			assert(nullptr != params);
 
-			params->fogParams = {1, 0, 0, 0};
-			params->windDir = math::normalize(math::float3{1, 0, 1}) * 2.0f;
+			params->fogParams = { 1, 0, 0, 0 };
+			params->windDir = math::normalize(math::float3{ 1, 0, 1 }) * 2.0f;
 			params->time = Time::TotalTime;
 			params->noiseScale = 1.3f;
 			params->noiseBase = 0;
@@ -1621,58 +1638,57 @@ namespace tofu
 			// TODO: culling
 			for (uint32_t iObject = 0; iObject < numOpaqueObjects; iObject++)
 			{
-				RenderingComponentData& comp = renderables[opaqueObjects[iObject]];
+				const RenderingObject& obj = activeObjects[iObject];
 
-				assert(nullptr != comp.model);
-				assert(0 != comp.numMaterials);
+				assert(obj.model);
 
-				Model& model = *comp.model;
+				Model& model = models[obj.model.id];
+				uint32_t iMesh = obj.submesh;
 
-				for (uint32_t iMesh = 0; iMesh < model.numMeshes; iMesh++)
+				assert(model.meshes[iMesh]);
+				Mesh& mesh = meshes[model.meshes[iMesh].id];
+
+				const Material* mat = &materials[obj.material.id];
+
+				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
+				params->pipelineState = materialPSOs[mat->type];
+				params->vertexBuffer = mesh.VertexBuffer;
+				params->indexBuffer = mesh.IndexBuffer;
+				params->startIndex = mesh.StartIndex;
+				params->startVertex = mesh.StartVertex;
+				params->indexCount = mesh.NumIndices;
+
+				if (mat->type == kMaterialTypeOpaque) params->pipelineState = materialPSOs[kMaterialShadow];
+				if (mat->type == kMaterialTypeOpaqueSkinned) params->pipelineState = materialPSOs[kMaterialShadowSkinned];
+
+				switch (mat->type)
 				{
-					assert(model.meshes[iMesh]);
-					Mesh& mesh = meshes[model.meshes[iMesh].id];
-					Material* mat = comp.materials[iMesh < comp.numMaterials ? iMesh : (comp.numMaterials - 1)];
-
-					DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
-					params->pipelineState = materialPSOs[mat->type];
-					params->vertexBuffer = mesh.VertexBuffer;
-					params->indexBuffer = mesh.IndexBuffer;
-					params->startIndex = mesh.StartIndex;
-					params->startVertex = mesh.StartVertex;
-					params->indexCount = mesh.NumIndices;
-
-					if (mat->type == kMaterialTypeOpaque) params->pipelineState = materialPSOs[kMaterialShadow];
-					if (mat->type == kMaterialTypeOpaqueSkinned) params->pipelineState = materialPSOs[kMaterialShadowSkinned];
-
-					switch (mat->type)
+				case kMaterialTypeOpaqueSkinned:
+					(void*)0;
 					{
-					case kMaterialTypeOpaqueSkinned:
-						(void*)0;
+						Entity entity = renderables[obj.renderableId].entity;
+						AnimationComponent anim = entity.GetComponent<AnimationComponent>();
+						if (!anim || !anim->boneMatricesBuffer)
 						{
-							AnimationComponent anim = comp.entity.GetComponent<AnimationComponent>();
-							if (!anim || !anim->boneMatricesBuffer)
-							{
-								return kErrUnknown;
-							}
-							params->vsConstantBuffers[2] = { anim->boneMatricesBuffer, 0, 0 };
+							return kErrUnknown;
 						}
-						// fall through
-					case kMaterialTypeOpaque:
-						params->vsConstantBuffers[0] = { transformBufferOpaque, static_cast<uint16_t>(iObject * 16), 16 };
-						params->vsConstantBuffers[1] = { shadowMatricesBuffer, static_cast<uint16_t>(iLight * 16), 16 };
-
-						params->renderTargets[0] = TextureHandle();
-						params->depthRenderTarget = shadowMaps[iLight];
-
-						break;
-					default:
-						assert(false && "this material type is not applicable for entities");
-						break;
+						params->vsConstantBuffers[2] = { anim->boneMatricesBuffer, 0, 0 };
 					}
+					// fall through
+				case kMaterialTypeOpaque:
+					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(obj.transformIdx * 16), 16 };
+					params->vsConstantBuffers[1] = { shadowMatricesBuffer, static_cast<uint16_t>(iLight * 16), 16 };
 
-					cmdBuf->Add(RendererCommand::kCommandDraw, params);
+					params->renderTargets[0] = TextureHandle();
+					params->depthRenderTarget = shadowMaps[iLight];
+
+					break;
+				default:
+					assert(false && "this material type is not applicable for entities");
+					break;
 				}
+
+				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
 		}
 
@@ -1691,65 +1707,64 @@ namespace tofu
 		// generate draw call for active renderables in command buffer
 		for (uint32_t i = 0; i < numOpaqueObjects; ++i)
 		{
-			RenderingComponentData& comp = renderables[opaqueObjects[i]];
+			RenderingObject& obj = activeObjects[i];
 
-			assert(nullptr != comp.model);
-			assert(0 != comp.numMaterials);
+			assert(obj.model);
 
-			Model& model = *comp.model;
-			//Material* mat = comp.material;
+			Model& model = models[obj.model.id];
+			uint32_t iMesh = obj.submesh;
 
-			for (uint32_t iMesh = 0; iMesh < model.numMeshes; ++iMesh)
+			assert(model.meshes[iMesh]);
+			Mesh& mesh = meshes[model.meshes[iMesh].id];
+
+			const Material* mat = &materials[obj.material.id];
+
+			DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
+			params->pipelineState = materialPSOs[mat->type];
+			params->vertexBuffer = mesh.VertexBuffer;
+			params->indexBuffer = mesh.IndexBuffer;
+			params->startIndex = mesh.StartIndex;
+			params->startVertex = mesh.StartVertex;
+			params->indexCount = mesh.NumIndices;
+
+			if (mat->type == kMaterialTypeOpaque) params->pipelineState = materialPSOs[kMaterialDeferredGeometryOpaque];
+			if (mat->type == kMaterialTypeOpaqueSkinned) params->pipelineState = materialPSOs[kMaterialDeferredGeometryOpaqueSkinned];
+
+			switch (mat->type)
 			{
-				assert(model.meshes[iMesh]);
-				Mesh& mesh = meshes[model.meshes[iMesh].id];
-				Material* mat = comp.materials[iMesh < comp.numMaterials ? iMesh : (comp.numMaterials - 1)];
-
-				DrawParams* params = MemoryAllocator::Allocate<DrawParams>(allocNo);
-				params->pipelineState = materialPSOs[mat->type];
-				params->vertexBuffer = mesh.VertexBuffer;
-				params->indexBuffer = mesh.IndexBuffer;
-				params->startIndex = mesh.StartIndex;
-				params->startVertex = mesh.StartVertex;
-				params->indexCount = mesh.NumIndices;
-
-				if (mat->type == kMaterialTypeOpaque) params->pipelineState = materialPSOs[kMaterialDeferredGeometryOpaque];
-				if (mat->type == kMaterialTypeOpaqueSkinned) params->pipelineState = materialPSOs[kMaterialDeferredGeometryOpaqueSkinned];
-
-				switch (mat->type)
+			case kMaterialTypeOpaqueSkinned:
+				(void*)0;
 				{
-				case kMaterialTypeOpaqueSkinned:
-					(void*)0;
+					Entity entity = renderables[obj.renderableId].entity;
+					AnimationComponent anim = entity.GetComponent<AnimationComponent>();
+					if (!anim || !anim->boneMatricesBuffer)
 					{
-						AnimationComponent anim = comp.entity.GetComponent<AnimationComponent>();
-						if (!anim || !anim->boneMatricesBuffer)
-						{
-							return kErrUnknown;
-						}
-						params->vsConstantBuffers[2] = { anim->boneMatricesBuffer, 0, 0 };
+						return kErrUnknown;
 					}
-					// fall through
-				case kMaterialTypeOpaque:
-					params->vsConstantBuffers[0] = { transformBufferOpaque, static_cast<uint16_t>(i * 16), 16 };
-					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
-					params->psShaderResources[0] = mat->mainTex ? mat->mainTex : defaultAlbedoMap;
-					params->psShaderResources[1] = mat->normalMap ? mat->normalMap : defaultNormalMap;
-					params->psShaderResources[2] = mat->metallicGlossMap ? mat->metallicGlossMap : defaultMetallicGlossMap;
-					params->psShaderResources[3] = mat->occlusionMap ? mat->occlusionMap : defaultOcclusionMap;
-					params->psSamplers[0] = defaultSampler;
-
-					params->renderTargets[0] = gBuffer1;
-					params->renderTargets[1] = gBuffer2;
-					params->renderTargets[2] = gBuffer3;
-
-					break;
-				default:
-					assert(false && "this material type is not applicable for entities");
-					break;
+					params->vsConstantBuffers[2] = { anim->boneMatricesBuffer, 0, 0 };
 				}
+				// fall through
+			case kMaterialTypeOpaque:
+				params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(obj.transformIdx * 16), 16 };
+				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
+				params->psShaderResources[0] = mat->mainTex ? mat->mainTex : defaultAlbedoMap;
+				params->psShaderResources[1] = mat->normalMap ? mat->normalMap : defaultNormalMap;
+				params->psShaderResources[2] = mat->metallicGlossMap ? mat->metallicGlossMap : defaultMetallicGlossMap;
+				params->psShaderResources[3] = mat->occlusionMap ? mat->occlusionMap : defaultOcclusionMap;
+				params->psSamplers[0] = defaultSampler;
 
-				cmdBuf->Add(RendererCommand::kCommandDraw, params);
+				params->renderTargets[0] = gBuffer1;
+				params->renderTargets[1] = gBuffer2;
+				params->renderTargets[2] = gBuffer3;
+
+				break;
+			default:
+				assert(false && "this material type is not applicable for entities");
+				break;
 			}
+
+			cmdBuf->Add(RendererCommand::kCommandDraw, params);
+
 		}
 
 		// Lighting Pass
