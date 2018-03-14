@@ -83,21 +83,6 @@ namespace
 		float					padding[3];
 	};
 
-	// parameters for lights in lighting pass (deferred shading)
-	// make sure this structure to be 16 shader constants (float4) in size;
-	//struct LightParameters
-	//{
-	//	float4x4				transform;		// 4
-	//	float4x4				matView;		// 4
-	//	float4x4				matProj;		// 4
-	//	float4					direction;		// 1
-	//	float4					color;			// 1
-	//	float					range;
-	//	float					intensity;
-	//	float					spotAngle;
-	//	float					padding[1 * 4 + 1];
-	//};
-
 	struct LightParametersDirectionalAndAmbient
 	{
 		DirectionalLight		directionalLights[tofu::kMaxDirectionalLights];
@@ -113,6 +98,8 @@ namespace
 		float					noiseBase;
 		float					noiseAmp;
 		float					density;
+		float					maxFarClip;
+		float					maxZ01;
 	};
 }
 
@@ -1222,7 +1209,9 @@ namespace tofu
 		}
 
 
-		math::float3 camPos;
+		math::float3 camPos; 
+		float farClipZ = 0.0f;
+		float nearClipZ = 0.0f;
 		{
 			FrameConstants* data = reinterpret_cast<FrameConstants*>(
 				MemoryAllocator::Allocators[allocNo].Allocate(sizeof(FrameConstants), 4)
@@ -1248,7 +1237,8 @@ namespace tofu
 			data->bufferSize = math::float4(float(bufferWidth), float(bufferHeight), 0, 0);
 
 			data->perspectiveParams = math::float4{ camera.GetFOV(), camera.GetAspect(), camera.GetZNear(), camera.GetZFar() };
-			float farClipZ = data->perspectiveParams.w;
+			farClipZ = data->perspectiveParams.w;
+			nearClipZ = data->perspectiveParams.z;
 			float farClipMaxY = math::radians(data->perspectiveParams.x) * 0.5f * farClipZ;
 			float farClipMaxX = farClipMaxY * data->perspectiveParams.y;
 
@@ -1501,10 +1491,13 @@ namespace tofu
 			params->fogParams = {1, 0, 0, 0};
 			params->windDir = math::normalize(math::float3{1, 0, 1}) * 2.0f;
 			params->time = Time::TotalTime;
-			params->noiseScale = 2;
+			params->noiseScale = 1.3;
 			params->noiseBase = 0;
 			params->noiseAmp = 1;
 			params->density = 2;
+			params->maxFarClip = 50;
+			float fogfarClip = math::min(params->maxFarClip, farClipZ);
+			params->maxZ01 = (fogfarClip - nearClipZ) / (farClipZ - nearClipZ);
 
 			UpdateConstantBuffer(fogParamsBuffer, sizeof(VolumetricFogParams), params);
 		}
@@ -1994,7 +1987,8 @@ namespace tofu
 				params->startVertex = mesh.StartVertex;
 				params->indexCount = mesh.NumIndices;
 
-				params->psConstantBuffers[0] = { frameConstantBuffer, 0, 0 };
+				params->psConstantBuffers[0] = { fogParamsBuffer, 0, 0 };
+				params->psConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
 
 				params->psShaderResources[0] = hdrTarget;
 				params->psShaderResources[1] = gBuffer2;

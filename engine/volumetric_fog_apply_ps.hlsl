@@ -1,4 +1,17 @@
-cbuffer FrameConstants : register (b0)
+cbuffer VolumetricFogParams : register (b0)
+{
+	float4					fogParams;
+	float3					windDir;
+	float					time;
+	float					noiseScale;
+	float					noiseBase;
+	float					noiseAmp;
+	float					density;
+	float					maxFarClip;
+	float					maxZ01;
+}
+
+cbuffer FrameConstants : register (b1)
 {
 	float4x4				matView;
 	float4x4				matProj;
@@ -35,7 +48,7 @@ float4 main(float4 pos : SV_POSITION) : SV_TARGET
 
 	if (z > 0)
 	{
-		z = min(z, 1);
+		z = min(z, maxZ01) / maxZ01;
 		float4 fog = scatterVolume.Sample(samp, float3(uv, z));
 		color = color * fog.a + fog;
 	}

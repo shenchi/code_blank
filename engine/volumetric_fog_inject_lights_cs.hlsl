@@ -7,6 +7,8 @@ cbuffer VolumetricFogParams : register (b0)
 	float					noiseBase;
 	float					noiseAmp;
 	float					density;
+	float					maxFarClip;
+	float					maxZ01;
 }
 
 cbuffer FrameConstants : register (b1)
@@ -148,10 +150,11 @@ void main( uint3 DTid : SV_DispatchThreadID )
 	float z = DTid.z / 127.0;
 
 	float zNear = perspectiveParams.z;
-	float zFar = perspectiveParams.w;
+	float zActualFar = perspectiveParams.w;
+	float zFar = min(maxFarClip, zActualFar);
 
 	// linear z to cam pos
-	z = (zNear + z * (zFar - zNear)) / zFar;
+	z = (zNear + z * (zFar - zNear)) / zActualFar;
 
 	float3 rayTop = lerp(leftTopRay.xyz, rightTopRay.xyz, uv.x);
 	float3 rayBottom = lerp(leftBottomRay.xyz, rightBottomRay.xyz, uv.x);
