@@ -33,6 +33,13 @@ namespace tofu
 		math::float4			color;
 		math::float4			emissionColor;
 		math::float4			texcoordParams;
+
+		MaterialParams()
+			:
+			color{ 1, 1, 1, 1 },
+			emissionColor{ 0, 0, 0, 0 },
+			texcoordParams{ 1, 1, 0, 0 }
+		{}
 	};
 
 	class Material
