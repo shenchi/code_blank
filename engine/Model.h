@@ -21,17 +21,25 @@ namespace tofu
 
 		TF_INLINE uint32_t GetNumMeshes() const { return numMeshes; }
 
-		TF_INLINE const float* GetVertices(uint32_t mesh) const { return vertices[mesh]; }
+		TF_INLINE const float* GetVertices() const { return vertices; }
+
+		TF_INLINE const float* GetVertices(uint32_t mesh) const 
+		{ 
+			return reinterpret_cast<float*>(
+				reinterpret_cast<uint8_t*>(vertices) + baseVertex[mesh] * vertexSize
+				);
+		}
 
 		TF_INLINE const uint16_t* GetIndices(uint32_t mesh) const { return indices[mesh]; }
 
-		TF_INLINE uint32_t GetNumVertices(uint32_t mesh) const { return numVertices[mesh]; }
+		TF_INLINE uint32_t GetNumVertices() const { return numVertices; }
 
 		TF_INLINE uint32_t GetNumIndices(uint32_t mesh) const { return numIndices[mesh]; }
 
 	private:
 		ModelHandle					handle;
 		MeshHandle					meshes[kMaxMeshesPerModel];
+		uint32_t					numVertices;
 		uint32_t					numMeshes;
 		uint32_t					vertexSize;
 		model::ModelHeader*			header;
@@ -39,9 +47,9 @@ namespace tofu
 		model::ModelAnimation*		animations;
 		model::AnimationTable		animationTable;
 		model::ModelAnimFrame*		frames;
-		float*						vertices[kMaxMeshesPerModel];
+		float*						vertices;
 		uint16_t*					indices[kMaxMeshesPerModel];
-		uint32_t					numVertices[kMaxMeshesPerModel];
+		uint32_t					baseVertex[kMaxMeshesPerModel];
 		uint32_t					numIndices[kMaxMeshesPerModel];
 		void*						rawData;
 		size_t						rawDataSize;

@@ -39,7 +39,7 @@ namespace tofu
 				};
 			};
 
-			// TODO: change type
+			uint32_t			NumVertices;
 			uint32_t			NumMeshes;
 			uint16_t			NumBones;
 			uint32_t			NumAnimations;
@@ -75,7 +75,7 @@ namespace tofu
 
 		struct ModelMesh
 		{
-			uint32_t			NumVertices;
+			uint32_t			BaseVertex;
 			uint32_t			NumIndices;
 		};
 

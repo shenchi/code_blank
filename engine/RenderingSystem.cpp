@@ -828,7 +828,7 @@ namespace tofu
 		// get mesh info list
 		model::ModelMesh* meshInfos = reinterpret_cast<model::ModelMesh*>(header + 1);
 
-		uint32_t verticesCount = 0;
+		//uint32_t verticesCount = 0;
 		uint32_t indicesCount = 0;
 
 		assert(header->NumMeshes <= kMaxMeshesPerModel);
@@ -838,11 +838,14 @@ namespace tofu
 
 		model = Model();
 		model.handle = modelHandle;
+		model.numVertices = header->NumVertices;
 		model.numMeshes = header->NumMeshes;
 		model.vertexSize = header->CalculateVertexSize();
 		model.rawData = data;
 		model.rawDataSize = size;
 		model.header = header;
+
+		//verticesCount = header->NumVertices;
 
 		// allocate vertex buffer and index buffer
 		BufferHandle vbHandle = bufferHandleAlloc.Allocate();
@@ -858,12 +861,10 @@ namespace tofu
 			meshes[id] = Mesh();
 			meshes[id].VertexBuffer = vbHandle;
 			meshes[id].IndexBuffer = ibHandle;
-			meshes[id].StartVertex = verticesCount;
+			meshes[id].StartVertex = meshInfos[i].BaseVertex;
 			meshes[id].StartIndex = indicesCount;
-			meshes[id].NumVertices = meshInfos[i].NumVertices;
 			meshes[id].NumIndices = meshInfos[i].NumIndices;
 
-			verticesCount += meshInfos[i].NumVertices;
 			indicesCount += meshInfos[i].NumIndices;
 		}
 
@@ -874,19 +875,19 @@ namespace tofu
 		}
 
 		// 
-		uint32_t vertexBufferSize = verticesCount * header->CalculateVertexSize();
+		uint32_t vertexBufferSize = model.numVertices * model.vertexSize;
 		uint32_t indexBufferSize = indicesCount * sizeof(uint16_t);
 
 		uint8_t* vertices = reinterpret_cast<uint8_t*>(meshInfos + header->NumMeshes);
 		uint8_t* indices = vertices + vertexBufferSize;
 
+		model.vertices = reinterpret_cast<float*>(vertices);
+
 		for (uint32_t i = 0; i < header->NumMeshes; ++i)
 		{
 			uint32_t id = model.meshes[i].id;
-			model.numVertices[i] = meshes[id].NumVertices;
+			model.baseVertex[i] = meshes[id].StartVertex;
 			model.numIndices[i] = meshes[id].NumIndices;
-			model.vertices[i] = reinterpret_cast<float*>(
-				vertices + meshes[id].StartVertex * model.vertexSize);
 			model.indices[i] = reinterpret_cast<uint16_t*>(
 				indices + meshes[id].StartIndex * sizeof(uint16_t));
 		}

@@ -23,7 +23,6 @@ namespace tofu
 		uint32_t		StartIndex;
 		uint32_t		StartVertex;
 		uint32_t		NumIndices;
-		uint32_t		NumVertices;
 	};
 
 	class RenderingSystem : public Module
