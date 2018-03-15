@@ -15,11 +15,17 @@ namespace tofu
 
 	const math::float3 PhysicsComponentData::GetVelocity()
 	{
+		assert(nullptr != rigidbody && !isStatic && !isKinematic);
+
 		if (nullptr != rigidbody && !isStatic && !isKinematic)
 		{
-			// TODO Fix
 			btVector3 vel = rigidbody->getLinearVelocity();
 			return tofu::math::float3{ vel.x(), vel.y(), vel.z() };
+		}
+		else
+		{
+			// Should never run.
+			return tofu::math::float3{ 0.0f, 0.0f, 0.0f };
 		}
 	}
 
