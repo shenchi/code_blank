@@ -15,11 +15,18 @@ struct PS_OUTPUT
 	float4		rt3	: SV_TARGET2;
 };
 
+cbuffer MaterialParams : register (b0)
+{
+	float4		color;
+	float4		emissionColor;
+	float4		textureParams;
+}
 
 Texture2D diffuseTex : register(t0);
 Texture2D normalMap : register(t1);
 Texture2D metallicGlossMap : register(t2);
 Texture2D occlusionMap : register(t3);
+Texture2D emissionMap : register(t4);
 
 SamplerState samp : register(s0);
 
@@ -33,15 +40,18 @@ PS_OUTPUT main(V2F input)
 
 	float3x3 TBN = float3x3(tangent, bitangent, normal);
 
-	float3 normTexel = normalMap.Sample(samp, input.uv).xyz * 2.0 - 1.0;
+	float2 uv = (input.uv * textureParams.xy) + textureParams.zw;
+
+	float3 normTexel = normalMap.Sample(samp, uv).xyz * 2.0 - 1.0;
 
 	normal = mul(normTexel, TBN);
 
-	float3 albedo = diffuseTex.Sample(samp, input.uv).rgb;
-	float2 metallicGloss = metallicGlossMap.Sample(samp, input.uv).ra;
-	float3 occlusion = occlusionMap.Sample(samp, input.uv).rgb;
+	float3 albedo = diffuseTex.Sample(samp, uv).rgb;
+	float2 metallicGloss = metallicGlossMap.Sample(samp, uv).ra;
+	float3 occlusion = occlusionMap.Sample(samp, uv).rgb;
 
 	//albedo = pow(albedo, 2.2);
+	albedo *= color;
 
 	output.rt1 = float4(albedo, metallicGloss.x);
 	output.rt2 = float4(normal, input.position.z);

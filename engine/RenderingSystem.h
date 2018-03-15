@@ -122,6 +122,8 @@ namespace tofu
 		TextureHandle			defaultNormalMap;
 		TextureHandle			defaultMetallicGlossMap;
 		TextureHandle			defaultOcclusionMap;
+		TextureHandle			defaultEmissionMap;
+		TextureHandle			lutMap;
 
 		RendererCommandBuffer*	cmdBuf;
 

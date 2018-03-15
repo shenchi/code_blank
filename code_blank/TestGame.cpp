@@ -44,9 +44,9 @@ int32_t TestGame::Init()
 
 		material->SetTexture(diffuse);
 		material->SetNormalMap(normalMap);
-		material->SetMetallicMap(metallicMap);
-		material->SetAoMap(aoMap);
-		material->SetRoughnessMap(roughnessMap);
+		//material->SetMetallicMap(metallicMap);
+		//material->SetAoMap(aoMap);
+		//material->SetRoughnessMap(roughnessMap);
 
 
 		r->SetMaterial(material);
@@ -181,11 +181,11 @@ int32_t TestGame::Init()
 		TextureHandle specular = RenderingSystem::instance()->CreateTexture("assets/textures/test/prefilteredMap.texture");
 		TextureHandle lut = RenderingSystem::instance()->CreateTexture("assets/textures/test/BrdfLUT-Copy.texture");		
 		skyboxMat->SetTexture(tex);
-		skyboxMat->SetSkyboxDiff(diffuse);
-		skyboxMat->SetSkyboxSpecMap(specular);
-		skyboxMat->SetLUTMap(lut);
+		//skyboxMat->SetSkyboxDiff(diffuse);
+		//skyboxMat->SetSkyboxSpecMap(specular);
+		//skyboxMat->SetLUTMap(lut);
 		
-		cam->SetSkybox(skyboxMat);
+		cam->SetSkybox(tex);
 	}
 
 	pitch = InitPitch;

@@ -80,6 +80,21 @@ namespace tofu
 			}
 		}
 
+		TextureHandle emission = TextureHandle();
+		const char* emissionPath = matConfig["EmissionMap"].GetString();
+		if (nullptr != emissionPath && emissionPath[0] != 0)
+		{
+			emission = LoadTexture(emissionPath);
+			if (!emission)
+			{
+				return nullptr;
+			}
+		}
+
+		const rapidjson::Value& tintColor = matConfig["TintColor"];
+		const rapidjson::Value& emissionColor = matConfig["EmissionColor"];
+		const rapidjson::Value& textureParams = matConfig["TextureScaleOffset"];
+
 		const char* typeStr = matConfig["Type"].GetString();
 		MaterialType materialType = kMaterialTypeOpaque;
 		if (strcmp(typeStr, "Transparent") == 0)
@@ -91,6 +106,28 @@ namespace tofu
 		mat->SetNormalMap(normal);
 		mat->SetMetallicGlossMap(metallicGloss);
 		mat->SetOcclusionMap(occlusion);
+		mat->SetEmissionMap(emission);
+
+		mat->SetColor(math::float4{
+			tintColor["r"].GetFloat(),
+			tintColor["g"].GetFloat(),
+			tintColor["b"].GetFloat(),
+			tintColor["a"].GetFloat()
+		});
+
+		mat->SetEmissionColor(math::float4{
+			emissionColor["r"].GetFloat(),
+			emissionColor["g"].GetFloat(),
+			emissionColor["b"].GetFloat(),
+			emissionColor["a"].GetFloat()
+		});
+
+		mat->SetTextureParams(math::float4{
+			textureParams["x"].GetFloat(),
+			textureParams["y"].GetFloat(),
+			textureParams["z"].GetFloat(),
+			textureParams["w"].GetFloat()
+		});
 
 		materials.insert(std::pair<std::string, Material*>(name, mat));
 		return mat;

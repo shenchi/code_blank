@@ -29,7 +29,9 @@ namespace tofu
 			zNear(0.01f),
 			zFar(100.0f),
 			clearColor{ 0.0f, 0.0f, 0.0f, 1.0f },
-			skybox(nullptr)
+			skybox(),
+			skyboxDiff(),
+			skyboxSpec()
 		{}
 
 		void LookAt(const math::float3& target);
@@ -78,9 +80,12 @@ namespace tofu
 		inline const math::float4& GetClearColor() const { return clearColor; }
 
 
-		inline void SetSkybox(Material* mat) { skybox = mat; }
+		inline void SetSkybox(TextureHandle s) { skybox = s; }
 
-		inline Material* GetSkybox() const { return skybox; }
+		inline void SetSkyboxDiffuseMap(TextureHandle s) { skyboxDiff = s; }
+
+		inline void SetSkyboxSpecularMap(TextureHandle s) { skyboxSpec = s; }
+
 
 
 		math::float4x4 CalcViewMatrix() const;
@@ -96,7 +101,9 @@ namespace tofu
 		float					zFar;
 
 		math::float4			clearColor;
-		Material*				skybox;
+		TextureHandle			skybox;
+		TextureHandle			skyboxDiff;
+		TextureHandle			skyboxSpec;
 	};
 
 	typedef Component<CameraComponentData> CameraComponent;

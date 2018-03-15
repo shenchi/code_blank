@@ -25,7 +25,7 @@ namespace Utility
 
 		camera = entity.AddComponent<CameraComponent>();
 		camera->SetFOV(60.0f);
-		camera->SetSkybox(skybox);
+		//camera->SetSkybox(skybox);
 		camera->SetZNear(1.0f);
 		camera->SetZFar(500.0f);
 

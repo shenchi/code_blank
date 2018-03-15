@@ -129,11 +129,9 @@ int32_t AnimationDemo::Init()
 		tCamera->SetLocalPosition(math::float3{ 0, 0, -2 });
 		//	tCamera->SetLocalPosition(math::float3{ 0, 100, -2 });
 
-		Material* skyboxMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeSkybox);
 		TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/craterlake.texture");
-		skyboxMat->SetTexture(tex);
-
-		cam->SetSkybox(skyboxMat);
+		
+		cam->SetSkybox(tex);
 	}
 
 	pitch = InitPitch;

@@ -28,6 +28,13 @@ namespace tofu
 		kMaxMaterialTypes
 	};
 
+	struct MaterialParams
+	{
+		math::float4			color;
+		math::float4			emissionColor;
+		math::float4			texcoordParams;
+	};
+
 	class Material
 	{
 		friend class RenderingSystem;
@@ -41,17 +48,13 @@ namespace tofu
 
 		void SetOcclusionMap(TextureHandle t) { occlusionMap = t; }
 
+		void SetEmissionMap(TextureHandle t) { emissionMap = t; }
 
-		void SetMetallicMap(TextureHandle t) { metallicMap = t; }
+		void SetColor(const math::float4& color) { materialParams.color = color; isDirty = true; }
 
-		void SetRoughnessMap(TextureHandle t) { roughnessMap = t; }
+		void SetEmissionColor(const math::float4& color) { materialParams.emissionColor = color; isDirty = true; }
 
-		void SetAoMap(TextureHandle t) { aoMap = t; }
-		void SetSkyboxDiff(TextureHandle t) { skyboxDiffMap = t; }
-
-		void SetSkyboxSpecMap(TextureHandle t) { skyboxSpecMap = t; }
-
-		void SetLUTMap(TextureHandle t) { lutMap = t; }
+		void SetTextureParams(const math::float4& params) { materialParams.texcoordParams = params; isDirty = true; }
 
 	private:
 		Material(MaterialType type = MaterialType::kMaterialTypeSkybox) 
@@ -62,9 +65,10 @@ namespace tofu
 			normalMap(),
 			metallicGlossMap(),
 			occlusionMap(),
-			metallicMap(),
-			roughnessMap(),
-			aoMap()
+			emissionMap(),
+			materialParamsBuffer(),
+			materialParams(),
+			isDirty(true)
 		{}
 
 	private:
@@ -74,12 +78,10 @@ namespace tofu
 		TextureHandle	normalMap;
 		TextureHandle	metallicGlossMap;
 		TextureHandle	occlusionMap;
+		TextureHandle	emissionMap;
 
-		TextureHandle   metallicMap;
-		TextureHandle   roughnessMap;
-		TextureHandle   aoMap;
-		TextureHandle   skyboxDiffMap;
-		TextureHandle   skyboxSpecMap;
-		TextureHandle   lutMap;
+		BufferHandle	materialParamsBuffer;
+		MaterialParams	materialParams;
+		bool			isDirty;
 	};
 }

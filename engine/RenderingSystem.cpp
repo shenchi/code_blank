@@ -149,6 +149,11 @@ namespace tofu
 		builtinCube(),
 		builtinSphere(),
 		builtinCone(),
+		defaultAlbedoMap(),
+		defaultNormalMap(),
+		defaultMetallicGlossMap(),
+		defaultOcclusionMap(),
+		lutMap(),
 		cmdBuf(nullptr),
 		// resources for deferred shading
 		gBuffer1(),
@@ -699,6 +704,9 @@ namespace tofu
 			defaultNormalMap = normalUpTex;
 			defaultMetallicGlossMap = blackTex;
 			defaultOcclusionMap = whiteTex;
+			defaultEmissionMap = blackTex;
+
+			lutMap = CreateTexture("assets/textures/test/BrdfLUT-Copy.texture");
 		}
 
 		// TODO when back buffer size changed !
@@ -1045,6 +1053,8 @@ namespace tofu
 		new (mat) Material(type);
 		mat->handle = handle;
 
+		mat->materialParamsBuffer = CreateConstantBuffer(sizeof(MaterialParams));
+
 		return mat;
 	}
 
@@ -1321,7 +1331,18 @@ namespace tofu
 			cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
 		}
 
-
+		for (uint32_t i = 0; i < kMaxMaterials; i++)
+		{
+			MaterialHandle handle{ i };
+			if (materialHandleAlloc.IsValid(handle) && materials[i].isDirty)
+			{
+				assert(materials[i].materialParamsBuffer);
+				UpdateConstantBuffer(materials[i].materialParamsBuffer, 
+					sizeof(MaterialParams), 
+					&(materials[i].materialParams));
+				materials[i].isDirty = false;
+			}
+		}
 
 		// get all renderables in system
 		RenderingComponentData* renderables = RenderingComponent::GetAllComponents();
@@ -1761,6 +1782,9 @@ namespace tofu
 			case kMaterialTypeOpaque:
 				params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(obj.transformIdx * 16), 16 };
 				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
+
+				params->psConstantBuffers[0] = { mat->materialParamsBuffer, 0, 0 };
+
 				params->psShaderResources[0] = mat->mainTex ? mat->mainTex : defaultAlbedoMap;
 				params->psShaderResources[1] = mat->normalMap ? mat->normalMap : defaultNormalMap;
 				params->psShaderResources[2] = mat->metallicGlossMap ? mat->metallicGlossMap : defaultMetallicGlossMap;
@@ -1927,11 +1951,11 @@ namespace tofu
 				params->psShaderResources[0] = gBuffer1;
 				params->psShaderResources[1] = gBuffer2;
 				params->psShaderResources[2] = gBuffer3;
-				if (nullptr != camera.skybox)
+				if (camera.skybox)
 				{
-					params->psShaderResources[3] = camera.skybox->skyboxDiffMap;
-					params->psShaderResources[4] = camera.skybox->skyboxSpecMap;
-					params->psShaderResources[5] = camera.skybox->lutMap;
+					params->psShaderResources[3] = camera.skyboxDiff;
+					params->psShaderResources[4] = camera.skyboxDiff;
+					params->psShaderResources[5] = lutMap;
 				}
 
 				params->psSamplers[0] = defaultSampler;
