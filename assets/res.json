@@ -1091,6 +1091,10 @@
         {
             "name": "StreetLight1_Cube.001",
             "guid": "38a952b2e19f7344b8c707fd70cf135f"
+        },
+        {
+            "name": "signs_hotel",
+            "guid": "55d8f52866517e045a4d1b6e73d9dc11"
         }
     ],
     "materials": [
@@ -2325,6 +2329,34 @@
                 "z": 0.0,
                 "w": 0.0
             }
+        },
+        {
+            "Name": "Mat_Signs",
+            "GUID": "96ef337e5ebc3ae45b359d0c8a26b849",
+            "Type": "Transparent",
+            "AlbedoMap": "textures/tx_neon",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
         }
     ],
     "textures": [
@@ -2812,6 +2844,15 @@
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
             "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/tx_neon",
+            "GUID": "ffd8c0a6e6d72e340ad37ef1ddfb9ec3",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 6,
             "MipmapBias": 0.0
         }
     ]

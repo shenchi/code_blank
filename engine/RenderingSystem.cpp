@@ -608,6 +608,8 @@ namespace tofu
 			{
 				CreateSamplerParams* params = MemoryAllocator::Allocate<CreateSamplerParams>(allocNo);
 				params->handle = defaultSampler;
+				params->filter = kTextureFilterAnisotropic;
+				params->maxAnisotropy = 7;
 				params->textureAddressU = kTextureAddressWarp;
 				params->textureAddressV = kTextureAddressWarp;
 				params->textureAddressW = kTextureAddressWarp;
@@ -1586,10 +1588,10 @@ namespace tofu
 			params->fogParams = { 1, 0, 0, 0 };
 			params->windDir = math::normalize(math::float3{ 1, 0, 1 }) * 2.0f;
 			params->time = Time::TotalTime;
-			params->noiseScale = 1.3f;
+			params->noiseScale = 0.5f;
 			params->noiseBase = 0;
-			params->noiseAmp = 1;
-			params->density = 2;
+			params->noiseAmp = 2;
+			params->density = 3;
 			params->maxFarClip = 50;
 			float fogfarClip = math::min(params->maxFarClip, farClipZ);
 			params->maxZ01 = (fogfarClip - nearClipZ) / (farClipZ - nearClipZ);
@@ -2033,7 +2035,7 @@ namespace tofu
 				cmdBuf->Add(RendererCommand::kCommandCompute, params);
 			}
 
-			/**/
+			/*
 
 			// Extract bright part
 			{

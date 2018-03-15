@@ -9,7 +9,7 @@ float4 main(float4 pos : SV_POSITION) : SV_TARGET
 	
 	color = color / (color + 1);
 
-	color = pow(color, 1 / 2.2);
+	//color = pow(color, 1 / 2.2);
 
 	return float4(color, 1.0f);
 }
