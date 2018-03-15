@@ -1032,6 +1032,11 @@ namespace tofu
 				assert(nullptr == samplers[id].samp);
 
 				CD3D11_SAMPLER_DESC samplerDesc(D3D11_DEFAULT);
+
+				// TODO
+				samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
+				samplerDesc.MaxAnisotropy = 7;
+
 				samplerDesc.AddressU = (D3D11_TEXTURE_ADDRESS_MODE)params->textureAddressU;
 				samplerDesc.AddressV = (D3D11_TEXTURE_ADDRESS_MODE)params->textureAddressV;
 				samplerDesc.AddressW = (D3D11_TEXTURE_ADDRESS_MODE)params->textureAddressW;

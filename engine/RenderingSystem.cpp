@@ -2075,6 +2075,7 @@ namespace tofu
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
 
+			/**/
 
 			// volumetric fog
 			{
