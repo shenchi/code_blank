@@ -1,6 +1,99 @@
 {
   "entities": [
     {
+      "name": "Hotel_Neon",
+      "transform": {
+        "translate": {
+          "x": 1.57,
+          "y": 7.84,
+          "z": -14.82
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": null,
+      "children": [
+        {
+          "name": "Point light",
+          "transform": {
+            "translate": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "lightType": "point",
+              "color": {
+                "x": 1.0,
+                "y": 0.349019617,
+                "z": 0.192156881,
+                "w": 1.0
+              },
+              "range": 10.0,
+              "intensity": 5.0,
+              "spotAngle": 30.0,
+              "castShadow": false,
+              "type": "light"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "hotel",
+          "transform": {
+            "translate": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            },
+            "scale": {
+              "x": 0.2,
+              "y": 0.2,
+              "z": 0.2
+            }
+          },
+          "components": [
+            {
+              "model": "models/signs_hotel.model",
+              "materials": [
+                "Mat_Signs"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        }
+      ]
+    },
+    {
       "name": "Plane",
       "transform": {
         "translate": {
@@ -866,6 +959,98 @@
             "z": 1.0
           },
           "model": "models/Wooden_Barrel_Barrel_Low.model",
+          "type": "physics"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Plane (6)",
+      "transform": {
+        "translate": {
+          "x": 0.0,
+          "y": 5.0,
+          "z": -15.0
+        },
+        "rotate": {
+          "x": 0.7071068,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 0.7071068
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "model": "models/Unity_Builtin_Plane.model",
+          "materials": [
+            "unity_builtin_extra"
+          ],
+          "type": "renderable"
+        },
+        {
+          "colliderType": "mesh",
+          "center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "size": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "model": "models/Unity_Builtin_Plane.model",
+          "type": "physics"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Plane (7)",
+      "transform": {
+        "translate": {
+          "x": 5.0,
+          "y": 5.0,
+          "z": -10.0
+        },
+        "rotate": {
+          "x": 0.5,
+          "y": -0.5,
+          "z": 0.5,
+          "w": 0.5
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "model": "models/Unity_Builtin_Plane.model",
+          "materials": [
+            "unity_builtin_extra"
+          ],
+          "type": "renderable"
+        },
+        {
+          "colliderType": "mesh",
+          "center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "size": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "model": "models/Unity_Builtin_Plane.model",
           "type": "physics"
         }
       ],

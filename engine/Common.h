@@ -16,8 +16,11 @@
 #endif
 #endif
 
+#ifdef _DEBUG
+#define CHECKED(x) { int32_t err = kOK; if (kOK != (err = (x))) __debugbreak(); }
+#else
 #define CHECKED(x) { int32_t err = kOK; if (kOK != (err = (x))) return err; }
-//#define CHECKED(x) { int32_t err = kOK; if (kOK != (err = (x))) __debugbreak(); }
+#endif
 
 #define SINGLETON_DECL(CLASS_NAME) \
 	private:\

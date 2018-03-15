@@ -448,7 +448,7 @@ std::unordered_map<std::string, uint32_t> fbxNodeNameTable =
 	{ "PreRotation", fbxPreRotation },
 	{ "Rotation", fbxRotation },
 	{ "PostRotation", fbxPostRotation },
-	{ "PivotInverse", fbxRotationPivotInverse },
+	{ "RotationPivotInverse", fbxRotationPivotInverse },
 	{ "ScalingOffset", fbxScalingOffset },
 	{ "ScalingPivot", fbxScalingPivot },
 	{ "Scaling", fbxScaling },
@@ -817,22 +817,29 @@ struct ModelFile
 			meshes.resize(header.NumMeshes);
 		}
 
+		uint32_t vertexCount = 0;
+		uint32_t indexCount = 0;
 		for (uint32_t i = 0; i < header.NumMeshes; ++i)
 		{
 			const aiMesh* mesh = scene->mMeshes[i];
 			tofu::model::ModelMesh& meshInfo = meshes[i];
-			meshInfo.NumVertices = mesh->mNumVertices;
+			meshInfo.BaseVertex = vertexCount;
 			meshInfo.NumIndices = mesh->mNumFaces * 3;
 
-			numVertices += meshInfo.NumVertices;
-			numIndices += meshInfo.NumIndices;
+			vertexCount += mesh->mNumVertices;
+			indexCount += meshInfo.NumIndices;
 		}
 
 		// align index data size to dword
-		if (numIndices % 2 != 0)
+		if (indexCount % 2 != 0)
 		{
-			numIndices += 1;
+			indexCount += 1;
 		}
+
+		numVertices = vertexCount;
+		numIndices = indexCount;
+
+		header.NumVertices = vertexCount;
 
 		uint32_t vertexSize = header.CalculateVertexSize();
 		uint32_t verticesDataSize = vertexSize * numVertices;

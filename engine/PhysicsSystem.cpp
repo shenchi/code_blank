@@ -57,6 +57,7 @@ namespace
 		}
 	}
 
+	/*
 	class TofuMeshAdaptor : public btStridingMeshInterface
 	{
 	public:
@@ -147,6 +148,7 @@ namespace
 	private:
 		tofu::Model * model;
 	};
+	*/
 }
 
 namespace tofu

@@ -41,6 +41,13 @@ namespace
 		DXGI_FORMAT_D24_UNORM_S8_UINT,
 	};
 
+	D3D11_FILTER FilterTable[tofu::kMaxTextureFilters] = 
+	{
+		D3D11_FILTER_MIN_MAG_MIP_POINT,
+		D3D11_FILTER_MIN_MAG_MIP_LINEAR,
+		D3D11_FILTER_ANISOTROPIC,
+	};
+
 	D3D11_INPUT_ELEMENT_DESC InputElemDescNormal[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -1032,6 +1039,10 @@ namespace tofu
 				assert(nullptr == samplers[id].samp);
 
 				CD3D11_SAMPLER_DESC samplerDesc(D3D11_DEFAULT);
+
+				samplerDesc.Filter = FilterTable[params->filter];
+				samplerDesc.MaxAnisotropy = params->maxAnisotropy;
+
 				samplerDesc.AddressU = (D3D11_TEXTURE_ADDRESS_MODE)params->textureAddressU;
 				samplerDesc.AddressV = (D3D11_TEXTURE_ADDRESS_MODE)params->textureAddressV;
 				samplerDesc.AddressW = (D3D11_TEXTURE_ADDRESS_MODE)params->textureAddressW;

@@ -41,7 +41,7 @@ PS_OUTPUT main(V2F input)
 	float2 metallicGloss = metallicGlossMap.Sample(samp, input.uv).ra;
 	float3 occlusion = occlusionMap.Sample(samp, input.uv).rgb;
 
-	albedo = pow(albedo, 2.2);
+	//albedo = pow(albedo, 2.2);
 
 	output.rt1 = float4(albedo, metallicGloss.x);
 	output.rt2 = float4(normal, input.position.z);

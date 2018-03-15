@@ -99,7 +99,7 @@ float3 SpotLights(float3 pos)
 		float DdotL = dot(-spotLights[i].direction.xyz, L);
 
 		float r = 1 - spotLights[i].spotAngle;
-		atten *= pow(max(0, 1 - (1 - DdotL) / r), 2.0);
+		atten *= pow(max(0, 1 - (1 - DdotL) / r), 0.5);
 		
 		color += atten * spotLights[i].color.rgb * spotLights[i].intensity;
 	}

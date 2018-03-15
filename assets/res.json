@@ -1,6 +1,18 @@
 {
     "models": [
         {
+            "name": "Unity_Builtin_Plane",
+            "guid": "0000000000000000e000000000000000"
+        },
+        {
+            "name": "barrel_Barrel",
+            "guid": "435b7e69285c59b4588a39e3308b6576"
+        },
+        {
+            "name": "Wooden_Barrel_Barrel_Low",
+            "guid": "97b231c8dc21ff1478b5250f44398a44"
+        },
+        {
             "name": "Sundries1_LJ_TrashBox2_box3",
             "guid": "4cced8b4d5bf3b643a47190276c921f6"
         },
@@ -409,19 +421,767 @@
             "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
         },
         {
-            "name": "Unity_Builtin_Plane",
-            "guid": "0000000000000000e000000000000000"
+            "name": "room_05_pack_environment_night_sky_dome",
+            "guid": "bead4db0bfd766945a2a7833ca17cdd5"
         },
         {
-            "name": "barrel_Barrel",
-            "guid": "435b7e69285c59b4588a39e3308b6576"
+            "name": "Trashcan7_Cube",
+            "guid": "b8925c60a8c96194d9c7767ed2274bd7"
         },
         {
-            "name": "Wooden_Barrel_Barrel_Low",
-            "guid": "97b231c8dc21ff1478b5250f44398a44"
+            "name": "Trashcan6_Cube",
+            "guid": "f2208d21c9d678a4f9bdbe84483bc323"
+        },
+        {
+            "name": "RoadSign1_Cube",
+            "guid": "fc457c355ae34634db56d814140cef0a"
+        },
+        {
+            "name": "Barrier_Cube",
+            "guid": "d19f1fe9c57d51747906381dce97a89d"
+        },
+        {
+            "name": "RoadBlock2_Cube",
+            "guid": "f5fdf981ea9783e408e5a398d43837df"
+        },
+        {
+            "name": "Hydrant_Cube",
+            "guid": "54c3d88e0774881479cdfa54532c0b17"
+        },
+        {
+            "name": "RoadSign4_Cube",
+            "guid": "ffdd654c97149cd43a76be933cae6529"
+        },
+        {
+            "name": "room_05_pack_square_night_skyscraper_5",
+            "guid": "bdb5b2d2fa554e94a89eae1fce5e1787"
+        },
+        {
+            "name": "mesh_2039038745",
+            "guid": "2039038745"
+        },
+        {
+            "name": "mesh_885139691",
+            "guid": "885139691"
+        },
+        {
+            "name": "mesh_1980390303",
+            "guid": "1980390303"
+        },
+        {
+            "name": "mesh_553605513",
+            "guid": "553605513"
+        },
+        {
+            "name": "mesh(Clone)_43803755",
+            "guid": "43803755"
+        },
+        {
+            "name": "mesh_1114939505",
+            "guid": "1114939505"
+        },
+        {
+            "name": "mesh_860457133",
+            "guid": "860457133"
+        },
+        {
+            "name": "mesh(Clone)_1932669155",
+            "guid": "1932669155"
+        },
+        {
+            "name": "mesh(Clone)_1624494674",
+            "guid": "1624494674"
+        },
+        {
+            "name": "mesh(Clone)_1140254570",
+            "guid": "1140254570"
+        },
+        {
+            "name": "mesh(Clone)_666143114",
+            "guid": "666143114"
+        },
+        {
+            "name": "mesh_1316156408",
+            "guid": "1316156408"
+        },
+        {
+            "name": "mesh(Clone)_1114262310",
+            "guid": "1114262310"
+        },
+        {
+            "name": "mesh(Clone)_46752931",
+            "guid": "46752931"
+        },
+        {
+            "name": "mesh_1217827190",
+            "guid": "1217827190"
+        },
+        {
+            "name": "mesh_1794434275",
+            "guid": "1794434275"
+        },
+        {
+            "name": "mesh(Clone)_938117395",
+            "guid": "938117395"
+        },
+        {
+            "name": "mesh_649820609",
+            "guid": "649820609"
+        },
+        {
+            "name": "mesh_1349995552",
+            "guid": "1349995552"
+        },
+        {
+            "name": "mesh_1472362171",
+            "guid": "1472362171"
+        },
+        {
+            "name": "mesh_604389761",
+            "guid": "604389761"
+        },
+        {
+            "name": "mesh_1012700403",
+            "guid": "1012700403"
+        },
+        {
+            "name": "mesh(Clone)_505402025",
+            "guid": "505402025"
+        },
+        {
+            "name": "mesh(Clone)_1520255189",
+            "guid": "1520255189"
+        },
+        {
+            "name": "mesh_1824181945",
+            "guid": "1824181945"
+        },
+        {
+            "name": "mesh(Clone)_1533891725",
+            "guid": "1533891725"
+        },
+        {
+            "name": "mesh(Clone)_510812638",
+            "guid": "510812638"
+        },
+        {
+            "name": "mesh_1690769071",
+            "guid": "1690769071"
+        },
+        {
+            "name": "mesh(Clone)_604757428",
+            "guid": "604757428"
+        },
+        {
+            "name": "mesh_1384750636",
+            "guid": "1384750636"
+        },
+        {
+            "name": "mesh_805296319",
+            "guid": "805296319"
+        },
+        {
+            "name": "mesh(Clone)_715034896",
+            "guid": "715034896"
+        },
+        {
+            "name": "mesh_740535774",
+            "guid": "740535774"
+        },
+        {
+            "name": "mesh(Clone)_890738071",
+            "guid": "890738071"
+        },
+        {
+            "name": "mesh_1737243418",
+            "guid": "1737243418"
+        },
+        {
+            "name": "mesh(Clone)_683593844",
+            "guid": "683593844"
+        },
+        {
+            "name": "mesh(Clone)_448877112",
+            "guid": "448877112"
+        },
+        {
+            "name": "mesh(Clone)_690842130",
+            "guid": "690842130"
+        },
+        {
+            "name": "mesh(Clone)_2029214053",
+            "guid": "2029214053"
+        },
+        {
+            "name": "mesh_1020197344",
+            "guid": "1020197344"
+        },
+        {
+            "name": "mesh_1459428925",
+            "guid": "1459428925"
+        },
+        {
+            "name": "mesh(Clone)_1410957166",
+            "guid": "1410957166"
+        },
+        {
+            "name": "mesh_537078994",
+            "guid": "537078994"
+        },
+        {
+            "name": "mesh(Clone)_1485946377",
+            "guid": "1485946377"
+        },
+        {
+            "name": "mesh(Clone)_1925188762",
+            "guid": "1925188762"
+        },
+        {
+            "name": "mesh(Clone)_914911749",
+            "guid": "914911749"
+        },
+        {
+            "name": "mesh(Clone)_232383549",
+            "guid": "232383549"
+        },
+        {
+            "name": "mesh(Clone)_536742466",
+            "guid": "536742466"
+        },
+        {
+            "name": "mesh_1883691683",
+            "guid": "1883691683"
+        },
+        {
+            "name": "mesh(Clone)_75861763",
+            "guid": "75861763"
+        },
+        {
+            "name": "mesh(Clone)_28712420",
+            "guid": "28712420"
+        },
+        {
+            "name": "mesh(Clone)_2056892374",
+            "guid": "2056892374"
+        },
+        {
+            "name": "mesh(Clone)_1254211509",
+            "guid": "1254211509"
+        },
+        {
+            "name": "_706149747",
+            "guid": "706149747"
+        },
+        {
+            "name": "_605333361",
+            "guid": "605333361"
+        },
+        {
+            "name": "_137689052",
+            "guid": "137689052"
+        },
+        {
+            "name": "_1844045205",
+            "guid": "1844045205"
+        },
+        {
+            "name": "_1518111033",
+            "guid": "1518111033"
+        },
+        {
+            "name": "_1387428279",
+            "guid": "1387428279"
+        },
+        {
+            "name": "_879140589",
+            "guid": "879140589"
+        },
+        {
+            "name": "_710706447",
+            "guid": "710706447"
+        },
+        {
+            "name": "_902151071",
+            "guid": "902151071"
+        },
+        {
+            "name": "_1985028831",
+            "guid": "1985028831"
+        },
+        {
+            "name": "_1420525566",
+            "guid": "1420525566"
+        },
+        {
+            "name": "_160500945",
+            "guid": "160500945"
+        },
+        {
+            "name": "_10251873",
+            "guid": "10251873"
+        },
+        {
+            "name": "_1378922903",
+            "guid": "1378922903"
+        },
+        {
+            "name": "_378780438",
+            "guid": "378780438"
+        },
+        {
+            "name": "_1469507824",
+            "guid": "1469507824"
+        },
+        {
+            "name": "_1301833956",
+            "guid": "1301833956"
+        },
+        {
+            "name": "_108777735",
+            "guid": "108777735"
+        },
+        {
+            "name": "_1916803197",
+            "guid": "1916803197"
+        },
+        {
+            "name": "_874054909",
+            "guid": "874054909"
+        },
+        {
+            "name": "_560083694",
+            "guid": "560083694"
+        },
+        {
+            "name": "_1350976275",
+            "guid": "1350976275"
+        },
+        {
+            "name": "_1204214270",
+            "guid": "1204214270"
+        },
+        {
+            "name": "_356855849",
+            "guid": "356855849"
+        },
+        {
+            "name": "_1699542353",
+            "guid": "1699542353"
+        },
+        {
+            "name": "_1438209523",
+            "guid": "1438209523"
+        },
+        {
+            "name": "_502352767",
+            "guid": "502352767"
+        },
+        {
+            "name": "_1653345346",
+            "guid": "1653345346"
+        },
+        {
+            "name": "_668445639",
+            "guid": "668445639"
+        },
+        {
+            "name": "_1233865968",
+            "guid": "1233865968"
+        },
+        {
+            "name": "_421765629",
+            "guid": "421765629"
+        },
+        {
+            "name": "_469433014",
+            "guid": "469433014"
+        },
+        {
+            "name": "_1644581133",
+            "guid": "1644581133"
+        },
+        {
+            "name": "_1490500674",
+            "guid": "1490500674"
+        },
+        {
+            "name": "_2007051747",
+            "guid": "2007051747"
+        },
+        {
+            "name": "_1995179798",
+            "guid": "1995179798"
+        },
+        {
+            "name": "_1065911378",
+            "guid": "1065911378"
+        },
+        {
+            "name": "_654100112",
+            "guid": "654100112"
+        },
+        {
+            "name": "_778351897",
+            "guid": "778351897"
+        },
+        {
+            "name": "_702991674",
+            "guid": "702991674"
+        },
+        {
+            "name": "_2080965406",
+            "guid": "2080965406"
+        },
+        {
+            "name": "_826504046",
+            "guid": "826504046"
+        },
+        {
+            "name": "_349384705",
+            "guid": "349384705"
+        },
+        {
+            "name": "_926021047",
+            "guid": "926021047"
+        },
+        {
+            "name": "_67912678",
+            "guid": "67912678"
+        },
+        {
+            "name": "_2142575104",
+            "guid": "2142575104"
+        },
+        {
+            "name": "_615517264",
+            "guid": "615517264"
+        },
+        {
+            "name": "_1284332703",
+            "guid": "1284332703"
+        },
+        {
+            "name": "_717521205",
+            "guid": "717521205"
+        },
+        {
+            "name": "_1777124318",
+            "guid": "1777124318"
+        },
+        {
+            "name": "_957684223",
+            "guid": "957684223"
+        },
+        {
+            "name": "_735060108",
+            "guid": "735060108"
+        },
+        {
+            "name": "_1448103404",
+            "guid": "1448103404"
+        },
+        {
+            "name": "_1387737657",
+            "guid": "1387737657"
+        },
+        {
+            "name": "_601411307",
+            "guid": "601411307"
+        },
+        {
+            "name": "_1973650097",
+            "guid": "1973650097"
+        },
+        {
+            "name": "_2052274484",
+            "guid": "2052274484"
+        },
+        {
+            "name": "_134302948",
+            "guid": "134302948"
+        },
+        {
+            "name": "_1180722815",
+            "guid": "1180722815"
+        },
+        {
+            "name": "_1776751082",
+            "guid": "1776751082"
+        },
+        {
+            "name": "_1254126097",
+            "guid": "1254126097"
+        },
+        {
+            "name": "_2013518778",
+            "guid": "2013518778"
+        },
+        {
+            "name": "_141545409",
+            "guid": "141545409"
+        },
+        {
+            "name": "_1018202916",
+            "guid": "1018202916"
+        },
+        {
+            "name": "_1747388048",
+            "guid": "1747388048"
+        },
+        {
+            "name": "_1914938739",
+            "guid": "1914938739"
+        },
+        {
+            "name": "_963682980",
+            "guid": "963682980"
+        },
+        {
+            "name": "_571399091",
+            "guid": "571399091"
+        },
+        {
+            "name": "_1872947196",
+            "guid": "1872947196"
+        },
+        {
+            "name": "_237263846",
+            "guid": "237263846"
+        },
+        {
+            "name": "_1184253393",
+            "guid": "1184253393"
+        },
+        {
+            "name": "_829106966",
+            "guid": "829106966"
+        },
+        {
+            "name": "_391903865",
+            "guid": "391903865"
+        },
+        {
+            "name": "_206289127",
+            "guid": "206289127"
+        },
+        {
+            "name": "_1108564946",
+            "guid": "1108564946"
+        },
+        {
+            "name": "_720819033",
+            "guid": "720819033"
+        },
+        {
+            "name": "_1911416909",
+            "guid": "1911416909"
+        },
+        {
+            "name": "_151783409",
+            "guid": "151783409"
+        },
+        {
+            "name": "_431087356",
+            "guid": "431087356"
+        },
+        {
+            "name": "_814061753",
+            "guid": "814061753"
+        },
+        {
+            "name": "_481810407",
+            "guid": "481810407"
+        },
+        {
+            "name": "_2092296838",
+            "guid": "2092296838"
+        },
+        {
+            "name": "_1355806308",
+            "guid": "1355806308"
+        },
+        {
+            "name": "_468020628",
+            "guid": "468020628"
+        },
+        {
+            "name": "_1901233674",
+            "guid": "1901233674"
+        },
+        {
+            "name": "_1210194571",
+            "guid": "1210194571"
+        },
+        {
+            "name": "_633971466",
+            "guid": "633971466"
+        },
+        {
+            "name": "_359686933",
+            "guid": "359686933"
+        },
+        {
+            "name": "_906477694",
+            "guid": "906477694"
+        },
+        {
+            "name": "_103192141",
+            "guid": "103192141"
+        },
+        {
+            "name": "_738969799",
+            "guid": "738969799"
+        },
+        {
+            "name": "_446066240",
+            "guid": "446066240"
+        },
+        {
+            "name": "_536815985",
+            "guid": "536815985"
+        },
+        {
+            "name": "_1886211232",
+            "guid": "1886211232"
+        },
+        {
+            "name": "_1455139105",
+            "guid": "1455139105"
+        },
+        {
+            "name": "_2101741256",
+            "guid": "2101741256"
+        },
+        {
+            "name": "_2115156237",
+            "guid": "2115156237"
+        },
+        {
+            "name": "_1199386710",
+            "guid": "1199386710"
+        },
+        {
+            "name": "_1048521142",
+            "guid": "1048521142"
+        },
+        {
+            "name": "_2131582111",
+            "guid": "2131582111"
+        },
+        {
+            "name": "TrafficLight2_Cube",
+            "guid": "322be3bd8ca41a344bb41258838deffc"
+        },
+        {
+            "name": "TrafficLight2_Cube.001",
+            "guid": "322be3bd8ca41a344bb41258838deffc"
+        },
+        {
+            "name": "TrafficLight1_Cube",
+            "guid": "d8bc6caca65705843be15e8c9a3cb377"
+        },
+        {
+            "name": "TrafficLight1_Cube.001",
+            "guid": "d8bc6caca65705843be15e8c9a3cb377"
+        },
+        {
+            "name": "StreetLight1_Cube",
+            "guid": "38a952b2e19f7344b8c707fd70cf135f"
+        },
+        {
+            "name": "StreetLight1_Cube.001",
+            "guid": "38a952b2e19f7344b8c707fd70cf135f"
+        },
+        {
+            "name": "signs_hotel",
+            "guid": "55d8f52866517e045a4d1b6e73d9dc11"
         }
     ],
     "materials": [
+        {
+            "Name": "unity_builtin_extra",
+            "GUID": "0000000000000000f000000000000000",
+            "Type": "Opaque",
+            "AlbedoMap": "",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.9999999403953552
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "Flamable_2",
+            "GUID": "012983db11badba469a5632ea0db7d55",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/barrel_low_DefaultMaterial_AlbedoTransparency",
+            "NormalMap": "textures/barrel_low_DefaultMaterial_Normal",
+            "MetallicGlossMap": "textures/barrel_low_DefaultMaterial_MetallicSmoothness",
+            "OcclusionMap": "textures/barrel_low_DefaultMaterial_AO",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "Wooden_Barrel",
+            "GUID": "a58a2f593b7af2847a5d745657b73736",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Barrel_AlbedoTransparency",
+            "NormalMap": "textures/Barrel_Normal",
+            "MetallicGlossMap": "textures/Barrel_MetallicSmoothness",
+            "OcclusionMap": "textures/Barrel_Occlusion",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
         {
             "Name": "trash_Base_Color",
             "GUID": "885a9133670b8f2448cf3ef6ee3980df",
@@ -1095,34 +1855,6 @@
             }
         },
         {
-            "Name": "unity_builtin_extra",
-            "GUID": "0000000000000000f000000000000000",
-            "Type": "Opaque",
-            "AlbedoMap": "",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 0.9999999403953552
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
             "Name": "Floor4",
             "GUID": "60e77cd03775de043ba0f88012917586",
             "Type": "Opaque",
@@ -1151,13 +1883,41 @@
             }
         },
         {
-            "Name": "Flamable_2",
-            "GUID": "012983db11badba469a5632ea0db7d55",
+            "Name": "environment_Night",
+            "GUID": "f3918c54f07cabc4cac57bd0587307cc",
             "Type": "Opaque",
-            "AlbedoMap": "textures/barrel_low_DefaultMaterial_AlbedoTransparency",
-            "NormalMap": "textures/barrel_low_DefaultMaterial_Normal",
-            "MetallicGlossMap": "textures/barrel_low_DefaultMaterial_MetallicSmoothness",
-            "OcclusionMap": "textures/barrel_low_DefaultMaterial_AO",
+            "AlbedoMap": "textures/Environment_Night",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "Trashcan12",
+            "GUID": "dd75ab6619e70d049a8cc12a97c7bc3e",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Trashcan7",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
             "EmissionMap": "",
             "TintColor": {
                 "r": 1.0,
@@ -1179,13 +1939,13 @@
             }
         },
         {
-            "Name": "Wooden_Barrel",
-            "GUID": "a58a2f593b7af2847a5d745657b73736",
+            "Name": "Trashcan9",
+            "GUID": "da82c992b80247f4a9c6b573e3582590",
             "Type": "Opaque",
-            "AlbedoMap": "textures/Barrel_AlbedoTransparency",
-            "NormalMap": "textures/Barrel_Normal",
-            "MetallicGlossMap": "textures/Barrel_MetallicSmoothness",
-            "OcclusionMap": "textures/Barrel_Occlusion",
+            "AlbedoMap": "textures/Trashcan6",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
             "EmissionMap": "",
             "TintColor": {
                 "r": 1.0,
@@ -1205,9 +1965,473 @@
                 "z": 0.0,
                 "w": 0.0
             }
+        },
+        {
+            "Name": "RoadSign1",
+            "GUID": "b615bbaedcb1d8346b14ca34cbd435f4",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/RoadSign1",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "Barrier2",
+            "GUID": "d5c3121b1a876304791b1756a16e4c9f",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Barrier2",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "RoadBlock2",
+            "GUID": "db852bc4e61347948a3580aab7269dad",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/RoadBlock2",
+            "NormalMap": "textures/RoadBlock2 -N",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.779411792755127,
+                "g": 0.779411792755127,
+                "b": 0.779411792755127,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "Hydrant",
+            "GUID": "12645a275a3d74d419aaa2893081adc1",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Hydrant",
+            "NormalMap": "textures/Hydrant -N",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 0.4485294222831726,
+                "b": 0.4485294222831726,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "RoadSign8",
+            "GUID": "c3a924fe19ae3504297960e2f36a6805",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/RoadSign4",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "crossing material",
+            "GUID": "3c555588afad81d428ad1704d5d015a7",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/roadsample_d",
+            "NormalMap": "textures/road_b",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "sidewalk",
+            "GUID": "d74dc327ca3fad8408eeeaf8ad54a110",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/sidewalk",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "road material",
+            "GUID": "f182e2714eb8a714a99ed091081ce16c",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/road2Lane_d",
+            "NormalMap": "textures/road_b",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "TrafficLight2",
+            "GUID": "97562c5fb0379a547a9d7cac10f86550",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/TrafficLight2",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.7647058963775635,
+                "g": 0.7647058963775635,
+                "b": 0.7647058963775635,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "TrafficLight2-2",
+            "GUID": "b20ff304b8b50634dacdd585918a05c5",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/TrafficLight2-2",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "TrafficLight1",
+            "GUID": "4199581cb8d72e84f93b886869935ac9",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/TrafficLight1",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.7426470518112183,
+                "g": 0.7426470518112183,
+                "b": 0.7426470518112183,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "StreetLight2",
+            "GUID": "6b1d987f59036fc40a3fa32e2b61500e",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/StreetLight1",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "StreetLight1-4",
+            "GUID": "e082762764efb8a4c956f96242741576",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/StreetLight1-2",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "Mat_Signs",
+            "GUID": "96ef337e5ebc3ae45b359d0c8a26b849",
+            "Type": "Transparent",
+            "AlbedoMap": "textures/tx_neon",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
         }
     ],
     "textures": [
+        {
+            "Path": "textures/barrel_low_DefaultMaterial_AlbedoTransparency",
+            "GUID": "b696d9f35328844498a4c35e81649364",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/barrel_low_DefaultMaterial_Normal",
+            "GUID": "34436d83e2c7b93489f4a6643a4d4c2b",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/barrel_low_DefaultMaterial_MetallicSmoothness",
+            "GUID": "4027cb7daea0e344dae0dbc0d4c2782d",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/barrel_low_DefaultMaterial_AO",
+            "GUID": "3965cfcb4804ac047902586bb331d4c9",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Barrel_AlbedoTransparency",
+            "GUID": "2df604705792cac44bc3b6b777b85670",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Barrel_Normal",
+            "GUID": "d8a35f85444b45b43ad463c22373e39d",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Barrel_MetallicSmoothness",
+            "GUID": "ee2d3edcf24f9a247b0891a6583744dc",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Barrel_Occlusion",
+            "GUID": "8509f52e4fb8e7f47a3f72ba3c4bbe96",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
         {
             "Path": "textures/Sundries1_LJ_D",
             "GUID": "1bbb4474bffd52c45b5c9d3171bde100",
@@ -1452,8 +2676,8 @@
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/barrel_low_DefaultMaterial_AlbedoTransparency",
-            "GUID": "b696d9f35328844498a4c35e81649364",
+            "Path": "textures/Environment_Night",
+            "GUID": "a17c3f9b3bc9cf8459dedbdabd2ab4f2",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
@@ -1461,8 +2685,143 @@
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/barrel_low_DefaultMaterial_Normal",
-            "GUID": "34436d83e2c7b93489f4a6643a4d4c2b",
+            "Path": "textures/Trashcan7",
+            "GUID": "a8f3f9aa30e2f764bb40a2dba2094770",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Trashcan6",
+            "GUID": "658f43b63f13f2b469263d4f43667c56",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/RoadSign1",
+            "GUID": "35a9e60f46b9957489f5bf1567c68e1d",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Barrier2",
+            "GUID": "65f7118913181904093f6ff94f92fd4b",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/RoadBlock2",
+            "GUID": "642a4d8221f4e3a4cac46131d7b77f55",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/RoadBlock2 -N",
+            "GUID": "a4f9664acfabfac43bb23c68b29dcef0",
+            "Dimension": "tex2d",
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Hydrant",
+            "GUID": "4a1f22ec65360ad4fb4a11b5bff3a523",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Hydrant -N",
+            "GUID": "843200f10e461764a8e093b6f207f8c1",
+            "Dimension": "tex2d",
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/RoadSign4",
+            "GUID": "6fef19d51136dc2469b0c808a7d3cbe5",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/roadsample_d",
+            "GUID": "ba7da2dfdca9b8144a40f0c1703b81f1",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/road_b",
+            "GUID": "dbd66363f37e6534880f241dfae1d06c",
+            "Dimension": "tex2d",
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/sidewalk",
+            "GUID": "7e9e6a83e36e4b142bd56f8fecd2bbae",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 9,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/road2Lane_d",
+            "GUID": "3053b3cd0d018b743af797e9f35407f4",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/TrafficLight2",
+            "GUID": "1280c5c212cfdd04e9d512bc0ea1df4e",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/TrafficLight2-2",
+            "GUID": "5d526778ebfbf7045b6407730e8d31d4",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/TrafficLight1",
+            "GUID": "bd748b3b287eb244da27f47858ab143f",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
@@ -1470,57 +2829,30 @@
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/barrel_low_DefaultMaterial_MetallicSmoothness",
-            "GUID": "4027cb7daea0e344dae0dbc0d4c2782d",
+            "Path": "textures/StreetLight1",
+            "GUID": "f714a293a09a12144905265573be8579",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
-            "FilterMode": "bilinear",
+            "FilterMode": "trilinear",
             "MipmapCount": 12,
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/barrel_low_DefaultMaterial_AO",
-            "GUID": "3965cfcb4804ac047902586bb331d4c9",
+            "Path": "textures/StreetLight1-2",
+            "GUID": "a35f19cf613f54e4f8a7dfaaae2e86ed",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "MipmapCount": 11,
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Barrel_AlbedoTransparency",
-            "GUID": "2df604705792cac44bc3b6b777b85670",
+            "Path": "textures/tx_neon",
+            "GUID": "ffd8c0a6e6d72e340ad37ef1ddfb9ec3",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
-            "MipmapCount": 12,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Barrel_Normal",
-            "GUID": "d8a35f85444b45b43ad463c22373e39d",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Barrel_MetallicSmoothness",
-            "GUID": "ee2d3edcf24f9a247b0891a6583744dc",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Barrel_Occlusion",
-            "GUID": "8509f52e4fb8e7f47a3f72ba3c4bbe96",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "MipmapCount": 6,
             "MipmapBias": 0.0
         }
     ]

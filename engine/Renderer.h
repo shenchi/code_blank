@@ -136,6 +136,14 @@ namespace tofu
 		kColorWriteAll = kColorWriteRed | kColorWriteGreen | kColorWriteBlue | kColorWriteAlpha
 	};
 
+	enum TextureFilter
+	{
+		kTextureFilterPoint,
+		kTextureFilterLinear,
+		kTextureFilterAnisotropic,
+		kMaxTextureFilters
+	};
+
 	enum TextureAdressMode
 	{
 		kTextureAddressWarp = 1,
@@ -319,13 +327,24 @@ namespace tofu
 		{
 			struct
 			{
+				uint32_t			filter : 3;
 				uint32_t			textureAddressU : 3;
 				uint32_t			textureAddressV : 3;
 				uint32_t            textureAddressW : 3;
-				uint32_t			_reserved1 : 23;
+				uint32_t			maxAnisotropy : 5;
+				uint32_t			_reserved1 : 15;
 			};
 			uint32_t				textureAddress;
 		};
+
+		CreateSamplerParams()
+			:
+			filter(kTextureFilterLinear),
+			textureAddressU(kTextureAddressClamp),
+			textureAddressV(kTextureAddressClamp),
+			textureAddressW(kTextureAddressClamp),
+			maxAnisotropy(1)
+		{}
 	};
 
 	struct CreateVertexShaderParams
