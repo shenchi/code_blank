@@ -4,7 +4,7 @@
       "name": "Hotel_Neon",
       "transform": {
         "translate": {
-          "x": 1.57,
+          "x": 11.57,
           "y": 7.84,
           "z": -14.82
         },
@@ -235,7 +235,7 @@
       "name": "Plane (3)",
       "transform": {
         "translate": {
-          "x": 0.0,
+          "x": 10.0,
           "y": 0.0,
           "z": -10.0
         },
@@ -968,7 +968,7 @@
       "name": "Plane (6)",
       "transform": {
         "translate": {
-          "x": 0.0,
+          "x": 10.0,
           "y": 5.0,
           "z": -15.0
         },
@@ -1014,7 +1014,7 @@
       "name": "Plane (7)",
       "transform": {
         "translate": {
-          "x": 5.0,
+          "x": 15.0,
           "y": 5.0,
           "z": -10.0
         },
@@ -1023,6 +1023,283 @@
           "y": -0.5,
           "z": 0.5,
           "w": 0.5
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "model": "models/Unity_Builtin_Plane.model",
+          "materials": [
+            "unity_builtin_extra"
+          ],
+          "type": "renderable"
+        },
+        {
+          "colliderType": "mesh",
+          "center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "size": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "model": "models/Unity_Builtin_Plane.model",
+          "type": "physics"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "HandLight",
+      "transform": {
+        "translate": {
+          "x": -10.0,
+          "y": 0.796,
+          "z": -10.43
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": null,
+      "children": [
+        {
+          "name": "HandLight",
+          "transform": {
+            "translate": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/HandLight_HandLight.model",
+              "materials": [
+                "HandlightMat"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Point light",
+          "transform": {
+            "translate": {
+              "x": 0.283,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "lightType": "point",
+              "color": {
+                "x": 0.976470649,
+                "y": 0.407843173,
+                "z": 0.0,
+                "w": 1.0
+              },
+              "range": 3.0,
+              "intensity": 3.0,
+              "spotAngle": 30.0,
+              "castShadow": false,
+              "type": "light"
+            }
+          ],
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "Plane (8)",
+      "transform": {
+        "translate": {
+          "x": -10.0,
+          "y": 0.0,
+          "z": -10.0
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "model": "models/Unity_Builtin_Plane.model",
+          "materials": [
+            "unity_builtin_extra"
+          ],
+          "type": "renderable"
+        },
+        {
+          "colliderType": "mesh",
+          "center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "size": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "model": "models/Unity_Builtin_Plane.model",
+          "type": "physics"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Plane (9)",
+      "transform": {
+        "translate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": -10.0
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "model": "models/Unity_Builtin_Plane.model",
+          "materials": [
+            "unity_builtin_extra"
+          ],
+          "type": "renderable"
+        },
+        {
+          "colliderType": "mesh",
+          "center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "size": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "model": "models/Unity_Builtin_Plane.model",
+          "type": "physics"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Plane (10)",
+      "transform": {
+        "translate": {
+          "x": -10.0,
+          "y": 0.0,
+          "z": 10.0
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "model": "models/Unity_Builtin_Plane.model",
+          "materials": [
+            "unity_builtin_extra"
+          ],
+          "type": "renderable"
+        },
+        {
+          "colliderType": "mesh",
+          "center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "size": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "model": "models/Unity_Builtin_Plane.model",
+          "type": "physics"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Plane (11)",
+      "transform": {
+        "translate": {
+          "x": 10.0,
+          "y": 0.0,
+          "z": 10.0
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
         },
         "scale": {
           "x": 1.0,

@@ -1829,6 +1829,7 @@ namespace tofu
 				params->psShaderResources[1] = mat->normalMap ? mat->normalMap : defaultNormalMap;
 				params->psShaderResources[2] = mat->metallicGlossMap ? mat->metallicGlossMap : defaultMetallicGlossMap;
 				params->psShaderResources[3] = mat->occlusionMap ? mat->occlusionMap : defaultOcclusionMap;
+				params->psShaderResources[4] = mat->emissionMap ? mat->emissionMap : defaultEmissionMap;
 				params->psSamplers[0] = defaultSampler;
 
 				params->renderTargets[0] = gBuffer1;

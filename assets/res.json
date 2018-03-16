@@ -1095,6 +1095,10 @@
         {
             "name": "signs_hotel",
             "guid": "55d8f52866517e045a4d1b6e73d9dc11"
+        },
+        {
+            "name": "HandLight_HandLight",
+            "guid": "2b858557e2e59a748a2c7606a9052648"
         }
     ],
     "materials": [
@@ -2357,6 +2361,34 @@
                 "z": 0.0,
                 "w": 0.0
             }
+        },
+        {
+            "Name": "HandlightMat",
+            "GUID": "b41d977f60983a7438f8c9f79f435ef3",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/HandLight_Base",
+            "NormalMap": "textures/HandLight_Normal_OpenGL",
+            "MetallicGlossMap": "textures/HandLight_Glossiness",
+            "OcclusionMap": "",
+            "EmissionMap": "textures/HandLight_Emission",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 5.0,
+                "g": 5.0,
+                "b": 5.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
         }
     ],
     "textures": [
@@ -2853,6 +2885,42 @@
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
             "MipmapCount": 6,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/HandLight_Base",
+            "GUID": "2cbb3265091ce9047aa93f1ceb4635fe",
+            "Dimension": "tex2d",
+            "WrapMode": "clamp",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/HandLight_Normal_OpenGL",
+            "GUID": "d6ab4b0f6c195124fbf9cd27c2ff148f",
+            "Dimension": "tex2d",
+            "WrapMode": "clamp",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/HandLight_Glossiness",
+            "GUID": "cde9b199a41f3b64db61e99a76502684",
+            "Dimension": "tex2d",
+            "WrapMode": "clamp",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/HandLight_Emission",
+            "GUID": "a2c72ef2c6771224eb79034239ee8c93",
+            "Dimension": "tex2d",
+            "WrapMode": "clamp",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
             "MipmapBias": 0.0
         }
     ]
