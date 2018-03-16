@@ -20,13 +20,14 @@ namespace tofu
 		float				radius;
 
 		TF_INLINE BoundingSphere(const math::float3& c, float r) : center(c), radius(r) {}
+		TF_INLINE BoundingSphere() : center(), radius(1.0f) {}
 
-		void Transform(const Transform& t);
+		TF_INLINE void Transform(const Transform& t);
 
-		bool Intersects(const BoundingSphere& sphere) const;
-		bool Intersects(const BoundingBox& aabb) const;
-		bool Intersects(const OrientedBoundingBox& obb) const;
-		bool Intersects(const Frustum& frustum) const;
+		TF_INLINE bool Intersects(const BoundingSphere& sphere) const;
+		TF_INLINE bool Intersects(const BoundingBox& aabb) const;
+		TF_INLINE bool Intersects(const OrientedBoundingBox& obb) const;
+		TF_INLINE bool Intersects(const Frustum& frustum) const;
 	};
 
 	struct BoundingBox
@@ -35,13 +36,14 @@ namespace tofu
 		math::float3		extends;
 
 		TF_INLINE BoundingBox(const math::float3& c, const math::float3& e) : center(c), extends(e) {}
+		TF_INLINE BoundingBox() : center(), extends(0.5f) {}
 
-		void Transform(const Transform& t);
+		TF_INLINE void Transform(const Transform& t);
 
-		bool Intersects(const BoundingSphere& sphere) const;
-		bool Intersects(const BoundingBox& aabb) const;
-		bool Intersects(const OrientedBoundingBox& obb) const;
-		bool Intersects(const Frustum& frustum) const;
+		TF_INLINE bool Intersects(const BoundingSphere& sphere) const;
+		TF_INLINE bool Intersects(const BoundingBox& aabb) const;
+		TF_INLINE bool Intersects(const OrientedBoundingBox& obb) const;
+		TF_INLINE bool Intersects(const Frustum& frustum) const;
 	};
 
 	struct OrientedBoundingBox
@@ -52,13 +54,14 @@ namespace tofu
 
 		TF_INLINE OrientedBoundingBox(const math::float3& c, const math::float3& e, const math::quat& o)
 			: center(c), extends(e), orientation(o) {}
+		TF_INLINE OrientedBoundingBox() : center(), extends(0.5f), orientation() {}
+		
+		TF_INLINE void Transform(const Transform& t);
 
-		void Transform(const Transform& t);
-
-		bool Intersects(const BoundingSphere& sphere) const;
-		bool Intersects(const BoundingBox& aabb) const;
-		bool Intersects(const OrientedBoundingBox& obb) const;
-		bool Intersects(const Frustum& frustum) const;
+		TF_INLINE bool Intersects(const BoundingSphere& sphere) const;
+		TF_INLINE bool Intersects(const BoundingBox& aabb) const;
+		TF_INLINE bool Intersects(const OrientedBoundingBox& obb) const;
+		TF_INLINE bool Intersects(const Frustum& frustum) const;
 	};
 
 	struct Frustum
@@ -76,12 +79,15 @@ namespace tofu
 		TF_INLINE Frustum(const math::float3& orig, const math::quat& orient, float r, float l, float t, float b, float n, float f)
 			: origin(orig), orientation(orient), rightSlope(r), leftSlope(l), topSlope(t), bottomSlope(b), near(n), far(f) {}
 
-		void Transform(const Transform& t);
+		TF_INLINE Frustum() : origin(), orientation(), rightSlope(1), leftSlope(-1), topSlope(1), bottomSlope(-1), near(0), far(1) {}
 
-		bool Intersects(const BoundingSphere& sphere) const;
-		bool Intersects(const BoundingBox& aabb) const;
-		bool Intersects(const OrientedBoundingBox& obb) const;
-		bool Intersects(const Frustum& frustum) const;
+		TF_INLINE void Transform(const Transform& t);
+		TF_INLINE void TransformWithoutScaling(const tofu::Transform& t);
+		 
+		TF_INLINE bool Intersects(const BoundingSphere& sphere) const;
+		TF_INLINE bool Intersects(const BoundingBox& aabb) const;
+		TF_INLINE bool Intersects(const OrientedBoundingBox& obb) const;
+		TF_INLINE bool Intersects(const Frustum& frustum) const;
 	};
 
 
@@ -400,6 +406,12 @@ namespace tofu
 		float scale = scale = t.GetScale().z;
 		near *= scale;
 		far *= scale;
+	}
+
+	TF_INLINE void Frustum::TransformWithoutScaling(const tofu::Transform& t)
+	{
+		orientation = t.GetRotation() * orientation;
+		origin = t.TransformPosition(origin);
 	}
 
 	TF_INLINE bool Frustum::Intersects(const BoundingSphere& sphere) const
@@ -810,7 +822,7 @@ namespace tofu
 				minD = math::min(minD, dist);
 			}
 
-			outside |= (minD > distA[i]);
+			outside |= (minD > distB[i]);
 		}
 
 		// if A is outside any of B's planes

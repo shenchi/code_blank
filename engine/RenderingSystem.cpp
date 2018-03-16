@@ -18,6 +18,7 @@
 #include "AnimationComponent.h"
 #include "LightComponent.h"
 
+#include "Collision.h"
 
 namespace
 {
@@ -1271,7 +1272,7 @@ namespace tofu
 			camera.SetAspect(bufferHeight == 0 ? 1.0f : float(bufferWidth) / bufferHeight);
 		}
 
-
+		Frustum camFrustum;
 		math::float3 camPos;
 		float farClipZ = 0.0f;
 		float nearClipZ = 0.0f;
@@ -1302,7 +1303,8 @@ namespace tofu
 			data->perspectiveParams = math::float4{ camera.GetFOV(), camera.GetAspect(), camera.GetZNear(), camera.GetZFar() };
 			farClipZ = data->perspectiveParams.w;
 			nearClipZ = data->perspectiveParams.z;
-			float farClipMaxY = math::radians(data->perspectiveParams.x) * 0.5f * farClipZ;
+			float tanHalfFOV = math::tan(math::radians(data->perspectiveParams.x) * 0.5f);
+			float farClipMaxY = tanHalfFOV * farClipZ;
 			float farClipMaxX = farClipMaxY * data->perspectiveParams.y;
 
 			const Transform& worldTrans = t->GetWorldTransform();
@@ -1310,6 +1312,14 @@ namespace tofu
 			data->rightTopRay = worldTrans.TransformVector(math::float4{ farClipMaxX, farClipMaxY, farClipZ, 0 });
 			data->leftBottomRay = worldTrans.TransformVector(math::float4{ -farClipMaxX, -farClipMaxY, farClipZ, 0 });
 			data->rightBottomRay = worldTrans.TransformVector(math::float4{ farClipMaxX, -farClipMaxY, farClipZ, 0 });
+
+			camFrustum.near = nearClipZ;
+			camFrustum.far = farClipZ;
+			camFrustum.topSlope = tanHalfFOV;
+			camFrustum.bottomSlope = -tanHalfFOV;
+			camFrustum.rightSlope = tanHalfFOV * data->perspectiveParams.y;
+			camFrustum.leftSlope = -camFrustum.rightSlope;
+			camFrustum.Transform(t->GetWorldTransform());
 
 			camPos = data->cameraPos;
 
@@ -1485,16 +1495,11 @@ namespace tofu
 			{
 				LightComponentData& comp = lights[i];
 
-				// TODO culling
 				TransformComponent t = comp.entity.GetComponent<TransformComponent>();
 
 				assert(t);
 
-#ifdef TOFU_USE_GLM
-				math::float4x4 lightTransform = math::transpose(t->GetWorldTransform().GetMatrix());
-#else
-				math::float4x4 lightTransform = t->GetWorldTransform().GetMatrix();
-#endif
+				Transform lightTransform = t->GetWorldTransform();
 				math::float3 dir = t->GetForwardVector();
 
 				if (comp.type == kLightTypeDirectional)
@@ -1513,14 +1518,26 @@ namespace tofu
 					if (numPointLights >= kMaxPointLights)
 						continue;
 
+					lightTransform = 
+						Transform(
+							math::float3{}, 
+							math::quat{}, 
+							math::float3(comp.range)) 
+						* 
+						lightTransform;
+
+					BoundingSphere sphere{};
+					sphere.Transform(lightTransform);
+					sphere.radius = comp.range;
+
+					if (!camFrustum.Intersects(sphere)) continue;
+
 					auto& light = pointLightParams->lights[numPointLights];
 					light.color = comp.lightColor;
 					light.intensity = comp.intensity;
 					light.range = comp.range;
 
-					pointLightTransform[numPointLights] =
-						math::scale(math::float4x4(1.0f), math::float3(comp.range)) *
-						lightTransform;
+					pointLightTransform[numPointLights] = math::transpose(lightTransform.GetMatrix());
 
 					numPointLights++;
 				}
@@ -1528,6 +1545,29 @@ namespace tofu
 				{
 					if (numSpotLights >= kMaxSpotLights)
 						continue;
+
+					float tanHalfAngle = math::tan(math::radians(comp.spotAngle * 0.5f));
+					float scale = tanHalfAngle * comp.range;
+					lightTransform =
+						Transform(
+							math::float3{},
+							math::quat{},
+							math::float3(scale, scale, comp.range))
+						*
+						lightTransform;
+
+					Frustum lightFrustum{
+						math::float3{},
+						math::quat{},
+						tanHalfAngle,
+						-tanHalfAngle,
+						tanHalfAngle,
+						-tanHalfAngle,
+						0, comp.range};
+
+					lightFrustum.TransformWithoutScaling(lightTransform);
+
+					if (!camFrustum.Intersects(lightFrustum)) continue;
 
 					auto& light = spotLightParams->lights[numSpotLights];
 
@@ -1538,10 +1578,7 @@ namespace tofu
 					light.spotAngle = math::cos(math::radians(comp.spotAngle * 0.5f));
 					light.shadowId = UINT32_MAX;
 
-					float scale = math::tan(math::radians(comp.spotAngle * 0.5f)) * comp.range;
-					spotLightTransform[numSpotLights] =
-						math::scale(math::float4x4(1.0f), math::float3(scale, scale, comp.range)) *
-						lightTransform;
+					spotLightTransform[numSpotLights] = math::transpose(lightTransform.GetMatrix());
 
 					if (comp.castShadow && numShadowCastingLights < kMaxShadowCastingLights)
 					{
