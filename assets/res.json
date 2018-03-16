@@ -1,10 +1,6 @@
 {
     "models": [
         {
-            "name": "Bulidng2_CFT_wholeBuilding_group3_window124",
-            "guid": "7220ba33e003b174eb833b7d9f94b94e"
-        },
-        {
             "name": "Building1_CFT_wholeBuilding_polySurface145",
             "guid": "6849c45d1922e334aa13443b0b8ecb15"
         },
@@ -13,8 +9,16 @@
             "guid": "231721c4f1004fd468b8cf3631e855c0"
         },
         {
+            "name": "Bulidng2_CFT_wholeBuilding_group3_window124",
+            "guid": "7220ba33e003b174eb833b7d9f94b94e"
+        },
+        {
             "name": "Building1_ZLJ_Main_polySurface117",
             "guid": "7093e350d83b98947ad131f89c0838c1"
+        },
+        {
+            "name": "Unity_Builtin_Quad",
+            "guid": "0000000000000000e000000000000000"
         },
         {
             "name": "rollup_door_garage_rollup_door",
@@ -41,14 +45,6 @@
             "guid": "0fb14757fdd73de4fbaa71f0ec376ef3"
         },
         {
-            "name": "TrafficLight1_Cube",
-            "guid": "d8bc6caca65705843be15e8c9a3cb377"
-        },
-        {
-            "name": "TrafficLight1_Cube.001",
-            "guid": "d8bc6caca65705843be15e8c9a3cb377"
-        },
-        {
             "name": "Barrier_Cube",
             "guid": "d19f1fe9c57d51747906381dce97a89d"
         },
@@ -57,11 +53,39 @@
             "guid": "f5fdf981ea9783e408e5a398d43837df"
         },
         {
-            "name": "Unity_Builtin_Quad",
-            "guid": "0000000000000000e000000000000000"
+            "name": "TrafficLight1_Cube",
+            "guid": "d8bc6caca65705843be15e8c9a3cb377"
+        },
+        {
+            "name": "TrafficLight1_Cube.001",
+            "guid": "d8bc6caca65705843be15e8c9a3cb377"
+        },
+        {
+            "name": "StreetLight1_Cube",
+            "guid": "38a952b2e19f7344b8c707fd70cf135f"
+        },
+        {
+            "name": "StreetLight1_Cube.001",
+            "guid": "38a952b2e19f7344b8c707fd70cf135f"
         },
         {
             "name": "signs_open",
+            "guid": "55d8f52866517e045a4d1b6e73d9dc11"
+        },
+        {
+            "name": "signs_girls",
+            "guid": "55d8f52866517e045a4d1b6e73d9dc11"
+        },
+        {
+            "name": "signs_bar",
+            "guid": "55d8f52866517e045a4d1b6e73d9dc11"
+        },
+        {
+            "name": "signs_hotel",
+            "guid": "55d8f52866517e045a4d1b6e73d9dc11"
+        },
+        {
+            "name": "signs_cocktails",
             "guid": "55d8f52866517e045a4d1b6e73d9dc11"
         },
         {
@@ -69,24 +93,84 @@
             "guid": "b8925c60a8c96194d9c7767ed2274bd7"
         },
         {
+            "name": "Hydrant_Cube",
+            "guid": "54c3d88e0774881479cdfa54532c0b17"
+        },
+        {
             "name": "Trashcan6_Cube",
             "guid": "f2208d21c9d678a4f9bdbe84483bc323"
+        },
+        {
+            "name": "Trashcan4_Cube",
+            "guid": "a984062dfc9ce094eb21b49445e6ca4d"
+        },
+        {
+            "name": "Trashcan3_Cube",
+            "guid": "3b4a9b694af93b24c808f130825f798c"
+        },
+        {
+            "name": "TrashBag_TrashBag",
+            "guid": "b30f6b19eb795ff4eb91de10c8b3724f"
+        },
+        {
+            "name": "Wooden Pallet_Pallet",
+            "guid": "c8df0c839c0ef974589f81ac42bf7846"
+        },
+        {
+            "name": "Wooden Box_Large_Wooden Box_Large",
+            "guid": "23733f9355105974391e151da4f6793e"
+        },
+        {
+            "name": "CBox_Square1_CBox_Square1",
+            "guid": "6775913dfae055d4eb78cfac5ec0240b"
+        },
+        {
+            "name": "Wooden Fruit Box_Wooden Fruit Box",
+            "guid": "8b7b2c3f97dd24640b3d820c0d5e4377"
+        },
+        {
+            "name": "FlatBox1_FlatBox1",
+            "guid": "a6501bf7c26e7cb45a0b1bc7fd01bdc5"
+        },
+        {
+            "name": "FlatBox2_FlatBox2",
+            "guid": "880dd401a8501f34998719b66b95fb5f"
+        },
+        {
+            "name": "FlatBox4_FlatBox4",
+            "guid": "4c4347600fc2ae64ebabba1d9c0145bb"
+        },
+        {
+            "name": "Hanging flags_1_Hanging flags_1",
+            "guid": "be2a96861358d974082c2620cbd6034b"
+        },
+        {
+            "name": "Paint Tin_Blue_Paint Tin_Blue",
+            "guid": "49d7d47d374935a4088fc3f6f947f3d6"
+        },
+        {
+            "name": "Container_White_Container_White",
+            "guid": "ce467e197a9a8494c82d51d1d0ee13e5"
+        },
+        {
+            "name": "TinCan3_TinCan3",
+            "guid": "f7651a3b038eed048b7447dee1e534f6"
+        },
+        {
+            "name": "TinCan1_TinCan1",
+            "guid": "c18b3f23cdaf639489063e86889a5d0e"
+        },
+        {
+            "name": "Unity_Builtin_Cube",
+            "guid": "0000000000000000e000000000000000"
         },
         {
             "name": "RoadSign1_Cube",
             "guid": "fc457c355ae34634db56d814140cef0a"
         },
         {
-            "name": "Hydrant_Cube",
-            "guid": "54c3d88e0774881479cdfa54532c0b17"
-        },
-        {
             "name": "RoadSign4_Cube",
             "guid": "ffdd654c97149cd43a76be933cae6529"
-        },
-        {
-            "name": "Unity_Builtin_Cube",
-            "guid": "0000000000000000e000000000000000"
         },
         {
             "name": "room_05_pack_square_night_skyscraper_1",
@@ -1043,45 +1127,9 @@
         {
             "name": "TrafficLight2_Cube.001",
             "guid": "322be3bd8ca41a344bb41258838deffc"
-        },
-        {
-            "name": "StreetLight1_Cube",
-            "guid": "38a952b2e19f7344b8c707fd70cf135f"
-        },
-        {
-            "name": "StreetLight1_Cube.001",
-            "guid": "38a952b2e19f7344b8c707fd70cf135f"
         }
     ],
     "materials": [
-        {
-            "Name": "ID3",
-            "GUID": "452c1534d236c984f9756aba8ba7f8f1",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/Building2_CFT_D",
-            "NormalMap": "textures/Building2_CFT_N",
-            "MetallicGlossMap": "textures/Building2_CFT_MT",
-            "OcclusionMap": "textures/Building2_CFT_AO",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
         {
             "Name": "123",
             "GUID": "855e219e032cb0447964bca6857cf03f",
@@ -1167,6 +1215,34 @@
             }
         },
         {
+            "Name": "ID3",
+            "GUID": "452c1534d236c984f9756aba8ba7f8f1",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Building2_CFT_D",
+            "NormalMap": "textures/Building2_CFT_N",
+            "MetallicGlossMap": "textures/Building2_CFT_MT",
+            "OcclusionMap": "textures/Building2_CFT_AO",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
             "Name": "BuildingLongji_pCube558Shape",
             "GUID": "0602e1544b7b85b438d7c04de92004f5",
             "Type": "Opaque",
@@ -1186,6 +1262,34 @@
                 "g": 0.0,
                 "b": 0.0,
                 "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "Floor4",
+            "GUID": "60e77cd03775de043ba0f88012917586",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Floor1_Diff+Spec",
+            "NormalMap": "textures/Floor1_Bump",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.4632353186607361,
+                "g": 0.4632353186607361,
+                "b": 0.4632353186607361,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
             },
             "TextureScaleOffset": {
                 "x": 1.0,
@@ -1230,62 +1334,6 @@
             "NormalMap": "textures/Gates_Vehicle_Normal",
             "MetallicGlossMap": "textures/Gates_Vehicle_MetallicSmoothness",
             "OcclusionMap": "textures/Gates_Vehicle_AO",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "TrafficLight1",
-            "GUID": "4199581cb8d72e84f93b886869935ac9",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/TrafficLight1",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 0.7426470518112183,
-                "g": 0.7426470518112183,
-                "b": 0.7426470518112183,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "TrafficLight2-2",
-            "GUID": "b20ff304b8b50634dacdd585918a05c5",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/TrafficLight2-2",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": "",
             "EmissionMap": "",
             "TintColor": {
                 "r": 1.0,
@@ -1363,25 +1411,109 @@
             }
         },
         {
-            "Name": "Floor4",
-            "GUID": "60e77cd03775de043ba0f88012917586",
+            "Name": "TrafficLight1",
+            "GUID": "4199581cb8d72e84f93b886869935ac9",
             "Type": "Opaque",
-            "AlbedoMap": "textures/Floor1_Diff+Spec",
-            "NormalMap": "textures/Floor1_Bump",
+            "AlbedoMap": "textures/TrafficLight1",
+            "NormalMap": "",
             "MetallicGlossMap": "",
             "OcclusionMap": "",
             "EmissionMap": "",
             "TintColor": {
-                "r": 0.4632353186607361,
-                "g": 0.4632353186607361,
-                "b": 0.4632353186607361,
+                "r": 0.7426470518112183,
+                "g": 0.7426470518112183,
+                "b": 0.7426470518112183,
                 "a": 1.0
             },
             "EmissionColor": {
                 "r": 0.0,
                 "g": 0.0,
                 "b": 0.0,
-                "a": 0.0
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "TrafficLight2-2",
+            "GUID": "b20ff304b8b50634dacdd585918a05c5",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/TrafficLight2-2",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "StreetLight2",
+            "GUID": "6b1d987f59036fc40a3fa32e2b61500e",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/StreetLight1",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "StreetLight1-4",
+            "GUID": "e082762764efb8a4c956f96242741576",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/StreetLight1-2",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
             },
             "TextureScaleOffset": {
                 "x": 1.0,
@@ -1447,6 +1579,34 @@
             }
         },
         {
+            "Name": "Hydrant",
+            "GUID": "12645a275a3d74d419aaa2893081adc1",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Hydrant",
+            "NormalMap": "textures/Hydrant -N",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 0.4485294222831726,
+                "b": 0.4485294222831726,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
             "Name": "Trashcan9",
             "GUID": "da82c992b80247f4a9c6b573e3582590",
             "Type": "Opaque",
@@ -1475,10 +1635,10 @@
             }
         },
         {
-            "Name": "RoadSign1",
-            "GUID": "b615bbaedcb1d8346b14ca34cbd435f4",
+            "Name": "Trashcan6",
+            "GUID": "bbbe29f1b598d3b4fb88e9fb213962e9",
             "Type": "Opaque",
-            "AlbedoMap": "textures/RoadSign1",
+            "AlbedoMap": "textures/Trashcan4",
             "NormalMap": "",
             "MetallicGlossMap": "",
             "OcclusionMap": "",
@@ -1503,18 +1663,438 @@
             }
         },
         {
-            "Name": "Hydrant",
-            "GUID": "12645a275a3d74d419aaa2893081adc1",
+            "Name": "Trashcan5",
+            "GUID": "08d67a1cd429e324183a87ae183d1a7c",
             "Type": "Opaque",
-            "AlbedoMap": "textures/Hydrant",
-            "NormalMap": "textures/Hydrant -N",
+            "AlbedoMap": "textures/Trashcan3",
+            "NormalMap": "",
             "MetallicGlossMap": "",
             "OcclusionMap": "",
             "EmissionMap": "",
             "TintColor": {
                 "r": 1.0,
-                "g": 0.4485294222831726,
-                "b": 0.4485294222831726,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "M_TrashBag_Black",
+            "GUID": "6180efb29ad29bc4ab4b2c8dcabce84a",
+            "Type": "Opaque",
+            "AlbedoMap": "",
+            "NormalMap": "textures/TrashBag_NM",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.14705884456634522,
+                "g": 0.14705884456634522,
+                "b": 0.14705884456634522,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "M_WoodenSlats_1",
+            "GUID": "7b73e4df7644ab3438c0c5b33c747464",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Wooden Slats_2048_1024_Diff",
+            "NormalMap": "textures/WoodenSlats_2048_NRM",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.7647058963775635,
+                "g": 0.7647058963775635,
+                "b": 0.7647058963775635,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "M_CardboardBox_4",
+            "GUID": "c3687e9beaa735440ba11e26c26e2823",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Cardboard_Box4_UV_1024",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.845588207244873,
+                "g": 0.845588207244873,
+                "b": 0.845588207244873,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "M_CardboardBox_2",
+            "GUID": "191b2003779d6b146add8de9293d78fa",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Cardboard_Box2_UV_1024",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.9191176295280457,
+                "g": 0.9191176295280457,
+                "b": 0.9191176295280457,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "M_FlatBox_1",
+            "GUID": "9e416e36f2dfc6f48acb71ef21e5558c",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/FlatBox1_UV_2048x1024",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.9264705777168274,
+                "g": 0.9264705777168274,
+                "b": 0.9264705777168274,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "M_FlatBox_2",
+            "GUID": "7cf2d17ee08573e4ebd947a68489f4c5",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/FlatBox2_UV_2048x1024",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.9264705777168274,
+                "g": 0.9264705777168274,
+                "b": 0.9264705777168274,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "M_FlatBox_4",
+            "GUID": "883651b0f26e6154293d2f5f418010e5",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/FlatBox4_UV_1024",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.9264705777168274,
+                "g": 0.9264705777168274,
+                "b": 0.9264705777168274,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "M_HangingFlags",
+            "GUID": "0f355cb1284e23f44b95920644e4b7d2",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Hanging flags1024_512_Diff",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.8602941036224365,
+                "g": 0.8602941036224365,
+                "b": 0.8602941036224365,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "M_PaintCan",
+            "GUID": "a998ab9cfcf2b3b48819a669057a0350",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Paint Tin_1024_Diff",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.9191176295280457,
+                "g": 0.9191176295280457,
+                "b": 0.9191176295280457,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "M_SmallContainer_Yellow",
+            "GUID": "9fd0730ed01ae8c40be35ccee3040e41",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Container_Yellow_1024_Diff",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.9191176295280457,
+                "g": 0.9191176295280457,
+                "b": 0.9191176295280457,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "M_TinCans",
+            "GUID": "165846c6e863502479387444b633fd77",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/TinCan_Rust_1024_512_DIff",
+            "NormalMap": "textures/TinCans_Rust_1024_512_NRM",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "M_TrashBag_Yellow",
+            "GUID": "48283d82730fbc141b0e0715ddd4892f",
+            "Type": "Opaque",
+            "AlbedoMap": "",
+            "NormalMap": "textures/TrashBag_NM",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.9117646813392639,
+                "g": 0.8544327020645142,
+                "b": 0.08044984936714173,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "M_TrashBag_Blue",
+            "GUID": "08ddbfdfc6f35df4aa5f0601d66313a0",
+            "Type": "Opaque",
+            "AlbedoMap": "",
+            "NormalMap": "textures/TrashBag_NM",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.028330476954579355,
+                "g": 0.653749406337738,
+                "b": 0.9632353186607361,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "CustomAwning",
+            "GUID": "7c6ddda0e6f62ea4fb644cf12fad0236",
+            "Type": "Opaque",
+            "AlbedoMap": "",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.0,
+                "g": 0.0008113523945212364,
+                "b": 0.11764705181121826,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "RoadSign1",
+            "GUID": "b615bbaedcb1d8346b14ca34cbd435f4",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/RoadSign1",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
                 "a": 1.0
             },
             "EmissionColor": {
@@ -1753,101 +2333,9 @@
                 "z": 0.0,
                 "w": 0.0
             }
-        },
-        {
-            "Name": "StreetLight2",
-            "GUID": "6b1d987f59036fc40a3fa32e2b61500e",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/StreetLight1",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "StreetLight1-4",
-            "GUID": "e082762764efb8a4c956f96242741576",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/StreetLight1-2",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
         }
     ],
     "textures": [
-        {
-            "Path": "textures/Building2_CFT_D",
-            "GUID": "4820ac2c2fc83df459f0db2b3b0e0c32",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Building2_CFT_N",
-            "GUID": "fc66245a39874c84ba76d3f3facdf40f",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Building2_CFT_MT",
-            "GUID": "4b14e22887dadc74b971829357e152bd",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Building2_CFT_AO",
-            "GUID": "ecca9ed43c6528b4086fa7687d49da5d",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
-            "MipmapBias": 0.0
-        },
         {
             "Path": "textures/Building1_CFT_D",
             "GUID": "4d281d6482c94ac4b9770fd9915af37c",
@@ -1903,6 +2391,42 @@
             "MipmapBias": 0.0
         },
         {
+            "Path": "textures/Building2_CFT_D",
+            "GUID": "4820ac2c2fc83df459f0db2b3b0e0c32",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Building2_CFT_N",
+            "GUID": "fc66245a39874c84ba76d3f3facdf40f",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Building2_CFT_MT",
+            "GUID": "4b14e22887dadc74b971829357e152bd",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Building2_CFT_AO",
+            "GUID": "ecca9ed43c6528b4086fa7687d49da5d",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
             "Path": "textures/Building1_ZLJ_D",
             "GUID": "bba78fb9b94aa9f43bea977507e394d3",
             "Dimension": "tex2d",
@@ -1927,6 +2451,24 @@
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
             "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Floor1_Diff+Spec",
+            "GUID": "cc39a17532b382042b971e892c29aee4",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Floor1_Bump",
+            "GUID": "d4953f7c4b5211a4d880b0889f5e31b4",
+            "Dimension": "tex2d",
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -1984,24 +2526,6 @@
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/TrafficLight1",
-            "GUID": "bd748b3b287eb244da27f47858ab143f",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/TrafficLight2-2",
-            "GUID": "5d526778ebfbf7045b6407730e8d31d4",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
             "Path": "textures/Barrier2",
             "GUID": "65f7118913181904093f6ff94f92fd4b",
             "Dimension": "tex2d",
@@ -2029,8 +2553,17 @@
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Floor1_Diff+Spec",
-            "GUID": "cc39a17532b382042b971e892c29aee4",
+            "Path": "textures/TrafficLight1",
+            "GUID": "bd748b3b287eb244da27f47858ab143f",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/TrafficLight2-2",
+            "GUID": "5d526778ebfbf7045b6407730e8d31d4",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
@@ -2038,12 +2571,21 @@
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Floor1_Bump",
-            "GUID": "d4953f7c4b5211a4d880b0889f5e31b4",
+            "Path": "textures/StreetLight1",
+            "GUID": "f714a293a09a12144905265573be8579",
             "Dimension": "tex2d",
-            "WrapMode": "",
-            "FilterMode": "",
-            "MipmapCount": 0,
+            "WrapMode": "repeat",
+            "FilterMode": "trilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/StreetLight1-2",
+            "GUID": "a35f19cf613f54e4f8a7dfaaae2e86ed",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
             "MipmapBias": 0.0
         },
         {
@@ -2058,24 +2600,6 @@
         {
             "Path": "textures/Trashcan7",
             "GUID": "a8f3f9aa30e2f764bb40a2dba2094770",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Trashcan6",
-            "GUID": "658f43b63f13f2b469263d4f43667c56",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/RoadSign1",
-            "GUID": "35a9e60f46b9957489f5bf1567c68e1d",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
@@ -2098,6 +2622,159 @@
             "WrapMode": "",
             "FilterMode": "",
             "MipmapCount": 0,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Trashcan6",
+            "GUID": "658f43b63f13f2b469263d4f43667c56",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Trashcan4",
+            "GUID": "cdef2269ec183744ead8a754e6260d8c",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Trashcan3",
+            "GUID": "bb575b76f641460428f8759ba4628883",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/TrashBag_NM",
+            "GUID": "42e9c08adb3950142aefc7a75964077f",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Wooden Slats_2048_1024_Diff",
+            "GUID": "08fffefa392d19a4e840426c1e3142a3",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/WoodenSlats_2048_NRM",
+            "GUID": "2ce9daf9b08ec2249aaac9a77e568e04",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Cardboard_Box4_UV_1024",
+            "GUID": "eb9d9d7de0c041941a3f330d3ab5fec2",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Cardboard_Box2_UV_1024",
+            "GUID": "3f363903d9666c04ba608781104777c4",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/FlatBox1_UV_2048x1024",
+            "GUID": "31ff113a7ecd8ec47b12917cd72ecc6f",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/FlatBox2_UV_2048x1024",
+            "GUID": "6f228362c05cccf4fa690e83d00afb0d",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/FlatBox4_UV_1024",
+            "GUID": "edc96e22730d77e43aeab4300ec0f7b3",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Hanging flags1024_512_Diff",
+            "GUID": "8ba8de89d5dd3be4197d7d5d13aa9d67",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Paint Tin_1024_Diff",
+            "GUID": "db60703d47e5a714f92527641349df9c",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Container_Yellow_1024_Diff",
+            "GUID": "6b7d8e074970411408cb13057ec4ca56",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/TinCan_Rust_1024_512_DIff",
+            "GUID": "fe433d8cc44ecb2458e07fe9524bdf47",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/TinCans_Rust_1024_512_NRM",
+            "GUID": "ee083effca8200445b755e845e28f5e3",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/RoadSign1",
+            "GUID": "35a9e60f46b9957489f5bf1567c68e1d",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
             "MipmapBias": 0.0
         },
         {
@@ -2166,24 +2843,6 @@
         {
             "Path": "textures/TrafficLight2",
             "GUID": "1280c5c212cfdd04e9d512bc0ea1df4e",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/StreetLight1",
-            "GUID": "f714a293a09a12144905265573be8579",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "trilinear",
-            "MipmapCount": 12,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/StreetLight1-2",
-            "GUID": "a35f19cf613f54e4f8a7dfaaae2e86ed",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",

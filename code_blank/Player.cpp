@@ -102,10 +102,14 @@ Player::Player(CharacterDetails details, void* comp)
 		// Upper Layer Animations
 		{
 			AnimationLayer *upperLayer = aPlayer->AddLayer("Upper", 1.0f, kAET_Override);
-			upperLayer->selectedJoints = new std::vector<uint16_t>();
 
-			for (int i = 3; i <= 55; i++) {
-				upperLayer->selectedJoints->push_back(i);
+			// TODO This is causing memory leaks
+			{
+				upperLayer->selectedJoints = new std::vector<uint16_t>();
+
+				for (int i = 3; i <= 55; i++) {
+					upperLayer->selectedJoints->push_back(i);
+				}
 			}
 
 			AnimationStateMachine *stateMachine = upperLayer->GetStateMachine();
