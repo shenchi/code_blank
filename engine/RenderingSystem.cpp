@@ -159,7 +159,8 @@ namespace tofu
 		// resources for deferred shading
 		gBuffer1(),
 		gBuffer2(),
-		gBuffer3()
+		gBuffer3(), 
+		gBuffer4()
 	{
 		assert(nullptr == _instance);
 		_instance = this;
@@ -716,11 +717,12 @@ namespace tofu
 		gBuffer1 = CreateTexture(kFormatR32g32b32a32Float, w, h, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
 		gBuffer2 = CreateTexture(kFormatR32g32b32a32Float, w, h, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
 		gBuffer3 = CreateTexture(kFormatR32g32b32a32Float, w, h, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
+		gBuffer4 = CreateTexture(kFormatR32g32b32a32Float, w, h, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
 
 		hdrTarget = CreateTexture(kFormatR32g32b32a32Float, w, h, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
 		hdrTarget2 = CreateTexture(kFormatR32g32b32a32Float, w, h, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource);
 
-		if (!gBuffer1 || !gBuffer2 || !gBuffer3 || !hdrTarget || !hdrTarget2)
+		if (!gBuffer1 || !gBuffer2 || !gBuffer3 || !gBuffer4 || !hdrTarget || !hdrTarget2)
 		{
 			return kErrUnknown;
 		}
@@ -1772,6 +1774,7 @@ namespace tofu
 			params->renderTargets[0] = gBuffer1;
 			params->renderTargets[1] = gBuffer2;
 			params->renderTargets[2] = gBuffer3;
+			params->renderTargets[3] = gBuffer4;
 			params->depthRenderTarget = TextureHandle();
 			cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
 		}
@@ -1831,6 +1834,7 @@ namespace tofu
 				params->renderTargets[0] = gBuffer1;
 				params->renderTargets[1] = gBuffer2;
 				params->renderTargets[2] = gBuffer3;
+				params->renderTargets[3] = gBuffer4;
 
 				break;
 			default:
@@ -1988,11 +1992,12 @@ namespace tofu
 				params->psShaderResources[0] = gBuffer1;
 				params->psShaderResources[1] = gBuffer2;
 				params->psShaderResources[2] = gBuffer3;
+				params->psShaderResources[3] = gBuffer4;
 				if (camera.skybox)
 				{
-					params->psShaderResources[3] = camera.skyboxDiff;
 					params->psShaderResources[4] = camera.skyboxDiff;
-					params->psShaderResources[5] = lutMap;
+					params->psShaderResources[5] = camera.skyboxDiff;
+					params->psShaderResources[6] = lutMap;
 				}
 
 				params->psSamplers[0] = defaultSampler;

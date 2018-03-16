@@ -28,9 +28,10 @@ cbuffer FrameConstants : register (b1)
 Texture2D gBuffer1 : register(t0);
 Texture2D gBuffer2 : register(t1);
 Texture2D gBuffer3 : register(t2);
-TextureCube skyDiff : register(t3);
-TextureCube skySpec : register(t4);
-Texture2D BrdfLut : register(t5);
+Texture2D gBuffer4 : register(t3);
+TextureCube skyDiff : register(t4);
+TextureCube skySpec : register(t5);
+Texture2D BrdfLut : register(t6);
 
 SamplerState samp : register(s0);
 SamplerState sampForLUT : register(s1);
@@ -39,14 +40,15 @@ float4 main(float4 clipPos : SV_POSITION) : SV_TARGET
 {
 	float2 screenPos = clipPos.xy - 0.5;// / bufferSize.xy;
 
-	float3 worldNormal = gBuffer2.Load(int3(screenPos, 0)).rgb;
-	float3 albedo = gBuffer1.Load(int3(screenPos, 0)).rgb;
-	float3 occlusion = gBuffer3.Load(int3(screenPos, 0)).rgb;
+	int3 uv = int3(screenPos, 0);
+	float3 albedo = gBuffer1.Load(uv).rgb;
+	float4 texel = gBuffer2.Load(uv).rgba;
+	float3 occlusion = gBuffer3.Load(uv).rgb;
+	float3 emission = gBuffer4.Load(uv).rgb;
 
-//	float3 color = albedo * ambient.rgb * occlusion;
-	float4 texel = gBuffer2.Load(int3(screenPos, 0)).rgba;
+	float3 worldNormal = texel.rgb;
 	float4 worldPos = float4(screenPos, texel.a, 1);
-	float3 color = float3(0, 0, 0);
+	float3 color = emission;
 	uint numDirectionalLights = ambient.w;
 
 	for (uint i = 0; i < numDirectionalLights; i++)

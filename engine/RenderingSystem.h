@@ -131,6 +131,7 @@ namespace tofu
 		TextureHandle			gBuffer1;
 		TextureHandle			gBuffer2;
 		TextureHandle			gBuffer3;
+		TextureHandle			gBuffer4;
 
 		TextureHandle			hdrTarget;
 		TextureHandle			hdrTarget2;

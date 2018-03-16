@@ -13,6 +13,7 @@ struct PS_OUTPUT
 	float4		rt1	: SV_TARGET0;
 	float4		rt2	: SV_TARGET1;
 	float4		rt3	: SV_TARGET2;
+	float4		rt4	: SV_TARGET3;
 };
 
 cbuffer MaterialParams : register (b0)
@@ -49,13 +50,18 @@ PS_OUTPUT main(V2F input)
 	float3 albedo = diffuseTex.Sample(samp, uv).rgb;
 	float2 metallicGloss = metallicGlossMap.Sample(samp, uv).ra;
 	float3 occlusion = occlusionMap.Sample(samp, uv).rgb;
+	float3 emission = emissionMap.Sample(samp, uv).rgb;
 
 	//albedo = pow(albedo, 2.2);
-	albedo *= color;
+
+	albedo *= color.rgb;
+
+	emission *= emissionColor.rgb;
 
 	output.rt1 = float4(albedo, metallicGloss.x);
 	output.rt2 = float4(normal, input.position.z);
 	output.rt3 = float4(occlusion, metallicGloss.y);
+	output.rt4 = float4(emission, 0);
 
 	return output;
 }
