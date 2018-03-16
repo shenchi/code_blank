@@ -28,8 +28,8 @@ int CALLBACK WinMain(
 	tofu::Engine engine;
 	CHECKED(engine.Init("config.lua"));
 
-	CHECKED(engine.AddModule(new RenderingTest()));
-	//CHECKED(engine.AddModule(new Game()));
+	//CHECKED(engine.AddModule(new RenderingTest()));
+	CHECKED(engine.AddModule(new Game()));
 
 	return engine.Run();
 }

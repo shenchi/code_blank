@@ -322,7 +322,7 @@ bool Game::LoadScene(sceneType num)
 			CHECKED(sceneMgr.Init());
 			
 			//CHECKED(sceneMgr.LoadScene("assets/scenes/CityLayoutWithRoad.json"));
-			CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial_3.json"));
+			CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial_4.json"));
 
 			if (debugMode)
 			{
@@ -335,7 +335,7 @@ bool Game::LoadScene(sceneType num)
 				playerDetails.colliderOrigin = { 0.0f, 100.0f, 0.0f };
 				playerDetails.health = 200.0f;
 				playerDetails.jumpPower = 4.0f;
-				playerDetails.position = { -80.0f, 13.0f, 887.0f };
+				playerDetails.position = { 451.0f, 2.0f, 62.0f };
 				//playerDetails.position = { -9.46f, 5.0f, 371.97f };
 				playerDetails.scale = { 0.01f, 0.01f, 0.01f };
 				playerDetails.sprintSpeed = 10.0f;
