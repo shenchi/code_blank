@@ -746,7 +746,7 @@ struct ModelFile
 	FbxNodeTable					fbxNodeTable;
 
 
-	int Init(const char* filename, bool withAnim = true)
+	int Init(const char* filename, bool withAnim = true, bool ignoreMesh = false)
 	{
 		importer.FreeScene();
 
@@ -778,6 +778,7 @@ struct ModelFile
 		header.NumTexcoordChannels = 0;
 
 		header.NumMeshes = scene->mNumMeshes;
+		
 		header.NumBones = 0;
 		header.NumAnimations = 0;
 
@@ -970,8 +971,11 @@ struct ModelFile
 						}
 						else
 						{
-							printf("mesh %d vertex %d has more than 4 bones bound.\n", i, vertexId);
-							return __LINE__;
+							if (!ignoreMesh)
+							{
+								printf("mesh %d vertex %d has more than 4 bones bound.\n", i, vertexId);
+								return __LINE__;
+							}
 						}
 					}
 
@@ -993,7 +997,7 @@ struct ModelFile
 					uint32_t b = mesh->mFaces[j].mIndices[1];
 					uint32_t c = mesh->mFaces[j].mIndices[2];
 
-					if (a > UINT16_MAX || b > UINT16_MAX || c > UINT16_MAX)
+					if ((a > UINT16_MAX || b > UINT16_MAX || c > UINT16_MAX) && !ignoreMesh)
 					{
 						printf("index larger overflow 16 bits.\n");
 						return __LINE__;
@@ -1731,7 +1735,7 @@ int execute_config(const char* configFilename)
 			{
 				rapidjson::Value& animation = animations[iAnim];
 				ModelFile model2 = {};
-				err = model2.Init(animation["source"].GetString());
+				err = model2.Init(animation["source"].GetString(), true, true);
 				if (err) return err;
 
 				model2.LoadAvatar(animation["avatar"].GetString());

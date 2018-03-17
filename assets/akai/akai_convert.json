@@ -1,0 +1,130 @@
+[
+	{
+		"target": "akai.model",
+		"source": "akai_e_espiritu.fbx",
+		"avatar": "akai_avatar.json",
+		"animations":
+		[
+			{
+				"name": "Idle",
+				"source": "YBot_Idle.fbx",
+				"avatar": "YBot_avatar.json",
+				"clip": "mixamo.com"
+			},
+			{
+				"name": "Running",
+				"source": "YBot_Running.fbx",
+				"avatar": "YBot_avatar.json",
+				"clip": "mixamo.com"
+			},
+			{
+				"name": "RunningTurn",
+				"source": "YBot_RunningTurn.fbx",
+				"avatar": "YBot_avatar.json",
+				"clip": "mixamo.com"
+			},
+			{
+				"name": "JumpingUp",
+				"source": "YBot_JumpingUp.fbx",
+				"avatar": "YBot_avatar.json",
+				"clip": "mixamo.com"
+			},
+			{
+				"name": "JumpingUp2",
+				"source": "YBot_JumpingUp2.fbx",
+				"avatar": "YBot_avatar.json",
+				"clip": "mixamo.com"
+			},
+			{
+				"name": "Falling",
+				"source": "YBot_Falling.fbx",
+				"avatar": "YBot_avatar.json",
+				"clip": "mixamo.com"
+			},
+			{
+				"name": "Landing",
+				"source": "YBot_Landing.fbx",
+				"avatar": "YBot_avatar.json",
+				"clip": "mixamo.com"
+			},
+			{
+				"name": "Landing2",
+				"source": "YBot_Landing2.fbx",
+				"avatar": "YBot_avatar.json",
+				"clip": "mixamo.com"
+			},
+			{
+				"name": "Landing3",
+				"source": "YBot_Landing3.fbx",
+				"avatar": "YBot_avatar.json",
+				"clip": "mixamo.com"
+			},
+			{
+				"name": "LandToEdge",
+				"source": "YBot_LandToEdge.fbx",
+				"avatar": "YBot_avatar.json",
+				"clip": "mixamo.com"
+			},
+			{
+				"name": "LandToEdge2",
+				"source": "YBot_LandToEdge2.fbx",
+				"avatar": "YBot_avatar.json",
+				"clip": "mixamo.com"
+			},
+			{
+				"name": "Hanging",
+				"source": "YBot_Hanging.fbx",
+				"avatar": "YBot_avatar.json",
+				"clip": "mixamo.com"
+			},
+			{
+				"name": "HangingClimbUp",
+				"source": "YBot_HangingClimbUp.fbx",
+				"avatar": "YBot_avatar.json",
+				"clip": "mixamo.com"
+			},
+			{
+				"name": "StandingUp",
+				"source": "YBot_StandingUp.fbx",
+				"avatar": "YBot_avatar.json",
+				"clip": "mixamo.com"
+			},
+			{
+				"name": "HangingDrop",
+				"source": "YBot_HangingDrop.fbx",
+				"avatar": "YBot_avatar.json",
+				"clip": "mixamo.com"
+			},
+			{
+				"name": "HangingJump",
+				"source": "YBot_HangingJump.fbx",
+				"avatar": "YBot_avatar.json",
+				"clip": "mixamo.com"
+			},
+			{
+				"name": "HangingLeft",
+				"source": "YBot_HangingLeft.fbx",
+				"avatar": "YBot_avatar.json",
+				"clip": "mixamo.com"
+			},
+			{
+				"name": "HangingRight",
+				"source": "YBot_HangingRight.fbx",
+				"avatar": "YBot_avatar.json",
+				"clip": "mixamo.com"
+			},
+			{
+				"name": "DropToHanging",
+				"source": "YBot_DropToHanging.fbx",
+				"avatar": "YBot_avatar.json",
+				"clip": "mixamo.com"
+			},
+			{
+				"name": "HangingToBraced",
+				"source": "YBot_HangingToBraced.fbx",
+				"avatar": "YBot_avatar.json",
+				"clip": "mixamo.com"
+			}
+		]
+	}
+]
