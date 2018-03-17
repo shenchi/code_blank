@@ -27,21 +27,6 @@
     <ClInclude Include="Utility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AnimationDemo.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Character.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CombatManager.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Companion.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="Enemy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -64,6 +49,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RenderingTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Character.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Companion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CombatManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationDemo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

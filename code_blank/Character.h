@@ -94,6 +94,7 @@ protected:
 	float gravityMultiplier;
 	float baseSpeedMultiplier;
 	float slopeSpeedMultiplier = 0.18f;
+	float airborneSpeedMultiplier;
 	float jumpPower;	//[Range(1f, 20f)]
 	float groundCheckDistance;
 

@@ -126,18 +126,27 @@ void Character::HandleGroundedMovement(bool _jump, math::float3 move, float dT)
 void Character::HandleAirborneMovement(math::float3 move, math::float3 inputDir, float dT)
 {
 	//float y = tCharacter->GetWorldPosition().y;
+	// TODO Change to only modify if they were sprinting when they started jumping
+	if (!isSprinting)
+	{
+		airborneSpeedMultiplier = 4.0f;
+	}
+	else
+	{
+		airborneSpeedMultiplier = 8.0f;
+	}
 
 	float y = move.y;
 
 	//move += 10.0f * dT * move;
-	if (move.x == 0)
+	if (move.x < 0.01f)
 	{
-		move.x = dT * inputDir.x * 2.0f;
+		move.x = dT * inputDir.x * airborneSpeedMultiplier;
 	}
 
-	if (move.z == 0)
+	if (move.z < 0.01f)
 	{
-		move.z = dT * inputDir.z * 2.0f;
+		move.z = dT * inputDir.z * airborneSpeedMultiplier;
 	}
 	move.y = y;
 
