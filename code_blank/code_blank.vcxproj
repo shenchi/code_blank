@@ -141,6 +141,7 @@
     <ClInclude Include="AnimationDemo.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Character.h" />
+    <ClInclude Include="CharacterControllerJam.h" />
     <ClInclude Include="CombatManager.h" />
     <ClInclude Include="Companion.h" />
     <ClInclude Include="CubemapProbeDemo.h" />
@@ -160,6 +161,7 @@
     <ClCompile Include="AnimationDemo.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Character.cpp" />
+    <ClCompile Include="CharacterControllerJam.cpp" />
     <ClCompile Include="CombatManager.cpp" />
     <ClCompile Include="Companion.cpp" />
     <ClCompile Include="CubemapProbeDemo.cpp" />

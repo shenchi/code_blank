@@ -1127,6 +1127,10 @@
         {
             "name": "TrafficLight2_Cube.001",
             "guid": "322be3bd8ca41a344bb41258838deffc"
+        },
+        {
+            "name": "Unity_Builtin_Plane",
+            "guid": "0000000000000000e000000000000000"
         }
     ],
     "materials": [
@@ -2326,6 +2330,34 @@
                 "g": 0.0,
                 "b": 0.0,
                 "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "unity_builtin_extra",
+            "GUID": "0000000000000000f000000000000000",
+            "Type": "Opaque",
+            "AlbedoMap": "",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.9999999403953552
             },
             "TextureScaleOffset": {
                 "x": 1.0,
