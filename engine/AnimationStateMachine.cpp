@@ -304,7 +304,7 @@ namespace tofu
 		ModelAnimFrame& f1 = model->frames[lhs];
 		ModelAnimFrame& f2 = model->frames[rhs];
 
-		float t = (cache->ticks - f1.time) / (f2.time - f1.time);
+		float t = min(1.0f, (cache->ticks - f1.time) / (f2.time - f1.time));
 		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
 
 		return math::mix(f1.value, f2.value, t);
@@ -320,7 +320,7 @@ namespace tofu
 		decompress(f1.value, q1);
 		decompress(f2.value, q2);
 
-		float t = (cache->ticks - f1.time) / (f2.time - f1.time);
+		float t = min(1.0f, (cache->ticks - f1.time) / (f2.time - f1.time));
 		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
 
 		return math::slerp(q1, q2, t);
@@ -333,7 +333,7 @@ namespace tofu
 		ModelAnimFrame& f3 = model->frames[i3];
 		ModelAnimFrame& f4 = model->frames[i4];
 
-		float t = (cache->ticks - f2.time) / (f3.time - f2.time);
+		float t = min(1.0f, (cache->ticks - f2.time) / (f3.time - f2.time));
 		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
 
 		return catmullRom(f1.value, f2.value, f3.value, f4.value, t);
@@ -353,7 +353,7 @@ namespace tofu
 		decompress(f3.value, q3);
 		decompress(f4.value, q4);
 
-		float t = (cache->ticks - f2.time) / (f3.time - f2.time);
+		float t = min(1.0f, (cache->ticks - f2.time) / (f3.time - f2.time));
 		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
 
 		// FIXME: change after cruve fitting
