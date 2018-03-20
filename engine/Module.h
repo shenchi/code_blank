@@ -13,6 +13,8 @@ namespace tofu
 
 		virtual int32_t Update() = 0;
 
+		virtual int32_t FixedUpdate() { return kOK; };
+
 		virtual ~Module() {}
 	};
 }

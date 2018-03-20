@@ -28,6 +28,11 @@ namespace tofu
 		return kOK;
 	}
 
+	float AnimationComponentData::GetProgress(size_t layerIndex) const
+	{
+		return layers[layerIndex].stateMachine.GetPlaybackProgress();
+	}
+
 	void AnimationComponentData::SetIKTarget(IKTarget::HumanBoneID tipJoint, uint16_t jointCount, Entity* target, IKTarget::HumanBoneID targetJoint)
 	{
 		IKTarget ik { tipJoint, jointCount, target, targetJoint };

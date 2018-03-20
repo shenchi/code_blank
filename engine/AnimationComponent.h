@@ -110,6 +110,10 @@ namespace tofu
 		// cross fade to an animation in 'duration' time
 		int32_t CrossFade(std::string name, float duration, size_t layerIndex = 0);
 
+		float GetProgress(size_t layerIndex = 0) const;
+
+		bool IsCurrentClipFinished() const { return GetProgress() >= 1.0f - FLT_EPSILON; }
+
 		void SetIKTarget(IKTarget::HumanBoneID tipJoint, uint16_t jointCount, Entity * target, IKTarget::HumanBoneID targetJoint = IKTarget::Root);
 
 	private:

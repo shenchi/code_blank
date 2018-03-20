@@ -39,7 +39,11 @@ namespace tofu
 
 		int32_t Shutdown() override;
 
+		int32_t PreUpdate();
+
 		int32_t Update() override;
+
+		int32_t PostUpdate();
 
 		void SetGravity(const math::float3& g);
 

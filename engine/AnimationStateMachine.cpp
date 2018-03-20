@@ -122,15 +122,18 @@ namespace tofu
 
 		// convert time in seconds to ticks
 		cache->ticks += Time::DeltaTime * playbackSpeed * anim->ticksPerSecond;
+		cache->progress = cache->ticks / anim->tickCount;
 
 		// TODO: add exit time & transition
 		if (cache->ticks > anim->tickCount) {
 			if (isLoop) {
 				cache->ticks = std::fmodf(cache->ticks, anim->tickCount);
+				cache->progress = cache->ticks / anim->tickCount;
 				cache->Reset();
 			}
 			else {
 				// end of animation
+				cache->progress = 1.0f;
 			}
 		}
 
@@ -151,6 +154,12 @@ namespace tofu
 				InternalEvaluate(i, context, weight, type);
 			}
 		}
+	}
+
+	float AnimationState::GetPlaybackProgress() const
+	{
+		if (nullptr == cache) return 0.0f;
+		return cache->progress;
 	}
 
 	/**
@@ -305,6 +314,7 @@ namespace tofu
 		ModelAnimFrame& f2 = model->frames[rhs];
 
 		float t = (cache->ticks - f1.time) / (f2.time - f1.time);
+		t = math::min(1.0f, t);
 		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
 
 		return math::mix(f1.value, f2.value, t);
@@ -321,6 +331,7 @@ namespace tofu
 		decompress(f2.value, q2);
 
 		float t = (cache->ticks - f1.time) / (f2.time - f1.time);
+		t = math::min(1.0f, t);
 		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
 
 		return math::slerp(q1, q2, t);
@@ -334,6 +345,7 @@ namespace tofu
 		ModelAnimFrame& f4 = model->frames[i4];
 
 		float t = (cache->ticks - f2.time) / (f3.time - f2.time);
+		t = math::min(1.0f, t);
 		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
 
 		return catmullRom(f1.value, f2.value, f3.value, f4.value, t);
@@ -354,6 +366,7 @@ namespace tofu
 		decompress(f4.value, q4);
 
 		float t = (cache->ticks - f2.time) / (f3.time - f2.time);
+		t = math::min(1.0f, t);
 		assert(!std::isnan(t) && !std::isinf(t) && t >= 0.0f && t <= 1.0f);
 
 		// FIXME: change after cruve fitting
@@ -376,7 +389,7 @@ namespace tofu
 		}
 	}
 
-	AnimationState* AnimationStateMachine::AddState(std::string name)
+	AnimationState* AnimationStateMachine::AddState(std::string name, bool isLoop)
 	{
 		stateIndexTable[name] = static_cast<uint16_t>(states.size());
 
@@ -388,7 +401,7 @@ namespace tofu
 
 		//return state;
 
-		states.push_back(new AnimationState(name));
+		states.push_back(new AnimationState(name, isLoop));
 		return static_cast<AnimationState*>(states.back());
 	}
 
@@ -488,6 +501,12 @@ namespace tofu
 		else {
 			current->Evaluate(context, weight, type);
 		}
+	}
+
+	float AnimationStateMachine::GetPlaybackProgress() const
+	{
+		if (nullptr == current) return 0.0f;
+		return current->GetPlaybackProgress();
 	}
 
 	// preprocess evaluation

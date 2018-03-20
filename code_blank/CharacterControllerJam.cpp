@@ -1,5 +1,7 @@
 #include "CharacterControllerJam.h"
 
+#include "PhysicsSystem.h"
+
 using namespace tofu;
 
 typedef const rapidjson::Value& value_t;
@@ -12,7 +14,9 @@ namespace
 
 	constexpr float Accelerate = 6.67f;
 	constexpr float Deaccelerate = 10.0f;
-	constexpr float WalkSpeed = 2.0f;
+	constexpr float RunSpeed = 4.0f;
+
+	constexpr float JumpingUpInitialSpeed = 10.0f;
 
 }
 
@@ -37,24 +41,24 @@ int32_t CharacterControllerJam::Init()
 
 		AddAnimState("Idle");
 		AddAnimState("Running");
-		AddAnimState("RunningTurn");
-		AddAnimState("JumpingUp");
-		AddAnimState("JumpingUp2");
+		AddAnimState("RunningTurn", false);
+		AddAnimState("JumpingUp", false);
+		AddAnimState("JumpingUp2", false);
 		AddAnimState("Falling");
-		AddAnimState("Landing");
-		AddAnimState("Landing2");
-		AddAnimState("Landing3");
-		AddAnimState("LandToEdge");
-		AddAnimState("LandToEdge2");
+		AddAnimState("Landing", false);
+		AddAnimState("Landing2", false);
+		AddAnimState("Landing3", false);
+		AddAnimState("LandToEdge", false);
+		AddAnimState("LandToEdge2", false);
 		AddAnimState("Hanging");
-		AddAnimState("HangingClimbUp");
-		AddAnimState("StandingUp");
-		AddAnimState("HangingDrop");
-		AddAnimState("HangingJump");
+		AddAnimState("HangingClimbUp", false);
+		AddAnimState("StandingUp", false);
+		AddAnimState("HangingDrop", false);
+		AddAnimState("HangingJump", false);
 		AddAnimState("HangingLeft");
 		AddAnimState("HangingRight");
-		AddAnimState("DropToHanging");
-		AddAnimState("HangingToBraced");
+		AddAnimState("DropToHanging", false);
+		AddAnimState("HangingToBraced", false);
 
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaqueSkinned);
 
@@ -69,9 +73,11 @@ int32_t CharacterControllerJam::Init()
 
 		pPlayer = e.AddComponent<PhysicsComponent>();
 
-		pPlayer->LockRotation(true, false, true);
-		pPlayer->SetCapsuleCollider(50.0f, 100.0f);
-		pPlayer->SetColliderOrigin(math::float3{ 0.0f, 100.0f, 0.0f });
+		pPlayer->LockRotation(true, true, true);
+		pPlayer->SetCapsuleCollider(50.0f, 80.0f);
+		pPlayer->SetColliderOrigin(math::float3{ 0.0f, 120.0f, 0.0f });
+
+		pPlayer->SetGravity(math::float3{});
 	}
 
 	// camera
@@ -94,22 +100,6 @@ int32_t CharacterControllerJam::Init()
 		cam->SetSkyboxSpecularMap(skyboxSpec);
 	}
 
-	//// Dummy light
-	//{
-	//	Entity e = Entity::Create();
-
-	//	tSun = e.AddComponent<TransformComponent>();
-	//	tSun->SetLocalPosition(math::float3{ 0.0f, 0.0f, 0.0f });
-	//	//tSun->SetLocalRotation(math::angleAxis(3.14f / 4, math::float3{ 1.0f, 0.0f, 0.0f }));
-	//	tSun->FaceTo(math::float3{ 0.0f, -1.0f, 1.0f });
-
-	//	lSun = e.AddComponent<LightComponent>();
-	//	lSun->SetType(LightType::kLightTypeDirectional);
-	//	math::float4 sunColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
-	//	lSun->SetColor(sunColor);
-	//	//lSun->CreateDepthMap();
-	//}
-
 	pitch = InitPitch;
 	yaw = 0.0f;
 
@@ -123,6 +113,11 @@ int32_t CharacterControllerJam::Shutdown()
 
 int32_t CharacterControllerJam::Update()
 {
+	return kOK;
+}
+
+int32_t CharacterControllerJam::FixedUpdate()
+{
 	InputSystem* input = InputSystem::instance();
 	if (input->IsButtonDown(ButtonId::kKeyEscape))
 	{
@@ -130,7 +125,6 @@ int32_t CharacterControllerJam::Update()
 	}
 
 	constexpr float sensitive = 0.01f;
-
 
 	math::float3 inputDir = math::float3();
 
@@ -176,54 +170,152 @@ int32_t CharacterControllerJam::Update()
 	bool jump = input->IsButtonDown(ButtonId::kKeySpace)
 		|| input->IsButtonDown(ButtonId::kGamepadFaceDown);
 
+	math::float3 playerPos = pPlayer->GetPosition();
+	math::quat playerRot = pPlayer->GetRotation();
+
 	math::quat camRot = math::euler(pitch, yaw, 0.0f);
-	math::float3 camTgt = tPlayer->GetLocalPosition() + math::float3{ 0.0f, 2.0f, 0.0f };
+	math::float3 camTgt = playerPos + math::float3{ 0.0f, 2.0f, 0.0f };
 	math::float3 camPos = camTgt + camRot * (math::float3{ 0.0f, 0.0f, -5.0f });
 
 	tCamera->SetLocalPosition(camPos);
 	tCamera->SetLocalRotation(camRot);
 
-	float maxSpeed = WalkSpeed;
+	PhysicsSystem& phys = *PhysicsSystem::instance();
+
+	{
+		math::float3 rayStart = playerPos + math::float3{ 0, 1, 0 };
+		math::float3 rayEnd = playerPos + math::float3{ 0, -0.04f, 0 };
+
+		inAir = !phys.RayTest(rayStart, rayEnd);
+	}
+
+	float maxSpeed = RunSpeed;
 
 	math::float3 lastVelocity = pPlayer->GetVelocity();
 	math::float3 velocity{};
 
-	if (math::length(inputDir) > 0.25f)
+	bool hasInputDir = math::length(inputDir) > 0.25f;
+
+	math::float3 fwd{ 0, 0, 1 };
+	if (hasInputDir && !inAir)
 	{
 		math::float3 moveDir = camRot * inputDir;
 		moveDir.y = 0.0f;
 		moveDir = math::normalize(moveDir);
-		tPlayer->FaceTo(-moveDir);
 
-		speed += Time::DeltaTime * Accelerate;
+		{
+			math::float3 faceDir = -moveDir;
+			float cosTheta = math::dot(faceDir,  fwd);
+			if (cosTheta >= 1.0 - FLT_EPSILON)
+			{
+				playerRot = math::quat();
+			}
+			else if (-cosTheta >= 1.0 - FLT_EPSILON)
+			{
+				playerRot = { 0, 0, 1, 0 };
+			}
+			else
+			{
+				float angle = math::acos(cosTheta);
+				math::float3 axis = math::normalize(math::cross(fwd, faceDir));
+				playerRot = math::angleAxis(angle, axis);
+			}
+			pPlayer->SetRotation(playerRot);
+		}
+
+		speed += Time::FixedDeltaTime * Accelerate;
 		if (speed > maxSpeed)
 			speed = maxSpeed;
 
 		velocity = moveDir * speed;
+	}
+	else if (!inAir)
+	{
+		speed -= Time::FixedDeltaTime * Deaccelerate;
+		if (speed < 0.0f) speed = 0.0f;
+		velocity = -(playerRot * fwd) * speed;
+	}
 
-		anim->CrossFade("Running", 0.1f);
+	// falling
+	if (inAir)
+	{
+		velocity.y = lastVelocity.y - 10.0f * Time::FixedDeltaTime;
 	}
 	else
 	{
-		speed -= Time::DeltaTime * Deaccelerate;
-		if (speed < 0.0f) speed = 0.0f;
-		velocity = tPlayer->GetForwardVector() * speed;
-
-		anim->CrossFade("Idle", 0.1f);
+		velocity.y = 0;
 	}
-
-	velocity.y = lastVelocity.y;
+	
+	switch (state)
+	{
+	case kStateIdle:
+		if (inAir)
+		{
+			state = kStateFalling;
+			anim->CrossFade("Falling", 0.1f);
+		}
+		else if (hasInputDir)
+		{
+			state = kStateRunning;
+			anim->CrossFade("Running", 0.1f);
+		}
+		else if (jump)
+		{
+			state = kStateJumpingPrepare;
+			anim->CrossFade("JumpingUp", 0.1f);
+		}
+		break;
+	case kStateFalling:
+		if (!inAir)
+		{
+			state = kStateIdle;
+			anim->CrossFade("Idle", 0.1f);
+		}
+		break;
+	case kStateRunning:
+		if (inAir)
+		{
+			state = kStateFalling;
+			anim->CrossFade("Falling", 0.1f);
+		}
+		else if (!hasInputDir)
+		{
+			state = kStateIdle;
+			anim->CrossFade("Idle", 0.2f);
+		}
+		break;
+	case kStateJumpingPrepare:
+		if (anim->GetProgress() > 0.5f)
+		{
+			state = kStateJumpingUp;
+			anim->CrossFade("Falling", 0.5f);
+			velocity.y = JumpingUpInitialSpeed;
+			inAir = true;
+		}
+		break;
+	case kStateJumpingUp:
+		if (!inAir)
+		{
+			velocity.y = JumpingUpInitialSpeed;
+			inAir = true;
+		}
+		else 
+		{
+			state = kStateFalling;
+		}
+		break;
+	}
 
 	pPlayer->SetVelocity(velocity);
 
 	return kOK;
 }
 
-void CharacterControllerJam::AddAnimState(const char * name, const char * clipname)
+void CharacterControllerJam::AddAnimState(const char * name, bool isLoop, const char * clipname)
 {
 	if (nullptr == clipname) clipname = name;
 
 	AnimationStateMachine *stateMachine = anim->GetStateMachine();
-	AnimationState *newState = stateMachine->AddState(name);
+	AnimationState *newState = stateMachine->AddState(name, isLoop);
 	newState->animationName = clipname;
 }

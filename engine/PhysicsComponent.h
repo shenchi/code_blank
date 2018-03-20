@@ -67,6 +67,7 @@ namespace tofu
 			lockRotX(false),
 			lockRotY(false),
 			lockRotZ(false),
+			gravity{ 0.0f, -9.8f, 0.0f },
 			lastWorldPosition(),
 			lastWorldRotation(),
 			isCollided(false),
@@ -145,11 +146,26 @@ namespace tofu
 			dirty = true;
 		}
 
+		void SetGravity(const math::float3& g);
+
+		const math::float3& GetGravity();
+
 		bool IsCollided() const { return isCollided; }
 
+		void SetPosition(const math::float3& pos);
+
+		math::float3 GetPosition();
+
+		void SetRotation(const math::quat& rot);
+
+		math::quat GetRotation();
+
 		void SetVelocity(const math::float3& vel);
-		const math::float3 GetVelocity();
+
+		math::float3 GetVelocity();
+
 		void ApplyForce(const math::float3& force);
+
 		void ApplyImpulse(const math::float3& impulse);
 
 	private:
@@ -169,6 +185,8 @@ namespace tofu
 		bool				lockRotX;
 		bool				lockRotY;
 		bool				lockRotZ;
+
+		math::float3		gravity;
 
 		math::float3		lastWorldPosition;
 		math::quat			lastWorldRotation;

@@ -217,7 +217,7 @@ namespace tofu
 		return kOK;
 	}
 
-	int32_t PhysicsSystem::Update()
+	int32_t PhysicsSystem::PreUpdate()
 	{
 		PhysicsComponentData* comps = PhysicsComponent::GetAllComponents();
 		uint32_t count = PhysicsComponent::GetNumComponents();
@@ -265,11 +265,11 @@ namespace tofu
 
 				{
 					math::quat rot = t->GetWorldRotation();
-					math::float3 pos = t->GetWorldPosition() + 
+					math::float3 pos = t->GetWorldPosition() +
 						rot * (comp.colliderDesc.origin * scale);
-					
+
 					btTransform btTrans(btQuat(rot), btVec3(pos));
-					
+
 					switch (comp.colliderDesc.type)
 					{
 					case ColliderType::kColliderTypeBox:
@@ -311,7 +311,7 @@ namespace tofu
 					btDefaultMotionState* motionState = new btDefaultMotionState(btTrans);
 					btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, comp.collider, inertia);
 					comp.rigidbody = new btRigidBody(rbInfo);
-					
+
 					if (comp.isKinematic)
 					{
 						comp.rigidbody->setCollisionFlags(
@@ -342,6 +342,8 @@ namespace tofu
 
 					comp.rigidbody->setUserIndex(comp.entity.id);
 					world->addRigidBody(comp.rigidbody);
+
+					comp.rigidbody->setGravity(btVec3(comp.gravity));
 				}
 
 				comp.dirty = false;
@@ -382,7 +384,20 @@ namespace tofu
 			}
 		}
 
-		world->stepSimulation(Time::DeltaTime, 10);
+		return kOK;
+	}
+
+	int32_t PhysicsSystem::Update()
+	{
+		world->stepSimulation(Time::DeltaTime, 1, Time::FixedDeltaTime);
+
+		return kOK;
+	}
+
+	int32_t PhysicsSystem::PostUpdate()
+	{
+		PhysicsComponentData* comps = PhysicsComponent::GetAllComponents();
+		uint32_t count = PhysicsComponent::GetNumComponents();
 
 		for (uint32_t i = 0; i < count; i++)
 		{
@@ -421,7 +436,7 @@ namespace tofu
 
 			comp.lastWorldPosition = pos;
 			comp.lastWorldRotation = rot;
-			
+
 		}
 
 		int numManifolds = dispatcher->getNumManifolds();
@@ -439,6 +454,7 @@ namespace tofu
 		}
 
 		return kOK;
+		return int32_t();
 	}
 
 	void PhysicsSystem::SetGravity(const math::float3 & g)

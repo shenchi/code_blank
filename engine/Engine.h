@@ -16,6 +16,8 @@ namespace tofu
 	public:
 		static float TotalTime;
 		static float DeltaTime;
+		static float PhysicsTotalTime;
+		static float FixedDeltaTime;
 	};
 
 	class Engine

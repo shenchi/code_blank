@@ -5,6 +5,10 @@
 enum CharacterStates
 {
 	kStateIdle,
+	kStateFalling,
+	kStateRunning,
+	kStateJumpingPrepare,
+	kStateJumpingUp,
 };
 
 class CharacterControllerJam : public tofu::Module
@@ -16,9 +20,11 @@ public:
 
 	virtual int32_t Update() override;
 
+	virtual int32_t FixedUpdate() override;
+
 private:
 
-	void AddAnimState(const char* name, const char* clipname = nullptr);
+	void AddAnimState(const char* name, bool isLoop = true, const char* clipname = nullptr);
 
 private:
 	tofu::SceneManager			sceneMgr;
@@ -40,4 +46,5 @@ private:
 	float						speed;
 
 	CharacterStates				state;
+	bool						inAir;
 };

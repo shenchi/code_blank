@@ -110,4 +110,6 @@ namespace tofu
 	constexpr uint32_t kMaxTextureBindings = 16;
 	constexpr uint32_t kMaxSamplerBindings = 16;
 	constexpr uint32_t kMaxRenderTargetBindings = 8;
+
+	constexpr float kDefaultFixedDeltaTime = 0.0016f;
 }

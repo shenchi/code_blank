@@ -12,6 +12,8 @@ namespace tofu
 {
 	float Time::TotalTime = 0.0f;
 	float Time::DeltaTime = 0.0f;
+	float Time::PhysicsTotalTime = 0.0f;
+	float Time::FixedDeltaTime = kDefaultFixedDeltaTime;
 
 	SINGLETON_IMPL(Engine);
 
@@ -63,6 +65,8 @@ namespace tofu
 		inputSystem = new InputSystem();
 		CHECKED(inputSystem->Init());
 
+		Time::FixedDeltaTime = kDefaultFixedDeltaTime;
+
 		return kOK;
 	}
 
@@ -73,6 +77,9 @@ namespace tofu
 		startTimeCounter = nativeContext->GetTimeCounter();
 		currentTimeCounter = startTimeCounter;
 		lastTimeCounter = currentTimeCounter;
+
+		Time::TotalTime = 0.0f;
+		Time::PhysicsTotalTime = 0.0f;
 
 		// process native event and see if we need to quit
 		while(nativeContext->ProcessEvent())
@@ -97,7 +104,23 @@ namespace tofu
 
 			CHECKED(inputSystem->Update());
 
-			CHECKED(physicsSystem->Update());
+			CHECKED(physicsSystem->PreUpdate());
+
+			float phyTime = Time::PhysicsTotalTime;
+
+			while (phyTime + Time::FixedDeltaTime <= Time::TotalTime)
+			{
+				CHECKED(physicsSystem->Update());
+				phyTime += Time::FixedDeltaTime;
+				Time::PhysicsTotalTime = phyTime;
+
+				for (uint32_t i = 0; i < numUserModules; i++)
+				{
+					CHECKED(userModules[i]->FixedUpdate());
+				}
+			}
+
+			CHECKED(physicsSystem->PostUpdate());
 
 			for (uint32_t i = 0; i < numUserModules; i++)
 			{

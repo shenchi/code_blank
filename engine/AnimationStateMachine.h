@@ -62,6 +62,9 @@ namespace tofu
 	private:
 		float ticks;
 
+		// progress of playback, [0..1]
+		float progress;
+
 		// current position in key frames (for linear scan)
 		size_t cursor;
 
@@ -97,6 +100,8 @@ namespace tofu
 		virtual void Update(UpdateContext& context) {}
 		virtual void Evaluate(EvaluateContext& context, float weight, AnimationEvaluationType type) {}
 
+		virtual float GetPlaybackProgress() const{ return 0.0f; }
+
 		virtual float GetDurationInSecond(Model *model) { return 0.f; }
 	};
 
@@ -113,7 +118,7 @@ namespace tofu
 		std::string	animationName = "";
 	public:
 		AnimationState() = default;
-		AnimationState(std::string name) : AnimNodeBase(name) {}
+		AnimationState(std::string name, bool loop = true) : AnimNodeBase(name) , isLoop(loop) {}
 		AnimationState& operator=(AnimationState other) { swap(*this, other); return *this; }
 		AnimationState(AnimationState& other) = delete;
 		AnimationState(AnimationState&& other) noexcept : AnimationState() { swap(*this, other); }
@@ -127,7 +132,7 @@ namespace tofu
 		virtual void Update(UpdateContext& context) override;
 		virtual void Evaluate(EvaluateContext& context, float weight, AnimationEvaluationType type) override;
 
-		
+		virtual float GetPlaybackProgress() const override;
 
 		virtual float GetDurationInSecond(Model *model) override;
 
@@ -172,13 +177,15 @@ namespace tofu
 		void Play(std::string name);
 		void CrossFade(std::string name, float normalizedTransitionDuration);
 
-		AnimationState* AddState(std::string name);
+		AnimationState* AddState(std::string name, bool isLoop = true);
 
 		virtual void Enter(Model *model) override;
 		virtual void Exit() override;
 
 		virtual void Update(UpdateContext& context) override;
 		virtual void Evaluate(EvaluateContext& context, float weight, AnimationEvaluationType type) override;
+
+		virtual float GetPlaybackProgress() const override;
 
 		virtual float GetDurationInSecond(Model *model) override;
 
