@@ -322,7 +322,7 @@ bool Game::LoadScene(sceneType num)
 			CHECKED(sceneMgr.Init());
 			
 			//CHECKED(sceneMgr.LoadScene("assets/scenes/CityLayoutWithRoad.json"));
-			CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial_4.json"));
+			CHECKED(sceneMgr.LoadScene("assets/scenes/Engine_Tut.json"));
 
 			if (debugMode)
 			{
