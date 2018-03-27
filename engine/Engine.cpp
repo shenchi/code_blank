@@ -122,6 +122,10 @@ namespace tofu
 
 			CHECKED(physicsSystem->PreUpdate());
 
+			// TODO: we put the clean up here to
+			// wait physics system delete rigibodies
+			Entity::CleanupComponents();
+
 			float phyTime = Time::PhysicsTotalTime;
 
 			while (phyTime + Time::FixedDeltaTime <= Time::TotalTime)

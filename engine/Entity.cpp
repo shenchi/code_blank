@@ -10,6 +10,7 @@ namespace tofu
 
 	Entity::InitCallback Entity::initCallbacks[kMaxComponentTypes];
 	Entity::ShutdownCallback Entity::shutdownCallbacks[kMaxComponentTypes];
+	Entity::TrimCallback Entity::trimCallbacks[kMaxComponentTypes];
 	Entity::DestroyCallback Entity::destroyCallbacks[kMaxComponentTypes];
 
 	uint32_t Entity::numRegisteredComponentTypes = 0;
@@ -75,12 +76,21 @@ namespace tofu
 		return kOK;
 	}
 
-	void Entity::RegisterComponent(InitCallback init, ShutdownCallback shutdown, DestroyCallback destroy)
+	void Entity::RegisterComponent(InitCallback init, ShutdownCallback shutdown, TrimCallback trim, DestroyCallback destroy)
 	{
 		uint32_t i = numRegisteredComponentTypes++;
 
 		initCallbacks[i] = init;
 		shutdownCallbacks[i] = shutdown;
+		trimCallbacks[i] = trim;
 		destroyCallbacks[i] = destroy;
+	}
+
+	void Entity::CleanupComponents()
+	{
+		for (uint32_t i = 0; i < numRegisteredComponentTypes; i++)
+		{
+			trimCallbacks[i]();
+		}
 	}
 }
