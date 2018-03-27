@@ -13,6 +13,7 @@ public:
 	void MoveAim(float, tofu::math::float3, tofu::math::quat, tofu::math::float3);
 	//void MoveEnemy(float, bool, tofu::math::float3);
 	void Update(float);
+	void FixedUpdate(float);
 	void UpdateState(float);
 
 

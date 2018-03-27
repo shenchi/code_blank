@@ -46,22 +46,19 @@ void PController::Update()
 
 }
 
-// Update for Player 
-void PController::UpdateP(float dT)
+// Fixed Update
+void PController::FixedUpdate(float fDT)
 {
-	assert(cam != NULL && player != NULL);
 	math::float3 inputDir = math::float3();
 
+	// Gamepad Movement
 	if (input->IsGamepadConnected())
 	{
 		inputDir.z = input->GetLeftStickY();
 		inputDir.x = input->GetLeftStickX();
 	}
 
-	// TODO
-	// Add possible option to change which keys do what
-
-	// Movement
+	// Keyboard Movement
 	if (input->IsButtonDown(kKeyW))
 	{
 		inputDir.z = 1.0f;
@@ -80,8 +77,88 @@ void PController::UpdateP(float dT)
 		inputDir.x = -1.0f;
 	}
 
+	// Dodge
+	if ((input->IsButtonDown(kMouseRButton) || (input->IsButtonDown(kGamepadFaceRight)))
+		&& !dodgeButtonDown)
+	{
+		player->Dodge(inputDir);
+		dodgeButtonDown = true;
+	}
+	else if (!(input->IsButtonDown(kMouseRButton) || (input->IsButtonDown(kGamepadFaceRight)))
+		&& dodgeButtonDown)
+	{
+		dodgeButtonDown = false;
+	}
+
+	if (!input->IsButtonDown(kKeyLeftShift)	// Stop Sprinting
+		&& (input->GetRightTrigger() < 0.0001))
+	{
+		player->Sprint(false);
+	}
+	else if (input->IsButtonDown(kKeyLeftShift) // Sprint
+		|| (input->GetRightTrigger() > 0))
+	{
+		player->Sprint(true);
+	}
+
+	// Change Camera control if in aiming mode
+	if (!isAiming)
+	{
+		if (!input->IsGamepadConnected())
+		{
+			pitch = input->GetMouseDeltaY();
+			yaw = input->GetMouseDeltaX();
+		}
+		else
+		{
+			// TODO
+			// May need adjusting
+			pitch = input->GetRightStickY();
+			yaw = input->GetRightStickX();
+		}
+
+		// Camera control modification based on player settings
+		pitch = pitch * pitchMod * fDT;
+		yaw = yaw * yawMod * fDT;
+
+		cam->Rotate(math::float2{ pitch, yaw });
+		cam->SetTarget(player->GetPosition());
+	}
+	else
+	{
+		cam->SetTarget(player->GetPosition());
+	}
+
+	// Final adjustment to movement based on any custom axis changes from player
+	inputDir.x = inputDir.x * xAxisMod;
+	inputDir.z = inputDir.z * zAxisMod;
+
+	if (!isHacking && !isAiming)
+	{
+		player->MoveReg(fDT, jump, inputDir, cam->GetRotation());
+	}
+	else if (isAiming)
+	{
+		player->MoveAim(fDT, inputDir, cam->GetRotation(), cam->GetForward());
+	}
+	else
+	{
+		// TODO
+		// player hacking mode movement control
+	}
+}
+
+// Update for Player 
+void PController::UpdateP(float dT)
+{
+	assert(cam != NULL && player != NULL);
+	
+
+	// TODO
+	// Add possible option to change which keys do what
+
 	// Actions
-	bool jump = input->IsButtonDown(ButtonId::kKeySpace)
+	jump = input->IsButtonDown(ButtonId::kKeySpace)
 		|| input->IsButtonDown(ButtonId::kGamepadFaceDown);
 
 	// Basic Attack
@@ -98,30 +175,18 @@ void PController::UpdateP(float dT)
 		attackButtonDown = false; 
 	}
 
-	// Dodge
-	if ( (input->IsButtonDown(kMouseRButton) || (input->IsButtonDown(kGamepadFaceRight)))
-		&& !dodgeButtonDown )
-	{
-		player->Dodge(inputDir);
-		dodgeButtonDown = true;
-	}
-	else if (!(input->IsButtonDown(kMouseRButton) || (input->IsButtonDown(kGamepadFaceRight)))
-		&& dodgeButtonDown)
-	{
-		dodgeButtonDown = false;
-	}
-
-	if(!input->IsButtonDown(kKeyLeftShift)	// Stop Sprinting
-		&& (input->GetRightTrigger() < 0.0001) )
-	{
-		player->Sprint(false);
-	}
-	else if (input->IsButtonDown(kKeyLeftShift) // Sprint
-		|| (input->GetRightTrigger() > 0))
-	{
-		player->Sprint(true);
-	}
-
+	//// Dodge
+	//if ( (input->IsButtonDown(kMouseRButton) || (input->IsButtonDown(kGamepadFaceRight)))
+	//	&& !dodgeButtonDown )
+	//{
+	//	player->Dodge(inputDir);
+	//	dodgeButtonDown = true;
+	//}
+	//else if (!(input->IsButtonDown(kMouseRButton) || (input->IsButtonDown(kGamepadFaceRight)))
+	//	&& dodgeButtonDown)
+	//{
+	//	dodgeButtonDown = false;
+	//}
 
 	// Sword Attack
 	if ((input->IsButtonDown(kKeyE) || (input->IsButtonDown(kGamepadFaceUp)))
@@ -155,58 +220,11 @@ void PController::UpdateP(float dT)
 	{
 		//player->Aim(true);
 		//isAiming = true;
-		
 	}
 	else if(isAiming)
 	{
 		player->Aim(false);
 		isAiming = false;
-	}
-
-	// Change Camera control if in aiming mode
-	if (!isAiming)
-	{
-		if (!input->IsGamepadConnected())
-		{
-			pitch = input->GetMouseDeltaY();
-			yaw = input->GetMouseDeltaX();
-		}
-		else
-		{
-			// TODO
-			// May need adjusting
-			pitch = input->GetRightStickY();
-			yaw = input->GetRightStickX();
-		}
-
-		// Camera control modification based on player settings
-		pitch = pitch * pitchMod;
-		yaw = yaw * yawMod;
-
-		cam->Rotate(math::float2{pitch, yaw});
-		cam->UpdateTarget(player->GetPosition());
-	}
-	else
-	{
-		cam->UpdateTarget(player->GetPosition());
-	}
-
-	// Final adjustment to movement based on any custom axis changes from player
-	inputDir.x = inputDir.x * xAxisMod;
-	inputDir.z = inputDir.z * zAxisMod;
-
-	if (!isHacking && !isAiming)
-	{
-		player->MoveReg(dT, jump, inputDir, cam->GetRotation());
-	}
-	else if (isAiming)
-	{
-		player->MoveAim(dT, inputDir, cam->GetRotation(), cam->GetForward());
-	}
-	else
-	{
-		// TODO
-		// player hacking mode movement control
 	}
 }
 

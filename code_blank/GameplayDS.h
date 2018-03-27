@@ -101,12 +101,14 @@ struct CharacterDetails
 	tofu::math::float3	position;
 	tofu::math::float3	scale;
 	float				health;
-	float				walkSpeed;
+	float				walkSpeed;//
 	float				sprintSpeed;
 	float				jumpPower;
 	float				rollDodgeCost;
 	tofu::math::float2	capsuleColliderSize;
 	tofu::math::float3	colliderOrigin;
+	float				acceleration;
+	float				deacceleration;
 	// Add more as needed
 };
 

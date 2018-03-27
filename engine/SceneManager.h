@@ -19,11 +19,16 @@ namespace tofu
 		int32_t LoadScene(const char* filename);
 
 		std::vector<PathNode*>* GetPathNodes();
+
 		int32_t GetPathNodesLength();
+
+		tofu::math::float3 GetPlayerSpawnPoint();
 
 	private:
 
 		std::vector<PathNode*>* pathNodes;
+
+		tofu::math::float3 pSpawnPoint;
 
 		int32_t AddPathNode(const rapidjson::Value& value, int32_t);
 

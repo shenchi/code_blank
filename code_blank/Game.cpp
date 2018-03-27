@@ -71,6 +71,35 @@ int32_t Game::Shutdown()
 	return kOK;
 }
 
+int32_t Game::FixedUpdate()
+{
+	uint32_t ret;
+	switch (currentScene)
+	{
+		case 5:	// Tutorial
+		{
+			break;
+		}
+		case 6:	// Level
+		{
+			if (debugMode)
+			{
+				//DebugPlayer->Update();
+			}
+			else
+			{
+				comp->FixedUpdate(Time::DeltaTime, player->GetPosition(), player->GetForward());
+				cam->FixedUpdate(Time::FixedDeltaTime);
+				pControl->FixedUpdate(Time::FixedDeltaTime);
+			}
+			break;
+		}
+	}
+
+	return kOK;
+}
+
+
 // Main upate loop
 int32_t Game::Update()
 {
@@ -183,7 +212,7 @@ int32_t Game::Update()
 
 			// May also need to run player update here
 			comp->Update(Time::DeltaTime, player->GetPosition(), player->GetForward());
-			cam->Update();
+			cam->Update(Time::DeltaTime);
 			pControl->UpdateP(Time::DeltaTime);
 			player->Update(Time::DeltaTime);
 
@@ -321,35 +350,43 @@ bool Game::LoadScene(sceneType num)
 			// Setup the Scene
 			CHECKED(sceneMgr.Init());
 
-			CHECKED(sceneMgr.LoadScene("assets/scenes/Node_Export.json"));
-			pathNodes = new std::vector<PathNode*>(sceneMgr.GetPathNodesLength());
-			pathNodes = sceneMgr.GetPathNodes();
+			//CHECKED(sceneMgr.LoadScene("assets/scenes/Node_Export.json"));
+			//CHECKED(sceneMgr.LoadScene("assets/scenes/Engine_Tut.json"));
+			CHECKED(sceneMgr.LoadScene("assets/scenes/OptiTest.json"));
 
-			// loop through nodes and link up references to nearby nodes
-			// TODO this could be slow and need to be redone later or elsewhere
-			for (uint32_t i = 0; i < pathNodes->size(); i++)
+			int pathLength = sceneMgr.GetPathNodesLength();
+			if (pathLength > 0)
 			{
-				std::string name = pathNodes->at(i)->name;
-				for (uint32_t j = 0; j < pathNodes->size(); j++)
+				pathNodes = new std::vector<PathNode*>();
+				pathNodes = sceneMgr.GetPathNodes();
+				assert(pathNodes != NULL);
+
+				// loop through nodes and link up references to nearby nodes
+				// TODO this could be slow and need to be redone later or elsewhere
+				for (uint32_t i = 0; i < pathNodes->size(); i++)
 				{
-					if (pathNodes->at(j)->nearby_1->name == name)
+					std::string name = pathNodes->at(i)->name;
+					for (uint32_t j = 0; j < pathNodes->size(); j++)
 					{
-						pathNodes->at(j)->nearby_1 = pathNodes->at(i);
-					}
-					else if (pathNodes->at(j)->nearby_2->name == name)
-					{
-						pathNodes->at(j)->nearby_2 = pathNodes->at(i);
-					}
-					else if (pathNodes->at(j)->nearby_3->name == name)
-					{
-						pathNodes->at(j)->nearby_3 = pathNodes->at(i);
-					}
-					else if (pathNodes->at(j)->nearby_4->name == name)
-					{
-						pathNodes->at(j)->nearby_4 = pathNodes->at(i);
+						if (pathNodes->at(j)->nearby_1->name == name)
+						{
+							pathNodes->at(j)->nearby_1 = pathNodes->at(i);
+						}
+						else if (pathNodes->at(j)->nearby_2->name == name)
+						{
+							pathNodes->at(j)->nearby_2 = pathNodes->at(i);
+						}
+						else if (pathNodes->at(j)->nearby_3->name == name)
+						{
+							pathNodes->at(j)->nearby_3 = pathNodes->at(i);
+						}
+						else if (pathNodes->at(j)->nearby_4->name == name)
+						{
+							pathNodes->at(j)->nearby_4 = pathNodes->at(i);
+						}
 					}
 				}
-			}
+			}// end if path length > 0
 
 			if (debugMode)
 			{
@@ -358,17 +395,18 @@ bool Game::LoadScene(sceneType num)
 			else
 			{
 				CharacterDetails playerDetails = {};
-				playerDetails.capsuleColliderSize = { 50.0f, 100.0f };
-				playerDetails.colliderOrigin = { 0.0f, 100.0f, 0.0f };
+				playerDetails.capsuleColliderSize = { 50.0f, 80.0f };
+				playerDetails.colliderOrigin = { 0.0f, 120.0f, 0.0f };
 				playerDetails.health = 200.0f;
 				playerDetails.jumpPower = 4.0f;
-				playerDetails.position = { 451.0f, 2.0f, 62.0f };
-				//playerDetails.position = { -9.46f, 5.0f, 371.97f };
+				playerDetails.position = sceneMgr.GetPlayerSpawnPoint();
 				playerDetails.scale = { 0.01f, 0.01f, 0.01f };
 				playerDetails.sprintSpeed = 10.0f;
 				playerDetails.tag = "player";
 				playerDetails.walkSpeed = 5.0f;
 				playerDetails.rollDodgeCost = 10.0f;
+				playerDetails.acceleration = 6.67f;
+				playerDetails.deacceleration = 10.0f;
 
 
 				// Setup the Player's Companion
@@ -386,7 +424,7 @@ bool Game::LoadScene(sceneType num)
 				}
 				assert(player != NULL);
 
-
+				cam->SetPosition(playerDetails.position);
 				//*********************************************************************************************
 				//temp for test
 				/*enemy01 = new Enemy(math::float3{ 10.0f, 1.0f, 0.0f });

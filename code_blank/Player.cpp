@@ -183,10 +183,10 @@ Player::Player(CharacterDetails details, void* comp)
 
 		pPlayer = e.AddComponent<PhysicsComponent>();
 
-		pPlayer->LockRotation(true, false, true);
+		pPlayer->LockRotation(true, true, true);
 		pPlayer->SetCapsuleCollider(details.capsuleColliderSize.x, details.capsuleColliderSize.y);
 		pPlayer->SetColliderOrigin(details.colliderOrigin);
-
+		pPlayer->SetGravity(math::float3{});
 
 		SetComponents(tPlayer, pPlayer, aPlayer);
 	}
@@ -261,6 +261,10 @@ void Player::Update(float dT)
 
 }
 
+void Player::FixedUpdate(float fDT)
+{
+
+}
 
 // Move the player character
 void Player::MoveReg(float dT, bool _jump, math::float3 inputDir, math::quat camRot)

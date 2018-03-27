@@ -108,7 +108,8 @@ void Character::HandleGroundedMovement(bool _jump, math::float3 move, float dT)
 		//stateTimer = 0;
 	}
 	
-	tCharacter->Translate(move);
+	//tCharacter->Translate(move);
+
 	//math::float3 temp = { 0,0,0 };
 	//pCharacter->LockRotation(false, false, false);
 	//pCharacter->LockPosition(false, false, false);

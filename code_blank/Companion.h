@@ -14,6 +14,7 @@ public:
 	~Companion();
 
 	void Update(float, tofu::math::float3, tofu::math::float3);
+	void FixedUpdate(float, tofu::math::float3, tofu::math::float3);
 
 	void SetInUse(bool);
 	void SetActive(bool);

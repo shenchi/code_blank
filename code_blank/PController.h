@@ -10,6 +10,7 @@ public:
 	~PController();
 
 	void Update();
+	void FixedUpdate(float);
 	void UpdateP(float);
 	void SetCamera(Camera*);
 	void SetCompanion(Companion*);
@@ -24,6 +25,7 @@ private:
 	Companion* comp;
 
 	bool paused;
+	bool jump;
 	bool inAir;
 	bool isAiming;
 	bool isHacking;

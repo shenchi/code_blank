@@ -18,6 +18,8 @@ public:
 
 	virtual int32_t Update() override;
 
+	virtual int32_t FixedUpdate() override;
+
 	virtual ~Game() override;
 
 private:

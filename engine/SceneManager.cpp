@@ -23,6 +23,7 @@ namespace tofu
 	int32_t SceneManager::LoadScene(const char * filename)
 	{
 		int32_t count = 0;
+		int32_t pathLength = 0;
 		rapidjson::Document d;
 		char* json = nullptr;
 		CHECKED(FileIO::ReadFile(
@@ -56,7 +57,12 @@ namespace tofu
 		const auto& pathNodeList = d["pathNodes"];
 		if (!pathNodeList.IsArray())
 		{
-			return kErrUnknown;
+			
+			//return kErrUnknown;
+		}
+		else
+		{
+			pathLength = pathNodeList.Size();
 		}
 
 		// Spawn Nodes
@@ -68,7 +74,7 @@ namespace tofu
 		const auto& spawnerNodes = d["spawnerNodes"];
 		if (!spawnerNodes.IsArray())
 		{
-			return kErrUnknown;
+			//return kErrUnknown;
 		}
 
 		// Trigger Nodes
@@ -80,8 +86,29 @@ namespace tofu
 		const auto& triggerNodes = d["triggerNodes"];
 		if (!triggerNodes.IsArray())
 		{
+			//return kErrUnknown;
+		}
+
+		// Player Spawn Point
+		if (!d.HasMember("playerSpawn"))
+		{
 			return kErrUnknown;
 		}
+
+		const auto& spawnPoint = d["playerSpawn"];
+		if (!spawnPoint.IsArray())
+		{
+			return kErrUnknown;
+		}
+
+		// Set spawn point
+		value_t spawnPosition = spawnPoint[0]["position"];
+		pSpawnPoint = math::float3
+		{
+			spawnPosition["x"].GetFloat(),
+			spawnPosition["y"].GetFloat(),
+			spawnPosition["z"].GetFloat() 
+		};
 
 		// load entities
 		for (rapidjson::SizeType i = 0; i < entities.Size(); i++)
@@ -90,11 +117,14 @@ namespace tofu
 		}
 
 		// add path nodes to a vector
-		pathNodes = new std::vector<PathNode*>(pathNodeList.Size());
-		for (rapidjson::SizeType i = 0; i < pathNodeList.Size(); i++)
+		if (pathLength > 0)
 		{
-			CHECKED(AddPathNode(pathNodeList[i], count));
-			count++;
+			pathNodes = new std::vector<PathNode*>(pathNodeList.Size());
+			for (rapidjson::SizeType i = 0; i < pathNodeList.Size(); i++)
+			{
+				CHECKED(AddPathNode(pathNodeList[i], count));
+				count++;
+			}
 		}
 
 		return kOK;
@@ -240,6 +270,7 @@ namespace tofu
 				auto p = e.AddComponent<PhysicsComponent>();
 
 				// TODO
+				// Change if we run into a case where world objects need to move
 				p->SetStatic(true);
 
 				const char* colliderTypeStr = comp["colliderType"].GetString();
@@ -301,13 +332,28 @@ namespace tofu
 		return kOK;
 	}
 
+	// Return a vector of path nodes for the scene
 	std::vector<PathNode*>* SceneManager::GetPathNodes()
 	{
 		return pathNodes;
 	}
 
+	// Return length of the Path Node vector
 	int32_t SceneManager::GetPathNodesLength()
 	{
-		return pathNodes->size();
+		if (NULL != pathNodes)
+		{
+			return pathNodes->size();
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+	// Return the spawn position for player
+	tofu::math::float3 SceneManager::GetPlayerSpawnPoint()
+	{
+		return pSpawnPoint;
 	}
 }

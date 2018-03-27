@@ -41,13 +41,10 @@ Companion::Companion(tofu::math::float3 _target)
 
 Companion::~Companion() {}
 
-// Update
-// Delta Time, Target, TargetFoward
-void Companion::Update(float dT, tofu::math::float3 _target, tofu::math::float3 _targetFwd)
+void Companion::FixedUpdate(float fDT, tofu::math::float3 _target, tofu::math::float3 _targetFwd)
 {
-	assert(targetSet);
 	target = _target;
-	targetFwd = _targetFwd;
+	targetFwd = -_targetFwd;
 
 
 	if (!inUse)
@@ -62,15 +59,12 @@ void Companion::Update(float dT, tofu::math::float3 _target, tofu::math::float3 
 		// Damp the height
 		currentHeight = currentHeight + (heightDamping * (wantedHeight - currentHeight));	// Basic Lerp, make more robust later
 		//currentHeight = Mathf.Lerp(currentHeight, wantedHeight, heightDamping * dT);
-		
-		
-		
+
 		// TODO
 		// Set the position of the companion 
 		tofu::math::float3 wantedPosition = target - targetFwd * distance;
-		pos = pos + ((heightDamping * dT) * (wantedPosition - pos));	// Basic Lerp, make more robust later
+		pos = pos + ((heightDamping * fDT) * (wantedPosition - pos));	// Basic Lerp, make more robust later
 		//transform.position = tofu::math::float3.Lerp(transform.position, wantedPosition, positionDamping * dT);
-
 
 		// adjust the height of the companion
 		pos.y = currentHeight;
@@ -102,6 +96,14 @@ void Companion::Update(float dT, tofu::math::float3 _target, tofu::math::float3 
 
 	//	transform.position = tofu::math::float3.Lerp(transform.position, wantedPosition, dt * damping);
 	//}
+}
+
+
+// Update
+// Am I needed???
+void Companion::Update(float dT, tofu::math::float3 _target, tofu::math::float3 _targetFwd)
+{
+	assert(targetSet);
 }
 
 //-------------------------------------------------------------------------------------------------
