@@ -8,6 +8,13 @@
 #include "PhysicsSystem.h"
 #include "InputSystem.h"
 
+#include "AnimationComponent.h"
+#include "CameraComponent.h"
+#include "LightComponent.h"
+#include "PhysicsComponent.h"
+#include "RenderingComponent.h"
+#include "TransformComponent.h"
+
 namespace tofu
 {
 	float Time::TotalTime = 0.0f;
@@ -46,6 +53,15 @@ namespace tofu
 
 	int32_t Engine::Init(const char* filename)
 	{
+		// init entity system
+		Entity::RegisterComponent<AnimationComponent>();
+		Entity::RegisterComponent<CameraComponent>();
+		Entity::RegisterComponent<LightComponent>();
+		Entity::RegisterComponent<PhysicsComponent>();
+		Entity::RegisterComponent<RenderingComponent>();
+		Entity::RegisterComponent<TransformComponent>();
+		CHECKED(Entity::Init());
+
 		// initialize native context
 		nativeContext = NativeContext::Create();
 		if (nullptr == nativeContext)
@@ -162,6 +178,8 @@ namespace tofu
 
 		CHECKED(nativeContext->Shutdown());
 		delete nativeContext;
+
+		CHECKED(Entity::Shutdown());
 
 		return kOK;
 	}

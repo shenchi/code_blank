@@ -5,6 +5,8 @@
 
 #include "Entity.h"
 
+#include "PhysicsComponent.h"
+
 class btDefaultCollisionConfiguration;
 class btCollisionDispatcher;
 class btBroadphaseInterface;

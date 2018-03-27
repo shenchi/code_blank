@@ -90,6 +90,18 @@ void PController::UpdateP(float dT)
 	{
 		player->Attack(true, dT);
 		attackButtonDown = true;
+
+		{
+			RayTestResult result;
+			math::float3 fwd = - math::normalize(player->GetForward());
+			math::float3 pos = player->GetPosition() + math::float3{ 0, 1, 0 };
+			math::float3 st = pos + fwd;
+			math::float3 ed = pos + fwd * 10.0f;
+			if (PhysicsSystem::instance()->RayTest(st, ed, &result))
+			{
+				result.entity.Destroy();
+			}
+		}
 	}
 	else if( !(input->IsButtonDown(kMouseLButton) || (input->IsButtonDown(kGamepadFaceLeft))) 
 		&&  attackButtonDown)

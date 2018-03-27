@@ -19,12 +19,24 @@ namespace tofu
 			:
 			entity(e),
 			parent(),
+			children(),
 			dirty(1)
 		{}
 
-		void							SetParent(TransformComponent parent);
+		void							SetParent(TransformComponent parent, bool updateChildren = true);
 
 		TF_INLINE TransformComponent	GetParent() const { return parent; }
+
+		void							AddChild(TransformComponent child);
+
+		void							RemoveChild(TransformComponent child);
+		void							RemoveChild(uint32_t childIdx);
+
+		TF_INLINE uint32_t				GetNumChildren() const { return uint32_t(children.size()); }
+
+		TF_INLINE TransformComponent	GetChild(uint32_t childIdx) const { return children[childIdx]; }
+
+		TF_INLINE Entity				GetEntity() const { return entity; }
 
 		TF_INLINE const Transform&		GetLocalTransform() const { return localTransform; }
 

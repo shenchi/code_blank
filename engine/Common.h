@@ -82,6 +82,7 @@ namespace tofu
 	constexpr uint32_t kFrameBasedMemSize = 256 * 1024 * 1024;
 	constexpr uint32_t kFrameBasedMemAlign = 2 * 1024 * 1024;
 
+	constexpr uint32_t kMaxComponentTypes = 16;
 	constexpr uint32_t kMaxUserModules = 8;
 	constexpr uint32_t kMaxEntities = 4096;
 	constexpr uint32_t kMaxModels = 1024;

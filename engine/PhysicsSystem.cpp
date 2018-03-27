@@ -359,7 +359,6 @@ namespace tofu
 					world->addRigidBody(comp.rigidbody);
 
 					comp.rigidbody->setGravity(btVec3(comp.gravity));
-					comp.rigidbody->setUserIndex(comp.entity.id);
 				}
 
 				comp.dirty = false;

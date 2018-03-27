@@ -47,6 +47,7 @@ namespace tofu
 
 		inline void Destroy()
 		{
+			assert(false && "TODO");
 			assert(true == *this);
 			
 			// swap the last element to this location
@@ -76,10 +77,43 @@ namespace tofu
 			numComponents--;
 		}
 
+		void SetActive(bool active)
+		{
+			assert(true == *this);
+
+			uint32_t compLoc = *compIdx;
+
+			// if this component is waiting to be cleaned up
+			if (compLoc >= numActiveComponents + numInactiveComponents)
+				return;
+
+			if (active && *compIdx >= numActiveComponents)
+			{
+				// bring this component back to active
+				if (compLoc != numActiveComponents)
+				{
+					Swap(compLoc, numActiveComponents);
+				}
+				numActiveComponents++;
+				numInactiveComponents--;
+			}
+			else if (!active && *compIdx < numActiveComponents)
+			{
+				// put this component into inactive
+				if (compLoc != numActiveComponents - 1)
+				{
+					Swap(compLoc, numActiveComponents - 1);
+				}
+				numActiveComponents--;
+				numInactiveComponents++;
+			}
+		}
+
 	public:
 		
 		static Component<T> Create(Entity e)
 		{
+			assert(false && "TODO");
 			if (pointers[e.id].idx < numComponents)
 				return Component<T>(e);
 
@@ -96,30 +130,82 @@ namespace tofu
 			return Component<T>(e);
 		}
 
+		static void DestroyByEntity(Entity e)
+		{
+			Component<T> comp(e);
+			if (comp) comp.Destroy();
+		}
+
+		static void Swap(Component<T> a, Component<T> b)
+		{
+			if (!a || !b) return;
+			Swap(*a.compIdx, *b.compIdx);
+		}
+
+		static void Swap(uint32_t loc_a, uint32_t loc_b)
+		{
+			if (loc_a == loc_b || loc_a > numComponents || loc_b > numComponents) return;
+
+			Entity e_a = back_pointers[loc_a];
+			Entity e_b = back_pointers[loc_b];
+			std::swap(components[loc_a], components[loc_b]);
+			std::swap(back_pointers[loc_a], back_pointers[loc_b]);
+			std::swap(pointers[e_a.id], pointers[e_b.id]);
+		}
+
+		static int32_t Init()
+		{
+			pointers = new ComponentIndex[kMaxEntities];
+			back_pointers = new Entity[kMaxEntities];
+			components = new T[kMaxEntities];
+			numComponents = 0;
+
+			return kOK;
+		}
+
+		static int32_t Shutdown()
+		{
+			numComponents = 0;
+			delete[] components;
+			delete[] back_pointers;
+			delete[] pointers;
+
+			return kOK;
+		}
+
 		static T* GetAllComponents() { return components; }
 		static uint32_t GetNumComponents() { return numComponents; }
 
 	protected:
+
 		// mapping from entity id to component index(location)
-		static ComponentIndex pointers[kMaxEntities];
+		static ComponentIndex* pointers;
 
 		// mapping from component index(location) to entity id
-		static Entity back_pointers[kMaxEntities];
+		static Entity* back_pointers;
 
 		// array of actual components
-		static T components[kMaxEntities];
+		static T* components;
 		static uint32_t numComponents;
+		static uint32_t numActiveComponents;
+		static uint32_t numInactiveComponents;
 	};
 
 	template<class T>
-	ComponentIndex Component<T>::pointers[kMaxEntities];
+	ComponentIndex* Component<T>::pointers = nullptr;
 
 	template<class T>
-	Entity Component<T>::back_pointers[kMaxEntities];
+	Entity* Component<T>::back_pointers = nullptr;
 
 	template<class T>
-	T Component<T>::components[kMaxEntities];
+	T* Component<T>::components = nullptr;
 
 	template<class T>
 	uint32_t Component<T>::numComponents = 0;
+
+	template<class T>
+	uint32_t Component<T>::numActiveComponents = 0;
+
+	template<class T>
+	uint32_t Component<T>::numInactiveComponents = 0;
 }

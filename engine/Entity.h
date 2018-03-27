@@ -50,10 +50,35 @@ namespace tofu
 		// create a new entity
 		static Entity Create();
 
+	public:
+
+		// initialize entity-component system
+		static int32_t Init();
+
+		// shutdown entity-component system
+		static int32_t Shutdown();
+
+		typedef int32_t (*InitCallback)(void);
+		typedef int32_t (*ShutdownCallback)(void);
+		typedef void (*DestroyCallback)(Entity e);
+
+		static void RegisterComponent(InitCallback init, ShutdownCallback shutdown, DestroyCallback destroy);
+
+		template<typename T>
+		static void RegisterComponent() {
+			RegisterComponent(T::Init, T::Shutdown, T::DestroyByEntity);
+		}
+
 	private:
 		// entity id allocator
 		static HandleAllocator<Entity, kMaxEntities> entityAlloc;
 
-		static bool activeFlags[kMaxEntities];
+		static InitCallback initCallbacks[kMaxComponentTypes];
+		static ShutdownCallback shutdownCallbacks[kMaxComponentTypes];
+		static DestroyCallback destroyCallbacks[kMaxComponentTypes];
+
+		static uint32_t numRegisteredComponentTypes;
+
+		static bool* activeFlags;
 	};
 }

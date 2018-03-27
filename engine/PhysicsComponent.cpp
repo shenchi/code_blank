@@ -1,12 +1,12 @@
 #include "PhysicsComponent.h"
 
 #include "TransformComponent.h"
+#include "PhysicsSystem.h"
 
 #include <btBulletDynamicsCommon.h>
 
 namespace tofu
 {
-	
 	void PhysicsComponentData::SetGravity(const math::float3& g)
 	{
 		gravity = g;
