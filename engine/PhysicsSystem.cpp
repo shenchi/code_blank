@@ -64,14 +64,14 @@ namespace
 		TofuMeshAdaptor(tofu::Model* model) : model(model) {}
 
 		virtual void getLockedVertexIndexBase(
-			unsigned char **vertexbase, 
-			int& numverts, 
-			PHY_ScalarType& type, 
-			int& stride, 
-			unsigned char **indexbase, 
-			int & indexstride, 
-			int& numfaces, 
-			PHY_ScalarType& indicestype, 
+			unsigned char **vertexbase,
+			int& numverts,
+			PHY_ScalarType& type,
+			int& stride,
+			unsigned char **indexbase,
+			int & indexstride,
+			int& numfaces,
+			PHY_ScalarType& indicestype,
 			int subpart = 0
 		) override
 		{
@@ -86,14 +86,14 @@ namespace
 		}
 
 		virtual void getLockedReadOnlyVertexIndexBase(
-			const unsigned char **vertexbase, 
-			int& numverts, 
-			PHY_ScalarType& type, 
-			int& stride, 
-			const unsigned char **indexbase, 
-			int & indexstride, 
-			int& numfaces, 
-			PHY_ScalarType& indicestype, 
+			const unsigned char **vertexbase,
+			int& numverts,
+			PHY_ScalarType& type,
+			int& stride,
+			const unsigned char **indexbase,
+			int & indexstride,
+			int& numfaces,
+			PHY_ScalarType& indicestype,
 			int subpart = 0
 		) const override
 		{
@@ -220,7 +220,43 @@ namespace tofu
 	int32_t PhysicsSystem::PreUpdate()
 	{
 		PhysicsComponentData* comps = PhysicsComponent::GetAllComponents();
-		uint32_t count = PhysicsComponent::GetNumComponents();
+		uint32_t count = PhysicsComponent::GetNumActiveComponents();
+		uint32_t aliveCount = count + PhysicsComponent::GetNumInactiveComponents();
+		uint32_t totalCount = PhysicsComponent::GetNumComponents();
+
+		for (uint32_t i = count; i < aliveCount; i++)
+		{
+			PhysicsComponentData& comp = comps[i];
+			if (nullptr != comp.rigidbody && comp.rigidbody->isInWorld())
+			{
+				world->removeRigidBody(comp.rigidbody);
+			}
+		}
+
+		for (uint32_t i = aliveCount; i < totalCount; i++)
+		{
+			PhysicsComponentData& comp = comps[i];
+			if (nullptr != comp.rigidbody)
+			{
+				if (comp.rigidbody->getMotionState())
+				{
+					delete comp.rigidbody->getMotionState();
+				}
+				world->removeRigidBody(comp.rigidbody);
+				delete comp.rigidbody;
+				comp.rigidbody = nullptr;
+			}
+			if (nullptr != comp.collider)
+			{
+				delete comp.collider;
+				comp.collider = nullptr;
+			}
+			if (nullptr != comp.meshInterface)
+			{
+				delete comp.meshInterface;
+				comp.meshInterface = nullptr;
+			}
+		}
 
 		for (uint32_t i = 0; i < count; i++)
 		{
@@ -230,21 +266,6 @@ namespace tofu
 			if (!t)
 			{
 				return kErrUnknown;
-			}
-
-			if (!comp.entity.IsActive())
-			{
-				if (nullptr != comp.rigidbody)
-				{
-					if (comp.rigidbody->getMotionState())
-					{
-						delete comp.rigidbody->getMotionState();
-					}
-					world->removeRigidBody(comp.rigidbody);
-					delete comp.rigidbody;
-					comp.rigidbody = nullptr;
-				}
-				continue;
 			}
 
 			// create or re-create collision shape and rigidbody if necessary
@@ -360,8 +381,18 @@ namespace tofu
 
 					comp.rigidbody->setGravity(btVec3(comp.gravity));
 				}
-
 				comp.dirty = false;
+			}
+			else if (!comp.rigidbody->isInWorld())
+			{
+				math::float3 scale = t->GetWorldScale();
+				math::quat rot = t->GetWorldRotation();
+				math::float3 pos = t->GetWorldPosition() +
+					rot * (comp.colliderDesc.origin * scale);
+
+				btTransform btTrans(btQuat(rot), btVec3(pos));
+				comp.rigidbody->getMotionState()->setWorldTransform(btTrans);
+				world->addRigidBody(comp.rigidbody);
 			}
 			else if (comp.isKinematic)
 			{
@@ -412,7 +443,7 @@ namespace tofu
 	int32_t PhysicsSystem::PostUpdate()
 	{
 		PhysicsComponentData* comps = PhysicsComponent::GetAllComponents();
-		uint32_t count = PhysicsComponent::GetNumComponents();
+		uint32_t count = PhysicsComponent::GetNumActiveComponents();
 
 		for (uint32_t i = 0; i < count; i++)
 		{

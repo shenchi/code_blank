@@ -1261,7 +1261,7 @@ namespace tofu
 
 	int32_t RenderingSystem::DeferredPipeline()
 	{
-		if (CameraComponent::GetNumComponents() == 0)
+		if (CameraComponent::GetNumActiveComponents() == 0)
 		{
 			return kOK;
 		}
@@ -1358,7 +1358,7 @@ namespace tofu
 
 		// get all renderables in system
 		RenderingComponentData* renderables = RenderingComponent::GetAllComponents();
-		uint32_t renderableCount = RenderingComponent::GetNumComponents();
+		uint32_t renderableCount = RenderingComponent::GetNumActiveComponents();
 
 		// buffer for transform matrices
 		math::float4x4* transformArray = reinterpret_cast<math::float4x4*>(
@@ -1450,7 +1450,7 @@ namespace tofu
 
 		// get all lights
 		LightComponentData* lights = LightComponent::GetAllComponents();
-		uint32_t lightsCount = LightComponent::GetNumComponents();
+		uint32_t lightsCount = LightComponent::GetNumActiveComponents();
 
 		assert(lightsCount <= kMaxEntities);
 
@@ -1664,7 +1664,7 @@ namespace tofu
 
 		// update skinned mesh animation bone matrices
 		AnimationComponentData* animComps = AnimationComponent::GetAllComponents();
-		uint32_t animCompCount = AnimationComponent::GetNumComponents();
+		uint32_t animCompCount = AnimationComponent::GetNumActiveComponents();
 
 		for (uint32_t i = 0; i < animCompCount; i++)
 		{

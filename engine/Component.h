@@ -45,39 +45,39 @@ namespace tofu
 			return &components[*compIdx];
 		}
 
-		inline void Destroy()
-		{
-			assert(false && "TODO");
-			assert(true == *this);
-			
-			// swap the last element to this location
-			// change the pointers
-			// then decrease numComponents
+		//inline void Destroy()
+		//{
+		//	assert(false && "TODO");
+		//	assert(true == *this);
+		//	
+		//	// swap the last element to this location
+		//	// change the pointers
+		//	// then decrease numComponents
 
-			if (numComponents > 1)
-			{
-				uint32_t lastElemIdx = numComponents - 1;
-				Entity lastElemEntity = back_pointers[lastElemIdx];
+		//	if (numComponents > 1)
+		//	{
+		//		uint32_t lastElemIdx = numComponents - 1;
+		//		Entity lastElemEntity = back_pointers[lastElemIdx];
 
-				components[*compIdx] = std::move(components[lastElemIdx]);
+		//		components[*compIdx] = std::move(components[lastElemIdx]);
 
-				back_pointers[lastElemIdx] = Entity();
-				back_pointers[*compIdx] = lastElemEntity;
+		//		back_pointers[lastElemIdx] = Entity();
+		//		back_pointers[*compIdx] = lastElemEntity;
 
-				pointers[lastElemEntity.id].idx = *compIdx;
-				*compIdx = UINT32_MAX;
-			}
-			else
-			{
-				components[*compIdx].~T();
-				back_pointers[*compIdx] = Entity();
-				*compIdx = UINT32_MAX;
-			}
+		//		pointers[lastElemEntity.id].idx = *compIdx;
+		//		*compIdx = UINT32_MAX;
+		//	}
+		//	else
+		//	{
+		//		components[*compIdx].~T();
+		//		back_pointers[*compIdx] = Entity();
+		//		*compIdx = UINT32_MAX;
+		//	}
 
-			numComponents--;
-		}
+		//	numComponents--;
+		//}
 
-		void SetActive(bool active)
+		inline void SetActive(bool active)
 		{
 			assert(true == *this);
 
@@ -109,13 +109,48 @@ namespace tofu
 			}
 		}
 
+		inline void IsActive() const
+		{
+			return nullptr != compIdx && *compIdx < numActiveComponents;
+		}
+
+		inline void MarkDestroy()
+		{
+			assert(true == *this);
+
+			uint32_t compLoc = *compIdx;
+
+			// if this component is already waiting to be cleaned up
+			if (compLoc >= numActiveComponents + numInactiveComponents)
+				return;
+
+			if (compLoc != numComponents)
+			{
+				Swap(compLoc, numComponents - 1);
+			}
+
+			if (compLoc < numActiveComponents)
+			{
+				// it's an active component
+				numActiveComponents--;
+			}
+			else
+			{
+				numInactiveComponents--;
+			}
+		}
+
 	public:
 		
 		static Component<T> Create(Entity e)
 		{
-			assert(false && "TODO");
 			if (pointers[e.id].idx < numComponents)
 				return Component<T>(e);
+
+			if (numComponents >= kMaxEntities)
+			{
+				return Component<T>();
+			}
 
 			uint32_t loc = numComponents++;
 
@@ -127,13 +162,48 @@ namespace tofu
 			components[loc].~T();
 			new (&components[loc]) T(e);
 
+			// swap this component to proper area
+
+			// if there are components waiting to be deleted
+			uint32_t numAliveComponents = numActiveComponents + numInactiveComponents;
+			if (loc - numAliveComponents > 0)
+			{
+				// swap to the start of 'waiting to be deleted' area
+				Swap(numAliveComponents, loc);
+				loc = numAliveComponents;
+			}
+
+			// if there are inactive components;
+			if (numInactiveComponents > 0)
+			{
+				// swap to the start of inactive area
+				Swap(numActiveComponents, loc);
+				loc = numActiveComponents;
+			}
+
+			// move active area boundary
+			numActiveComponents++;
+
 			return Component<T>(e);
+		}
+
+		static void TrimDestroyed()
+		{
+			uint32_t numAliveComponents = numActiveComponents + numInactiveComponents;
+			for (uint32_t i = numAliveComponents; i < numComponents; ++i)
+			{
+				components[i].~T();
+				Entity e = back_pointers[i];
+				back_pointers[i] = Entity();
+				pointers[e.id].idx = UINT32_MAX;
+			}
+			numComponents = numAliveComponents;
 		}
 
 		static void DestroyByEntity(Entity e)
 		{
 			Component<T> comp(e);
-			if (comp) comp.Destroy();
+			if (comp) comp.MarkDestroy();
 		}
 
 		static void Swap(Component<T> a, Component<T> b)
@@ -174,7 +244,12 @@ namespace tofu
 		}
 
 		static T* GetAllComponents() { return components; }
+
 		static uint32_t GetNumComponents() { return numComponents; }
+
+		static uint32_t GetNumActiveComponents() { return numActiveComponents; }
+
+		static uint32_t GetNumInactiveComponents() { return numInactiveComponents; }
 
 	protected:
 
