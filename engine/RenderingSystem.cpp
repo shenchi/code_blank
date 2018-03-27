@@ -1669,6 +1669,8 @@ namespace tofu
 		for (uint32_t i = 0; i < animCompCount; i++)
 		{
 			AnimationComponentData& anim = animComps[i];
+			if (!anim.entity.IsActive()) continue;
+
 			RenderingComponent r = anim.entity.GetComponent<RenderingComponent>();
 
 			if (!r || nullptr == r->model || !r->model->HasAnimation())
