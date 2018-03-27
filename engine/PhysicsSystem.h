@@ -3,6 +3,8 @@
 #include "Module.h"
 #include "TofuMath.h"
 
+#include "Entity.h"
+
 class btDefaultCollisionConfiguration;
 class btCollisionDispatcher;
 class btBroadphaseInterface;
@@ -15,6 +17,7 @@ namespace tofu
 	{
 		math::float3		hitWorldPosition;
 		math::float3		hitWorldNormal;
+		Entity				entity;
 	};
 
 	class PhysicsSystem : public Module

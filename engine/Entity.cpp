@@ -6,6 +6,8 @@ namespace tofu
 {
 	HandleAllocator<Entity, kMaxEntities> Entity::entityAlloc;
 
+	bool Entity::activeFlags[kMaxEntities] = {};
+
 	int32_t Entity::Destroy()
 	{
 		assert(!*this);
@@ -20,7 +22,9 @@ namespace tofu
 
 	Entity Entity::Create()
 	{
-		return Entity(entityAlloc.Allocate());
+		Entity e = Entity(entityAlloc.Allocate());
+		e.SetActive(true);
+		return e;
 	}
 
 }

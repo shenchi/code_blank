@@ -18,7 +18,7 @@ Companion::Companion(tofu::math::float3 _target)
 
 		Model* compModel = RenderingSystem::instance()->CreateModel("assets/cube.model");
 
-		Material* cubeMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
+		Material* cubeMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialDeferredGeometryOpaque);
 		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
 
 

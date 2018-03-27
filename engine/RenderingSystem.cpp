@@ -197,25 +197,25 @@ namespace tofu
 		BeginFrame();
 
 		// Create Built-in Shaders
-		CHECKED(InitBuiltinMaterial(kMaterialTypeSkybox,
-			"assets/skybox_vs.shader",
-			"assets/skybox_ps.shader"
-		));
+		//CHECKED(InitBuiltinMaterial(kMaterialTypeSkybox,
+		//	"assets/skybox_vs.shader",
+		//	"assets/skybox_ps.shader"
+		//));
 
-		CHECKED(InitBuiltinMaterial(kMaterialTypeOpaque,
-			"assets/opaque_vs.shader",
-			"assets/opaque_ps.shader"
-		));
+		//CHECKED(InitBuiltinMaterial(kMaterialTypeOpaque,
+		//	"assets/opaque_vs.shader",
+		//	"assets/opaque_ps.shader"
+		//));
 
-		CHECKED(InitBuiltinMaterial(kMaterialTypeOpaqueSkinned,
-			"assets/opaque_skinned_vs.shader",
-			//"assets/opaque_ps.shader"
-			"assets/opaque_skinned_ps.shader"
-		));
+		//CHECKED(InitBuiltinMaterial(kMaterialTypeOpaqueSkinned,
+		//	"assets/opaque_skinned_vs.shader",
+		//	//"assets/opaque_ps.shader"
+		//	"assets/opaque_skinned_ps.shader"
+		//));
 
 
-		CHECKED(LoadVertexShader("assets/shadow_opaque_vs.shader", materialVSs[kMaterialTypeDepth]));
-		CHECKED(LoadVertexShader("assets/shadow_opaqueskinned_vs.shader", materialVSs[kMaterialTypeDepthSkinned]));
+		//CHECKED(LoadVertexShader("assets/shadow_opaque_vs.shader", materialVSs[kMaterialTypeDepth]));
+		//CHECKED(LoadVertexShader("assets/shadow_opaqueskinned_vs.shader", materialVSs[kMaterialTypeDepthSkinned]));
 
 
 		CHECKED(LoadVertexShader("assets/shadow_vs.shader", materialVSs[kMaterialShadow]));
@@ -277,72 +277,72 @@ namespace tofu
 
 		// create built-in pipeline states
 		{
-			materialPSOs[kMaterialTypeSkybox] = pipelineStateHandleAlloc.Allocate();
-			assert(materialPSOs[kMaterialTypeSkybox]);
+			//materialPSOs[kMaterialTypeSkybox] = pipelineStateHandleAlloc.Allocate();
+			//assert(materialPSOs[kMaterialTypeSkybox]);
 
-			{
-				CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
-				params->handle = materialPSOs[kMaterialTypeSkybox];
-				params->vertexShader = materialVSs[kMaterialTypeSkybox];
-				params->pixelShader = materialPSs[kMaterialTypeSkybox];
-				params->cullMode = kCullFront;
-				params->depthFunc = kComparisonLEqual;
-				params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
-				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
-			}
+			//{
+			//	CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
+			//	params->handle = materialPSOs[kMaterialTypeSkybox];
+			//	params->vertexShader = materialVSs[kMaterialTypeSkybox];
+			//	params->pixelShader = materialPSs[kMaterialTypeSkybox];
+			//	params->cullMode = kCullFront;
+			//	params->depthFunc = kComparisonLEqual;
+			//	params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
+			//	cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+			//}
 
-			materialPSOs[kMaterialTypeOpaque] = pipelineStateHandleAlloc.Allocate();
-			assert(materialPSOs[kMaterialTypeOpaque]);
+			//materialPSOs[kMaterialTypeOpaque] = pipelineStateHandleAlloc.Allocate();
+			//assert(materialPSOs[kMaterialTypeOpaque]);
 
-			{
-				CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
-				params->handle = materialPSOs[kMaterialTypeOpaque];
-				params->vertexShader = materialVSs[kMaterialTypeOpaque];
-				params->pixelShader = materialPSs[kMaterialTypeOpaque];
-				params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
+			//{
+			//	CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
+			//	params->handle = materialPSOs[kMaterialTypeOpaque];
+			//	params->vertexShader = materialVSs[kMaterialTypeOpaque];
+			//	params->pixelShader = materialPSs[kMaterialTypeOpaque];
+			//	params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
 
-				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
-			}
+			//	cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+			//}
 
-			materialPSOs[kMaterialTypeDepth] = pipelineStateHandleAlloc.Allocate();
-			assert(materialPSOs[kMaterialTypeDepth]);
-			{
-				CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
-				params->handle = materialPSOs[kMaterialTypeDepth];
-				params->vertexShader = materialVSs[kMaterialTypeDepth];
-				params->cullMode = kCullFront;
+			//materialPSOs[kMaterialTypeDepth] = pipelineStateHandleAlloc.Allocate();
+			//assert(materialPSOs[kMaterialTypeDepth]);
+			//{
+			//	CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
+			//	params->handle = materialPSOs[kMaterialTypeDepth];
+			//	params->vertexShader = materialVSs[kMaterialTypeDepth];
+			//	params->cullMode = kCullFront;
 
-				params->viewport = { 0.0f, 0.0f, 1024.0f, 1024.0f, 0.0f, 1.0f };
+			//	params->viewport = { 0.0f, 0.0f, 1024.0f, 1024.0f, 0.0f, 1.0f };
 
-				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
-			}
+			//	cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+			//}
 
-			materialPSOs[kMaterialTypeDepthSkinned] = pipelineStateHandleAlloc.Allocate();
-			assert(materialPSOs[kMaterialTypeDepthSkinned]);
-			{
-				CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
-				params->handle = materialPSOs[kMaterialTypeDepthSkinned];
-				params->vertexShader = materialVSs[kMaterialTypeDepthSkinned];
-				params->vertexFormat = kVertexFormatSkinned;
-				params->cullMode = kCullFront;
+			//materialPSOs[kMaterialTypeDepthSkinned] = pipelineStateHandleAlloc.Allocate();
+			//assert(materialPSOs[kMaterialTypeDepthSkinned]);
+			//{
+			//	CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
+			//	params->handle = materialPSOs[kMaterialTypeDepthSkinned];
+			//	params->vertexShader = materialVSs[kMaterialTypeDepthSkinned];
+			//	params->vertexFormat = kVertexFormatSkinned;
+			//	params->cullMode = kCullFront;
 
-				params->viewport = { 0.0f, 0.0f, 1024.0f, 1024.0f, 0.0f, 1.0f };
+			//	params->viewport = { 0.0f, 0.0f, 1024.0f, 1024.0f, 0.0f, 1.0f };
 
-				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
-			}
+			//	cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+			//}
 
-			materialPSOs[kMaterialTypeOpaqueSkinned] = pipelineStateHandleAlloc.Allocate();
-			assert(materialPSOs[kMaterialTypeOpaqueSkinned]);
+			//materialPSOs[kMaterialTypeOpaqueSkinned] = pipelineStateHandleAlloc.Allocate();
+			//assert(materialPSOs[kMaterialTypeOpaqueSkinned]);
 
-			{
-				CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
-				params->handle = materialPSOs[kMaterialTypeOpaqueSkinned];
-				params->vertexShader = materialVSs[kMaterialTypeOpaqueSkinned];
-				params->pixelShader = materialPSs[kMaterialTypeOpaqueSkinned];
-				params->vertexFormat = kVertexFormatSkinned;
-				params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
-				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
-			}
+			//{
+			//	CreatePipelineStateParams* params = MemoryAllocator::Allocate<CreatePipelineStateParams>(allocNo);
+			//	params->handle = materialPSOs[kMaterialTypeOpaqueSkinned];
+			//	params->vertexShader = materialVSs[kMaterialTypeOpaqueSkinned];
+			//	params->pixelShader = materialPSs[kMaterialTypeOpaqueSkinned];
+			//	params->vertexFormat = kVertexFormatSkinned;
+			//	params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
+			//	cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+			//}
 
 			materialPSOs[kMaterialShadow] = pipelineStateHandleAlloc.Allocate();
 			assert(materialPSOs[kMaterialShadow]);
@@ -1391,6 +1391,9 @@ namespace tofu
 			// for (uint32_t i = renderableCount - 2; i < renderableCount; ++i)
 		{
 			RenderingComponentData& comp = renderables[i];
+
+			if (!comp.entity.IsActive()) continue;
+
 			TransformComponent transform = comp.entity.GetComponent<TransformComponent>();
 			assert(transform);
 
@@ -1732,12 +1735,12 @@ namespace tofu
 				params->startVertex = mesh.StartVertex;
 				params->indexCount = mesh.NumIndices;
 
-				if (mat->type == kMaterialTypeOpaque) params->pipelineState = materialPSOs[kMaterialShadow];
-				if (mat->type == kMaterialTypeOpaqueSkinned) params->pipelineState = materialPSOs[kMaterialShadowSkinned];
+				if (mat->type == kMaterialDeferredGeometryOpaque) params->pipelineState = materialPSOs[kMaterialShadow];
+				if (mat->type == kMaterialDeferredGeometryOpaqueSkinned) params->pipelineState = materialPSOs[kMaterialShadowSkinned];
 
 				switch (mat->type)
 				{
-				case kMaterialTypeOpaqueSkinned:
+				case kMaterialDeferredGeometryOpaqueSkinned:
 					(void*)0;
 					{
 						Entity entity = renderables[obj.renderableId].entity;
@@ -1749,7 +1752,7 @@ namespace tofu
 						params->vsConstantBuffers[2] = { anim->boneMatricesBuffer, 0, 0 };
 					}
 					// fall through
-				case kMaterialTypeOpaque:
+				case kMaterialDeferredGeometryOpaque:
 					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(obj.transformIdx * 16), 16 };
 					params->vsConstantBuffers[1] = { shadowMatricesBuffer, static_cast<uint16_t>(iLight * 16), 16 };
 
@@ -1802,12 +1805,12 @@ namespace tofu
 			params->startVertex = mesh.StartVertex;
 			params->indexCount = mesh.NumIndices;
 
-			if (mat->type == kMaterialTypeOpaque) params->pipelineState = materialPSOs[kMaterialDeferredGeometryOpaque];
-			if (mat->type == kMaterialTypeOpaqueSkinned) params->pipelineState = materialPSOs[kMaterialDeferredGeometryOpaqueSkinned];
+			//if (mat->type == kMaterialTypeOpaque) params->pipelineState = materialPSOs[kMaterialDeferredGeometryOpaque];
+			//if (mat->type == kMaterialTypeOpaqueSkinned) params->pipelineState = materialPSOs[kMaterialDeferredGeometryOpaqueSkinned];
 
 			switch (mat->type)
 			{
-			case kMaterialTypeOpaqueSkinned:
+			case kMaterialDeferredGeometryOpaqueSkinned:
 				(void*)0;
 				{
 					Entity entity = renderables[obj.renderableId].entity;
@@ -1819,7 +1822,7 @@ namespace tofu
 					params->vsConstantBuffers[2] = { anim->boneMatricesBuffer, 0, 0 };
 				}
 				// fall through
-			case kMaterialTypeOpaque:
+			case kMaterialDeferredGeometryOpaque:
 				params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(obj.transformIdx * 16), 16 };
 				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
 

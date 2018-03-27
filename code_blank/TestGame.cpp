@@ -30,7 +30,7 @@ int32_t TestGame::Init()
 		//Model* model = RenderingSystem::instance()->CreateModel("assets/ground.model");
 		Model* model = RenderingSystem::instance()->CreateModel("assets/cube.model");
 
-		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
+		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialDeferredGeometryOpaque);
 		/*TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
 		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/stone_wall_normalmap.texture");
 
@@ -106,7 +106,7 @@ int32_t TestGame::Init()
 		AnimationState *walk = stateMachine->AddState("walk");
 		walk->animationName = "walk";
 		
-		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaqueSkinned);
+		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialDeferredGeometryOpaqueSkinned);
 		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");
 		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/archer_1.texture");
 
@@ -175,17 +175,17 @@ int32_t TestGame::Init()
 		cam->SetFOV(60.0f);
 		tCamera->SetLocalPosition(math::float3{ 0, 0, -2 });
 
-		Material* skyboxMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeSkybox);
-		TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/craterlake.texture");
-		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/textures/test/diffuseIrradianceMap.texture");
-		TextureHandle specular = RenderingSystem::instance()->CreateTexture("assets/textures/test/prefilteredMap.texture");
-		TextureHandle lut = RenderingSystem::instance()->CreateTexture("assets/textures/test/BrdfLUT-Copy.texture");		
-		skyboxMat->SetTexture(tex);
+		//Material* skyboxMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeSkybox);
+		//TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/craterlake.texture");
+		//TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/textures/test/diffuseIrradianceMap.texture");
+		//TextureHandle specular = RenderingSystem::instance()->CreateTexture("assets/textures/test/prefilteredMap.texture");
+		//TextureHandle lut = RenderingSystem::instance()->CreateTexture("assets/textures/test/BrdfLUT-Copy.texture");		
+		//skyboxMat->SetTexture(tex);
 		//skyboxMat->SetSkyboxDiff(diffuse);
 		//skyboxMat->SetSkyboxSpecMap(specular);
 		//skyboxMat->SetLUTMap(lut);
 		
-		cam->SetSkybox(tex);
+		//cam->SetSkybox(tex);
 	}
 
 	pitch = InitPitch;

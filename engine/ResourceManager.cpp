@@ -96,7 +96,7 @@ namespace tofu
 		const rapidjson::Value& textureParams = matConfig["TextureScaleOffset"];
 
 		const char* typeStr = matConfig["Type"].GetString();
-		MaterialType materialType = kMaterialTypeOpaque;
+		MaterialType materialType = kMaterialDeferredGeometryOpaque;
 		if (strcmp(typeStr, "Transparent") == 0)
 		{
 			materialType = kMaterialDeferredTransparent;

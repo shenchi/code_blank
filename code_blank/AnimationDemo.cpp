@@ -27,7 +27,7 @@ int32_t AnimationDemo::Init()
 
 		Model* model = RenderingSystem::instance()->CreateModel("assets/cube.model");
 
-		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaque);
+		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialDeferredGeometryOpaque);
 		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/stone_wall.texture");
 		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/stone_wall_normalmap.texture");
 
@@ -66,7 +66,7 @@ int32_t AnimationDemo::Init()
 		anim->SetIKTarget(IKTarget::LeftHand, 2, &eBox);
 		//anim->SetIKTarget(IKTarget::LeftFoot, 2, &eBox);
 
-		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeOpaqueSkinned);
+		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialDeferredGeometryOpaqueSkinned);
 
 		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");
 		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/archer_1.texture");

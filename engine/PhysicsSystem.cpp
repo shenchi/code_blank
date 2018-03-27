@@ -232,8 +232,23 @@ namespace tofu
 				return kErrUnknown;
 			}
 
+			if (!comp.entity.IsActive())
+			{
+				if (nullptr != comp.rigidbody)
+				{
+					if (comp.rigidbody->getMotionState())
+					{
+						delete comp.rigidbody->getMotionState();
+					}
+					world->removeRigidBody(comp.rigidbody);
+					delete comp.rigidbody;
+					comp.rigidbody = nullptr;
+				}
+				continue;
+			}
+
 			// create or re-create collision shape and rigidbody if necessary
-			if (comp.dirty)
+			if (comp.dirty || nullptr == comp.rigidbody)
 			{
 				if (nullptr != comp.rigidbody)
 				{
@@ -344,6 +359,7 @@ namespace tofu
 					world->addRigidBody(comp.rigidbody);
 
 					comp.rigidbody->setGravity(btVec3(comp.gravity));
+					comp.rigidbody->setUserIndex(comp.entity.id);
 				}
 
 				comp.dirty = false;
@@ -402,6 +418,8 @@ namespace tofu
 		for (uint32_t i = 0; i < count; i++)
 		{
 			PhysicsComponentData& comp = comps[i];
+			if (!comp.entity.IsActive()) continue;
+
 			if (nullptr == comp.rigidbody)
 			{
 				return kErrUnknown;
@@ -475,6 +493,8 @@ namespace tofu
 			{
 				result->hitWorldPosition = tfVec3(resultCallback.m_hitPointWorld);
 				result->hitWorldNormal = tfVec3(resultCallback.m_hitNormalWorld);
+				int id = resultCallback.m_collisionObject->getUserIndex();
+				result->entity = Entity{ uint32_t(id) };
 			}
 			return true;
 		}

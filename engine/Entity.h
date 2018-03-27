@@ -41,6 +41,10 @@ namespace tofu
 			return Component<typename T::component_data_t>(*this);
 		}
 
+		TF_INLINE bool IsActive() const { return activeFlags[id]; }
+
+		TF_INLINE void SetActive(bool active) { activeFlags[id] = active; }
+
 		int32_t Destroy();
 
 		// create a new entity
@@ -49,5 +53,7 @@ namespace tofu
 	private:
 		// entity id allocator
 		static HandleAllocator<Entity, kMaxEntities> entityAlloc;
+
+		static bool activeFlags[kMaxEntities];
 	};
 }

@@ -1,6 +1,8 @@
 #include "PController.h"
 #include <InputSystem.h>
 
+#include <PhysicsSystem.h>
+
 using namespace tofu;
 
 namespace

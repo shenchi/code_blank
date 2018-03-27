@@ -6,11 +6,7 @@ namespace tofu
 {
 	enum MaterialType
 	{
-		kMaterialTypeSkybox,
-		kMaterialTypeOpaque,
-		kMaterialTypeOpaqueSkinned,
-		kMaterialTypeDepth,
-		kMaterialTypeDepthSkinned,
+		kMaterialNone,
 		kMaterialShadow,
 		kMaterialShadowSkinned,
 		kMaterialDeferredGeometryOpaque,
@@ -64,7 +60,7 @@ namespace tofu
 		void SetTextureParams(const math::float4& params) { materialParams.texcoordParams = params; isDirty = true; }
 
 	private:
-		Material(MaterialType type = MaterialType::kMaterialTypeSkybox) 
+		Material(MaterialType type = MaterialType::kMaterialNone)
 			: 
 			type(type),
 			handle(),
