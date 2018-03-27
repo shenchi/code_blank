@@ -121,12 +121,14 @@ namespace tofu
 			uint32_t compLoc = *compIdx;
 
 			// if this component is already waiting to be cleaned up
-			if (compLoc >= numActiveComponents + numInactiveComponents)
+			uint32_t numAliveComponents = numActiveComponents + numInactiveComponents;
+			if (compLoc >= numAliveComponents)
 				return;
 
-			if (compLoc != numComponents)
+			// swap the component to end of alive area
+			if (compLoc != numAliveComponents - 1)
 			{
-				Swap(compLoc, numComponents - 1);
+				Swap(compLoc, numAliveComponents - 1);
 			}
 
 			if (compLoc < numActiveComponents)

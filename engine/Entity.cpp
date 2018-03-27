@@ -21,7 +21,7 @@ namespace tofu
 		if (!*this)	return kErrUnknown;
 
 		TransformComponent t = GetComponent<TransformComponent>();
-		if (!t)
+		if (t)
 		{
 			t->SetParent(TransformComponent(), false);
 			uint32_t numChildren = t->GetNumChildren();
