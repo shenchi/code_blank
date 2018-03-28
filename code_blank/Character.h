@@ -33,7 +33,7 @@ public:
 	void CurrentState(CharacterState _currentState);
 	
 	void HasEffect(bool _hasEffect);
-	void HandleAirborneMovement(tofu::math::float3, tofu::math::float3, float);
+	void HandleAirborneMovement(tofu::math::float3&, tofu::math::float3&, float);
 	void HandleGroundedMovement(bool, tofu::math::float3, float);
 	void LastState(CharacterState _lastState);
 	virtual void Special(float, bool, bool);

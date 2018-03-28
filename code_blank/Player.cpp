@@ -255,10 +255,6 @@ void Player::Update(float dT)
 		combatManager->SwordSpecialCombat();
 		specialButtonDown = false;
 	}
-
-	// Handle charater movement only once per frame
-
-
 }
 
 void Player::FixedUpdate(float fDT)
@@ -298,16 +294,51 @@ void Player::MoveReg(float dT, bool _jump, math::float3 inputDir, math::quat cam
 		charAudio.PlayOneShot(footsteps4);
 	}*/
 
-	//calculate initial movement direction and force
-	//move = (vert * m_Rigidbody.transform.forward) + (hori * m_Rigidbody.transform.right);
-
+	math::quat playerRot = pPlayer->GetRotation();
+	math::float3 lastVelocity = pPlayer->GetVelocity();
+	math::float3 velocity{};
 	
 
 	CheckGroundStatus();
-	//move = Vector3.ProjectOnPlane(move, m_GroundNormal);
 
-	//m_Rigidbody.transform.RotateAround(m_Rigidbody.transform.position, m_Rigidbody.transform.up, charRotation);
+	bool hasInputDir = math::length(inputDir) > 0.25f;
 
+	math::float3 fwd{ 0, 0, 1 };
+	if (hasInputDir && isGrounded)
+	{
+		math::float3 moveDir = camRot * inputDir;
+		moveDir.y = 0.0f;
+		moveDir = math::normalize(moveDir);
+
+		{
+			math::float3 faceDir = -moveDir;
+			float cosTheta = math::dot(faceDir, fwd);
+			if (cosTheta >= 1.0 - FLT_EPSILON)
+			{
+				playerRot = math::quat();
+			}
+			else if (-cosTheta >= 1.0 - FLT_EPSILON)
+			{
+				playerRot = { 0, 0, 1, 0 };
+			}
+			else
+			{
+				float angle = math::acos(cosTheta);
+				math::float3 axis = math::normalize(math::cross(fwd, faceDir));
+				playerRot = math::angleAxis(angle, axis);
+			}
+			pPlayer->SetRotation(playerRot);
+		}
+
+		speed += dT * kAccelerate;
+		if (speed > kMaxSpeed)
+			speed = kMaxSpeed;
+
+		velocity = moveDir * speed;
+	}
+
+	//---------------------------------------------------------------------------------------
+	/*
 	//move the character
 	if (isGrounded && dT > 0)
 	{
@@ -372,8 +403,8 @@ void Player::MoveReg(float dT, bool _jump, math::float3 inputDir, math::quat cam
 
 		move = -tPlayer->GetForwardVector() * dT * moveSpeedMultiplier;
 	}
-
-
+	*/
+	//------------------------------------------------------------------------------------------
 	//Update(dT);
 	
 
@@ -385,10 +416,12 @@ void Player::MoveReg(float dT, bool _jump, math::float3 inputDir, math::quat cam
 	else if(!isGrounded)
 	{
 		//HandleAirborneMovement(lastMove, dT);
-		HandleAirborneMovement(move, inputDir, dT);
+		HandleAirborneMovement(velocity, lastVelocity, dT);
 	}
 
-	lastMove = move;
+	pPlayer->SetVelocity(velocity);
+
+	//lastMove = move;
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Debug lines for character movement

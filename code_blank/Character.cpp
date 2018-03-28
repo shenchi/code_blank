@@ -124,10 +124,21 @@ void Character::HandleGroundedMovement(bool _jump, math::float3 move, float dT)
  // Needs fixing in the Unity version and then updated here
  // Handle airborne movement
  
-void Character::HandleAirborneMovement(math::float3 move, math::float3 inputDir, float dT)
+void Character::HandleAirborneMovement(math::float3 &velocity, math::float3 &lastVelocity, float dT)
 {
 	//float y = tCharacter->GetWorldPosition().y;
 	// TODO Change to only modify if they were sprinting when they started jumping
+
+	if (!isGrounded)
+	{
+		velocity.y = lastVelocity.y - 10.0f * dT;
+	}
+	else
+	{
+		velocity.y = 0;
+	}
+
+	/*
 	if (!isSprinting)
 	{
 		airborneSpeedMultiplier = 4.0f;
@@ -151,7 +162,8 @@ void Character::HandleAirborneMovement(math::float3 move, math::float3 inputDir,
 	}
 	move.y = y;
 
-	tCharacter->Translate(move);
+	tCharacter->Translate(move); 
+	*/
 
 	// apply extra gravity from multiplier:
 	//math::float3 extraGravityForce = (Physics.gravity * gravityMultiplier) - Physics.gravity;
@@ -184,32 +196,45 @@ void Character::HandleAirborneMovement(math::float3 move, math::float3 inputDir,
 void Character::CheckGroundStatus()
 {
 	math::float3 pos{ tCharacter->GetWorldPosition() };
-	pos.y = pos.y + 0.1f;
-	math::float3 end{ pos.x, pos.y - 0.11f, pos.z };
 	RayTestResult hitInfo = {};
-
-	// Raytest to check if the player is standing on an object
-	if (physics->RayTest(pos, end, &hitInfo))
 	{
-		if (hitInfo.hitWorldNormal.y < 0.9f)
-		{
-			moveSpeedMultiplier = slopeSpeedMultiplier;
-		}
-		groundNormal = hitInfo.hitWorldNormal;
+		math::float3 rayStart = pos + math::float3{ 0, 1, 0 };
+		math::float3 rayEnd = pos + math::float3{ 0, -0.04f, 0 };
 
-		if (!isGrounded && hasJumped)
-		{
-			//charAudio.Stop();
-			//charAudio.PlayOneShot(landFX);
-			hasJumped = false;
-		}
-		isGrounded = true;
+		isGrounded = physics->RayTest(rayStart, rayEnd, &hitInfo);
 	}
-	else
+
+	if (!isGrounded && hasJumped)
 	{
-		isGrounded = false;
-		groundNormal = tCharacter->GetUpVector();
+		//charAudio.Stop();
+		//charAudio.PlayOneShot(landFX);
+		hasJumped = false;
 	}
+
+	
+
+	//// Raytest to check if the player is standing on an object
+	//if (physics->RayTest(pos, end, &hitInfo))
+	//{
+	//	if (hitInfo.hitWorldNormal.y < 0.9f)
+	//	{
+	//		moveSpeedMultiplier = slopeSpeedMultiplier;
+	//	}
+	//	groundNormal = hitInfo.hitWorldNormal;
+
+	//	if (!isGrounded && hasJumped)
+	//	{
+	//		//charAudio.Stop();
+	//		//charAudio.PlayOneShot(landFX);
+	//		hasJumped = false;
+	//	}
+	//	isGrounded = true;
+	//}
+	//else
+	//{
+	//	isGrounded = false;
+	//	groundNormal = tCharacter->GetUpVector();
+	//}
 }// end CheckGroundStatus
 
 
