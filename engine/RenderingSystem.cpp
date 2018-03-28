@@ -1391,9 +1391,7 @@ namespace tofu
 			// for (uint32_t i = renderableCount - 2; i < renderableCount; ++i)
 		{
 			RenderingComponentData& comp = renderables[i];
-
-			if (!comp.entity.IsActive()) continue;
-
+			
 			TransformComponent transform = comp.entity.GetComponent<TransformComponent>();
 			assert(transform);
 
@@ -1669,7 +1667,6 @@ namespace tofu
 		for (uint32_t i = 0; i < animCompCount; i++)
 		{
 			AnimationComponentData& anim = animComps[i];
-			if (!anim.entity.IsActive()) continue;
 
 			RenderingComponent r = anim.entity.GetComponent<RenderingComponent>();
 

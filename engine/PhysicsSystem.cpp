@@ -448,7 +448,6 @@ namespace tofu
 		for (uint32_t i = 0; i < count; i++)
 		{
 			PhysicsComponentData& comp = comps[i];
-			if (!comp.entity.IsActive()) continue;
 
 			if (nullptr == comp.rigidbody)
 			{
