@@ -30,4 +30,6 @@ private:
 	float						pitch;
 	float						yaw;
 	float						speed;
+
+	bool						sceneLoaded;
 };

@@ -33,8 +33,15 @@
 
 struct BaseHandle
 {
-	uint32_t		id		: 16;
-	uint32_t		type	: 16; 
+	union
+	{
+		struct
+		{
+			uint32_t		id : 16;
+			uint32_t		type : 16;
+		};
+		uint32_t			raw;
+	};
 
 	TF_INLINE operator bool() const { return id != UINT16_MAX; }
 };
@@ -76,11 +83,14 @@ namespace tofu
 
 	constexpr uint32_t kFrameBufferCount = 2;
 
-	constexpr uint32_t kLevelBasedMemSize = 256 * 1024 * 1024;
-	constexpr uint32_t kLevelBasedMemAlign = 2 * 1024 * 1024;
+	constexpr uint32_t kGlobalMemSize = 128 * 1024 * 1024;
+	constexpr uint32_t kGlobalMemAlign = 2 * 1024 * 1024;
 
-	constexpr uint32_t kFrameBasedMemSize = 256 * 1024 * 1024;
-	constexpr uint32_t kFrameBasedMemAlign = 2 * 1024 * 1024;
+	constexpr uint32_t kLevelMemSize = 256 * 1024 * 1024;
+	constexpr uint32_t kLevelMemAlign = 2 * 1024 * 1024;
+
+	constexpr uint32_t kFrameMemSize = 256 * 1024 * 1024;
+	constexpr uint32_t kFrameMemAlign = 2 * 1024 * 1024;
 
 	constexpr uint32_t kMaxComponentTypes = 16;
 	constexpr uint32_t kMaxUserModules = 8;
@@ -113,4 +123,5 @@ namespace tofu
 	constexpr uint32_t kMaxRenderTargetBindings = 8;
 
 	constexpr float kDefaultFixedDeltaTime = 0.0016f;
+	constexpr uint32_t kMaxLevelResources = 10240;
 }

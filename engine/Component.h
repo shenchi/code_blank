@@ -231,6 +231,8 @@ namespace tofu
 			back_pointers = new Entity[kMaxEntities];
 			components = new T[kMaxEntities];
 			numComponents = 0;
+			numActiveComponents = 0;
+			numInactiveComponents = 0;
 
 			return kOK;
 		}
@@ -238,9 +240,19 @@ namespace tofu
 		static int32_t Shutdown()
 		{
 			numComponents = 0;
+			numActiveComponents = 0;
+			numInactiveComponents = 0;
 			delete[] components;
 			delete[] back_pointers;
 			delete[] pointers;
+
+			return kOK;
+		}
+
+		static int32_t Reset()
+		{
+			numActiveComponents = 0;
+			numInactiveComponents = 0;
 
 			return kOK;
 		}

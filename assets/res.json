@@ -1155,6 +1155,18 @@
         {
             "name": "Unity_Builtin_Plane",
             "guid": "0000000000000000e000000000000000"
+        },
+        {
+            "name": "barrel_Barrel",
+            "guid": "435b7e69285c59b4588a39e3308b6576"
+        },
+        {
+            "name": "Wooden_Barrel_Barrel_Low",
+            "guid": "97b231c8dc21ff1478b5250f44398a44"
+        },
+        {
+            "name": "HandLight_HandLight",
+            "guid": "2b858557e2e59a748a2c7606a9052648"
         }
     ],
     "materials": [
@@ -3229,6 +3241,90 @@
                 "z": 0.0,
                 "w": 0.0
             }
+        },
+        {
+            "Name": "Flamable_2",
+            "GUID": "012983db11badba469a5632ea0db7d55",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/barrel_low_DefaultMaterial_AlbedoTransparency",
+            "NormalMap": "textures/barrel_low_DefaultMaterial_Normal",
+            "MetallicGlossMap": "textures/barrel_low_DefaultMaterial_MetallicSmoothness",
+            "OcclusionMap": "textures/barrel_low_DefaultMaterial_AO",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "Wooden_Barrel",
+            "GUID": "a58a2f593b7af2847a5d745657b73736",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Barrel_AlbedoTransparency",
+            "NormalMap": "textures/Barrel_Normal",
+            "MetallicGlossMap": "textures/Barrel_MetallicSmoothness",
+            "OcclusionMap": "textures/Barrel_Occlusion",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "Name": "HandlightMat",
+            "GUID": "b41d977f60983a7438f8c9f79f435ef3",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/HandLight_Base",
+            "NormalMap": "textures/HandLight_Normal_OpenGL",
+            "MetallicGlossMap": "textures/HandLight_Glossiness",
+            "OcclusionMap": "",
+            "EmissionMap": "textures/HandLight_Emission",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 5.0,
+                "g": 5.0,
+                "b": 5.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
         }
     ],
     "textures": [
@@ -4040,6 +4136,114 @@
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
             "MipmapCount": 9,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/barrel_low_DefaultMaterial_AlbedoTransparency",
+            "GUID": "b696d9f35328844498a4c35e81649364",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/barrel_low_DefaultMaterial_Normal",
+            "GUID": "34436d83e2c7b93489f4a6643a4d4c2b",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/barrel_low_DefaultMaterial_MetallicSmoothness",
+            "GUID": "4027cb7daea0e344dae0dbc0d4c2782d",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/barrel_low_DefaultMaterial_AO",
+            "GUID": "3965cfcb4804ac047902586bb331d4c9",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Barrel_AlbedoTransparency",
+            "GUID": "2df604705792cac44bc3b6b777b85670",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Barrel_Normal",
+            "GUID": "d8a35f85444b45b43ad463c22373e39d",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Barrel_MetallicSmoothness",
+            "GUID": "ee2d3edcf24f9a247b0891a6583744dc",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Barrel_Occlusion",
+            "GUID": "8509f52e4fb8e7f47a3f72ba3c4bbe96",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/HandLight_Base",
+            "GUID": "2cbb3265091ce9047aa93f1ceb4635fe",
+            "Dimension": "tex2d",
+            "WrapMode": "clamp",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/HandLight_Normal_OpenGL",
+            "GUID": "d6ab4b0f6c195124fbf9cd27c2ff148f",
+            "Dimension": "tex2d",
+            "WrapMode": "clamp",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/HandLight_Glossiness",
+            "GUID": "cde9b199a41f3b64db61e99a76502684",
+            "Dimension": "tex2d",
+            "WrapMode": "clamp",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/HandLight_Emission",
+            "GUID": "a2c72ef2c6771224eb79034239ee8c93",
+            "Dimension": "tex2d",
+            "WrapMode": "clamp",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
             "MipmapBias": 0.0
         }
     ]

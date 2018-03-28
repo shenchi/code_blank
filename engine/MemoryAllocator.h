@@ -7,13 +7,14 @@ namespace tofu
 	// sets of allocator for different scenario
 	enum AllocatorType
 	{
-		kAllocDefault,
-		kAllocLevelBasedMem,
-		kAllocFrameBasedMem,
-		kAllocFrameBasedMemEnd = kAllocFrameBasedMem + kFrameBufferCount - 1,
-		kAllocLevelBasedVMem,
-		kAllocFrameBasedVMem,
-		kAllocFrameBasedVMemEnd = kAllocFrameBasedVMem + kFrameBufferCount - 1,
+		kAllocGlobal,
+		kAllocLevel,
+		kAllocFrame,
+		kAllocFrameEnd = kAllocFrame + kFrameBufferCount - 1,
+		kAllocGlobalVMem,
+		kAllocLevelVMem,
+		kAllocFrameVMem,
+		kAllocFrameVMemEnd = kAllocFrameVMem + kFrameBufferCount - 1,
 		kMaxMemoryAllocators,
 	};
 
@@ -36,10 +37,15 @@ namespace tofu
 
 		// allocate and new
 		template<typename T>
-		static T* Allocate(uint32_t allocNo, size_t alignment = 4)
+		static T* Alloc(uint32_t allocNo, size_t alignment = 4u)
 		{
 			void* ptr = Allocators[allocNo].Allocate(sizeof(T), alignment);
 			return new(ptr) T();
+		}
+
+		TF_INLINE static void* Alloc(size_t size, uint32_t allocNo, size_t alignment = 4u)
+		{
+			return Allocators[allocNo].Allocate(size, alignment);
 		}
 
 	private:

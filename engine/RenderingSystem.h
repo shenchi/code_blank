@@ -46,45 +46,50 @@ namespace tofu
 		// submit all render commands to backend
 		int32_t EndFrame();
 
-		Model* CreateModel(const char* filename);
+		Model* CreateModel(const char* filename, uint32_t label = kResourceLevel);
 
-		TextureHandle CreateTexture(const char* filename);
+		TextureHandle CreateTexture(const char* filename, uint32_t label = kResourceLevel);
 
-		TextureHandle CreateTexture(PixelFormat format, uint32_t width, uint32_t height, uint32_t arraySize = 1, uint32_t pitch = 0, void* data = nullptr, uint32_t binding = kBindingShaderResource);
+		TextureHandle CreateTexture(PixelFormat format, uint32_t width, uint32_t height, uint32_t arraySize = 1, uint32_t pitch = 0, void* data = nullptr, uint32_t binding = kBindingShaderResource, uint32_t label = kResourceLevel);
 
-		TextureHandle CreateTexture(TextureHandle source, uint32_t startIndex, uint32_t arraySize = 1, uint32_t binding = kBindingShaderResource, PixelFormat format = kFormatAuto);
+		TextureHandle CreateTexture(TextureHandle source, uint32_t startIndex, uint32_t arraySize = 1, uint32_t binding = kBindingShaderResource, PixelFormat format = kFormatAuto, uint32_t label = kResourceLevel);
 
-		TextureHandle CreateTexture(PixelFormat format, uint32_t width, uint32_t height, uint32_t depth, uint32_t pitch = 0, uint32_t slicePitch = 0, void* data = nullptr, uint32_t binding = kBindingShaderResource);
+		TextureHandle CreateTexture(PixelFormat format, uint32_t width, uint32_t height, uint32_t depth, uint32_t pitch = 0, uint32_t slicePitch = 0, void* data = nullptr, uint32_t binding = kBindingShaderResource, uint32_t label = kResourceLevel);
 
-		Material* CreateMaterial(MaterialType type);
+		Material* CreateMaterial(MaterialType type, uint32_t label = kResourceLevel);
 
-		//TextureHandle CreateDepthMap( uint32_t width, uint32_t height);
+		int32_t CleanupLevelResources();
+
 	private:
 
-		BufferHandle CreateConstantBuffer(uint32_t size, bool dynamic = true);
+		BufferHandle CreateConstantBuffer(uint32_t size, bool dynamic = true, uint32_t label = kResourceGlobal);
 
 		int32_t UpdateConstantBuffer(BufferHandle buffer, uint32_t size, void* data);
 
 		int32_t InitBuiltinMaterial(MaterialType matType, const char* vsFile, const char* psFile);
 
-		int32_t LoadVertexShader(const char* filename, VertexShaderHandle& handle);
+		int32_t LoadVertexShader(const char* filename, VertexShaderHandle& handle, uint32_t label = kResourceGlobal);
 
-		int32_t LoadPixelShader(const char* filename, PixelShaderHandle& handle);
+		int32_t LoadPixelShader(const char* filename, PixelShaderHandle& handle, uint32_t label = kResourceGlobal);
 
-		int32_t LoadComputeShader(const char* filename, ComputeShaderHandle& handle);
+		int32_t LoadComputeShader(const char* filename, ComputeShaderHandle& handle, uint32_t label = kResourceGlobal);
 
 		int32_t ReallocAnimationResources(AnimationComponentData& c);
 
 		int32_t DeferredPipeline();
 
+		TF_INLINE void AddLevelResourceHandle(BaseHandle handle)
+		{ 
+			assert(numLevelResources < kMaxLevelResources);
+			assert(handle);
+			levelResources[numLevelResources++] = handle; 
+		}
+
 	private:
-		Renderer*	renderer;
 
 		HandleAllocator<ModelHandle, kMaxModels>			modelHandleAlloc;
 		HandleAllocator<MeshHandle, kMaxMeshes>				meshHandleAlloc;
 		HandleAllocator<MaterialHandle, kMaxMaterials>		materialHandleAlloc;
-
-		std::unordered_map<std::string, ModelHandle>		modelTable;
 
 		HandleAllocator<BufferHandle, kMaxBuffers>					bufferHandleAlloc;
 		HandleAllocator<TextureHandle, kMaxTextures>				textureHandleAlloc;
@@ -93,6 +98,13 @@ namespace tofu
 		HandleAllocator<PixelShaderHandle, kMaxPixelShaders>		pixelShaderHandleAlloc;
 		HandleAllocator<ComputeShaderHandle, kMaxComputeShaders>	computeShaderHandleAlloc;
 		HandleAllocator<PipelineStateHandle, kMaxPipelineStates>	pipelineStateHandleAlloc;
+
+		BaseHandle				levelResources[kMaxLevelResources];
+		uint32_t				numLevelResources;
+
+		std::unordered_map<std::string, ModelHandle>		modelTable;
+
+		Renderer*				renderer;
 
 		size_t					frameNo;
 		uint32_t				allocNo;

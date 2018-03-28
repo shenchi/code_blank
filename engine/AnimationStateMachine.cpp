@@ -20,7 +20,7 @@ namespace tofu
 	{
 		// FIXME: Chi
 		// TODO: move all memory allocation to allocator
-		//results = static_cast<Transform *>(MemoryAllocator::Allocators[kAllocFrameBasedMem]
+		//results = static_cast<Transform *>(MemoryAllocator::Allocators[kAllocFrame]
 		//	.Allocate(sizeof(Transform) * model->header->NumBones, alignof(AnimationState)));
 
 		results = new Transform[model->header->NumBones];
@@ -391,7 +391,7 @@ namespace tofu
 
 		//// TODO:
 		//AnimationState *state = static_cast<AnimationState *>(
-		//	MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(sizeof(AnimationState), alignof(AnimationState)));
+		//	MemoryAllocator::Allocators[kAllocLevel].Allocate(sizeof(AnimationState), alignof(AnimationState)));
 
 		//states.push_back(new(state)AnimationState(name));
 

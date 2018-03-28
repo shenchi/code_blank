@@ -35,6 +35,10 @@ namespace tofu
 
 		int32_t Quit();
 
+	public:
+
+		int32_t UnloadLevel();
+
 	private:
 
 		int32_t Shutdown();

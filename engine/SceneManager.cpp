@@ -28,7 +28,7 @@ namespace tofu
 			filename,
 			true,
 			4,
-			kAllocLevelBasedMem,
+			kAllocLevel,
 			reinterpret_cast<void**>(&json),
 			nullptr));
 

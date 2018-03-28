@@ -79,24 +79,10 @@ int32_t RenderingTest::Init()
 		cam->SetSkyboxSpecularMap(skyboxSpec);
 	}
 
-	//// Dummy light
-	//{
-	//	Entity e = Entity::Create();
-
-	//	tSun = e.AddComponent<TransformComponent>();
-	//	tSun->SetLocalPosition(math::float3{ 0.0f, 0.0f, 0.0f });
-	//	//tSun->SetLocalRotation(math::angleAxis(3.14f / 4, math::float3{ 1.0f, 0.0f, 0.0f }));
-	//	tSun->FaceTo(math::float3{ 0.0f, -1.0f, 1.0f });
-
-	//	lSun = e.AddComponent<LightComponent>();
-	//	lSun->SetType(LightType::kLightTypeDirectional);
-	//	math::float4 sunColor = math::float4{ 1.0f, 1.0f, 1.0f, 1.0f };
-	//	lSun->SetColor(sunColor);
-	//	//lSun->CreateDepthMap();
-	//}
-
 	pitch = InitPitch;
 	yaw = 0.0f;
+
+	sceneLoaded = true;
 
 	return kOK;
 }
@@ -112,6 +98,22 @@ int32_t RenderingTest::Update()
 	if (input->IsButtonDown(ButtonId::kKeyEscape))
 	{
 		Engine::instance()->Quit();
+	}
+
+	if (input->IsButtonDown(ButtonId::kKeyL) && !sceneLoaded)
+	{
+		Init();
+		return kOK;
+	}
+
+	if (!sceneLoaded) return kOK;
+
+	if (input->IsButtonDown(ButtonId::kKeyU))
+	{
+		sceneMgr = SceneManager();
+		CHECKED(Engine::instance()->UnloadLevel());
+		sceneLoaded = false;
+		return kOK;
 	}
 
 	constexpr float sensitive = 0.01f;

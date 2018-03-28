@@ -79,6 +79,7 @@ namespace
 		uint32_t					bindingFlags : 16;
 		uint32_t					size;
 		uint32_t					stride;
+		uint32_t					label;
 	};
 
 	struct Texture
@@ -97,11 +98,13 @@ namespace
 		uint32_t					width;
 		uint32_t					height;
 		uint32_t					depth;
+		uint32_t					label;
 	};
 
 	struct Sampler
 	{
 		ID3D11SamplerState*			samp;
+		uint32_t					label;
 	};
 
 	struct VertexShader
@@ -109,6 +112,7 @@ namespace
 		ID3D11VertexShader*			shader;
 		void*						data; // binary code data (for input layout creation)
 		size_t						size;
+		uint32_t					label;
 	};
 
 	struct PixelShader
@@ -116,6 +120,7 @@ namespace
 		ID3D11PixelShader*			shader;
 		void*						data;
 		size_t						size;
+		uint32_t					label;
 	};
 
 	struct ComputeShader
@@ -123,6 +128,7 @@ namespace
 		ID3D11ComputeShader*		shader;
 		void*						data;
 		size_t						size;
+		uint32_t					label;
 	};
 
 	struct PipelineState
@@ -134,6 +140,7 @@ namespace
 		tofu::VertexShaderHandle	vertexShader;
 		tofu::PixelShaderHandle		pixelShader;
 		D3D11_VIEWPORT				viewport;
+		uint32_t					label;
 		uint8_t						stencilRef;
 	};
 }
@@ -235,6 +242,41 @@ namespace tofu
 				{
 					return kErrUnknown;
 				}
+
+				return kOK;
+			}
+
+			virtual int32_t CleanupResources(uint32_t labelMask) override
+			{
+				// unbind resources
+				{
+					DrawParams params{};
+					BindRenderTargets(&params);
+					BindShaderResources(&params);
+				}
+				{
+					ComputeParams params{};
+					BindShaderResources(&params);
+				}
+
+				// release resources
+
+#define ReleaseResources(RES_ARRAY, MAX_COUNT, MEMBER_TO_CHECK, DESTROY_FUNC) \
+				for (uint32_t i = 0; i < MAX_COUNT; i++) \
+				{ \
+					if (nullptr != RES_ARRAY[i].MEMBER_TO_CHECK && (labelMask & RES_ARRAY[i].label) != 0u) \
+					{ \
+						DESTROY_FUNC(&i); \
+					} \
+				} 
+
+				ReleaseResources(buffers, kMaxBuffers, buf, DestroyBuffer);
+				ReleaseResources(textures, kMaxTextures, tex, DestroyTexture);
+				ReleaseResources(samplers, kMaxSamplers, samp, DestroySampler);
+				ReleaseResources(vertexShaders, kMaxVertexShaders, shader, DestroyVertexShader);
+				ReleaseResources(pixelShaders, kMaxPixelShaders, shader, DestroyPixelShader);
+				ReleaseResources(computeShaders, kMaxComputeShaders, shader, DestroyComputeShader);
+				ReleaseResources(pipelineStates, kMaxPipelineStates, depthStencilState, DestroyPipelineState);
 
 				return kOK;
 			}
@@ -472,6 +514,338 @@ namespace tofu
 				return kOK;
 			}
 
+			int32_t BindRenderTargets(DrawParams* params)
+			{
+				if (params->renderTargets[0].id == DrawParams::DefaultRenderTarget.id)
+					params->renderTargets[0] = TextureHandle(kMaxTextures + 1);
+
+				if (params->depthRenderTarget.id == DrawParams::DefaultRenderTarget.id)
+					params->depthRenderTarget = TextureHandle(kMaxTextures);
+
+				bool rebind = false;
+
+				if (params->depthRenderTarget.id != depthRenderTarget.id)
+				{
+					rebind = true;
+				}
+				else
+				{
+					for (uint32_t i = 0; i < kMaxRenderTargetBindings; i++)
+					{
+						if (params->renderTargets[i].id != renderTargets[i].id)
+						{
+							rebind = true;
+							break;
+						}
+					}
+				}
+
+				if (rebind)
+				{
+					// unbind textures;
+					ID3D11ShaderResourceView* srvs[kMaxTextureBindings] = { nullptr };
+					context->VSSetShaderResources(0, kMaxTextureBindings, srvs);
+					context->PSSetShaderResources(0, kMaxTextureBindings, srvs);
+
+					ID3D11RenderTargetView* rtvs[kMaxRenderTargetBindings] = {};
+					ID3D11DepthStencilView* dsv = nullptr;
+
+					for (uint32_t i = 0; i < kMaxRenderTargetBindings; i++)
+					{
+						renderTargets[i] = params->renderTargets[i];
+						if (renderTargets[i])
+						{
+							Texture& tex = textures[renderTargets[i].id];
+							if (nullptr == tex.rtv ||
+								!(tex.bindingFlags & kBindingRenderTarget))
+								return kErrUnknown;
+
+							rtvs[i] = tex.rtv;
+						}
+					}
+
+					depthRenderTarget = params->depthRenderTarget;
+					if (depthRenderTarget)
+					{
+						Texture& tex = textures[depthRenderTarget.id];
+						if (nullptr == tex.dsv ||
+							!(tex.bindingFlags & kBindingDepthStencil))
+							return kErrUnknown;
+
+						dsv = tex.dsv;
+					}
+
+					context->OMSetRenderTargets(kMaxRenderTargetBindings, rtvs, dsv);
+				}
+
+				return kOK;
+			}
+
+			int32_t BindShaderResources(DrawParams* params)
+			{
+				// vertex shader resource binding
+				{
+					// constant buffer bidnings
+					ID3D11Buffer* cbs[kMaxConstantBufferBindings] = {};
+					UINT offsets[kMaxConstantBufferBindings] = {};
+					UINT sizes[kMaxConstantBufferBindings] = {};
+
+					for (uint32_t i = 0; i < kMaxConstantBufferBindings; i++)
+					{
+						if (params->vsConstantBuffers[i].bufferHandle)
+						{
+							Buffer& buf = buffers[params->vsConstantBuffers[i].bufferHandle.id];
+							assert(nullptr != buf.buf);
+							if (!(buf.bindingFlags & kBindingConstantBuffer))
+							{
+								return kErrUnknown;
+							}
+
+							cbs[i] = buf.buf;
+							offsets[i] = params->vsConstantBuffers[i].offsetInVectors;
+							sizes[i] = params->vsConstantBuffers[i].sizeInVectors;
+							if (0u == sizes[i])
+							{
+								sizes[i] = buf.size / 16;
+							}
+						}
+					}
+					context->VSSetConstantBuffers1(0, kMaxConstantBufferBindings, cbs, offsets, sizes);
+
+					// textures bindings
+					ID3D11ShaderResourceView* srvs[kMaxTextureBindings] = {};
+					for (uint32_t i = 0; i < kMaxTextureBindings; i++)
+					{
+						BaseHandle handle = params->vsShaderResources[i];
+
+						if (handle && handle.type == kHandleTypeTexture)
+						{
+							Texture& tex = textures[handle.id];
+							assert(nullptr != tex.srv);
+							if (!(tex.bindingFlags & kBindingShaderResource))
+							{
+								return kErrUnknown;
+							}
+
+							srvs[i] = tex.srv;
+						}
+						else if (handle && handle.type == kHandleTypeBuffer)
+						{
+							Buffer& buf = buffers[handle.id];
+							assert(nullptr != buf.srv);
+							if (!(buf.bindingFlags & kBindingShaderResource))
+							{
+								return kErrUnknown;
+							}
+
+							srvs[i] = buf.srv;
+						}
+					}
+					context->VSSetShaderResources(0, kMaxTextureBindings, srvs);
+
+					// samplers bidnings
+					ID3D11SamplerState* samps[kMaxSamplerBindings] = {};
+					for (uint32_t i = 0; i < kMaxSamplerBindings; i++)
+					{
+						if (params->vsSamplers[i])
+						{
+							Sampler& samp = samplers[params->vsSamplers[i].id];
+							assert(nullptr != samp.samp);
+
+							samps[i] = samp.samp;
+						}
+					}
+					context->VSSetSamplers(0, kMaxSamplerBindings, samps);
+				}
+
+				// pixel shader resource binding
+				{
+					// constant buffer bindings
+					ID3D11Buffer* cbs[kMaxConstantBufferBindings] = {};
+					UINT offsets[kMaxConstantBufferBindings] = {};
+					UINT sizes[kMaxConstantBufferBindings] = {};
+
+					for (uint32_t i = 0; i < kMaxConstantBufferBindings; i++)
+					{
+						if (params->psConstantBuffers[i].bufferHandle)
+						{
+							Buffer& buf = buffers[params->psConstantBuffers[i].bufferHandle.id];
+							assert(nullptr != buf.buf);
+							if (!(buf.bindingFlags & kBindingConstantBuffer))
+							{
+								return kErrUnknown;
+							}
+
+							cbs[i] = buf.buf;
+							offsets[i] = params->psConstantBuffers[i].offsetInVectors;
+							sizes[i] = params->psConstantBuffers[i].sizeInVectors;
+							if (0u == sizes[i])
+							{
+								sizes[i] = buf.size / 16;
+							}
+						}
+					}
+					context->PSSetConstantBuffers1(0, kMaxConstantBufferBindings, cbs, offsets, sizes);
+
+					// texture bindings
+					ID3D11ShaderResourceView* srvs[kMaxTextureBindings] = {};
+					for (uint32_t i = 0; i < kMaxTextureBindings; i++)
+					{
+						BaseHandle handle = params->psShaderResources[i];
+
+						if (handle && handle.type == kHandleTypeTexture)
+						{
+							Texture& tex = textures[handle.id];
+							assert(nullptr != tex.srv);
+							if (!(tex.bindingFlags & kBindingShaderResource))
+							{
+								return kErrUnknown;
+							}
+
+							srvs[i] = tex.srv;
+						}
+						else if (handle && handle.type == kHandleTypeBuffer)
+						{
+							Buffer& buf = buffers[handle.id];
+							assert(nullptr != buf.srv);
+							if (!(buf.bindingFlags & kBindingShaderResource))
+							{
+								return kErrUnknown;
+							}
+
+							srvs[i] = buf.srv;
+						}
+					}
+					context->PSSetShaderResources(0, kMaxTextureBindings, srvs);
+
+					// sampler bindings
+					ID3D11SamplerState* samps[kMaxSamplerBindings] = {};
+					for (uint32_t i = 0; i < kMaxSamplerBindings; i++)
+					{
+						if (params->psSamplers[i])
+						{
+							Sampler& samp = samplers[params->psSamplers[i].id];
+							assert(nullptr != samp.samp);
+
+							samps[i] = samp.samp;
+						}
+					}
+					context->PSSetSamplers(0, kMaxSamplerBindings, samps);
+				}
+
+				return kOK;
+			}
+
+			int32_t BindShaderResources(ComputeParams* params)
+			{
+				{
+					// constant buffer bindings
+					ID3D11Buffer* cbs[kMaxConstantBufferBindings] = {};
+					UINT offsets[kMaxConstantBufferBindings] = {};
+					UINT sizes[kMaxConstantBufferBindings] = {};
+
+					for (uint32_t i = 0; i < kMaxConstantBufferBindings; i++)
+					{
+						if (params->constantBuffers[i].bufferHandle)
+						{
+							Buffer& buf = buffers[params->constantBuffers[i].bufferHandle.id];
+							assert(nullptr != buf.buf);
+							if (!(buf.bindingFlags & kBindingConstantBuffer))
+							{
+								return kErrUnknown;
+							}
+
+							cbs[i] = buf.buf;
+							offsets[i] = params->constantBuffers[i].offsetInVectors;
+							sizes[i] = params->constantBuffers[i].sizeInVectors;
+							if (0u == sizes[i])
+							{
+								sizes[i] = buf.size / 16;
+							}
+						}
+					}
+					context->CSSetConstantBuffers1(0, kMaxConstantBufferBindings, cbs, offsets, sizes);
+
+					// rw texture bindings
+					ID3D11UnorderedAccessView* uavs[kMaxTextureBindings] = {};
+					for (uint32_t i = 0; i < kMaxTextureBindings; i++)
+					{
+						BaseHandle handle = params->rwShaderResources[i];
+
+						if (handle && handle.type == kHandleTypeTexture)
+						{
+							Texture& tex = textures[handle.id];
+							assert(nullptr != tex.uav);
+							if (!(tex.bindingFlags & kBindingUnorderedAccess))
+							{
+								return kErrUnknown;
+							}
+
+							uavs[i] = tex.uav;
+						}
+						else if (handle && handle.type == kHandleTypeBuffer)
+						{
+							Buffer& buf = buffers[handle.id];
+							assert(nullptr != buf.uav);
+							if (!(buf.bindingFlags & kBindingUnorderedAccess))
+							{
+								return kErrUnknown;
+							}
+
+							uavs[i] = buf.uav;
+						}
+					}
+					context->CSSetUnorderedAccessViews(0, kMaxTextureBindings, uavs, nullptr);
+
+					// texture bindings
+					ID3D11ShaderResourceView* srvs[kMaxTextureBindings] = {};
+					for (uint32_t i = 0; i < kMaxTextureBindings; i++)
+					{
+						BaseHandle handle = params->shaderResources[i];
+
+						if (handle && handle.type == kHandleTypeTexture)
+						{
+							Texture& tex = textures[handle.id];
+							assert(nullptr != tex.srv);
+							if (!(tex.bindingFlags & kBindingShaderResource))
+							{
+								return kErrUnknown;
+							}
+
+							srvs[i] = tex.srv;
+						}
+						else if (handle && handle.type == kHandleTypeBuffer)
+						{
+							Buffer& buf = buffers[handle.id];
+							assert(nullptr != buf.srv);
+							if (!(buf.bindingFlags & kBindingShaderResource))
+							{
+								return kErrUnknown;
+							}
+
+							srvs[i] = buf.srv;
+						}
+					}
+					context->CSSetShaderResources(0, kMaxTextureBindings, srvs);
+
+					// sampler bindings
+					ID3D11SamplerState* samps[kMaxSamplerBindings] = {};
+					for (uint32_t i = 0; i < kMaxSamplerBindings; i++)
+					{
+						if (params->samplers[i])
+						{
+							Sampler& samp = samplers[params->samplers[i].id];
+							assert(nullptr != samp.samp);
+
+							samps[i] = samp.samp;
+						}
+					}
+					context->CSSetSamplers(0, kMaxSamplerBindings, samps);
+				}
+
+				return kOK;
+			}
+
 			int32_t Nop(void*) { return kOK; }
 
 			int32_t CreateBuffer(void* _params)
@@ -564,6 +938,7 @@ namespace tofu
 				buffers[id].bindingFlags = binding;
 				buffers[id].size = params->size;
 				buffers[id].stride = params->stride;
+				buffers[id].label = params->label;
 
 				return kOK;
 			}
@@ -936,7 +1311,7 @@ namespace tofu
 					textures[id].width = desc.Width;
 					textures[id].height = desc.Height;
 					textures[id].depth = 0;
-
+					textures[id].label = params->label;
 				}
 				else
 				{
@@ -951,6 +1326,7 @@ namespace tofu
 					textures[id].width = desc.Width;
 					textures[id].height = desc.Height;
 					textures[id].depth = desc.Depth;
+					textures[id].label = params->label;
 				}
 
 				return kOK;
@@ -1048,6 +1424,7 @@ namespace tofu
 				samplerDesc.AddressW = (D3D11_TEXTURE_ADDRESS_MODE)params->textureAddressW;
 
 				DXCHECKED(device->CreateSamplerState(&samplerDesc, &(samplers[id].samp)));
+				samplers[id].label = params->label;
 
 				return kOK;
 			}
@@ -1080,7 +1457,7 @@ namespace tofu
 				assert(nullptr == vertexShaders[id].shader);
 
 				// store binary code for further use (input layout)
-				void* ptr = MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(params->size, 4);
+				void* ptr = MemoryAllocator::Allocators[kAllocLevel].Allocate(params->size, 4);
 				assert(nullptr != ptr);
 				memcpy(ptr, params->data, params->size);
 
@@ -1088,6 +1465,7 @@ namespace tofu
 
 				vertexShaders[id].data = ptr;
 				vertexShaders[id].size = params->size;
+				vertexShaders[id].label = params->label;
 
 				return kOK;
 			}
@@ -1120,7 +1498,7 @@ namespace tofu
 				assert(nullptr == pixelShaders[id].shader);
 
 				// store binary code for further use
-				void* ptr = MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(params->size, 4);
+				void* ptr = MemoryAllocator::Allocators[kAllocLevel].Allocate(params->size, 4);
 				assert(nullptr != ptr);
 				memcpy(ptr, params->data, params->size);
 
@@ -1128,6 +1506,7 @@ namespace tofu
 
 				pixelShaders[id].data = ptr;
 				pixelShaders[id].size = params->size;
+				pixelShaders[id].label = params->label;
 
 				return kOK;
 			}
@@ -1160,7 +1539,7 @@ namespace tofu
 				assert(nullptr == computeShaders[id].shader);
 
 				// store binary code for further use
-				void* ptr = MemoryAllocator::Allocators[kAllocLevelBasedMem].Allocate(params->size, 4);
+				void* ptr = MemoryAllocator::Allocators[kAllocLevel].Allocate(params->size, 4);
 				assert(nullptr != ptr);
 				memcpy(ptr, params->data, params->size);
 
@@ -1168,6 +1547,7 @@ namespace tofu
 
 				computeShaders[id].data = ptr;
 				computeShaders[id].size = params->size;
+				computeShaders[id].label = params->label;
 
 				return kOK;
 			}
@@ -1252,6 +1632,8 @@ namespace tofu
 				pipelineStates[id].vertexShader = params->vertexShader;
 				pipelineStates[id].pixelShader = params->pixelShader;
 
+				pipelineStates[id].label = params->label;
+
 				pipelineStates[id].stencilRef = params->stencilRef;
 
 				return kOK;
@@ -1332,219 +1714,10 @@ namespace tofu
 				}
 
 				// render targets
-				{
-					if (params->renderTargets[0].id == DrawParams::DefaultRenderTarget.id)
-						params->renderTargets[0] = TextureHandle(kMaxTextures + 1);
+				CHECKED(BindRenderTargets(params));
 
-					if (params->depthRenderTarget.id == DrawParams::DefaultRenderTarget.id)
-						params->depthRenderTarget = TextureHandle(kMaxTextures);
-
-					bool rebind = false;
-
-					if (params->depthRenderTarget.id != depthRenderTarget.id)
-					{
-						rebind = true;
-					}
-					else
-					{
-						for (uint32_t i = 0; i < kMaxRenderTargetBindings; i++)
-						{
-							if (params->renderTargets[i].id != renderTargets[i].id)
-							{
-								rebind = true;
-								break;
-							}
-						}
-					}
-
-					if (rebind)
-					{
-						// unbind textures;
-						ID3D11ShaderResourceView* srvs[kMaxTextureBindings] = { nullptr };
-						context->VSSetShaderResources(0, kMaxTextureBindings, srvs);
-						context->PSSetShaderResources(0, kMaxTextureBindings, srvs);
-
-						ID3D11RenderTargetView* rtvs[kMaxRenderTargetBindings] = {};
-						ID3D11DepthStencilView* dsv = nullptr;
-
-						for (uint32_t i = 0; i < kMaxRenderTargetBindings; i++)
-						{
-							renderTargets[i] = params->renderTargets[i];
-							if (renderTargets[i])
-							{
-								Texture& tex = textures[renderTargets[i].id];
-								if (nullptr == tex.rtv ||
-									!(tex.bindingFlags & kBindingRenderTarget))
-									return kErrUnknown;
-
-								rtvs[i] = tex.rtv;
-							}
-						}
-
-						depthRenderTarget = params->depthRenderTarget;
-						if (depthRenderTarget)
-						{
-							Texture& tex = textures[depthRenderTarget.id];
-							if (nullptr == tex.dsv ||
-								!(tex.bindingFlags & kBindingDepthStencil))
-								return kErrUnknown;
-
-							dsv = tex.dsv;
-						}
-
-						context->OMSetRenderTargets(kMaxRenderTargetBindings, rtvs, dsv);
-					}
-				}
-
-				// vertex shader resource binding
-				{
-					// constant buffer bidnings
-					ID3D11Buffer* cbs[kMaxConstantBufferBindings] = {};
-					UINT offsets[kMaxConstantBufferBindings] = {};
-					UINT sizes[kMaxConstantBufferBindings] = {};
-
-					for (uint32_t i = 0; i < kMaxConstantBufferBindings; i++)
-					{
-						if (params->vsConstantBuffers[i].bufferHandle)
-						{
-							Buffer& buf = buffers[params->vsConstantBuffers[i].bufferHandle.id];
-							assert(nullptr != buf.buf);
-							if (!(buf.bindingFlags & kBindingConstantBuffer))
-							{
-								return kErrUnknown;
-							}
-
-							cbs[i] = buf.buf;
-							offsets[i] = params->vsConstantBuffers[i].offsetInVectors;
-							sizes[i] = params->vsConstantBuffers[i].sizeInVectors;
-							if (0u == sizes[i])
-							{
-								sizes[i] = buf.size / 16;
-							}
-						}
-					}
-					context->VSSetConstantBuffers1(0, kMaxConstantBufferBindings, cbs, offsets, sizes);
-
-					// textures bindings
-					ID3D11ShaderResourceView* srvs[kMaxTextureBindings] = {};
-					for (uint32_t i = 0; i < kMaxTextureBindings; i++)
-					{
-						BaseHandle handle = params->vsShaderResources[i];
-
-						if (handle && handle.type == kHandleTypeTexture)
-						{
-							Texture& tex = textures[handle.id];
-							assert(nullptr != tex.srv);
-							if (!(tex.bindingFlags & kBindingShaderResource))
-							{
-								return kErrUnknown;
-							}
-
-							srvs[i] = tex.srv;
-						}
-						else if (handle && handle.type == kHandleTypeBuffer)
-						{
-							Buffer& buf = buffers[handle.id];
-							assert(nullptr != buf.srv);
-							if (!(buf.bindingFlags & kBindingShaderResource))
-							{
-								return kErrUnknown;
-							}
-
-							srvs[i] = buf.srv;
-						}
-					}
-					context->VSSetShaderResources(0, kMaxTextureBindings, srvs);
-
-					// samplers bidnings
-					ID3D11SamplerState* samps[kMaxSamplerBindings] = {};
-					for (uint32_t i = 0; i < kMaxSamplerBindings; i++)
-					{
-						if (params->vsSamplers[i])
-						{
-							Sampler& samp = samplers[params->vsSamplers[i].id];
-							assert(nullptr != samp.samp);
-
-							samps[i] = samp.samp;
-						}
-					}
-					context->VSSetSamplers(0, kMaxSamplerBindings, samps);
-				}
-
-				// pixel shader resource binding
-				{
-					// constant buffer bindings
-					ID3D11Buffer* cbs[kMaxConstantBufferBindings] = {};
-					UINT offsets[kMaxConstantBufferBindings] = {};
-					UINT sizes[kMaxConstantBufferBindings] = {};
-
-					for (uint32_t i = 0; i < kMaxConstantBufferBindings; i++)
-					{
-						if (params->psConstantBuffers[i].bufferHandle)
-						{
-							Buffer& buf = buffers[params->psConstantBuffers[i].bufferHandle.id];
-							assert(nullptr != buf.buf);
-							if (!(buf.bindingFlags & kBindingConstantBuffer))
-							{
-								return kErrUnknown;
-							}
-
-							cbs[i] = buf.buf;
-							offsets[i] = params->psConstantBuffers[i].offsetInVectors;
-							sizes[i] = params->psConstantBuffers[i].sizeInVectors;
-							if (0u == sizes[i])
-							{
-								sizes[i] = buf.size / 16;
-							}
-						}
-					}
-					context->PSSetConstantBuffers1(0, kMaxConstantBufferBindings, cbs, offsets, sizes);
-
-					// texture bindings
-					ID3D11ShaderResourceView* srvs[kMaxTextureBindings] = {};
-					for (uint32_t i = 0; i < kMaxTextureBindings; i++)
-					{
-						BaseHandle handle = params->psShaderResources[i];
-
-						if (handle && handle.type == kHandleTypeTexture)
-						{
-							Texture& tex = textures[handle.id];
-							assert(nullptr != tex.srv);
-							if (!(tex.bindingFlags & kBindingShaderResource))
-							{
-								return kErrUnknown;
-							}
-
-							srvs[i] = tex.srv;
-						}
-						else if (handle && handle.type == kHandleTypeBuffer)
-						{
-							Buffer& buf = buffers[handle.id];
-							assert(nullptr != buf.srv);
-							if (!(buf.bindingFlags & kBindingShaderResource))
-							{
-								return kErrUnknown;
-							}
-
-							srvs[i] = buf.srv;
-						}
-					}
-					context->PSSetShaderResources(0, kMaxTextureBindings, srvs);
-
-					// sampler bindings
-					ID3D11SamplerState* samps[kMaxSamplerBindings] = {};
-					for (uint32_t i = 0; i < kMaxSamplerBindings; i++)
-					{
-						if (params->psSamplers[i])
-						{
-							Sampler& samp = samplers[params->psSamplers[i].id];
-							assert(nullptr != samp.samp);
-
-							samps[i] = samp.samp;
-						}
-					}
-					context->PSSetSamplers(0, kMaxSamplerBindings, samps);
-				}
+				// bind vs and ps resources
+				CHECKED(BindShaderResources(params));
 
 				// draw call
 				{
@@ -1601,110 +1774,7 @@ namespace tofu
 
 				context->CSSetShader(cs.shader, nullptr, 0);
 
-				{
-					// constant buffer bindings
-					ID3D11Buffer* cbs[kMaxConstantBufferBindings] = {};
-					UINT offsets[kMaxConstantBufferBindings] = {};
-					UINT sizes[kMaxConstantBufferBindings] = {};
-
-					for (uint32_t i = 0; i < kMaxConstantBufferBindings; i++)
-					{
-						if (params->constantBuffers[i].bufferHandle)
-						{
-							Buffer& buf = buffers[params->constantBuffers[i].bufferHandle.id];
-							assert(nullptr != buf.buf);
-							if (!(buf.bindingFlags & kBindingConstantBuffer))
-							{
-								return kErrUnknown;
-							}
-
-							cbs[i] = buf.buf;
-							offsets[i] = params->constantBuffers[i].offsetInVectors;
-							sizes[i] = params->constantBuffers[i].sizeInVectors;
-							if (0u == sizes[i])
-							{
-								sizes[i] = buf.size / 16;
-							}
-						}
-					}
-					context->CSSetConstantBuffers1(0, kMaxConstantBufferBindings, cbs, offsets, sizes);
-
-					// rw texture bindings
-					ID3D11UnorderedAccessView* uavs[kMaxTextureBindings] = {};
-					for (uint32_t i = 0; i < kMaxTextureBindings; i++)
-					{
-						BaseHandle handle = params->rwShaderResources[i];
-
-						if (handle && handle.type == kHandleTypeTexture)
-						{
-							Texture& tex = textures[handle.id];
-							assert(nullptr != tex.uav);
-							if (!(tex.bindingFlags & kBindingUnorderedAccess))
-							{
-								return kErrUnknown;
-							}
-
-							uavs[i] = tex.uav;
-						}
-						else if (handle && handle.type == kHandleTypeBuffer)
-						{
-							Buffer& buf = buffers[handle.id];
-							assert(nullptr != buf.uav);
-							if (!(buf.bindingFlags & kBindingUnorderedAccess))
-							{
-								return kErrUnknown;
-							}
-
-							uavs[i] = buf.uav;
-						}
-					}
-					context->CSSetUnorderedAccessViews(0, kMaxTextureBindings, uavs, nullptr);
-
-					// texture bindings
-					ID3D11ShaderResourceView* srvs[kMaxTextureBindings] = {};
-					for (uint32_t i = 0; i < kMaxTextureBindings; i++)
-					{
-						BaseHandle handle = params->shaderResources[i];
-
-						if (handle && handle.type == kHandleTypeTexture)
-						{
-							Texture& tex = textures[handle.id];
-							assert(nullptr != tex.srv);
-							if (!(tex.bindingFlags & kBindingShaderResource))
-							{
-								return kErrUnknown;
-							}
-
-							srvs[i] = tex.srv;
-						}
-						else if (handle && handle.type == kHandleTypeBuffer)
-						{
-							Buffer& buf = buffers[handle.id];
-							assert(nullptr != buf.srv);
-							if (!(buf.bindingFlags & kBindingShaderResource))
-							{
-								return kErrUnknown;
-							}
-
-							srvs[i] = buf.srv;
-						}
-					}
-					context->CSSetShaderResources(0, kMaxTextureBindings, srvs);
-
-					// sampler bindings
-					ID3D11SamplerState* samps[kMaxSamplerBindings] = {};
-					for (uint32_t i = 0; i < kMaxSamplerBindings; i++)
-					{
-						if (params->samplers[i])
-						{
-							Sampler& samp = samplers[params->samplers[i].id];
-							assert(nullptr != samp.samp);
-
-							samps[i] = samp.samp;
-						}
-					}
-					context->CSSetSamplers(0, kMaxSamplerBindings, samps);
-				}
+				CHECKED(BindShaderResources(params));
 
 				context->Dispatch(params->threadGroupCountX, params->threadGroupCountY, params->threadGroupCountZ);
 

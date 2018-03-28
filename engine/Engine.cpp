@@ -7,6 +7,7 @@
 #include "RenderingSystem.h"
 #include "PhysicsSystem.h"
 #include "InputSystem.h"
+#include "MemoryAllocator.h"
 
 #include "AnimationComponent.h"
 #include "CameraComponent.h"
@@ -53,6 +54,24 @@ namespace tofu
 
 	int32_t Engine::Init(const char* filename)
 	{
+		// Initialize Memory Management for Rendering
+		CHECKED(MemoryAllocator::Allocators[kAllocGlobal].Init(
+			kGlobalMemSize,
+			kGlobalMemAlign));
+
+		CHECKED(MemoryAllocator::Allocators[kAllocLevel].Init(
+			kLevelMemSize,
+			kLevelMemAlign));
+
+		for (uint32_t i = kAllocFrame;
+			i <= kAllocFrameEnd;
+			++i)
+		{
+			CHECKED(MemoryAllocator::Allocators[i].Init(
+				kFrameMemSize,
+				kFrameMemAlign));
+		}
+
 		// init entity system
 		Entity::RegisterComponent<AnimationComponent>();
 		Entity::RegisterComponent<CameraComponent>();
@@ -163,6 +182,14 @@ namespace tofu
 		return nativeContext->QuitApplication();
 	}
 
+	int32_t Engine::UnloadLevel()
+	{
+		CHECKED(Entity::Reset());
+		CHECKED(renderingSystem->CleanupLevelResources());
+		MemoryAllocator::Allocators[kAllocLevel].Reset();
+		return kOK;
+	}
+
 	int32_t Engine::Shutdown()
 	{
 		for (uint32_t i = 0; i < numUserModules; i++)
@@ -184,6 +211,19 @@ namespace tofu
 		delete nativeContext;
 
 		CHECKED(Entity::Shutdown());
+
+		// shutdown memory allocators
+
+		for (uint32_t i = kAllocFrame;
+			i <= kAllocFrameEnd;
+			++i)
+		{
+			CHECKED(MemoryAllocator::Allocators[i].Shutdown());
+		}
+
+		CHECKED(MemoryAllocator::Allocators[kAllocLevel].Shutdown());
+
+		CHECKED(MemoryAllocator::Allocators[kAllocGlobal].Shutdown());
 
 		return kOK;
 	}

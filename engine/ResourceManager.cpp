@@ -160,7 +160,7 @@ namespace tofu
 			"assets/res.json",
 			true,
 			4,
-			kAllocLevelBasedMem,
+			kAllocLevel,
 			reinterpret_cast<void**>(&json),
 			nullptr));
 

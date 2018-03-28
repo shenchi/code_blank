@@ -58,16 +58,19 @@ namespace tofu
 		// shutdown entity-component system
 		static int32_t Shutdown();
 
+		static int32_t Reset();
+
 		typedef int32_t (*InitCallback)(void);
 		typedef int32_t (*ShutdownCallback)(void);
+		typedef int32_t (*ResetCallback)(void);
 		typedef void (*TrimCallback)(void);
 		typedef void (*DestroyCallback)(Entity e);
 
-		static void RegisterComponent(InitCallback init, ShutdownCallback shutdown, TrimCallback trim, DestroyCallback destroy);
+		static void RegisterComponent(InitCallback init, ShutdownCallback shutdown, ResetCallback reset, TrimCallback trim, DestroyCallback destroy);
 
 		template<typename T>
 		static void RegisterComponent() {
-			RegisterComponent(T::Init, T::Shutdown, T::TrimDestroyed, T::DestroyByEntity);
+			RegisterComponent(T::Init, T::Shutdown, T::Reset, T::TrimDestroyed, T::DestroyByEntity);
 		}
 
 		// clean up components labeled 'destory'
@@ -79,6 +82,7 @@ namespace tofu
 
 		static InitCallback initCallbacks[kMaxComponentTypes];
 		static ShutdownCallback shutdownCallbacks[kMaxComponentTypes];
+		static ResetCallback resetCallbacks[kMaxComponentTypes];
 		static TrimCallback trimCallbacks[kMaxComponentTypes];
 		static DestroyCallback destroyCallbacks[kMaxComponentTypes];
 

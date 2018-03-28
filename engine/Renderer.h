@@ -32,6 +32,14 @@ namespace tofu
 		};
 	};
 
+	enum ResourceLabel
+	{
+		kResourceGlobal = 1,
+		kResourceLevel = 2,
+
+		kResourceMaskAll = kResourceGlobal | kResourceLevel
+	};
+
 	enum PixelFormat
 	{
 		kFormatAuto,
@@ -176,6 +184,7 @@ namespace tofu
 		uint32_t			size;
 		uint32_t			stride;
 		void*				data;
+		uint32_t			label;
 	};
 
 	struct UpdateBufferParams
@@ -219,6 +228,7 @@ namespace tofu
 		uint32_t			depth;
 		uint32_t			pitch;
 		uint32_t			slicePitch;
+		uint32_t			label;
 		void*				data;
 
 		CreateTextureParams()
@@ -230,6 +240,7 @@ namespace tofu
 			depth(),
 			pitch(),
 			slicePitch(),
+			label(),
 			data()
 		{}
 
@@ -337,13 +348,16 @@ namespace tofu
 			uint32_t				textureAddress;
 		};
 
+		uint32_t					label;
+
 		CreateSamplerParams()
 			:
 			filter(kTextureFilterLinear),
 			textureAddressU(kTextureAddressClamp),
 			textureAddressV(kTextureAddressClamp),
 			textureAddressW(kTextureAddressClamp),
-			maxAnisotropy(1)
+			maxAnisotropy(1),
+			label()
 		{}
 	};
 
@@ -352,6 +366,7 @@ namespace tofu
 		VertexShaderHandle	handle;
 		void*				data;
 		size_t				size;
+		uint32_t			label;
 	};
 
 	struct CreatePixelShaderParams
@@ -359,6 +374,7 @@ namespace tofu
 		PixelShaderHandle	handle;
 		void*				data;
 		size_t				size;
+		uint32_t			label;
 	};
 
 	struct CreateComputeShaderParams
@@ -366,6 +382,7 @@ namespace tofu
 		ComputeShaderHandle	handle;
 		void*				data;
 		size_t				size;
+		uint32_t			label;
 	};
 
 	struct CreatePipelineStateParams
@@ -435,6 +452,8 @@ namespace tofu
 			float					maxZ;
 		}							viewport;
 
+		uint32_t					label;
+
 		CreatePipelineStateParams()
 			:
 			handle(),
@@ -465,7 +484,8 @@ namespace tofu
 			destBlendAlpha(kBlendZero),
 			blendOpAlpha(kBlendOpAdd),
 			blendWriteMask(kColorWriteAll),
-			viewport()
+			viewport(),
+			label()
 		{}
 	};
 
@@ -570,6 +590,8 @@ namespace tofu
 		virtual int32_t Submit(RendererCommandBuffer* buffer) = 0;
 
 		virtual int32_t Present() = 0;
+
+		virtual int32_t CleanupResources(uint32_t labelMask) = 0;
 
 		virtual int32_t GetFrameBufferSize(int32_t& width, int32_t& height) = 0;
 
