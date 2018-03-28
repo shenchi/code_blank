@@ -32,6 +32,7 @@ public:
 private:
 	//void AdjustCameraPosition(RayTestResult, tofu::math::float3, float dT);
 	bool BumperCheck(tofu::math::float3);
+	bool movedBack;
 
 	tofu::CameraComponent		cam;
 	tofu::TransformComponent	tCamera;
@@ -51,13 +52,14 @@ private:
 	float sensitive;
 	float bumperDistanceCheck = 2.0f;	// length of bumper ray
 	float bumperMaxDistance = 0.5f;
-	float damping = 5.0f;				// damping
+	float damping = 6.0f;				// damping
 	float lowerTiltAngle = 45.0;		// lower limit of camera Y tilt
 	float upperTiltAngle = 110.0f;		// upper limit of camera Y tilt
 	float minDistance = 3.0f;			// closet camera should get
 	float maxDistance = 6.0f;			// furthest camera should get
 	float adjustLerpTime = 0.0f;
 	float lerpTime = 1.0f;
+	float distanceFromTarget;
 
 	const float kMaxPitch = tofu::math::PI * 0.25f;
 	const float kMinPitch = tofu::math::PI * -0.125f;
