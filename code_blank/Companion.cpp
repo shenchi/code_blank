@@ -62,7 +62,8 @@ void Companion::FixedUpdate(float fDT, tofu::math::float3 _target, tofu::math::f
 
 		// TODO
 		// Set the position of the companion 
-		tofu::math::float3 wantedPosition = target - targetFwd * distance;
+		tofu::math::float3 wantedPosition = target - (targetFwd * distance);
+
 		pos = pos + ((heightDamping * fDT) * (wantedPosition - pos));	// Basic Lerp, make more robust later
 		//transform.position = tofu::math::float3.Lerp(transform.position, wantedPosition, positionDamping * dT);
 
@@ -78,7 +79,7 @@ void Companion::FixedUpdate(float fDT, tofu::math::float3 _target, tofu::math::f
 		targetLastPos = target;
 	}
 
-	tofu::math::float3 wantedPosition;
+	//tofu::math::float3 wantedPosition;
 
 	////check to see if there is anything behind the target
 	//RaycastHit hit;

@@ -36,7 +36,7 @@ private:
 	tofu::math::float3 targetFwd;
 
 
-	float distance = 0.75f;
+	float distance = 50.0f;
 	float height = 1.7f;
 	float heightDamping = 1.0f;
 	float positionDamping = 2.0f;
