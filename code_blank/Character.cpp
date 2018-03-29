@@ -74,7 +74,7 @@ void Character::UpdateState(float dT)
 
 
 // Handle movement on the ground
-void Character::HandleGroundedMovement(bool _jump, math::float3 move, float dT)
+void Character::HandleGroundedMovement(math::float3 _moveDir, bool _hasInput, bool _jump, float dT)
 {
 	// check whether conditions are right to allow a jump
 	if (_jump && !jump && isGrounded && jumpTimer < 0.001f)
@@ -96,99 +96,41 @@ void Character::HandleGroundedMovement(bool _jump, math::float3 move, float dT)
 		combatManager->SetIsJumping(true);
 		jump = true;
 		stateTimer = 0;
-
-		//move.y = jumpPower * dT * move.y;
-
-		//tCharacter->Translate(math::float3{ move.x, 1.0f, move.z });
-		//isGrounded = false;
-
-		//jump state
-		//combatManager->SetIsJumping(true);
-		//jump = true;
-		//stateTimer = 0;
 	}
 	
-	//tCharacter->Translate(move);
+	if (_hasInput && isGrounded)
+	{
+		speed += dT * kAccelerate;
+		if (speed > moveSpeedMultiplier)
+			speed = moveSpeedMultiplier;
 
-	//math::float3 temp = { 0,0,0 };
-	//pCharacter->LockRotation(false, false, false);
-	//pCharacter->LockPosition(false, false, false);
-	//temp.x = move.x * 20.0f;
-	//temp.y = 0.0f;
-	//temp.z = move.z * 20.0f;
-	//pCharacter->SetVelocity(temp);
-	
+		velocity = _moveDir * speed;
+	}
+	else if (isGrounded)
+	{
+		speed -= dT * kDeaccelerate;
+		if (speed < 0.0f) speed = 0.0f;
+		velocity = -(charRot * math::float3{ 0, 0, 1 }) * speed;
+	}	
 } // end ground movement
 
  // TODO
  // Needs fixing in the Unity version and then updated here
  // Handle airborne movement
  
-void Character::HandleAirborneMovement(math::float3 &velocity, math::float3 &lastVelocity, float dT)
+void Character::HandleAirborneMovement(float dT)
 {
 	//float y = tCharacter->GetWorldPosition().y;
 	// TODO Change to only modify if they were sprinting when they started jumping
 
 	if (!isGrounded)
 	{
-		velocity.y = lastVelocity.y - 10.0f * dT;
+		velocity.y = lastVelocity.y - gravityMultiplier * dT;
 	}
 	else
 	{
 		velocity.y = 0;
 	}
-
-	/*
-	if (!isSprinting)
-	{
-		airborneSpeedMultiplier = 4.0f;
-	}
-	else
-	{
-		airborneSpeedMultiplier = 8.0f;
-	}
-
-	float y = move.y;
-
-	//move += 10.0f * dT * move;
-	if (move.x < 0.01f)
-	{
-		move.x = dT * inputDir.x * airborneSpeedMultiplier;
-	}
-
-	if (move.z < 0.01f)
-	{
-		move.z = dT * inputDir.z * airborneSpeedMultiplier;
-	}
-	move.y = y;
-
-	tCharacter->Translate(move); 
-	*/
-
-	// apply extra gravity from multiplier:
-	//math::float3 extraGravityForce = (Physics.gravity * gravityMultiplier) - Physics.gravity;
-	//rigidbody.AddForce(extraGravityForce);
-	//rigidbody.velocity = math::float3(rigidbody.velocity.x - (inputDir.z / 10), rigidbody.velocity.y, rigidbody.velocity.z + (inputDir.x / 10));
-
-	//groundCheckDistance = m_Rigidbody.velocity.y < 0 ? origGroundCheckDistance : 0.01f;
-	
-	/*
-	math::float3 vel = pCharacter->GetVelocity();
-
-	tofu::math::float3 move;
-	if (inputDir.length > 0)
-	{
-		move = inputDir * dT * moveSpeedMultiplier;
-	}
-	else
-	{
-		move = -tCharacter->GetForwardVector() * dT * moveSpeedMultiplier;
-	}
-
-	pCharacter->SetVelocity(vel);
-	*/
-	//tCharacter->Translate(math::float3{ vel.x, 0.0f, vel.z });
-
 } //end airborne movement
 
 
@@ -203,6 +145,35 @@ void Character::CheckGroundStatus()
 
 		isGrounded = physics->RayTest(rayStart, rayEnd, &hitInfo);
 	}
+	if (!isGrounded)
+	{
+		math::float3 rayStart = pos + math::float3{ 0, 1, 0.5f };
+		math::float3 rayEnd = pos + math::float3{ 0, -0.04f, 0 };
+
+		isGrounded = physics->RayTest(rayStart, rayEnd, &hitInfo);
+	}
+	if (!isGrounded)
+	{
+		math::float3 rayStart = pos + math::float3{ 0, 1, -0.5f };
+		math::float3 rayEnd = pos + math::float3{ 0, -0.04f, 0 };
+
+		isGrounded = physics->RayTest(rayStart, rayEnd, &hitInfo);
+	}
+	if (!isGrounded)
+	{
+		math::float3 rayStart = pos + math::float3{ 0.5f, 1, 0 };
+		math::float3 rayEnd = pos + math::float3{ 0, -0.04f, 0 };
+
+		isGrounded = physics->RayTest(rayStart, rayEnd, &hitInfo);
+	}
+	if (!isGrounded)
+	{
+		math::float3 rayStart = pos + math::float3{ -0.5f, 1, 0 };
+		math::float3 rayEnd = pos + math::float3{ 0, -0.04f, 0 };
+
+		isGrounded = physics->RayTest(rayStart, rayEnd, &hitInfo);
+	}
+
 
 	if (!isGrounded && hasJumped)
 	{
@@ -244,12 +215,7 @@ void Character::CheckGroundStatus()
 
  //-------------------------------------------------------------------------------------------------
  // Actions
-
-
-void Character::Aim() {}
-
 void Character::Attack() {}
-
 void Character::Dodge() {}
 void Character::Die() {}
 
@@ -262,9 +228,6 @@ void Character::Sprint(bool _sprint)
 }
 
 void Character::Special(float, bool, bool) {}
-
-
-
 
 
 // TODO

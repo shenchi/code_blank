@@ -8,6 +8,7 @@ enum CharacterState
 	kIdleInCombat,
 	kWalk,
 	kRun,
+	kJumpingPrepare,
 	kJumpUp,
 	kJumpAir,
 	kJumpDown,
@@ -97,6 +98,9 @@ struct CombatMoveDetails
 
 struct CharacterDetails
 {
+	std::string			modelName;
+	std::string			diffuseName;
+	std::string			normalMapName;
 	std::string			tag;
 	tofu::math::float3	position;
 	tofu::math::float3	scale;

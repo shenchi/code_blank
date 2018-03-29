@@ -29,6 +29,18 @@
 				"avatar": "archer_avatar.json",
 				"clip": "mixamo.com"
 			},
+            {
+				"name": "jump_up",
+				"source": "KB_Jumping.fbx",
+				"avatar": "KB_Jumping_avatar.json",
+				"clip": "KB_Jump_Start"
+			},
+            {
+				"name": "jump_air",
+				"source": "KB_Jumping.fbx",
+				"avatar": "KB_Jumping_avatar.json",
+				"clip": "KB_Jump_Loop"
+			},
 			{
 				"name": "run",
 				"source": "archer_running.fbx",

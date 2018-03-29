@@ -1,6 +1,6 @@
 #include "PController.h"
 #include <InputSystem.h>
-
+#include <assert.h>
 #include <PhysicsSystem.h>
 
 using namespace tofu;
@@ -122,6 +122,7 @@ void PController::FixedUpdate(float fDT)
 		yaw = yaw * yawMod * fDT;
 
 		cam->Rotate(math::float2{ pitch, yaw });
+
 		cam->SetTarget(player->GetPosition());
 	}
 	else
@@ -133,13 +134,9 @@ void PController::FixedUpdate(float fDT)
 	inputDir.x = inputDir.x * xAxisMod;
 	inputDir.z = inputDir.z * zAxisMod;
 
-	if (!isHacking && !isAiming)
+	if (!isHacking)
 	{
 		player->MoveReg(fDT, jump, inputDir, cam->GetRotation());
-	}
-	else if (isAiming)
-	{
-		player->MoveAim(fDT, inputDir, cam->GetRotation(), cam->GetForward());
 	}
 	else
 	{
@@ -212,19 +209,6 @@ void PController::UpdateP(float dT)
 		|| (input->IsButtonDown(kGamepadR1)))
 	{
 		player->Interact();
-	}
-	
-	// Aim Mode
-	if ( (input->IsButtonDown(kKeyLeftShift) || (input->GetLeftTrigger() > 0) )
-		&& !isAiming )
-	{
-		//player->Aim(true);
-		//isAiming = true;
-	}
-	else if(isAiming)
-	{
-		player->Aim(false);
-		isAiming = false;
 	}
 }
 

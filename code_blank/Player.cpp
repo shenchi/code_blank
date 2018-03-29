@@ -7,24 +7,26 @@ using namespace tofu;
 Player::Player(CharacterDetails details, void* comp)
 {
 	CombatManagerDetails combatDetails = {};
-	combatDetails.moveDir = 0;
-	combatDetails.inCombatDuration = 4.0f;
-	combatDetails.maxShotDistance = 20.0f;
-	combatDetails.minShotDistance = 2.0f;
-	combatDetails.jumpUpTime = 0.5f;
-	combatDetails.jumpAirTime = 0.3f;
-	combatDetails.jumpDownTime = 0.35f;
-	combatDetails.comboTimer = 0.0f;
-	combatDetails.maxComboTime = 2.0f;
-	combatDetails.dodgeTime = 0.0f;
-	combatDetails.rollTime = 1.5f;
-	combatDetails.rollSpeed = 3.0f;
-	combatDetails.hitTime = 1.0f;
-	combatDetails.hitMaxWalkSpeed = 1.0f;
-	combatDetails.adjustSpeed = 2.0f;
-	combatDetails.adjustMinDistance = 0.75f;
-	combatDetails.adjustMaxDistance = 2.5f;
-	combatDetails.adjustAgle = 5.0f;
+	{
+		combatDetails.moveDir = 0;
+		combatDetails.inCombatDuration = 4.0f;
+		combatDetails.maxShotDistance = 20.0f;
+		combatDetails.minShotDistance = 2.0f;
+		combatDetails.jumpUpTime = 0.5f;
+		combatDetails.jumpAirTime = 0.3f;
+		combatDetails.jumpDownTime = 0.35f;
+		combatDetails.comboTimer = 0.0f;
+		combatDetails.maxComboTime = 2.0f;
+		combatDetails.dodgeTime = 0.0f;
+		combatDetails.rollTime = 1.5f;
+		combatDetails.rollSpeed = 3.0f;
+		combatDetails.hitTime = 1.0f;
+		combatDetails.hitMaxWalkSpeed = 1.0f;
+		combatDetails.adjustSpeed = 2.0f;
+		combatDetails.adjustMinDistance = 0.75f;
+		combatDetails.adjustMaxDistance = 2.5f;
+		combatDetails.adjustAgle = 5.0f;
+	}
 
 	Init(true, comp, combatDetails);
 
@@ -38,65 +40,64 @@ Player::Player(CharacterDetails details, void* comp)
 
 		RenderingComponent r = e.AddComponent<RenderingComponent>();
 
-		Model* model = RenderingSystem::instance()->CreateModel("assets/archer.model");
-
-		aPlayer = e.AddComponent<AnimationComponent>();
-
-		AnimationStateMachine *stateMachine = aPlayer->GetStateMachine();
-		
-		// Base Layer Animations
 		{
-		// Idle Animations
-		AnimationState *idle = stateMachine->AddState("idle");
-		idle->animationName = "idle";
-		AnimationState *combat_idle = stateMachine->AddState("combat_idle");
-		combat_idle->animationName = "combat_idle";
+			aPlayer = e.AddComponent<AnimationComponent>();
+
+			AnimationStateMachine *stateMachine = aPlayer->GetStateMachine();
+
+			// Base Layer Animations
+
+			// Idle Animations
+			AnimationState *idle = stateMachine->AddState("idle");
+			idle->animationName = "idle";
+			AnimationState *combat_idle = stateMachine->AddState("combat_idle");
+			combat_idle->animationName = "combat_idle";
 
 
-		// Movement Animations
-		AnimationState *walk = stateMachine->AddState("walk");
-		walk->animationName = "walk";
-		AnimationState *run = stateMachine->AddState("run");
-		run->animationName = "run";
+			// Movement Animations
+			AnimationState *walk = stateMachine->AddState("walk");
+			walk->animationName = "walk";
+			AnimationState *run = stateMachine->AddState("run");
+			run->animationName = "run";
 
 
-		// Jump Animations
-		AnimationState *jump = stateMachine->AddState("jump");
-		jump->animationName = "jump";
-		AnimationState *jump_up = stateMachine->AddState("jump_up");
-		jump_up->animationName = "jump_up";
-		AnimationState *jump_air = stateMachine->AddState("jump_air");
-		jump_air->animationName = "jump_air";
-		AnimationState *jump_down = stateMachine->AddState("jump_down");
-		jump_down->animationName = "jump_down";
+			// Jump Animations
+			AnimationState *jump = stateMachine->AddState("jump");
+			jump->animationName = "jump";
+			AnimationState *jump_up = stateMachine->AddState("jump_up");
+			jump_up->animationName = "jump_up";
+			AnimationState *jump_air = stateMachine->AddState("jump_air");
+			jump_air->animationName = "jump_air";
+			AnimationState *jump_down = stateMachine->AddState("jump_down");
+			jump_down->animationName = "jump_down";
 
 
-		// Roll/Dodge Animations
-		AnimationState *kRoll = stateMachine->AddState("kRoll");
-		kRoll->animationName = "kRoll";
+			// Roll/Dodge Animations
+			AnimationState *kRoll = stateMachine->AddState("kRoll");
+			kRoll->animationName = "kRoll";
 
 
-		// Combat Animations
-		AnimationState *kPunchJabL = stateMachine->AddState("kPunchJabL");
-		kPunchJabL->animationName = "kPunchJabL";
-		AnimationState *kPunchJabR = stateMachine->AddState("kPunchJabR");
-		kPunchJabR->animationName = "kPunchJabR";
-		AnimationState *kPunchHookL = stateMachine->AddState("kPunchHookL");
-		kPunchHookL->animationName = "kPunchHookL";
-		AnimationState *kPunchHookR = stateMachine->AddState("kPunchHookR");
-		kPunchHookR->animationName = "kPunchHookR";
-		AnimationState *kPunchUpperCutL = stateMachine->AddState("kPunchUpperCutL");
-		kPunchUpperCutL->animationName = "kPunchUpperCutL";
-		AnimationState *kPunchUpperCutR = stateMachine->AddState("kPunchUpperCutR");
-		kPunchUpperCutR->animationName = "kPunchUpperCutR";
-		AnimationState *kKickAxeKick = stateMachine->AddState("kKickAxeKick");
-		kKickAxeKick->animationName = "kKickAxeKick";
-		AnimationState *kKickHorseKick = stateMachine->AddState("kKickHorseKick");
-		kKickHorseKick->animationName = "kKickHorseKick";
-		AnimationState *kKickStraightMidR = stateMachine->AddState("kKickStraightMidR");
-		kKickStraightMidR->animationName = "kKickStraightMidR";
-		AnimationState *kKickKnee = stateMachine->AddState("kKickKnee");
-		kKickKnee->animationName = "kKickKnee";
+			// Combat Animations
+			AnimationState *kPunchJabL = stateMachine->AddState("kPunchJabL");
+			kPunchJabL->animationName = "kPunchJabL";
+			AnimationState *kPunchJabR = stateMachine->AddState("kPunchJabR");
+			kPunchJabR->animationName = "kPunchJabR";
+			AnimationState *kPunchHookL = stateMachine->AddState("kPunchHookL");
+			kPunchHookL->animationName = "kPunchHookL";
+			AnimationState *kPunchHookR = stateMachine->AddState("kPunchHookR");
+			kPunchHookR->animationName = "kPunchHookR";
+			AnimationState *kPunchUpperCutL = stateMachine->AddState("kPunchUpperCutL");
+			kPunchUpperCutL->animationName = "kPunchUpperCutL";
+			AnimationState *kPunchUpperCutR = stateMachine->AddState("kPunchUpperCutR");
+			kPunchUpperCutR->animationName = "kPunchUpperCutR";
+			AnimationState *kKickAxeKick = stateMachine->AddState("kKickAxeKick");
+			kKickAxeKick->animationName = "kKickAxeKick";
+			AnimationState *kKickHorseKick = stateMachine->AddState("kKickHorseKick");
+			kKickHorseKick->animationName = "kKickHorseKick";
+			AnimationState *kKickStraightMidR = stateMachine->AddState("kKickStraightMidR");
+			kKickStraightMidR->animationName = "kKickStraightMidR";
+			AnimationState *kKickKnee = stateMachine->AddState("kKickKnee");
+			kKickKnee->animationName = "kKickKnee";
 		}
 
 		// Upper Layer Animations
@@ -104,12 +105,11 @@ Player::Player(CharacterDetails details, void* comp)
 			AnimationLayer *upperLayer = aPlayer->AddLayer("Upper", 1.0f, kAET_Override);
 
 			// TODO This is causing memory leaks
-			{
-				upperLayer->selectedJoints = new std::vector<uint16_t>();
+			upperLayer->selectedJoints = new std::vector<uint16_t>();
 
-				for (int i = 3; i <= 55; i++) {
-					upperLayer->selectedJoints->push_back(i);
-				}
+			for (int i = 3; i <= 55; i++) 
+			{
+				upperLayer->selectedJoints->push_back(i);
 			}
 
 			AnimationStateMachine *stateMachine = upperLayer->GetStateMachine();
@@ -167,20 +167,29 @@ Player::Player(CharacterDetails details, void* comp)
 			kKickKnee->animationName = "kKickKnee";
 		}
 
+		// Material and Model
+		{
+			Model* model = RenderingSystem::instance()->CreateModel("assets/archer.model");
+			Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialDeferredGeometryOpaqueSkinned);
+			TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");
+			TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/archer_1.texture");
+			/*
+			const char* name = details.modelName.c_str();
+			Model* model = RenderingSystem::instance()->CreateModel(name);
+			Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialDeferredGeometryOpaqueSkinned);
+			name = details.diffuseName.c_str();
+			TextureHandle diffuse = RenderingSystem::instance()->CreateTexture(name);
+			name = details.normalMapName.c_str();
+			TextureHandle normalMap = RenderingSystem::instance()->CreateTexture(name);
+			*/
+			material->SetTexture(diffuse);
+			material->SetNormalMap(normalMap);
 
+			r->SetMaterial(material);
+			r->SetModel(model);
+		}
 
-
-
-		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialDeferredGeometryOpaqueSkinned);
-		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");
-		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/archer_1.texture");
-
-		material->SetTexture(diffuse);
-		material->SetNormalMap(normalMap);
-
-		r->SetMaterial(material);
-		r->SetModel(model);
-
+		// Physics
 		pPlayer = e.AddComponent<PhysicsComponent>();
 
 		pPlayer->LockRotation(true, true, true);
@@ -188,13 +197,16 @@ Player::Player(CharacterDetails details, void* comp)
 		pPlayer->SetColliderOrigin(details.colliderOrigin);
 		pPlayer->SetGravity(math::float3{});
 
+		velocity = {};
+		charRot = {};
+
 		SetComponents(tPlayer, pPlayer, aPlayer);
 	}
-
+	
 	baseSpeedMultiplier = details.walkSpeed;
 	moveSpeedMultiplier = baseSpeedMultiplier;
 	sprintSpeedMultiplier = details.sprintSpeed;
-
+	
 	jumpPower = details.jumpPower;
 
 	rollDodgeCost = details.rollDodgeCost;
@@ -203,7 +215,6 @@ Player::Player(CharacterDetails details, void* comp)
 	
 	physics = tofu::PhysicsSystem::instance();
 
-	//gPlayer = new GameplayAnimationMachine(aPlayer, combatManager);
 	gCharacter->SetAnimComp(aPlayer);
 
 
@@ -266,76 +277,97 @@ void Player::FixedUpdate(float fDT)
 void Player::MoveReg(float dT, bool _jump, math::float3 inputDir, math::quat camRot)
 //void Player::MoveReg(float vert, float hori, Quaternion camRot, bool jump, bool running, bool dash, bool aiming)
 {
-	
-	//*****************************************************************************************
-	//Update(dT);
-
-	move = { 0.0f, 0.0f, 0.0f };
+	lastVelocity = pPlayer->GetVelocity();
+	charRot = pPlayer->GetRotation();
 
 	combatManager->SetIsMoving(false);
 	moving = false;
-	//combatManager->SetIsSprinting(false);
-	//isSprinting = false;
 
 	if (!combatManager->GetCanMove())
 	{
 		return;
 	}
 
+	bool hasInputDir = math::length(inputDir) > 0.25f;
+	math::float3 moveDir = { 0,0,0 };
+	velocity = {};
+
+	//combatManager->SetIsSprinting(false);
+	//isSprinting = false;
 
 	if (isGrounded && _jump)
 	{
-		HandleGroundedMovement(_jump, lastMove, dT);
+		HandleGroundedMovement(moveDir, hasInputDir, _jump, dT);
 	}
-
+	
 	/*
 	if (!charAudio.isPlaying && m_IsGrounded)
 	{
 		charAudio.PlayOneShot(footsteps4);
 	}*/
 
-	math::quat playerRot = pPlayer->GetRotation();
-	math::float3 lastVelocity = pPlayer->GetVelocity();
-	math::float3 velocity{};
-	
-
 	CheckGroundStatus();
 
-	bool hasInputDir = math::length(inputDir) > 0.25f;
+	
 
-	math::float3 fwd{ 0, 0, 1 };
+	math::float3 fwd{ 0, 0, 1 }; //???
 	if (hasInputDir && isGrounded)
 	{
-		math::float3 moveDir = camRot * inputDir;
+		combatManager->SetIsMoving(true);
+		moving = true;
+
+		if (!isSprinting)
+		{
+			moveSpeedMultiplier = baseSpeedMultiplier;
+		}
+		else
+		{
+			moveSpeedMultiplier = sprintSpeedMultiplier;
+			combatManager->SetIsSprinting(true);
+		}
+
+		if (moveSpeedMultiplier > kMaxSpeed)
+			moveSpeedMultiplier = kMaxSpeed;
+
+		moveDir = camRot * inputDir;
 		moveDir.y = 0.0f;
 		moveDir = math::normalize(moveDir);
 
+		// Character's facing direction
 		{
 			math::float3 faceDir = -moveDir;
 			float cosTheta = math::dot(faceDir, fwd);
 			if (cosTheta >= 1.0 - FLT_EPSILON)
 			{
-				playerRot = math::quat();
+				charRot = math::quat();
 			}
 			else if (-cosTheta >= 1.0 - FLT_EPSILON)
 			{
-				playerRot = { 0, 0, 1, 0 };
+				charRot = { 0, 0, 1, 0 };
 			}
 			else
 			{
 				float angle = math::acos(cosTheta);
 				math::float3 axis = math::normalize(math::cross(fwd, faceDir));
-				playerRot = math::angleAxis(angle, axis);
+				charRot = math::angleAxis(angle, axis);
 			}
-			pPlayer->SetRotation(playerRot);
-		}
-
-		speed += dT * kAccelerate;
-		if (speed > kMaxSpeed)
-			speed = kMaxSpeed;
-
-		velocity = moveDir * speed;
+			pPlayer->SetRotation(charRot);
+		}	
 	}
+
+	
+	// control and velocity handling is different when grounded and airborne:
+	if (isGrounded && !_jump)
+	{
+		HandleGroundedMovement(moveDir, hasInputDir, _jump, dT);
+	}
+	else if (!isGrounded)
+	{
+		//HandleAirborneMovement(lastMove, dT);
+		HandleAirborneMovement(dT);
+	}
+
+	pPlayer->SetVelocity(velocity);
 
 	//---------------------------------------------------------------------------------------
 	/*
@@ -407,22 +439,6 @@ void Player::MoveReg(float dT, bool _jump, math::float3 inputDir, math::quat cam
 	//------------------------------------------------------------------------------------------
 	//Update(dT);
 	
-
-	 // control and velocity handling is different when grounded and airborne:
-	if (isGrounded && !_jump)
-	{
-		HandleGroundedMovement(_jump, move, dT);
-	}
-	else if(!isGrounded)
-	{
-		//HandleAirborneMovement(lastMove, dT);
-		HandleAirborneMovement(velocity, lastVelocity, dT);
-	}
-
-	pPlayer->SetVelocity(velocity);
-
-	//lastMove = move;
-
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Debug lines for character movement
 	//Blue is m_Rigidbody forward, Red is velocity, just backwards
@@ -430,53 +446,6 @@ void Player::MoveReg(float dT, bool _jump, math::float3 inputDir, math::quat cam
 	//Debug.DrawLine(charPos, charVel, Color.red);
 
 }//end move
-
-
-// Player Movement in Aiming Mode
-void Player::MoveAim(float dT, tofu::math::float3 inputDir, math::quat camRot, tofu::math::float3 camFwd)
-{
-	Update(dT);
-
-	if (math::length(inputDir) > 0.25f)
-	{
-		math::float3 moveDir = camRot * inputDir;
-		moveDir.y = 0.0f;
-		moveDir = math::normalize(moveDir);
-
-		camFwd.y = 0;
-		camFwd = math::normalize(camFwd);
-		tPlayer->FaceTo(-camFwd);
-
-		speed += dT * kAccelerate;
-
-		if (!isSprinting)
-		{
-			if (speed > moveSpeedMultiplier)
-				speed = moveSpeedMultiplier;
-		}
-		else
-		{
-			if (speed > sprintSpeedMultiplier)
-				speed = sprintSpeedMultiplier;
-		}
-
-		if (speed > kMaxSpeed)
-			speed = kMaxSpeed;
-
-		//tPlayer->Translate(moveDir * dT * speed);
-
-		//aPlayer->CrossFade(1, 0.3f);
-	}
-	else
-	{
-		speed -= dT * kDeaccelerate;
-		if (speed < 0.0f) speed = 0.0f;
-		//tPlayer->Translate(tPlayer->GetForwardVector() * dT * speed);
-
-		//aPlayer->CrossFade(0, 0.2f);
-	}
-}
-
 
 // Update the Player's State
 void Player::UpdateState(float dT)
@@ -498,11 +467,13 @@ void Player::UpdateState(float dT)
 			if (stateTimer < combatManager->GetJumpUpTime())
 			{
 				hasJumped = true;
-				currentState = kJumpUp;
+				currentState = kJumpingPrepare;
 			}
 			else if (stateTimer >= combatManager->GetJumpUpTime() && stateTimer < combatManager->GetJumpUpTime() + combatManager->GetJumpAirTime() )
 			{
-				currentState = kJumpAir;
+				currentState = kJumpUp;
+				velocity.y = JumpingUpInitialSpeed;
+				//currentState = kJumpAir;
 			}
 			else if (stateTimer >= combatManager->GetJumpUpTime() + combatManager->GetJumpAirTime()
 				&& stateTimer < combatManager->GetJumpUpTime() + combatManager->GetJumpAirTime() + combatManager->GetJumpDownTime() )
@@ -639,29 +610,6 @@ void Player::UpdateState(float dT)
 
 //-------------------------------------------------------------------------------------------------
 // Player Actions
-
-// Transistion to Aiming Mode
-void Player::Aim(bool aim)
-{
-	if (AimList() && aim)
-	{
-		currentState = kDrawGun;
-		isAiming = true;
-		combatManager->SetIsAimming(true);
-		gun->SetIsActive(true);
-	}
-	else if (!aim)
-	{
-		isAiming = false;
-		combatManager->SetIsAimming(false);
-		//myCarmera.GetComponent<ThirdPCamera>().SetAimState(false);
-		//enemies.Clear(); clear list of enemies or set a flag???
-		currentState = kHolsterGun;
-		gun->SetIsActive(false);
-		//UnHighlightEnemies();
-		//StartCoroutine(GunHolsterDelay());
-	}
-}
 
 // Attack (Uses a combo system)
 void Player::Attack(bool down, float dT)
@@ -824,80 +772,6 @@ void Player::VisionHack()
             m_hacking = false;
         }
 	*/
-}
-
-
-// Produce an aiming list for the player
-// Return false if no enemies available to aim at
-bool Player::AimList()
-{
-	/*
-	enemies.Clear();
-	bool done = false;
-	enemyArray = GameObject.FindGameObjectsWithTag("Enemy");
-	//GameObject target = null;
-
-	UnHighlightEnemies();
-
-	// Get the enemies in front of me
-	for (int i = 0; i < enemyArray.Length; i++)
-	{
-		float fwdDot = Vector3.Dot((transform.position - enemyArray[i].transform.position), transform.forward);
-		float distance = Vector3.Distance(transform.position, enemyArray[i].transform.position);
-		if (fwdDot < -1 && distance < 20)
-		{
-			enemies.Add(enemyArray[i]);
-		}
-	}
-
-	enemyArray = enemies.ToArray();
-
-	if (enemyArray.Length > 0)
-	{
-		// Sort enemies from left to right
-		while (!done)
-		{
-			done = true;
-			for (int i = 0; i < enemyArray.Length - 1; i++)
-			{
-				float distTo = Vector3.Dot((transform.position - enemyArray[i].transform.position), transform.right);
-				float distTo2 = Vector3.Dot((transform.position - enemyArray[i + 1].transform.position), transform.right);
-
-				if (distTo2 > distTo)
-				{
-					done = false;
-					GameObject temp = enemyArray[i + 1];
-					enemyArray[i + 1] = enemyArray[i];
-					enemyArray[i] = temp;
-				}
-			}
-		}
-
-		float tempDot = 0;
-		// Set the aim target
-		// Use the enemy most centered in the view
-		for (int i = 0; i < enemyArray.Length; i++)
-		{
-
-			float dot = Vector3.Dot((transform.position - enemyArray[i].transform.position), transform.forward);
-			if (dot < tempDot)
-			{
-				tempDot = dot;
-				aimTargetIndex = i;
-				gunTarget = enemyArray[i];
-				aimTarget = gunTarget.transform.GetChild(0).gameObject;
-			}
-		}
-
-
-		myCarmera.GetComponent<ThirdPCamera>().SetAimState(true, aimTarget);
-		m_Character.m_combat.AimTarget = aimTarget.GetComponentInParent<Character>();
-		gunTarget.GetComponentInChildren<SkinnedMeshRenderer>().material = gunTarget.GetComponent<Enemy>().highlightMat;
-
-		return true;
-	} */
-
-	return false;
 }
 
 //-------------------------------------------------------------------------------------------------

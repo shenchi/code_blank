@@ -22,7 +22,6 @@ public:
 	virtual void Update(float);
 	virtual void UpdateState(float);
 
-	virtual void Aim();
 	virtual void Attack();
 	virtual void Dodge();
 	virtual void Die();
@@ -33,8 +32,8 @@ public:
 	void CurrentState(CharacterState _currentState);
 	
 	void HasEffect(bool _hasEffect);
-	void HandleAirborneMovement(tofu::math::float3&, tofu::math::float3&, float);
-	void HandleGroundedMovement(bool, tofu::math::float3, float);
+	void HandleAirborneMovement(float);
+	void HandleGroundedMovement(tofu::math::float3, bool, bool, float);
 	void LastState(CharacterState _lastState);
 	virtual void Special(float, bool, bool);
 	void Sprint(bool);
@@ -83,29 +82,29 @@ protected:
 	CharacterState currentState;
 	CharacterState lastState;
 
-	// Movement
-	float speed;
-	bool isSprinting;
-
 	// Player Stats
 	float health;
-	float moveSpeedMultiplier;
-	float sprintSpeedMultiplier;
-	float gravityMultiplier;
-	float baseSpeedMultiplier;
-	float slopeSpeedMultiplier = 0.18f;
-	float airborneSpeedMultiplier;
-	float jumpPower;	//[Range(1f, 20f)]
 	float groundCheckDistance;
 
 	int animationParameter;
 
-	//void Move();
+	// Movement
+	float speed;
+	float baseSpeedMultiplier;
+	
+	float moveSpeedMultiplier;
+	float sprintSpeedMultiplier;
+	float gravityMultiplier = 10.0f;
+	float JumpingUpInitialSpeed = 10.0f;
+	float slopeSpeedMultiplier = 0.18f;
+	float airborneSpeedMultiplier;
+	float jumpPower;	//[Range(1f, 20f)]
 
 	// Bools
 	bool isAiming;
 	bool isGrounded;
 	bool jump;
+	bool isSprinting; // TODO , why 2???
 	bool sprinting;
 	bool moving;
 	bool hasJumped = false;
@@ -123,6 +122,9 @@ protected:
 
 	tofu::math::float3 groundNormal;
 	tofu::math::float3 move;
+	tofu::math::float3 lastVelocity;
+	tofu::math::float3 velocity;
+	tofu::math::quat charRot;
 
 	tofu::math::quat charBodyRotation;
 	tofu::math::quat rotation;

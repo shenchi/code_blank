@@ -395,6 +395,9 @@ bool Game::LoadScene(sceneType num)
 			else
 			{
 				CharacterDetails playerDetails = {};
+				playerDetails.modelName = "assets/archer.model";
+				playerDetails.diffuseName = "assets/archer_0.texture";
+				playerDetails.normalMapName = "assets/archer_1.texture";
 				playerDetails.capsuleColliderSize = { 50.0f, 80.0f };
 				playerDetails.colliderOrigin = { 0.0f, 120.0f, 0.0f };
 				playerDetails.health = 200.0f;
@@ -425,6 +428,7 @@ bool Game::LoadScene(sceneType num)
 				assert(player != NULL);
 
 				cam->SetPosition(playerDetails.position);
+				cam->SetTarget(playerDetails.position);
 				//*********************************************************************************************
 				//temp for test
 				/*enemy01 = new Enemy(math::float3{ 10.0f, 1.0f, 0.0f });

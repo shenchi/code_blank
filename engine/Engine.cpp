@@ -107,6 +107,7 @@ namespace tofu
 			CHECKED(physicsSystem->PreUpdate());
 
 			float phyTime = Time::PhysicsTotalTime;
+			uint32_t count = 0;
 
 			while (phyTime + Time::FixedDeltaTime <= Time::TotalTime)
 			{
@@ -118,6 +119,9 @@ namespace tofu
 				{
 					CHECKED(userModules[i]->FixedUpdate());
 				}
+
+				count++;
+				//if (count >= kMaxPhysicsStepsPerFrame) break;
 			}
 
 			CHECKED(physicsSystem->PostUpdate());
