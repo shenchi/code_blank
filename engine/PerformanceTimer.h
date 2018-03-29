@@ -1,0 +1,67 @@
+#pragma once
+
+#include "Common.h"
+
+namespace tofu
+{
+	enum PerformanceTimerSlot
+	{
+		kPerformanceTimerSlot1,
+		kMaxPerformanceTimerSlot
+	};
+}
+
+#ifdef CHECK_PERFORMANCE
+
+#include "NativeContext.h"
+
+namespace tofu
+{
+	struct PerformanceTimer
+	{
+		static int64_t counterFreq;
+		static int64_t startTick;
+
+		static int64_t timerSlots[kMaxPerformanceTimerSlot];
+		static int64_t deltaTimerSlots[kMaxPerformanceTimerSlot];
+
+		TF_INLINE static void Init() { 
+			counterFreq = NativeContext::instance()->GetTimeCounterFrequency(); 
+			startTick = NativeContext::instance()->GetTimeCounter();
+			for (size_t i = 0; i < kMaxPerformanceTimerSlot; i++)
+			{
+				timerSlots[i] = startTick;
+				deltaTimerSlots[i] = 0;
+			}
+		}
+
+		TF_INLINE static int64_t GetTick()
+		{
+			return NativeContext::instance()->GetTimeCounter() - startTick;
+		}
+
+		// in ms
+		TF_INLINE static float GetTime()
+		{
+			return (GetTick() / counterFreq) / 1000.0f;
+		}
+
+		TF_INLINE static void RecordTick(uint32_t slot)
+		{
+			int64_t stamp = NativeContext::instance()->GetTimeCounter();
+			deltaTimerSlots[slot] = stamp - timerSlots[slot];
+			timerSlots[slot] = stamp;
+		}
+
+		//TF_INLINE static void 
+	};
+}
+
+#define PERFORMANCE_TIMER_INIT() PerformanceTimer::Init();
+
+#else
+
+#define PERFORMANCE_TIMER_INIT()
+
+
+#endif

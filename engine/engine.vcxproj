@@ -171,6 +171,7 @@
     <ClInclude Include="ModelFormat.h" />
     <ClInclude Include="Module.h" />
     <ClInclude Include="NativeContext.h" />
+    <ClInclude Include="PerformanceTimer.h" />
     <ClInclude Include="PhysicsComponent.h" />
     <ClInclude Include="PhysicsSystem.h" />
     <ClInclude Include="Renderer.h" />
