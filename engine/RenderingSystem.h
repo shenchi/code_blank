@@ -46,6 +46,8 @@ namespace tofu
 		// submit all render commands to backend
 		int32_t EndFrame();
 
+		int32_t SwapBuffers();
+
 		Model* CreateModel(const char* filename, uint32_t label = kResourceLevel);
 
 		TextureHandle CreateTexture(const char* filename, uint32_t label = kResourceLevel);

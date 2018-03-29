@@ -52,7 +52,7 @@ struct BaseHandle
 		TF_INLINE explicit CLASS_NAME##Handle(uint32_t _id = UINT16_MAX) : BaseHandle {_id, kHandleType##CLASS_NAME} {} \
 	};
 
-#define CHECK_PERFORMANCE
+#define PERFORMANCE_TIMER_ENABLED 1
 
 namespace tofu
 {

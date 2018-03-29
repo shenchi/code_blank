@@ -16,6 +16,8 @@
 #include "RenderingComponent.h"
 #include "TransformComponent.h"
 
+#include "PerformanceTimer.h"
+
 namespace tofu
 {
 	float Time::TotalTime = 0.0f;
@@ -107,6 +109,8 @@ namespace tofu
 
 	int32_t Engine::Run()
 	{
+		PERFORMANCE_TIMER_INIT();
+
 		// keep performance counter on start
 		timeCounterFreq = nativeContext->GetTimeCounterFrequency();
 		startTimeCounter = nativeContext->GetTimeCounter();
@@ -128,6 +132,8 @@ namespace tofu
 			// lock to 60 fps
 			if (deltaTime < 0.016f) continue;
 
+			PERFORMANCE_TIMER_START(kPerformanceTimerSlotFrameTime);
+
 			Time::DeltaTime = deltaTime;
 			Time::TotalTime += Time::DeltaTime;
 
@@ -138,6 +144,8 @@ namespace tofu
 			CHECKED(renderingSystem->BeginFrame());
 
 			CHECKED(inputSystem->Update());
+
+			PERFORMANCE_TIMER_START(kPerformanceTimerSlotPhysicsTime);
 
 			CHECKED(physicsSystem->PreUpdate());
 
@@ -161,6 +169,8 @@ namespace tofu
 
 			CHECKED(physicsSystem->PostUpdate());
 
+			PERFORMANCE_TIMER_END(kPerformanceTimerSlotPhysicsTime);
+
 			for (uint32_t i = 0; i < numUserModules; i++)
 			{
 				CHECKED(userModules[i]->Update());
@@ -170,7 +180,11 @@ namespace tofu
 
 			CHECKED(renderingSystem->EndFrame());
 
+			PERFORMANCE_TIMER_END(kPerformanceTimerSlotFrameTime);
+
 			// frame ends
+
+			CHECKED(renderingSystem->SwapBuffers());
 		}
 
 		CHECKED(Shutdown());

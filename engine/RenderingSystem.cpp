@@ -737,8 +737,13 @@ namespace tofu
 		// submit command buffer
 		CHECKED(renderer->Submit(cmdBuf));
 
+		return kOK;
+	}
+
+	int32_t RenderingSystem::SwapBuffers()
+	{
 		// back buffer swap
-		renderer->Present();
+		CHECKED(renderer->Present());
 
 		frameNo++;
 
