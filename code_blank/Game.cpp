@@ -428,7 +428,8 @@ bool Game::LoadScene(sceneType num)
 				assert(player != NULL);
 
 				cam->SetPosition(playerDetails.position);
-				cam->SetTarget(playerDetails.position);
+				cam->SetTarget(playerDetails.position);				
+				
 				//*********************************************************************************************
 				//temp for test
 				/*enemy01 = new Enemy(math::float3{ 10.0f, 1.0f, 0.0f });

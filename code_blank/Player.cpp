@@ -168,12 +168,7 @@ Player::Player(CharacterDetails details, void* comp)
 		}
 
 		// Material and Model
-		{
-			Model* model = RenderingSystem::instance()->CreateModel("assets/archer.model");
-			Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialDeferredGeometryOpaqueSkinned);
-			TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");
-			TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/archer_1.texture");
-			/*
+		{			
 			const char* name = details.modelName.c_str();
 			Model* model = RenderingSystem::instance()->CreateModel(name);
 			Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialDeferredGeometryOpaqueSkinned);
@@ -181,7 +176,7 @@ Player::Player(CharacterDetails details, void* comp)
 			TextureHandle diffuse = RenderingSystem::instance()->CreateTexture(name);
 			name = details.normalMapName.c_str();
 			TextureHandle normalMap = RenderingSystem::instance()->CreateTexture(name);
-			*/
+			
 			material->SetTexture(diffuse);
 			material->SetNormalMap(normalMap);
 
