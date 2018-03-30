@@ -99,7 +99,7 @@ void Camera::Update(float dT)
 				float t = dT * damping;
 				t = t*t*t * (t * (6.0f*t - 15.0f) + 10.0f);
 				distanceFromTarget = math::mix(distanceFromTarget, 5.0f, t);
-				movedBack = true;
+				//movedBack = true;
 			}
 			else
 			{

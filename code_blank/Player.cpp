@@ -12,9 +12,9 @@ Player::Player(CharacterDetails details, void* comp)
 		combatDetails.inCombatDuration = 4.0f;
 		combatDetails.maxShotDistance = 20.0f;
 		combatDetails.minShotDistance = 2.0f;
-		combatDetails.jumpUpTime = 0.5f;
-		combatDetails.jumpAirTime = 0.3f;
-		combatDetails.jumpDownTime = 0.35f;
+		combatDetails.jumpUpTime = 0.8f;
+		combatDetails.jumpAirTime = 0.6f;
+		combatDetails.jumpDownTime = 0.2f;
 		combatDetails.comboTimer = 0.0f;
 		combatDetails.maxComboTime = 2.0f;
 		combatDetails.dodgeTime = 0.0f;
@@ -201,6 +201,7 @@ Player::Player(CharacterDetails details, void* comp)
 	baseSpeedMultiplier = details.walkSpeed;
 	moveSpeedMultiplier = baseSpeedMultiplier;
 	sprintSpeedMultiplier = details.sprintSpeed;
+	airborneSpeedMultiplier = moveSpeedMultiplier * 0.5f;
 	
 	jumpPower = details.jumpPower;
 
@@ -219,9 +220,6 @@ Player::Player(CharacterDetails details, void* comp)
 	charBodyRotation = tPlayer->GetWorldRotation(); //charBody.transform.rotation;
 	rotation = charBodyRotation; //m_Rigidbody.transform.rotation;
 	turnMod = 90.0f / 200.0f;
-
-	move = { 0.0f, 0.0f, 0.0f };
-	lastMove = { 0.0f, 0.0f, 0.0f };
 
 	attackButtonDown = false;
 	specialButtonDown = false;
@@ -284,17 +282,14 @@ void Player::MoveReg(float dT, bool _jump, math::float3 inputDir, math::quat cam
 	}
 
 	bool hasInputDir = math::length(inputDir) > 0.25f;
+	//bool hasInputDir = math::length(inputDir) > 0.01f;
 	math::float3 moveDir = { 0,0,0 };
-	velocity = {};
+
+	velocity = lastVelocity;
 
 	//combatManager->SetIsSprinting(false);
 	//isSprinting = false;
 
-	if (isGrounded && _jump)
-	{
-		HandleGroundedMovement(moveDir, hasInputDir, _jump, dT);
-	}
-	
 	/*
 	if (!charAudio.isPlaying && m_IsGrounded)
 	{
@@ -303,63 +298,69 @@ void Player::MoveReg(float dT, bool _jump, math::float3 inputDir, math::quat cam
 
 	CheckGroundStatus();
 
-	
-
 	math::float3 fwd{ 0, 0, 1 }; //???
-	if (hasInputDir && isGrounded)
+	if (hasInputDir)
 	{
-		combatManager->SetIsMoving(true);
-		moving = true;
-
-		if (!isSprinting)
-		{
-			moveSpeedMultiplier = baseSpeedMultiplier;
-		}
-		else
-		{
-			moveSpeedMultiplier = sprintSpeedMultiplier;
-			combatManager->SetIsSprinting(true);
-		}
-
-		if (moveSpeedMultiplier > kMaxSpeed)
-			moveSpeedMultiplier = kMaxSpeed;
-
 		moveDir = camRot * inputDir;
 		moveDir.y = 0.0f;
 		moveDir = math::normalize(moveDir);
 
-		// Character's facing direction
+		if (isGrounded)
 		{
-			math::float3 faceDir = -moveDir;
-			float cosTheta = math::dot(faceDir, fwd);
-			if (cosTheta >= 1.0 - FLT_EPSILON)
+			combatManager->SetIsMoving(true);
+			moving = true;
+
+			if (!isSprinting)
 			{
-				charRot = math::quat();
-			}
-			else if (-cosTheta >= 1.0 - FLT_EPSILON)
-			{
-				charRot = { 0, 0, 1, 0 };
+				moveSpeedMultiplier = baseSpeedMultiplier;
 			}
 			else
 			{
-				float angle = math::acos(cosTheta);
-				math::float3 axis = math::normalize(math::cross(fwd, faceDir));
-				charRot = math::angleAxis(angle, axis);
+				moveSpeedMultiplier = sprintSpeedMultiplier;
+				combatManager->SetIsSprinting(true);
 			}
-			pPlayer->SetRotation(charRot);
+
+			if (moveSpeedMultiplier > kMaxSpeed)
+				moveSpeedMultiplier = kMaxSpeed;
+
+			// Character's facing direction
+			{
+				math::float3 faceDir = -moveDir;
+				float cosTheta = math::dot(faceDir, fwd);
+				if (cosTheta >= 1.0 - FLT_EPSILON)
+				{
+					charRot = math::quat();
+				}
+				else if (-cosTheta >= 1.0 - FLT_EPSILON)
+				{
+					charRot = { 0, 0, 1, 0 };
+				}
+				else
+				{
+					float angle = math::acos(cosTheta);
+					math::float3 axis = math::normalize(math::cross(fwd, faceDir));
+					charRot = math::angleAxis(angle, axis);
+				}
+				pPlayer->SetRotation(charRot);
+			}
 		}	
 	}
 
 	
 	// control and velocity handling is different when grounded and airborne:
-	if (isGrounded && !_jump)
+	if (isGrounded)
 	{
 		HandleGroundedMovement(moveDir, hasInputDir, _jump, dT);
 	}
 	else if (!isGrounded)
 	{
 		//HandleAirborneMovement(lastMove, dT);
-		HandleAirborneMovement(dT);
+		HandleAirborneMovement(moveDir, hasInputDir, dT);
+	}
+
+	if (hasJumped && isGrounded)
+	{
+		velocity.y = jumpPower;
 	}
 
 	pPlayer->SetVelocity(velocity);
@@ -467,7 +468,6 @@ void Player::UpdateState(float dT)
 			else if (stateTimer >= combatManager->GetJumpUpTime() && stateTimer < combatManager->GetJumpUpTime() + combatManager->GetJumpAirTime() )
 			{
 				currentState = kJumpUp;
-				velocity.y = JumpingUpInitialSpeed;
 				//currentState = kJumpAir;
 			}
 			else if (stateTimer >= combatManager->GetJumpUpTime() + combatManager->GetJumpAirTime()

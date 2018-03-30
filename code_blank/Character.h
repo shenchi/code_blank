@@ -32,7 +32,7 @@ public:
 	void CurrentState(CharacterState _currentState);
 	
 	void HasEffect(bool _hasEffect);
-	void HandleAirborneMovement(float);
+	void HandleAirborneMovement(tofu::math::float3, bool, float);
 	void HandleGroundedMovement(tofu::math::float3, bool, bool, float);
 	void LastState(CharacterState _lastState);
 	virtual void Special(float, bool, bool);
@@ -94,8 +94,8 @@ protected:
 	
 	float moveSpeedMultiplier;
 	float sprintSpeedMultiplier;
-	float gravityMultiplier = 10.0f;
-	float JumpingUpInitialSpeed = 10.0f;
+	float gravityMultiplier = 2.5f;
+	float airbornMaxVelocity = 2.0f;
 	float slopeSpeedMultiplier = 0.18f;
 	float airborneSpeedMultiplier;
 	float jumpPower;	//[Range(1f, 20f)]
@@ -110,15 +110,12 @@ protected:
 	bool hasJumped = false;
 	bool isDead;
 	bool hasEffect;
-	bool queueJump;
 	bool once;
 
 	float turnMod;
 	float origGroundCheckDistance;
 	float stateTimer;
 	float groundCheckRadius;
-	float jumpTimer;
-	float jumpDelay;
 
 	tofu::math::float3 groundNormal;
 	tofu::math::float3 move;
@@ -134,4 +131,7 @@ protected:
 	const float kAccelerate = 6.67f;
 	const float kDeaccelerate = 10.0f;
 	const float kAirDeaccelerate = 2.0f;
+
+	int counter = 0;
+	int counterB = 0;
 };

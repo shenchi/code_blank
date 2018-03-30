@@ -62,9 +62,6 @@ private:
 	
 	tofu::math::quat camRotation;
 
-	tofu::math::float3 move;
-	tofu::math::float3 lastMove;
-
 	Gun* gun;
 
 	bool attackButtonDown;
@@ -74,7 +71,6 @@ private:
 	float maxHoldTime;
 	float specialButtonTimer;
 	float rollDodgeCost;
-
 
 	//GameObject charBody;
 	//GameObject camera;

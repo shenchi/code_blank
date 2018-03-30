@@ -399,9 +399,9 @@ bool Game::LoadScene(sceneType num)
 				playerDetails.diffuseName = "assets/archer_0.texture";
 				playerDetails.normalMapName = "assets/archer_1.texture";
 				playerDetails.capsuleColliderSize = { 50.0f, 80.0f };
-				playerDetails.colliderOrigin = { 0.0f, 120.0f, 0.0f };
+				playerDetails.colliderOrigin = { 0.0f, 100.0f, 0.0f };
 				playerDetails.health = 200.0f;
-				playerDetails.jumpPower = 4.0f;
+				playerDetails.jumpPower = 2.5f;
 				playerDetails.position = sceneMgr.GetPlayerSpawnPoint();
 				playerDetails.scale = { 0.01f, 0.01f, 0.01f };
 				playerDetails.sprintSpeed = 10.0f;
