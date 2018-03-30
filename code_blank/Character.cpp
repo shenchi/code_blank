@@ -40,13 +40,7 @@ void Character::UpdateState(float dT)
 
 // Handle movement on the ground
 void Character::HandleGroundedMovement(math::float3 _moveDir, bool _hasInput, bool _jump, float dT)
-{	
-	counterB++;
-	if (counterB > 7200)
-	{
-		math::float3 temp = velocity;
-		int a = 0;
-	}
+{
 	// check whether conditions are right to allow a jump
 	if (_jump && !jump && isGrounded)
 	{
@@ -87,13 +81,13 @@ void Character::HandleAirborneMovement(math::float3 _moveDir, bool _hasInput, fl
 {
 	if (hasJumped)
 	{
-		velocity.y = lastVelocity.y - gravityMultiplier * dT;
+		//velocity.y = lastVelocity.y - gravityMultiplier * dT;
 	}
 	else
 	{
-		velocity.y = lastVelocity.y - gravityMultiplier * dT * 10.0f;
+		//velocity.y = lastVelocity.y - gravityMultiplier * dT * 10.0f;
 	}
-
+	velocity.y = lastVelocity.y - gravityMultiplier * dT;
 	float x = _moveDir.x * airborneSpeedMultiplier * dT;
 	float z = _moveDir.z * airborneSpeedMultiplier * dT;
 

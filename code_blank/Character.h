@@ -131,7 +131,4 @@ protected:
 	const float kAccelerate = 6.67f;
 	const float kDeaccelerate = 10.0f;
 	const float kAirDeaccelerate = 2.0f;
-
-	int counter = 0;
-	int counterB = 0;
 };
