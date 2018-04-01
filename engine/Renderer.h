@@ -106,6 +106,7 @@ namespace tofu
 		kStencilOpInvert,
 		kStencilOpInc,
 		kStencilOpDec,
+		kMaxStencilOps,
 	};
 
 	enum Blend
@@ -161,7 +162,8 @@ namespace tofu
 		kTextureAddressWarp = 1,
 		kTextureAddressMirror,
 		kTextureAddressClamp,
-		kTextureAddressBorder
+		kTextureAddressBorder,
+		kMaxTextureAddressMode
 	};
 
 	struct RendererCommandBuffer
