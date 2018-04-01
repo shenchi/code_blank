@@ -153,6 +153,9 @@
     <ClInclude Include="PerformanceTimer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FontRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimationComponent.cpp">
@@ -227,6 +230,12 @@
     <ClCompile Include="PerformanceTimer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FontRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fontstash.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="bypass_vs.hlsl">
@@ -278,6 +287,12 @@
       <Filter>Shaders\new</Filter>
     </FxCompile>
     <FxCompile Include="deferred_transparent_ps.hlsl">
+      <Filter>Shaders\new</Filter>
+    </FxCompile>
+    <FxCompile Include="font_ps.hlsl">
+      <Filter>Shaders\new</Filter>
+    </FxCompile>
+    <FxCompile Include="font_vs.hlsl">
       <Filter>Shaders\new</Filter>
     </FxCompile>
   </ItemGroup>

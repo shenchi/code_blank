@@ -141,6 +141,8 @@ namespace tofu
 
 			// a new frame start
 
+			MemoryAllocator::SwapFrameAllocator();
+
 			CHECKED(renderingSystem->BeginFrame());
 
 			CHECKED(inputSystem->Update());
@@ -171,14 +173,22 @@ namespace tofu
 
 			PERFORMANCE_TIMER_END(kPerformanceTimerSlotPhysicsTime);
 
+			PERFORMANCE_TIMER_START(kPerformanceTimerSlotUserUpdateTime);
+
 			for (uint32_t i = 0; i < numUserModules; i++)
 			{
 				CHECKED(userModules[i]->Update());
 			}
 
+			PERFORMANCE_TIMER_END(kPerformanceTimerSlotUserUpdateTime);
+
+			PERFORMANCE_TIMER_START(kPerformanceTimerSlotRenderingSystemTime);
+
 			CHECKED(renderingSystem->Update());
 
 			CHECKED(renderingSystem->EndFrame());
+
+			PERFORMANCE_TIMER_END(kPerformanceTimerSlotRenderingSystemTime);
 
 			PERFORMANCE_TIMER_END(kPerformanceTimerSlotFrameTime);
 

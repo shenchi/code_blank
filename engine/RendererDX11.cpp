@@ -34,8 +34,10 @@ namespace
 		DXGI_FORMAT_R16G16B16A16_UNORM,
 		DXGI_FORMAT_R16G16B16A16_SNORM,
 		DXGI_FORMAT_R32G32B32A32_FLOAT,
+		DXGI_FORMAT_R8_SINT,
 		DXGI_FORMAT_R16_SINT,
 		DXGI_FORMAT_R32_SINT,
+		DXGI_FORMAT_R8_UINT,
 		DXGI_FORMAT_R16_UINT,
 		DXGI_FORMAT_R32_UINT,
 		DXGI_FORMAT_D24_UNORM_S8_UINT,
@@ -66,8 +68,15 @@ namespace
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
-	D3D11_INPUT_ELEMENT_DESC* InputElemDescTable[] = { InputElemDescNormal, InputElemDescSkinned };
-	UINT InputElemDescSizeTable[] = { 4u, 6u };
+	D3D11_INPUT_ELEMENT_DESC InputElemDescOverlay[] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	};
+
+	D3D11_INPUT_ELEMENT_DESC* InputElemDescTable[] = { InputElemDescNormal, InputElemDescSkinned, InputElemDescOverlay };
+	UINT InputElemDescSizeTable[] = { 4u, 6u, 3u };
 
 	struct Buffer
 	{
@@ -1342,11 +1351,19 @@ namespace tofu
 
 				assert(nullptr != textures[id].tex);
 
+				bool updateWhole = (params->left == 0) &&
+					(params->top == 0) &&
+					(params->front == 0) &&
+					(params->right == 0) &&
+					(params->bottom == 0) &&
+					(params->back == 0);
+
 				if (textures[id].dynamic)
 				{
-					// TODO for mipmaps and texture array
+					assert(!updateWhole && "TODO: partially update texture with Map()");
+
 					D3D11_MAPPED_SUBRESOURCE res = {};
-					context->Map(textures[id].tex, 0, D3D11_MAP_WRITE_DISCARD, 0, &res);
+					context->Map(textures[id].tex, params->subRes, D3D11_MAP_WRITE_DISCARD, 0, &res);
 
 					const uint8_t* pSrc = reinterpret_cast<const uint8_t*>(params->data);
 					uint8_t* pDst = reinterpret_cast<uint8_t*>(res.pData);
@@ -1379,7 +1396,18 @@ namespace tofu
 				else
 				{
 					// TODO for mipmaps and texture array
-					context->UpdateSubresource(textures[id].tex, 0, nullptr, params->data, params->pitch, params->slicePitch);
+					D3D11_BOX box{
+						params->left,
+						params->top,
+						params->front,
+						params->right,
+						params->bottom,
+						params->back
+					};
+
+					context->UpdateSubresource(textures[id].tex, params->subRes,
+						updateWhole ? nullptr : &box, 
+						params->data, params->pitch, params->slicePitch);
 				}
 
 				return kOK;

@@ -67,4 +67,9 @@ namespace tofu
 
 		return kOK;
 	}
+
+	int32_t FileIO::ReadFile(const char* file, bool isText, size_t alignment, void** data, size_t* size)
+	{
+		return ReadFile(file, isText, alignment, MemoryAllocator::GetCurrentFrameAllocNo(), data, size);
+	}
 }

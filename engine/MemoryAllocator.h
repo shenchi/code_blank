@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Common.h"
+#include <new>
 
 namespace tofu
 {
@@ -46,6 +47,29 @@ namespace tofu
 		TF_INLINE static void* Alloc(size_t size, uint32_t allocNo, size_t alignment = 4u)
 		{
 			return Allocators[allocNo].Allocate(size, alignment);
+		}
+
+	public:
+		static int32_t currentFrameAllocIdx;
+
+		TF_INLINE static uint32_t GetCurrentFrameAllocNo() { return kAllocFrame + currentFrameAllocIdx; }
+
+		TF_INLINE static void SwapFrameAllocator()
+		{
+			currentFrameAllocIdx = (currentFrameAllocIdx + 1) % kFrameBufferCount;
+			Allocators[kAllocFrame + currentFrameAllocIdx].Reset();
+		}
+
+		template<typename T>
+		static T* FrameAlloc(size_t alignment = 4u)
+		{
+			void* ptr = Allocators[kAllocFrame + currentFrameAllocIdx].Allocate(sizeof(T), alignment);
+			return new(ptr) T();
+		}
+
+		TF_INLINE static void* FrameAlloc(size_t size, size_t alignment = 4u)
+		{
+			return Allocators[kAllocFrame + currentFrameAllocIdx].Allocate(size, alignment);
 		}
 
 	private:

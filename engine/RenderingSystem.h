@@ -109,7 +109,6 @@ namespace tofu
 		Renderer*				renderer;
 
 		size_t					frameNo;
-		uint32_t				allocNo;
 
 		BufferHandle			transformBuffer;
 		uint32_t				transformBufferSize;

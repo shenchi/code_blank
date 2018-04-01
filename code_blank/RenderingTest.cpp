@@ -54,7 +54,7 @@ int32_t RenderingTest::Init()
 
 		pPlayer = e.AddComponent<PhysicsComponent>();
 
-		pPlayer->LockRotation(true, false, true);
+		pPlayer->LockRotation(true, true, true);
 		pPlayer->SetCapsuleCollider(50.0f, 100.0f);
 		pPlayer->SetColliderOrigin(math::float3{ 0.0f, 100.0f, 0.0f });
 	}

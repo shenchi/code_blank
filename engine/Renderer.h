@@ -48,11 +48,14 @@ namespace tofu
 		kFormatR16g16b16a16Unorm,
 		kFormatR16g16b16a16Snorm,
 		kFormatR32g32b32a32Float,
+		kFormatR8Sint,
 		kFormatR16Sint,
 		kFormatR32Sint,
+		kFormatR8Uint,
 		kFormatR16Uint,
 		kFormatR32Uint,
 		kFormatD24UnormS8Uint,
+
 		kMaxPixelFormats
 	};
 
@@ -89,7 +92,8 @@ namespace tofu
 	enum VertexFormat
 	{
 		kVertexFormatNormal,
-		kVertexFormatSkinned
+		kVertexFormatSkinned,
+		kVertexFormatOverlay
 	};
 
 	enum StencilOp
@@ -170,6 +174,7 @@ namespace tofu
 
 		// create a new command buffer from allocator[allocNo]
 		static RendererCommandBuffer* Create(uint32_t capacity, uint32_t allocNo);
+		static RendererCommandBuffer* Create(uint32_t capacity);
 
 		// append a command into the command buffer
 		void Add(uint32_t cmd, void* param);
@@ -325,8 +330,17 @@ namespace tofu
 	struct UpdateTextureParams
 	{
 		TextureHandle		handle;
+		uint32_t			subRes;
 		uint32_t			pitch;
 		uint32_t			slicePitch;
+
+		uint32_t			left;
+		uint32_t			top;
+		uint32_t			front;
+		uint32_t			right;
+		uint32_t			bottom;
+		uint32_t			back;
+
 		void*				data;
 	};
 

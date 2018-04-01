@@ -8,7 +8,8 @@ namespace tofu
 	{
 		kPerformanceTimerSlotFrameTime,
 		kPerformanceTimerSlotPhysicsTime,
-		kPerformanceTimerSlot
+		kPerformanceTimerSlotUserUpdateTime,
+		kPerformanceTimerSlotRenderingSystemTime,
 		kMaxPerformanceTimerSlot
 	};
 }

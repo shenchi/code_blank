@@ -135,7 +135,6 @@ namespace tofu
 		modelTable(),
 		renderer(nullptr),
 		frameNo(0),
-		allocNo(0),
 		transformBuffer(),
 		transformBufferSize(0),
 		frameConstantBuffer(),
@@ -270,7 +269,7 @@ namespace tofu
 			materialPSOs[kMaterialShadow] = pipelineStateHandleAlloc.Allocate();
 			assert(materialPSOs[kMaterialShadow]);
 			{
-				CreatePipelineStateParams* params = MemoryAllocator::Alloc<CreatePipelineStateParams>(allocNo);
+				CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
 				params->handle = materialPSOs[kMaterialShadow];
 				params->vertexShader = materialVSs[kMaterialShadow];
 
@@ -284,7 +283,7 @@ namespace tofu
 			materialPSOs[kMaterialShadowSkinned] = pipelineStateHandleAlloc.Allocate();
 			assert(materialPSOs[kMaterialShadowSkinned]);
 			{
-				CreatePipelineStateParams* params = MemoryAllocator::Alloc<CreatePipelineStateParams>(allocNo);
+				CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
 				params->handle = materialPSOs[kMaterialShadowSkinned];
 				params->vertexShader = materialVSs[kMaterialShadowSkinned];
 				params->vertexFormat = kVertexFormatSkinned;
@@ -299,7 +298,7 @@ namespace tofu
 			materialPSOs[kMaterialDeferredGeometryOpaque] = pipelineStateHandleAlloc.Allocate();
 			assert(materialPSOs[kMaterialDeferredGeometryOpaque]);
 			{
-				CreatePipelineStateParams* params = MemoryAllocator::Alloc<CreatePipelineStateParams>(allocNo);
+				CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
 				params->handle = materialPSOs[kMaterialDeferredGeometryOpaque];
 				params->vertexShader = materialVSs[kMaterialDeferredGeometryOpaque];
 				params->pixelShader = materialPSs[kMaterialDeferredGeometryOpaque];
@@ -317,7 +316,7 @@ namespace tofu
 			materialPSOs[kMaterialDeferredGeometryOpaqueSkinned] = pipelineStateHandleAlloc.Allocate();
 			assert(materialPSOs[kMaterialDeferredGeometryOpaqueSkinned]);
 			{
-				CreatePipelineStateParams* params = MemoryAllocator::Alloc<CreatePipelineStateParams>(allocNo);
+				CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
 				params->handle = materialPSOs[kMaterialDeferredGeometryOpaqueSkinned];
 				params->vertexShader = materialVSs[kMaterialDeferredGeometryOpaqueSkinned];
 				params->pixelShader = materialPSs[kMaterialDeferredGeometryOpaqueSkinned];
@@ -336,7 +335,7 @@ namespace tofu
 			materialPSOs[kMaterialDeferredLightingOcclude] = pipelineStateHandleAlloc.Allocate();
 			assert(materialPSOs[kMaterialDeferredLightingOcclude]);
 			{
-				CreatePipelineStateParams* params = MemoryAllocator::Alloc<CreatePipelineStateParams>(allocNo);
+				CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
 				params->handle = materialPSOs[kMaterialDeferredLightingOcclude];
 				params->vertexShader = materialVSs[kMaterialDeferredLightingPointLight];
 				params->pixelShader = PixelShaderHandle();// materialPSs[kMaterialDeferredLighting];
@@ -361,7 +360,7 @@ namespace tofu
 			materialPSOs[kMaterialDeferredLightingPointLight] = pipelineStateHandleAlloc.Allocate();
 			assert(materialPSOs[kMaterialDeferredLightingPointLight]);
 			{
-				CreatePipelineStateParams* params = MemoryAllocator::Alloc<CreatePipelineStateParams>(allocNo);
+				CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
 				params->handle = materialPSOs[kMaterialDeferredLightingPointLight];
 				params->vertexShader = materialVSs[kMaterialDeferredLightingPointLight];
 				params->pixelShader = materialPSs[kMaterialDeferredLightingPointLight];
@@ -388,7 +387,7 @@ namespace tofu
 			materialPSOs[kMaterialDeferredLightingSpotLight] = pipelineStateHandleAlloc.Allocate();
 			assert(materialPSOs[kMaterialDeferredLightingSpotLight]);
 			{
-				CreatePipelineStateParams* params = MemoryAllocator::Alloc<CreatePipelineStateParams>(allocNo);
+				CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
 				params->handle = materialPSOs[kMaterialDeferredLightingSpotLight];
 				params->vertexShader = materialVSs[kMaterialDeferredLightingPointLight];
 				params->pixelShader = materialPSs[kMaterialDeferredLightingSpotLight];
@@ -416,7 +415,7 @@ namespace tofu
 		materialPSOs[kMaterialDeferredLightingAmbient] = pipelineStateHandleAlloc.Allocate();
 		assert(materialPSOs[kMaterialDeferredLightingAmbient]);
 		{
-			CreatePipelineStateParams* params = MemoryAllocator::Alloc<CreatePipelineStateParams>(allocNo);
+			CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
 			params->handle = materialPSOs[kMaterialDeferredLightingAmbient];
 			params->vertexShader = materialVSs[kMaterialDeferredLightingAmbient];
 			params->pixelShader = materialPSs[kMaterialDeferredLightingAmbient];
@@ -439,7 +438,7 @@ namespace tofu
 		materialPSOs[kMaterialDeferredTransparent] = pipelineStateHandleAlloc.Allocate();
 		assert(materialPSOs[kMaterialDeferredTransparent]);
 		{
-			CreatePipelineStateParams* params = MemoryAllocator::Alloc<CreatePipelineStateParams>(allocNo);
+			CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
 			params->handle = materialPSOs[kMaterialDeferredTransparent];
 			params->vertexShader = materialVSs[kMaterialDeferredGeometryOpaque];
 			params->pixelShader = materialPSs[kMaterialDeferredTransparent];
@@ -459,7 +458,7 @@ namespace tofu
 		materialPSOs[kMaterialDeferredTransparentSkinned] = pipelineStateHandleAlloc.Allocate();
 		assert(materialPSOs[kMaterialDeferredTransparentSkinned]);
 		{
-			CreatePipelineStateParams* params = MemoryAllocator::Alloc<CreatePipelineStateParams>(allocNo);
+			CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
 			params->handle = materialPSOs[kMaterialDeferredTransparentSkinned];
 			params->vertexShader = materialVSs[kMaterialDeferredGeometryOpaqueSkinned];
 			params->pixelShader = materialPSs[kMaterialDeferredTransparent];
@@ -480,7 +479,7 @@ namespace tofu
 		materialPSOs[kMaterialPostProcessToneMapping] = pipelineStateHandleAlloc.Allocate();
 		assert(materialPSOs[kMaterialPostProcessToneMapping]);
 		{
-			CreatePipelineStateParams* params = MemoryAllocator::Alloc<CreatePipelineStateParams>(allocNo);
+			CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
 			params->handle = materialPSOs[kMaterialPostProcessToneMapping];
 			params->vertexShader = materialVSs[kMaterialDeferredLightingAmbient];
 			params->pixelShader = materialPSs[kMaterialPostProcessToneMapping];
@@ -499,7 +498,7 @@ namespace tofu
 		materialPSOs[kMaterialPostProcessExtractBright] = pipelineStateHandleAlloc.Allocate();
 		assert(materialPSOs[kMaterialPostProcessExtractBright]);
 		{
-			CreatePipelineStateParams* params = MemoryAllocator::Alloc<CreatePipelineStateParams>(allocNo);
+			CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
 			params->handle = materialPSOs[kMaterialPostProcessExtractBright];
 			params->vertexShader = materialVSs[kMaterialDeferredLightingAmbient];
 			params->pixelShader = materialPSs[kMaterialPostProcessExtractBright];
@@ -518,7 +517,7 @@ namespace tofu
 		materialPSOs[kMaterialPostProcessBlur] = pipelineStateHandleAlloc.Allocate();
 		assert(materialPSOs[kMaterialPostProcessBlur]);
 		{
-			CreatePipelineStateParams* params = MemoryAllocator::Alloc<CreatePipelineStateParams>(allocNo);
+			CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
 			params->handle = materialPSOs[kMaterialPostProcessBlur];
 			params->vertexShader = materialVSs[kMaterialDeferredLightingAmbient];
 			params->pixelShader = materialPSs[kMaterialPostProcessBlur];
@@ -542,7 +541,7 @@ namespace tofu
 		materialPSOs[kMaterialPostProcessVolumetricFog] = pipelineStateHandleAlloc.Allocate();
 		assert(materialPSOs[kMaterialPostProcessVolumetricFog]);
 		{
-			CreatePipelineStateParams* params = MemoryAllocator::Alloc<CreatePipelineStateParams>(allocNo);
+			CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
 			params->handle = materialPSOs[kMaterialPostProcessVolumetricFog];
 			params->vertexShader = materialVSs[kMaterialDeferredLightingAmbient];
 			params->pixelShader = materialPSs[kMaterialPostProcessVolumetricFog];
@@ -564,7 +563,7 @@ namespace tofu
 			assert(defaultSampler);
 
 			{
-				CreateSamplerParams* params = MemoryAllocator::Alloc<CreateSamplerParams>(allocNo);
+				CreateSamplerParams* params = MemoryAllocator::FrameAlloc<CreateSamplerParams>();
 				params->handle = defaultSampler;
 				params->filter = kTextureFilterAnisotropic;
 				params->maxAnisotropy = 7;
@@ -581,7 +580,7 @@ namespace tofu
 			assert(shadowSampler);
 
 			{
-				CreateSamplerParams* params = MemoryAllocator::Alloc<CreateSamplerParams>(allocNo);
+				CreateSamplerParams* params = MemoryAllocator::FrameAlloc<CreateSamplerParams>();
 				params->handle = shadowSampler;
 				params->textureAddressU = kTextureAddressClamp;
 				params->textureAddressV = kTextureAddressClamp;
@@ -597,7 +596,7 @@ namespace tofu
 			assert(lutSampler);
 
 			{
-				CreateSamplerParams* params = MemoryAllocator::Alloc<CreateSamplerParams>(allocNo);
+				CreateSamplerParams* params = MemoryAllocator::FrameAlloc<CreateSamplerParams>();
 				params->handle = lutSampler;
 				params->textureAddressU = kTextureAddressClamp;
 				params->textureAddressV = kTextureAddressClamp;
@@ -718,10 +717,7 @@ namespace tofu
 
 		//assert(false && "sync need to be done.");
 
-		allocNo = kAllocFrame + frameNo % kFrameBufferCount;
-		MemoryAllocator::Allocators[allocNo].Reset();
-
-		cmdBuf = RendererCommandBuffer::Create(kCommandBufferCapacity, allocNo);
+		cmdBuf = RendererCommandBuffer::Create(kCommandBufferCapacity);
 		assert(nullptr != cmdBuf);
 
 		return kOK;
@@ -905,7 +901,7 @@ namespace tofu
 
 		// upload vertices and indices to vertex buffer and index buffer
 		{
-			CreateBufferParams* params = MemoryAllocator::Alloc<CreateBufferParams>(allocNo);
+			CreateBufferParams* params = MemoryAllocator::FrameAlloc<CreateBufferParams>();
 			params->handle = vbHandle;
 			params->bindingFlags = kBindingVertexBuffer;
 			params->data = vertices;
@@ -917,7 +913,7 @@ namespace tofu
 		}
 
 		{
-			CreateBufferParams* params = MemoryAllocator::Alloc<CreateBufferParams>(allocNo);
+			CreateBufferParams* params = MemoryAllocator::FrameAlloc<CreateBufferParams>();
 			params->handle = ibHandle;
 			params->bindingFlags = kBindingIndexBuffer;
 			params->data = indices;
@@ -936,7 +932,7 @@ namespace tofu
 	{
 		void* data = nullptr;
 		size_t size = 0;
-		int32_t err = FileIO::ReadFile(filename, false, 4, allocNo, &data, &size);
+		int32_t err = FileIO::ReadFile(filename, false, 4, &data, &size);
 
 		if (kOK != err)
 		{
@@ -949,7 +945,7 @@ namespace tofu
 			return TextureHandle();
 		}
 
-		CreateTextureParams* params = MemoryAllocator::Alloc<CreateTextureParams>(allocNo);
+		CreateTextureParams* params = MemoryAllocator::FrameAlloc<CreateTextureParams>();
 
 		params->handle = handle;
 		params->bindingFlags = kBindingShaderResource;
@@ -974,7 +970,7 @@ namespace tofu
 			return handle;
 		}
 
-		CreateTextureParams* params = MemoryAllocator::Alloc<CreateTextureParams>(allocNo);
+		CreateTextureParams* params = MemoryAllocator::FrameAlloc<CreateTextureParams>();
 
 		params->InitAsTexture2D(handle, width, height, format, data, pitch, arraySize, binding);
 		params->label = label;
@@ -995,7 +991,7 @@ namespace tofu
 			return handle;
 		}
 
-		CreateTextureParams* params = MemoryAllocator::Alloc<CreateTextureParams>(allocNo);
+		CreateTextureParams* params = MemoryAllocator::FrameAlloc<CreateTextureParams>();
 
 		params->InitAsTexture2DSlice(handle, source, startIndex, arraySize, format, binding);
 		params->label = label;
@@ -1016,7 +1012,7 @@ namespace tofu
 			return handle;
 		}
 
-		CreateTextureParams* params = MemoryAllocator::Alloc<CreateTextureParams>(allocNo);
+		CreateTextureParams* params = MemoryAllocator::FrameAlloc<CreateTextureParams>();
 
 		params->InitAsTexture3D(handle, width, height, depth, format, data, pitch, slicePitch, binding);
 		params->label = label;
@@ -1091,7 +1087,7 @@ namespace tofu
 		assert(handle);
 
 		{
-			CreateBufferParams* params = MemoryAllocator::Alloc<CreateBufferParams>(allocNo);
+			CreateBufferParams* params = MemoryAllocator::FrameAlloc<CreateBufferParams>();
 			assert(nullptr != params);
 			params->handle = handle;
 			params->bindingFlags = kBindingConstantBuffer;
@@ -1110,7 +1106,7 @@ namespace tofu
 
 	int32_t RenderingSystem::UpdateConstantBuffer(BufferHandle buffer, uint32_t size, void* data)
 	{
-		UpdateBufferParams* params = MemoryAllocator::Alloc<UpdateBufferParams>(allocNo);
+		UpdateBufferParams* params = MemoryAllocator::FrameAlloc<UpdateBufferParams>();
 		assert(nullptr != params);
 
 		params->handle = buffer;
@@ -1142,7 +1138,7 @@ namespace tofu
 		}
 
 		{
-			CreateVertexShaderParams* params = MemoryAllocator::Alloc<CreateVertexShaderParams>(allocNo);
+			CreateVertexShaderParams* params = MemoryAllocator::FrameAlloc<CreateVertexShaderParams>();
 			assert(nullptr != params);
 			params->handle = handle;
 
@@ -1150,7 +1146,6 @@ namespace tofu
 				filename,
 				false,
 				4,
-				allocNo,
 				&(params->data),
 				&(params->size));
 
@@ -1179,7 +1174,7 @@ namespace tofu
 		}
 
 		{
-			CreatePixelShaderParams* params = MemoryAllocator::Alloc<CreatePixelShaderParams>(allocNo);
+			CreatePixelShaderParams* params = MemoryAllocator::FrameAlloc<CreatePixelShaderParams>();
 			assert(nullptr != params);
 			params->handle = handle;
 
@@ -1187,7 +1182,6 @@ namespace tofu
 				filename,
 				false,
 				4,
-				allocNo,
 				&(params->data),
 				&(params->size));
 
@@ -1216,7 +1210,7 @@ namespace tofu
 		}
 
 		{
-			CreateComputeShaderParams* params = MemoryAllocator::Alloc<CreateComputeShaderParams>(allocNo);
+			CreateComputeShaderParams* params = MemoryAllocator::FrameAlloc<CreateComputeShaderParams>();
 			assert(nullptr != params);
 			params->handle = handle;
 
@@ -1224,7 +1218,6 @@ namespace tofu
 				filename,
 				false,
 				4,
-				allocNo,
 				&(params->data),
 				&(params->size));
 
@@ -1288,7 +1281,7 @@ namespace tofu
 		float nearClipZ = 0.0f;
 		{
 			FrameConstants* data = reinterpret_cast<FrameConstants*>(
-				MemoryAllocator::Allocators[allocNo].Allocate(sizeof(FrameConstants), 4)
+				MemoryAllocator::FrameAlloc(sizeof(FrameConstants), 4)
 				);
 			assert(nullptr != data);
 
@@ -1338,7 +1331,7 @@ namespace tofu
 
 		// clear default render target and depth buffer
 		{
-			ClearParams* params = MemoryAllocator::Alloc<ClearParams>(allocNo);
+			ClearParams* params = MemoryAllocator::FrameAlloc<ClearParams>();
 
 			params->renderTargets[0] = hdrTarget;
 			params->clearColor[0] = 0;
@@ -1370,21 +1363,21 @@ namespace tofu
 
 		// buffer for transform matrices
 		math::float4x4* transformArray = reinterpret_cast<math::float4x4*>(
-			MemoryAllocator::Allocators[allocNo].Allocate(transformBufferSize, 4)
+			MemoryAllocator::FrameAlloc(transformBufferSize, 4)
 			);
 
 
 		// list of active renderables (used for culling)
 		RenderingObject* activeObjects = reinterpret_cast<RenderingObject*>(
-			MemoryAllocator::Allocators[allocNo].Allocate(sizeof(RenderingObject) * kMaxEntities * 2, 4)
+			MemoryAllocator::FrameAlloc(sizeof(RenderingObject) * kMaxEntities * 2, 4)
 			);
 
 		/*uint32_t* opaqueObjects = reinterpret_cast<uint32_t*>(
-			MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxEntities, 4)
+			MemoryAllocator::FrameAlloc(sizeof(uint32_t) * kMaxEntities, 4)
 			);
 
 		uint32_t* transparentObjects = reinterpret_cast<uint32_t*>(
-			MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxEntities, 4)
+			MemoryAllocator::FrameAlloc(sizeof(uint32_t) * kMaxEntities, 4)
 			);*/
 
 		assert(nullptr != transformArray && nullptr != activeObjects);
@@ -1461,39 +1454,39 @@ namespace tofu
 		assert(lightsCount <= kMaxEntities);
 
 		LightParametersDirectionalAndAmbient* ambDirLightParams = reinterpret_cast<LightParametersDirectionalAndAmbient*>(
-			MemoryAllocator::Allocators[allocNo].Allocate(sizeof(LightParametersDirectionalAndAmbient), 16)
+			MemoryAllocator::FrameAlloc(sizeof(LightParametersDirectionalAndAmbient), 16)
 			);
 		assert(nullptr != ambDirLightParams);
 
 		PointLightParams* pointLightParams = reinterpret_cast<PointLightParams*>(
-			MemoryAllocator::Allocators[allocNo].Allocate(sizeof(PointLightParams), 16)
+			MemoryAllocator::FrameAlloc(sizeof(PointLightParams), 16)
 			);
 		assert(nullptr != pointLightParams);
 
 		SpotLightParams* spotLightParams = reinterpret_cast<SpotLightParams*>(
-			MemoryAllocator::Allocators[allocNo].Allocate(sizeof(SpotLightParams), 16)
+			MemoryAllocator::FrameAlloc(sizeof(SpotLightParams), 16)
 			);
 		assert(nullptr != spotLightParams);
 
 		math::float4x4* pointLightTransform = reinterpret_cast<math::float4x4*>(
-			MemoryAllocator::Allocators[allocNo].Allocate(sizeof(math::float4x4) * kMaxPointLights, 16)
+			MemoryAllocator::FrameAlloc(sizeof(math::float4x4) * kMaxPointLights, 16)
 			);
 		assert(nullptr != pointLightTransform);
 
 		math::float4x4* spotLightTransform = reinterpret_cast<math::float4x4*>(
-			MemoryAllocator::Allocators[allocNo].Allocate(sizeof(math::float4x4) * kMaxSpotLights, 16)
+			MemoryAllocator::FrameAlloc(sizeof(math::float4x4) * kMaxSpotLights, 16)
 			);
 		assert(nullptr != spotLightTransform);
 
 		math::float4x4* shadowMatrices = reinterpret_cast<math::float4x4*>(
-			MemoryAllocator::Allocators[allocNo].Allocate(sizeof(math::float4x4) * kMaxShadowCastingLights * 4, 16)
+			MemoryAllocator::FrameAlloc(sizeof(math::float4x4) * kMaxShadowCastingLights * 4, 16)
 			);
 		assert(nullptr != shadowMatrices);
 
 
-		//uint32_t* pointLights = reinterpret_cast<uint32_t*>(MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxEntities, 4));
-		//uint32_t* spotLights = reinterpret_cast<uint32_t*>(MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxEntities, 4));
-		//uint32_t* shadowLights = reinterpret_cast<uint32_t*>(MemoryAllocator::Allocators[allocNo].Allocate(sizeof(uint32_t) * kMaxShadowCastingLights, 4));
+		//uint32_t* pointLights = reinterpret_cast<uint32_t*>(MemoryAllocator::FrameAlloc(sizeof(uint32_t) * kMaxEntities, 4));
+		//uint32_t* spotLights = reinterpret_cast<uint32_t*>(MemoryAllocator::FrameAlloc(sizeof(uint32_t) * kMaxEntities, 4));
+		//uint32_t* shadowLights = reinterpret_cast<uint32_t*>(MemoryAllocator::FrameAlloc(sizeof(uint32_t) * kMaxShadowCastingLights, 4));
 
 		uint32_t numDirectionalLights = 0;
 		uint32_t numPointLights = 0;
@@ -1650,7 +1643,7 @@ namespace tofu
 		// update volumetric fog
 		{
 			VolumetricFogParams* params = reinterpret_cast<VolumetricFogParams*>(
-				MemoryAllocator::Allocators[allocNo].Allocate(sizeof(VolumetricFogParams), 16)
+				MemoryAllocator::FrameAlloc(sizeof(VolumetricFogParams), 16)
 				);
 			assert(nullptr != params);
 
@@ -1696,7 +1689,7 @@ namespace tofu
 			}
 
 			// update and fill in bone matrices
-			void* boneMatrices = MemoryAllocator::Allocators[allocNo].Allocate(anim.boneMatricesBufferSize, 4);
+			void* boneMatrices = MemoryAllocator::FrameAlloc(anim.boneMatricesBufferSize, 4);
 
 			anim.UpdateTiming();
 			anim.FillInBoneMatrices(boneMatrices, anim.boneMatricesBufferSize);
@@ -1713,7 +1706,7 @@ namespace tofu
 
 			// clear depth map
 			{
-				ClearParams* params = MemoryAllocator::Alloc<ClearParams>(allocNo);
+				ClearParams* params = MemoryAllocator::FrameAlloc<ClearParams>();
 				params->renderTargets[0] = TextureHandle();
 				params->depthRenderTarget = shadowMaps[iLight];
 				cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
@@ -1734,7 +1727,7 @@ namespace tofu
 
 				const Material* mat = &materials[obj.material.id];
 
-				DrawParams* params = MemoryAllocator::Alloc<DrawParams>(allocNo);
+				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
 				params->pipelineState = materialPSOs[mat->type];
 				params->vertexBuffer = mesh.VertexBuffer;
 				params->indexBuffer = mesh.IndexBuffer;
@@ -1780,7 +1773,7 @@ namespace tofu
 
 		{
 			// clear g-buffer depth
-			ClearParams* params = MemoryAllocator::Alloc<ClearParams>(allocNo);
+			ClearParams* params = MemoryAllocator::FrameAlloc<ClearParams>();
 			params->renderTargets[0] = gBuffer1;
 			params->renderTargets[1] = gBuffer2;
 			params->renderTargets[2] = gBuffer3;
@@ -1804,7 +1797,7 @@ namespace tofu
 
 			const Material* mat = &materials[obj.material.id];
 
-			DrawParams* params = MemoryAllocator::Alloc<DrawParams>(allocNo);
+			DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
 			params->pipelineState = materialPSOs[mat->type];
 			params->vertexBuffer = mesh.VertexBuffer;
 			params->indexBuffer = mesh.IndexBuffer;
@@ -1865,7 +1858,7 @@ namespace tofu
 			if (numPointLights > 0)
 			{
 				Mesh& mesh = meshes[builtinSphere->meshes[0].id];
-				DrawParams* params = MemoryAllocator::Alloc<DrawParams>(allocNo);
+				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
 				assert(nullptr != params);
 
 				params->pipelineState = materialPSOs[kMaterialDeferredLightingOcclude];
@@ -1888,7 +1881,7 @@ namespace tofu
 			if (numSpotLights > 0)
 			{
 				Mesh& mesh = meshes[builtinCone->meshes[0].id];
-				DrawParams* params = MemoryAllocator::Alloc<DrawParams>(allocNo);
+				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
 				assert(nullptr != params);
 
 				params->pipelineState = materialPSOs[kMaterialDeferredLightingOcclude];
@@ -1914,7 +1907,7 @@ namespace tofu
 			if (numPointLights > 0)
 			{
 				Mesh& mesh = meshes[builtinSphere->meshes[0].id];
-				DrawParams* params = MemoryAllocator::Alloc<DrawParams>(allocNo);
+				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
 				assert(nullptr != params);
 
 				params->pipelineState = materialPSOs[kMaterialDeferredLightingPointLight];
@@ -1948,7 +1941,7 @@ namespace tofu
 			if (numSpotLights > 0)
 			{
 				Mesh& mesh = meshes[builtinCone->meshes[0].id];
-				DrawParams* params = MemoryAllocator::Alloc<DrawParams>(allocNo);
+				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
 				assert(nullptr != params);
 
 				params->pipelineState = materialPSOs[kMaterialDeferredLightingSpotLight];
@@ -1987,7 +1980,7 @@ namespace tofu
 			// ambient light & directional lights
 			{
 				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
-				DrawParams* params = MemoryAllocator::Alloc<DrawParams>(allocNo);
+				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
 
 				params->pipelineState = materialPSOs[kMaterialDeferredLightingAmbient];
 
@@ -2036,7 +2029,7 @@ namespace tofu
 
 			const Material* mat = &materials[obj.material.id];
 
-			DrawParams* params = MemoryAllocator::Alloc<DrawParams>(allocNo);
+			DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
 			params->pipelineState = materialPSOs[mat->type];
 			params->vertexBuffer = mesh.VertexBuffer;
 			params->indexBuffer = mesh.IndexBuffer;
@@ -2079,7 +2072,7 @@ namespace tofu
 
 			/**/
 			{
-				ComputeParams* params = MemoryAllocator::Alloc<ComputeParams>(allocNo);
+				ComputeParams* params = MemoryAllocator::FrameAlloc<ComputeParams>();
 
 				params->shader = injectionShader;
 				params->constantBuffers[0] = { fogParamsBuffer, 0, 0 };
@@ -2099,7 +2092,7 @@ namespace tofu
 			}
 
 			{
-				ComputeParams* params = MemoryAllocator::Alloc<ComputeParams>(allocNo);
+				ComputeParams* params = MemoryAllocator::FrameAlloc<ComputeParams>();
 
 				params->shader = scatterShader;
 				params->shaderResources[0] = injectionTex;
@@ -2117,7 +2110,7 @@ namespace tofu
 			// Extract bright part
 			{
 				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
-				DrawParams* params = MemoryAllocator::Alloc<DrawParams>(allocNo);
+				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
 
 				params->pipelineState = materialPSOs[kMaterialPostProcessExtractBright];
 
@@ -2137,7 +2130,7 @@ namespace tofu
 			// Blur
 			{
 				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
-				DrawParams* params = MemoryAllocator::Alloc<DrawParams>(allocNo);
+				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
 
 				params->pipelineState = materialPSOs[kMaterialPostProcessBlur];
 
@@ -2159,7 +2152,7 @@ namespace tofu
 			// volumetric fog
 			{
 				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
-				DrawParams* params = MemoryAllocator::Alloc<DrawParams>(allocNo);
+				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
 
 				params->pipelineState = materialPSOs[kMaterialPostProcessVolumetricFog];
 
@@ -2186,7 +2179,7 @@ namespace tofu
 			// tone mapping
 			{
 				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
-				DrawParams* params = MemoryAllocator::Alloc<DrawParams>(allocNo);
+				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
 
 				params->pipelineState = materialPSOs[kMaterialPostProcessToneMapping];
 

@@ -18,6 +18,7 @@ namespace tofu
 
 	MemoryAllocator MemoryAllocator::Allocators[kMaxMemoryAllocators];
 	NativeAllocator* MemoryAllocator::DefaultNativeAllocator = nullptr;
+	int32_t MemoryAllocator::currentFrameAllocIdx = -1;
 
 	int32_t MemoryAllocator::Init(size_t size, size_t alignment, NativeAllocator * nativeAlloc)
 	{
