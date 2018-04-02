@@ -127,7 +127,8 @@ namespace tofu
 		kBlendSrc1Color,
 		kBlendInvSrc1Color,
 		kBlendSrc1Alpha,
-		kBlendInvSrc1Alpha
+		kBlendInvSrc1Alpha,
+		kMaxBlendMultipliers
 	};
 
 	enum BlendOp
@@ -136,7 +137,8 @@ namespace tofu
 		kBlendOpSubtract,
 		kBlendOpRevSubtract,
 		kBlendOpMin,
-		kBlendOpMax
+		kBlendOpMax,
+		kMaxBlendOps
 	};
 
 	enum ColorWriteMask
