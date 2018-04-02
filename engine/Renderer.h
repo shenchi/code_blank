@@ -255,10 +255,10 @@ namespace tofu
 
 		TF_INLINE void InitAsTextureFromFile(TextureHandle handle, void* data, uint32_t size)
 		{
-			handle = handle;
+			this->handle = handle;
 			bindingFlags = kBindingShaderResource;
 			isFile = 1;
-			data = data;
+			this->data = data;
 			width = static_cast<uint32_t>(size);
 		}
 

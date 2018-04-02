@@ -9,15 +9,15 @@ namespace tofu
 	public:
 		Transform()
 			:
-			translation(),
 			rotation(),
+			translation(),
 			scale({ 1.0f, 1.0f, 1.0f })
 		{}
 
 		Transform(math::float3 translation, math::quat rotation, math::float3 scale)
 			:
-			translation(translation),
 			rotation(rotation),
+			translation(translation),
 			scale(scale)
 		{}
 
