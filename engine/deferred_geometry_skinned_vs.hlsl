@@ -56,14 +56,14 @@ V2F main(Input input)
 	bone += bones[input.boneIds.w] * input.weights.w;
 
 	matrix matM = mul(bone, matWorld);
-	//matrix matM = matWorld;
+	float3x3 matM_IT = mul((float3x3)bone, (float3x3)matWorld_IT);
 
 	matrix matMVP = mul(mul(matM, matView), matProj);
 
 	output.position = mul(float4(input.position, 1), matMVP);
 	output.worldPos = mul(float4(input.position, 1), matM).xyz;
-	output.normal = normalize(mul(input.normal, (float3x3)matWorld_IT));
-	output.tangent = float4(normalize(mul(input.tangent.xyz, (float3x3)matWorld_IT)), input.tangent.w);
+	output.normal = normalize(mul(input.normal, matM_IT));
+	output.tangent = float4(normalize(mul(input.tangent.xyz, matM_IT)), input.tangent.w);
 	//output.normal = mul(input.normal, (float3x3)matWorld);
 	//output.tangent = float4(mul(input.tangent.xyz, (float3x3)matWorld), input.tangent.w);
 	output.uv = input.uv;

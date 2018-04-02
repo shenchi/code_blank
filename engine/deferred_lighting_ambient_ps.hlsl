@@ -41,9 +41,9 @@ float4 main(float4 clipPos : SV_POSITION) : SV_TARGET
 	float2 screenPos = clipPos.xy - 0.5;// / bufferSize.xy;
 
 	int3 uv = int3(screenPos, 0);
-	float3 albedo = gBuffer1.Load(uv).rgb;
+	float4 albedo = gBuffer1.Load(uv).rgba;
 	float4 texel = gBuffer2.Load(uv).rgba;
-	float3 occlusion = gBuffer3.Load(uv).rgb;
+	float4 occlusion = gBuffer3.Load(uv).rgba;
 	float3 emission = gBuffer4.Load(uv).rgb;
 
 	float3 worldNormal = texel.rgb;
@@ -54,15 +54,15 @@ float4 main(float4 clipPos : SV_POSITION) : SV_TARGET
 	for (uint i = 0; i < numDirectionalLights; i++)
 	{
 		float NdotL = max(0, dot(worldNormal, -directionalLights[i].direction.xyz));
-		color += NdotL * directionalLights[i].color.rgb * directionalLights[i].intensity * albedo;
+		color += NdotL * directionalLights[i].color.rgb * directionalLights[i].intensity * albedo.rgb;
 	}
 
 	float3 viewDir = normalize(cameraPos.xyz - worldPos.xyz);
 	float ao = occlusion.x;
-	float metallic = gBuffer1.Load(int3(screenPos, 0)).a;
-	float roughness = 1 - gBuffer3.Load(int3(screenPos, 0)).a;
+	float metallic = albedo.a;
+	float roughness = 1 - occlusion.a;
 
-	float3 ambientPBR = EnvironmentLight(worldNormal, viewDir, albedo, ao, metallic, roughness, skyDiff, skySpec, BrdfLut, samp, sampForLUT);
+	float3 ambientPBR = EnvironmentLight(worldNormal, viewDir, albedo.rgb, ao, metallic, roughness, skyDiff, skySpec, BrdfLut, samp, sampForLUT);
 	color += ambientPBR * ambient.xyz;
 	
 	return float4(color, 1);
