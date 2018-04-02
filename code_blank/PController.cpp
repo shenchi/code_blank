@@ -26,7 +26,7 @@ PController::PController()
 
 	// Default control scheme: 1, 1, 1, -1
 	// movement - horizontal, veritcal / camera - veritcal, horizontal
-	SetControlMods(1, 1, 1, 1);
+	SetControlMods(1, 1, -1, 1);
 }
 
 // Destructor
@@ -39,6 +39,8 @@ void PController::Update()
 
 	if (input->IsGamepadConnected())
 	{
+		cam->SetSensitivity(camSenWGP);
+
 		if (input->IsButtonDown(ButtonId::kGamepadStart))
 		{
 			paused = !paused;
@@ -222,14 +224,7 @@ void PController::SetCamera(Camera* _cam)
 {
 	assert(_cam != NULL);
 	cam = _cam;
-	if (!input->IsGamepadConnected())
-	{
-		cam->SetSensitivity(0.5f);
-	}
-	else
-	{
-		cam->SetSensitivity(2.0f);
-	}
+	cam->SetSensitivity(camSenWM);
 }
 
 // Set Player Companion

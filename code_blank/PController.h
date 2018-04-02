@@ -33,6 +33,8 @@ private:
 
 	float pitch;
 	float yaw;
+	float camSenWGP = 2.0f;	// Cam sensitivity for gamepad
+	float camSenWM = 0.5f;		// Cam sensitivity for mouse;
 
 	int xAxisMod;
 	int zAxisMod;

@@ -62,6 +62,8 @@ private:
 	
 	tofu::math::quat camRotation;
 
+	tofu::math::float3 lastMoveDir;
+
 	Gun* gun;
 
 	bool attackButtonDown;

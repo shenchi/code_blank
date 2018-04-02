@@ -19,7 +19,7 @@ Player::Player(CharacterDetails details, void* comp)
 		combatDetails.maxComboTime = 2.0f;
 		combatDetails.dodgeTime = 0.0f;
 		combatDetails.rollTime = 1.5f;
-		combatDetails.rollSpeed = 3.0f;
+		combatDetails.rollSpeed = 60.0f;
 		combatDetails.hitTime = 1.0f;
 		combatDetails.hitMaxWalkSpeed = 1.0f;
 		combatDetails.adjustSpeed = 2.0f;
@@ -192,6 +192,7 @@ Player::Player(CharacterDetails details, void* comp)
 		pPlayer->SetColliderOrigin(details.colliderOrigin);
 		pPlayer->SetGravity(math::float3{});
 
+		lastMoveDir = {};
 		velocity = {};
 		charRot = {};
 
@@ -223,6 +224,8 @@ Player::Player(CharacterDetails details, void* comp)
 
 	attackButtonDown = false;
 	specialButtonDown = false;
+	isSprinting = false;
+	isRolling = false;
 	attackButtonTimer = 0.0f;
 	specialButtonTimer = 0.0f;
 	minHoldTime = 0.5f;
@@ -263,6 +266,22 @@ void Player::Update(float dT)
 
 void Player::FixedUpdate(float fDT)
 {
+	if (isRolling)
+	{
+		CheckGroundStatus();
+
+		if (isGrounded)
+		{
+			HandleGroundedMovement(lastMoveDir, true, false, fDT);
+		}
+		else if (!isGrounded)
+		{
+			//HandleAirborneMovement(lastMove, dT);
+			HandleAirborneMovement(lastMoveDir, true, fDT);
+		}
+
+		pPlayer->SetVelocity(velocity);
+	}
 
 }
 
@@ -270,6 +289,64 @@ void Player::FixedUpdate(float fDT)
 void Player::MoveReg(float dT, bool _jump, math::float3 inputDir, math::quat camRot)
 //void Player::MoveReg(float vert, float hori, Quaternion camRot, bool jump, bool running, bool dash, bool aiming)
 {
+	float vert = 0.0f;
+	float hori = 0.0f;
+	// Linear interpolation of movement
+	if (!isSprinting)
+	{
+		if (inputDir.z > 0.0f)
+		{
+			vert = math::mix(0.3f, 1.0f, vertLerp);
+
+			if (vertLerp < 1.0f)
+			{
+				vertLerp += lerpMod;
+			}
+		}
+		else if (inputDir.z < 0.0f)
+		{
+			vert = -math::mix(0.3f, 1.0f, vertLerp);
+
+			if (vertLerp < 1.0f)
+			{
+				vertLerp += lerpMod;
+			}
+		}
+		else
+		{
+			vertLerp = 0.35f;
+			vert = 0.0f;
+		}
+		inputDir.z = vert;
+
+		if (inputDir.x > 0.0f)
+		{
+			hori = math::mix(0.3f, 1.0f, horiLerp);
+
+			if (horiLerp < 1.0f)
+			{
+				horiLerp += lerpMod;
+			}
+		}
+		else if (inputDir.x < 0.0f)
+		{
+			hori = -math::mix(0.3f, 1.0f, horiLerp);
+
+			if (horiLerp < 1.0f)
+			{
+				horiLerp += lerpMod;
+			}
+		}
+		else
+		{
+			horiLerp = 0.35f;
+			hori = 0.0f;
+		}
+
+		inputDir.x = hori;
+	}
+
+
 	lastVelocity = pPlayer->GetVelocity();
 	charRot = pPlayer->GetRotation();
 
@@ -364,6 +441,11 @@ void Player::MoveReg(float dT, bool _jump, math::float3 inputDir, math::quat cam
 	}
 
 	pPlayer->SetVelocity(velocity);
+
+	if (moveDir.x != 0 || moveDir.z != 0)
+	{
+		lastMoveDir = moveDir;
+	}
 
 	//---------------------------------------------------------------------------------------
 	/*
@@ -483,30 +565,21 @@ void Player::UpdateState(float dT)
 			}
 
 		}
-		else if (combatManager->GetIsDodging())
-		{
-			if (stateTimer < combatManager->GetDodgeTime())
-			{
-				currentState = kDodge;
-				animationParameter = combatManager->GetDodgeDirection();
-			}
-			else
-			{
-				stateTimer = -1;
-			    combatManager->SetIsDodging(false);
-			}
-		}
 		else if (combatManager->GetIsRolling())
 		{
 			if (stateTimer < combatManager->GetRollTime())
 			{
 				currentState = kRoll;
+			}
+			else if (stateTimer > combatManager->GetRollTime() / 2 && stateTimer < combatManager->GetRollTime())
+			{
 				ForceMove(combatManager->GetRollSpeed(), dT, 1);
 			}
 			else
 			{
 				stateTimer = -1;
 				combatManager->SetIsRolling(false);
+				isRolling = false;
 			}
 		}
 		else if (combatManager->GetIsAttacking())
@@ -661,41 +734,13 @@ void Player::Die()
 // Dodge, in the current player direction
 void Player::Dodge(tofu::math::float3 inputDir)
 {
-	// TODO
-	if (!isAiming)
+    // If can roll
+	if(combatManager->GetCanRoll())
     {
-        // If can roll
-		if(combatManager->GetCanRoll())
-        {
-			combatManager->Roll();
-            // Remove stamina
-            //playerCharacter.UseStamina(rollDodgeCost);
-        }
-    }
-    else if(combatManager->GetCanDodge())
-    {
-        if (inputDir.x < 0)  // Left
-        {
-			combatManager->Dodge(0);
-        }
-        else if (inputDir.x > 0) // Right
-        {
-			combatManager->Dodge(1);
-        }
-        else if (inputDir.z < 0)  // Back
-        {
-			combatManager->Dodge(2);
-        }
-        else if (inputDir.z > 0)  // Foward
-        {
-			combatManager->Dodge(3);
-        }
-        else
-        {
-			assert(false);
-        }
-
-		//playerCharacter.UseStamina(rollDodgeCost);
+		isRolling = true;
+		combatManager->Roll();
+        // Remove stamina
+        //playerCharacter.UseStamina(rollDodgeCost);
     }
 }
 

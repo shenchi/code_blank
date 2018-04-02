@@ -91,6 +91,7 @@ int32_t Game::FixedUpdate()
 				comp->FixedUpdate(Time::DeltaTime, player->GetPosition(), player->GetForward());
 				cam->FixedUpdate(Time::FixedDeltaTime);
 				pControl->FixedUpdate(Time::FixedDeltaTime);
+				player->FixedUpdate(Time::FixedDeltaTime);
 			}
 			break;
 		}
@@ -395,21 +396,21 @@ bool Game::LoadScene(sceneType num)
 			else
 			{
 				CharacterDetails playerDetails = {};
+				playerDetails.tag = "player";
 				playerDetails.modelName = "assets/archer.model";
 				playerDetails.diffuseName = "assets/archer_0.texture";
 				playerDetails.normalMapName = "assets/archer_1.texture";
 				playerDetails.capsuleColliderSize = { 50.0f, 80.0f };
 				playerDetails.colliderOrigin = { 0.0f, 100.0f, 0.0f };
+				playerDetails.scale = { 0.01f, 0.01f, 0.01f };
+				playerDetails.position = sceneMgr.GetPlayerSpawnPoint();
 				playerDetails.health = 200.0f;
 				playerDetails.jumpPower = 2.5f;
-				playerDetails.position = sceneMgr.GetPlayerSpawnPoint();
-				playerDetails.scale = { 0.01f, 0.01f, 0.01f };
-				playerDetails.sprintSpeed = 10.0f;
-				playerDetails.tag = "player";
-				playerDetails.walkSpeed = 5.0f;
-				playerDetails.rollDodgeCost = 10.0f;
-				playerDetails.acceleration = 6.67f;
+				playerDetails.walkSpeed = 4.0f;
+				playerDetails.sprintSpeed = 8.0f;
+				playerDetails.acceleration = 4.0f;
 				playerDetails.deacceleration = 10.0f;
+				playerDetails.rollDodgeCost = 10.0f;
 
 
 				// Setup the Player's Companion

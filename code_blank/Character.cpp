@@ -41,6 +41,8 @@ void Character::UpdateState(float dT)
 // Handle movement on the ground
 void Character::HandleGroundedMovement(math::float3 _moveDir, bool _hasInput, bool _jump, float dT)
 {
+	float accelMod = 0.0f;
+	float deaccelMod = 0.0f;
 	// check whether conditions are right to allow a jump
 	if (_jump && !jump && isGrounded)
 	{
@@ -53,25 +55,41 @@ void Character::HandleGroundedMovement(math::float3 _moveDir, bool _hasInput, bo
 		stateTimer = 0;
 	}
 
+	if (!isSprinting && !isRolling)
+	{
+		accelMod = dT * kAccelerate;
+		deaccelMod = dT * kDeaccelerate;
+	}
+	else if (isRolling)
+	{
+		accelMod = dT * kAccelerate * 1.0f;
+	}
+	else
+	{
+		accelMod = dT * kAccelerate * 2.0f;
+		deaccelMod = dT * kDeaccelerate * 1.5f;
+	}
+
+
 	if (_hasInput && isGrounded)
 	{
-		speed += dT * kAccelerate;
+		speed += accelMod;
 		if (speed > moveSpeedMultiplier)
 			speed = moveSpeedMultiplier;
 
-		//velocity.y = lastVelocity.y - gravityMultiplier * 10.0f * dT;
 		math::float3 moveVector = _moveDir * speed;
 		velocity.x = moveVector.x;
 		velocity.z = moveVector.z;
 	}
+
 	else if (isGrounded)
 	{
-		speed -= dT * kDeaccelerate;
+		speed -= deaccelMod;
 		if (speed < 0.0f) speed = 0.0f;
 		math::float3 moveVector = -(charRot * math::float3{ 0, 0, 1 }) * speed;
 		velocity.x = moveVector.x;
 		velocity.z = moveVector.z;
-	}	
+	}
 } // end ground movement
 
 

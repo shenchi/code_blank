@@ -103,9 +103,9 @@ protected:
 	// Bools
 	bool isAiming;
 	bool isGrounded;
-	bool jump;
+	bool isRolling;
 	bool isSprinting; // TODO , why 2???
-	bool sprinting;
+	bool jump;
 	bool moving;
 	bool hasJumped = false;
 	bool isDead;
@@ -116,6 +116,9 @@ protected:
 	float origGroundCheckDistance;
 	float stateTimer;
 	float groundCheckRadius;
+	float lerpMod = 0.01f;
+	float vertLerp = 0.35f;
+	float horiLerp = 0.35f;
 
 	tofu::math::float3 groundNormal;
 	tofu::math::float3 move;
@@ -127,8 +130,8 @@ protected:
 	tofu::math::quat rotation;
 
 	// Constants
-	const float kMaxSpeed = 12.0f;
-	const float kAccelerate = 6.67f;
-	const float kDeaccelerate = 10.0f;
-	const float kAirDeaccelerate = 2.0f;
+	const float kMaxSpeed = 8.0f;			// 12.0f
+	const float kAccelerate = 4.0f;		// 6.67f
+	const float kDeaccelerate = 10.0f;		// 10.0f
+	const float kAirDeaccelerate = 2.0f;	// 2.0f
 };
