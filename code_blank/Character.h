@@ -49,7 +49,7 @@ public:
 	CharacterState LastState();
 
 	// Shared Functions
-
+	void ForceMove(float, float);
 	void ForceMove(float, float, int);
 	void ForceMove(float, float, tofu::math::float3);
 

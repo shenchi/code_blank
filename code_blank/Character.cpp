@@ -252,26 +252,34 @@ void Character::Special(float, bool, bool) {}
 // Force the player to move a bit
 void Character::ForceMove(float speed, float dT, int direction)
 {
+	math::float3 moveDir = {};
 	if (direction == 0)
 	{
-		//tPlayer->Translate -= tPlayer->GetForwardVector() * speed * dT;
-		tCharacter->Translate(tCharacter->GetForwardVector() * dT * speed);
+		//tCharacter->Translate(tCharacter->GetForwardVector() * dT * speed);
+		moveDir = tCharacter->GetForwardVector();
 	}
 	else if (direction == 1)
 	{
-		//tPlayer->Translate += tPlayer->GetForwardVector() * speed * dT;
-		tCharacter->Translate(tCharacter->GetForwardVector() * dT * -speed);
+		//tCharacter->Translate(tCharacter->GetForwardVector() * dT * -speed);
+		moveDir = tCharacter->GetForwardVector() * -1.0f;
 	}
 	else if (direction == 2)
 	{
-		//tPlayer->Translate += tPlayer->GetRightVector() * speed * dT;
-		tCharacter->Translate(tCharacter->GetRightVector() * dT * -speed);
+		//tCharacter->Translate(tCharacter->GetRightVector() * dT * -speed);
+		moveDir = tCharacter->GetRightVector() * -1.0f;
 	}
 	else if (direction == 3)
 	{
-		//tPlayer->Translate -= tPlayer->GetRightVector() * speed * dT;
-		tCharacter->Translate(tCharacter->GetRightVector() * dT * speed);
+		//tCharacter->Translate(tCharacter->GetRightVector() * dT * speed);
+		moveDir = tCharacter->GetRightVector();
 	}
+
+	if (speed > 500.0f)
+		speed = 500.0f;
+
+	math::float3 moveVector = moveDir * speed;
+	velocity.x = moveVector.x;
+	velocity.z = moveVector.z;
 }
 
 // Force the player to move a bit
@@ -280,6 +288,19 @@ void Character::ForceMove(float speed, float dT, math::float3 direction)
 	//tPlayer->Translate += direction * speed * dT;
 	tCharacter->Translate(direction * dT * speed);
 
+}
+
+// Force move in the players currentlly facing direction
+void Character::ForceMove(float speed, float dT)
+{
+	math::float3 moveDir = tCharacter->GetForwardVector();
+
+	if (speed > 500.0f)
+		speed = 500.0f;
+
+	math::float3 moveVector = moveDir * speed;
+	velocity.x = moveVector.x;
+	velocity.z = moveVector.z;
 }
 
 // Deal damage to the character

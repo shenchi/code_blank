@@ -112,6 +112,24 @@
 				"source": "Roll.fbx",
 				"avatar": "mixamo_avatar.json",
 				"clip": "mixamo.com"
+			},
+            {
+				"name": "kSwordR",
+				"source": "GreatSwordSlash.fbx",
+				"avatar": "mixamo_avatar.json",
+				"clip": "mixamo.com"
+			},
+            {
+				"name": "kSwordR2",
+				"source": "GreatSwordSlash2.fbx",
+				"avatar": "mixamo_avatar.json",
+				"clip": "mixamo.com"
+			},
+            {
+				"name": "kSwordCombo",
+				"source": "GreatSwordHighSpin.fbx",
+				"avatar": "mixamo_avatar.json",
+				"clip": "mixamo.com"
 			}
 		]
 	}

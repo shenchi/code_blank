@@ -176,24 +176,23 @@ void GameplayAnimationMachine::Play(CharacterState state, uint32_t parameter, si
 				aComp->CrossFade("kKickHorseKick", 0.2f, 1);
 				break;
 			case kSwordAttackR:
-				aComp->CrossFade("", 0.2f, 0);
-				aComp->CrossFade("", 0.2f, 1);
+				aComp->CrossFade("kSwordR", 0.2f, 0);
+				aComp->CrossFade("kSwordR", 0.2f, 1);
 				break;
 			case kSwordAttackRL:
-				aComp->CrossFade("", 0.2f, 0);
-				aComp->CrossFade("", 0.2f, 1);
+				aComp->CrossFade("kSwordR2", 0.2f, 0);
+				aComp->CrossFade("kSwordR2", 0.2f, 1);
 				break;
 			case kSwordAttackSpU:
-				aComp->CrossFade("", 0.2f, 0);
-				aComp->CrossFade("", 0.2f, 1);
+				aComp->CrossFade("kSwordCombo", 0.2f, 0);
+				aComp->CrossFade("kSwordCombo", 0.2f, 1);
 				break;
 			case kSwordAttackComboLL:
-				aComp->CrossFade("", 0.2f, 0);
-				aComp->CrossFade("", 0.2f, 1);
+				aComp->CrossFade("kSwordCombo", 0.2f, 0);
+				aComp->CrossFade("kSwordCombo", 0.2f, 1);
 				break;
 			case kGunShoot:
-				aComp->CrossFade("", 0.2f, 0);
-				aComp->CrossFade("", 0.2f, 1);
+				
 				break;
 			case kNumberOfItems:
 				aComp->CrossFade("", 0.2f, 0);

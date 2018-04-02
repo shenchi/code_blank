@@ -18,8 +18,8 @@ Player::Player(CharacterDetails details, void* comp)
 		combatDetails.comboTimer = 0.0f;
 		combatDetails.maxComboTime = 2.0f;
 		combatDetails.dodgeTime = 0.0f;
-		combatDetails.rollTime = 1.5f;
-		combatDetails.rollSpeed = 60.0f;
+		combatDetails.rollTime = 2.0f;
+		combatDetails.rollSpeed = 3.0f;
 		combatDetails.hitTime = 1.0f;
 		combatDetails.hitMaxWalkSpeed = 1.0f;
 		combatDetails.adjustSpeed = 2.0f;
@@ -98,6 +98,13 @@ Player::Player(CharacterDetails details, void* comp)
 			kKickStraightMidR->animationName = "kKickStraightMidR";
 			AnimationState *kKickKnee = stateMachine->AddState("kKickKnee");
 			kKickKnee->animationName = "kKickKnee";
+			AnimationState *kSwordR = stateMachine->AddState("kSwordR");
+			kSwordR->animationName = "kSwordR";
+			AnimationState *kSwordR2 = stateMachine->AddState("kSwordR2");
+			kSwordR2->animationName = "kSwordR2";
+			AnimationState *kSwordCombo = stateMachine->AddState("kSwordCombo");
+			kSwordCombo->animationName = "kSwordCombo";
+
 		}
 
 		// Upper Layer Animations
@@ -165,6 +172,12 @@ Player::Player(CharacterDetails details, void* comp)
 			kKickStraightMidR->animationName = "kKickStraightMidR";
 			AnimationState *kKickKnee = stateMachine->AddState("kKickKnee");
 			kKickKnee->animationName = "kKickKnee";
+			AnimationState *kSwordR = stateMachine->AddState("kSwordR");
+			kSwordR->animationName = "kSwordR";
+			AnimationState *kSwordR2 = stateMachine->AddState("kSwordR2");
+			kSwordR2->animationName = "kSwordR2";
+			AnimationState *kSwordCombo = stateMachine->AddState("kSwordCombo");
+			kSwordCombo->animationName = "kSwordCombo";
 		}
 
 		// Material and Model
@@ -279,10 +292,19 @@ void Player::FixedUpdate(float fDT)
 			//HandleAirborneMovement(lastMove, dT);
 			HandleAirborneMovement(lastMoveDir, true, fDT);
 		}
-
-		pPlayer->SetVelocity(velocity);
 	}
 
+	if (currentState == kAttack)
+	{
+		if (combatManager->GetCurrentCombat() == kKickHorseKick
+			|| combatManager->GetCurrentCombat() == kKickAxeKick
+			|| combatManager->GetCurrentCombat() == kKickStraightMidR)
+		{
+			ForceMove(30.0f, fDT, 1);
+		}
+	}
+
+	pPlayer->SetVelocity(velocity);
 }
 
 // Move the player character
@@ -571,9 +593,9 @@ void Player::UpdateState(float dT)
 			{
 				currentState = kRoll;
 			}
-			else if (stateTimer > combatManager->GetRollTime() / 2 && stateTimer < combatManager->GetRollTime())
+			else if (stateTimer > combatManager->GetRollTime() *.75 && stateTimer < combatManager->GetRollTime())
 			{
-				ForceMove(combatManager->GetRollSpeed(), dT, 1);
+				ForceMove(400.0f, dT);
 			}
 			else
 			{
@@ -707,23 +729,6 @@ void Player::Attack(bool down, float dT)
 			attackButtonDown = false;
 		}
 	}
-	else if (isAiming)	// Gun Attack
-	{
-		if(!gun->GetIsActive())
-		{
-			gun->SetIsActive(true);
-		}
-		if (!attackButtonDown && down) // TODO Add hook into player energy pool: playerCharacter.SpecialBar > 33.9999f
-		{
-			attackButtonDown = true;
-			attackButtonTimer = 0;
-			combatManager->GunShot();
-		}
-		if (attackButtonDown && !down)
-		{
-			attackButtonDown = false;
-		}
-	}
 }
 
 void Player::Die()
@@ -754,36 +759,25 @@ void Player::Interact()
 // Combo Special move (Sword)
 void Player::Special(bool down, float dT)
 {
-	// TODO
-	if (!isAiming)
+	// Special (Sword) Attack
+	if (!specialButtonDown && down) //Button 2
 	{
-		// Special (Sword) Attack
-		if (specialButtonDown)
-		{
-			specialButtonTimer += dT;
-		}
-		if (specialButtonDown && down ) // TODO Add energy hook: playerCharacter.SpecialBar > 24.9999f
-		{
-			specialButtonDown = true;
-			specialButtonTimer = 0;
-		}
-		// Button Press Attack
-		if (specialButtonDown && !down && specialButtonTimer <= minHoldTime)	// TODO Add energy hook: playerCharacter.SpecialBar > 24.9999f
-		{
-			combatManager->SwordCombo();
-			specialButtonDown = false;
-		}
-		// Button Hold Attack
-		/*
-		if (((CrossPlatformInputManager.GetButtonUp("Sword") && specialButtonDown && specialButtonTimer > minHoldTime)
-		|| (specialButtonTimer >= maxHoldTime && specialButtonDown)) && playerCharacter.SpecialBar > 49.9999f)
-		*/
-		if ( ((specialButtonDown && !down && specialButtonTimer > minHoldTime)	// TODO Add energy hook: playerCharacter.SpecialBar > 49.9999f
-			|| (specialButtonTimer >= maxHoldTime && specialButtonDown)) )
-		{
-			combatManager->SwordSpecialCombat();
-			specialButtonDown = false;
-		}
+		specialButtonDown = true;
+		specialButtonTimer = 0;
+	}
+
+	// If attack button is released and timer is less than a hold time, use basic attack
+	if (specialButtonDown && !down && specialButtonTimer <= minHoldTime) // TODO Add energy hook: playerCharacter.SpecialBar > 24.9999f
+	{
+		combatManager->SwordCombo();
+		specialButtonDown = false;
+	}
+
+	// If attack button is released
+	if ((!down && attackButtonDown && specialButtonTimer > minHoldTime))
+	{
+		combatManager->SwordSpecialCombat();
+		specialButtonDown = false;
 	}
 }
 
