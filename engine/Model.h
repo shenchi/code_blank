@@ -55,7 +55,7 @@ namespace tofu
 		size_t						rawDataSize;
 
 	public:
-		Model() :animationTable(model::AnimationTable()) {}
+		//Model() :animationTable(model::AnimationTable()) {}
 		TF_INLINE bool HasAnimation() const { return header->HasAnimation; }
 
 		TF_INLINE model::ModelAnimation* GetAnimation(std::string name) { 

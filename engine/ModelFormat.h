@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include "TofuMath.h"
+#include <string>
 #include <unordered_map>
 #include <assert.h>
 #include "Transform.h"

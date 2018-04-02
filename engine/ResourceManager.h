@@ -26,7 +26,7 @@ namespace tofu
 		int32_t LoadConfig();
 
 	private:
-		rapidjson::Document		config;
+		rapidjson::Document		*config;
 
 		std::unordered_map<std::string, Material*>	materials;
 		std::unordered_map<std::string, TextureHandle> textures;

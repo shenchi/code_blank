@@ -34,7 +34,8 @@ namespace tofu
 			return nullptr;
 		}
 
-		const Value& matConfig = config["materials"][(SizeType)iter->second];
+		Document& cfg = *config;
+		const Value& matConfig = cfg["materials"][(SizeType)iter->second];
 
 		TextureHandle albedo = TextureHandle();
 		const char* albedoTexPath = matConfig["AlbedoMap"].GetString();
@@ -155,6 +156,11 @@ namespace tofu
 
 	int32_t ResourceManager::LoadConfig()
 	{
+		if (nullptr != config) delete config;
+		config = new Document();
+
+		Document& cfg = *config;
+
 		char* json = nullptr;
 		CHECKED(FileIO::ReadFile(
 			"assets/res.json",
@@ -164,13 +170,13 @@ namespace tofu
 			reinterpret_cast<void**>(&json),
 			nullptr));
 
-		config.Parse(json);
+		config->Parse(json);
 
 		// load material list
-		if (!config.HasMember("materials"))
+		if (!cfg.HasMember("materials"))
 			return kErrUnknown;
 
-		const Value& matList = config["materials"];
+		const Value& matList = cfg["materials"];
 
 		matTable.clear();
 		if (!matList.IsNull())
@@ -188,10 +194,10 @@ namespace tofu
 		}
 
 		// load texture list
-		if (!config.HasMember("textures"))
+		if (!cfg.HasMember("textures"))
 			return kErrUnknown;
 
-		const Value& texList = config["textures"];
+		const Value& texList = cfg["textures"];
 
 		texTable.clear();
 		if (!texList.IsNull())
