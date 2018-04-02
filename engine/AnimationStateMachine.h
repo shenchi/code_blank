@@ -204,8 +204,7 @@ namespace tofu
 
 		AnimationStateMachine *GetStateMachine() { return &stateMachine; }
 
-		// FIXME:
-		std::vector<uint16_t> *selectedJoints = nullptr;
+		std::vector<uint16_t> selectedJoints;
 
 	private:
 		std::string name;

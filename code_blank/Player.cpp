@@ -102,16 +102,10 @@ Player::Player(CharacterDetails details, void* comp)
 		// Upper Layer Animations
 		{
 			AnimationLayer *upperLayer = aPlayer->AddLayer("Upper", 1.0f, kAET_Override);
-
-			// TODO This is causing memory leaks
-			{
-				upperLayer->selectedJoints = new std::vector<uint16_t>();
-
-				for (int i = 3; i <= 55; i++) {
-					upperLayer->selectedJoints->push_back(i);
-				}
+			for (int i = 3; i <= 55; i++) {
+				upperLayer->selectedJoints.push_back(i);
 			}
-
+			
 			AnimationStateMachine *stateMachine = upperLayer->GetStateMachine();
 
 			// Idle Animations
@@ -166,10 +160,6 @@ Player::Player(CharacterDetails details, void* comp)
 			AnimationState *kKickKnee = stateMachine->AddState("kKickKnee");
 			kKickKnee->animationName = "kKickKnee";
 		}
-
-
-
-
 
 		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialDeferredGeometryOpaqueSkinned);
 		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");

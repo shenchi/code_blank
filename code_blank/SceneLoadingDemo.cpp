@@ -52,10 +52,9 @@ int32_t SceneLoadingDemo::Init()
 
 		{
 			AnimationLayer *upperLayer = anim->AddLayer("Upper", 1.0f, kAET_Override);
-			upperLayer->selectedJoints = new std::vector<uint16_t>();
-
+			
 			for (int i = 3; i <= 55; i++) {
-				upperLayer->selectedJoints->push_back(i);
+				upperLayer->selectedJoints.push_back(i);
 			}
 
 			AnimationStateMachine *stateMachine = upperLayer->GetStateMachine();

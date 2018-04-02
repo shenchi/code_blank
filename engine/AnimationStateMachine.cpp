@@ -143,7 +143,7 @@ namespace tofu
 	void AnimationState::Evaluate(EvaluateContext & context, float weight, AnimationEvaluationType type)
 	{
 		// only apply the result to selected joints
-		if (context.selectedJoints) {
+		if (context.selectedJoints->size() > 0) {
 			for (auto i : *context.selectedJoints) {
 				InternalEvaluate(i, context, weight, type);
 			}
@@ -178,7 +178,7 @@ namespace tofu
 
 		Transform trans;
 
-		// Template version
+		// Template showcase 
 		SetTransform(frameCache.indices[kChannelTranslation], model, trans, model->bones[i].transform,
 			&Transform::SetTranslation, &Transform::GetTranslation, &AnimationState::LerpFrame, &AnimationState::CatmullRomFrame);
 
@@ -187,72 +187,6 @@ namespace tofu
 
 		SetTransform(frameCache.indices[kChannelScale], model, trans, model->bones[i].transform,
 			&Transform::SetScale, &Transform::GetScale, &AnimationState::LerpFrame, &AnimationState::CatmullRomFrame);
-
-		//// Original code
-		//size_t *indices = frameCache.indices[kChannelTranslation];
-
-		//if (indices[1] != nanIndex)
-		//{
-		//if (model->frames[indices[2]].time <= cache->ticks) {
-		//trans.SetTranslation(CatmullRomFrame(model, indices[1], indices[2], indices[3], indices[3]));
-		//}
-		//else {
-		//trans.SetTranslation(CatmullRomFrame(model, indices[0] == nanIndex ? indices[1] : indices[0], indices[1], indices[2], indices[3]));
-		//}
-		//}
-		//else if (indices[2] != nanIndex) {
-		//trans.SetTranslation(LerpFrame(model, indices[2], indices[3]));
-		//}
-		//else if (indices[3] != nanIndex) {
-		//trans.SetTranslation(model->frames[indices[3]].value);
-		//}
-		//else {
-		//trans.SetTranslation(model->bones[i].transform.GetTranslation());
-		//}
-
-		//indices = frameCache.indices[kChannelRotation];
-
-		//if (indices[1] != nanIndex)
-		//{
-		//if (model->frames[indices[2]].time <= cache->ticks) {
-		//trans.SetRotation(SquadFrame(model, indices[1], indices[2], indices[3], indices[3]));
-		//}
-		//else {
-		//trans.SetRotation(SquadFrame(model, indices[0] == nanIndex ? indices[1] : indices[0], indices[1], indices[2], indices[3]));
-		//}
-		//}
-		//else if (indices[2] != nanIndex) {
-		//trans.SetRotation(SlerpFrame(model, indices[2], indices[3]));
-		//}
-		//else if (indices[3] != nanIndex) {
-		//quat q;
-		//decompress(model->frames[indices[3]].value, q);
-		//trans.SetRotation(q);
-		//}
-		//else {
-		//trans.SetRotation(model->bones[i].transform.GetRotation());
-		//}
-
-		//indices = frameCache.indices[kChannelScale];
-
-		//if (indices[1] != nanIndex)
-		//{
-		//if (model->frames[indices[2]].time <= cache->ticks) {
-		//trans.SetScale(CatmullRomFrame(model, indices[1], indices[2], indices[3], indices[3]));
-		//}
-		//else {
-		//trans.SetScale(CatmullRomFrame(model, indices[0] == nanIndex ? indices[1] : indices[0], indices[1], indices[2], indices[3]));
-		//}
-		//}
-		//else if (indices[2] != nanIndex) {
-		//trans.SetScale(LerpFrame(model, indices[2], indices[3]));
-		//}
-		//else if (indices[3] != nanIndex) {
-		//trans.SetScale(model->frames[indices[3]].value);
-		//}
-		//else {
-		//trans.SetScale(model->bones[i].transform.GetScale());
-		//}
 
 		if (type == kAET_Blend) {
 			context.results[i].Blend(trans, weight);
@@ -479,7 +413,7 @@ namespace tofu
 			float alpha = elapsedTime / transitionDuration;
 
 			// only apply to selected joints
-			if (context.selectedJoints) {
+			if (context.selectedJoints->size() > 0) {
 				for (auto i : *context.selectedJoints) {
 					InternalEvaluate(i, context, weight, type);
 				}
@@ -542,7 +476,7 @@ namespace tofu
 
 	void AnimationLayer::Evaluate(EvaluateContext & context)
 	{
-		context.selectedJoints = selectedJoints;
+		context.selectedJoints = &selectedJoints;
 		stateMachine.Evaluate(context, weight, type);
 	}
 
