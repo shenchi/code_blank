@@ -871,6 +871,18 @@ void CombatManager::SetMoves()
 	defaultMove.power = kWeak;
 	allMoves.push_back(defaultMove);
 
+	// Kick_Knee
+	defaultMove.AT = 1.0f;
+	defaultMove.ET = 0.6f;
+	defaultMove.ED = 1.0f;
+	defaultMove.HT = 0.8f;
+	defaultMove.Dmg = 10.0f;
+	defaultMove.AD = 0.0f;
+	defaultMove.pos = kMid;
+	defaultMove.dir = kDirForward;
+	defaultMove.power = kWeak;
+	allMoves.push_back(defaultMove);
+
 	// Kick_Axe_Kick
 	defaultMove.AT = 1.2f;
 	defaultMove.ET = 0.5f;
@@ -896,8 +908,9 @@ void CombatManager::SetMoves()
 	allMoves.push_back(defaultMove);
 
 	// Sword_Attack_R
-	defaultMove.AT = 1.0f;
-	defaultMove.ET = 0.3f;
+	defaultMove.name = "SwordR";
+	defaultMove.AT = 2.02f;
+	defaultMove.ET = 1.0f;
 	defaultMove.ED = 1.25f;
 	defaultMove.HT = 1.0f;
 	defaultMove.Dmg = 10.0f;
@@ -908,8 +921,9 @@ void CombatManager::SetMoves()
 	allMoves.push_back(defaultMove);
 
 	// Sword_Attack_RL
-	defaultMove.AT = 0.8f;
-	defaultMove.ET = 0.3f;
+	defaultMove.name = "SwordRL";
+	defaultMove.AT = 1.8f;
+	defaultMove.ET = 0.5f;
 	defaultMove.ED = 1.25f;
 	defaultMove.HT = 1.0f;
 	defaultMove.Dmg = 10.0f;
@@ -920,7 +934,8 @@ void CombatManager::SetMoves()
 	allMoves.push_back(defaultMove);
 
 	// Sword_Attack_Sp_U
-	defaultMove.AT = 1.5f;
+	defaultMove.name = "SwordSp";
+	defaultMove.AT = 2.5f;
 	defaultMove.ET = 0.5f;
 	defaultMove.ED = 1.25f;
 	defaultMove.HT = 1.0f;
@@ -932,6 +947,7 @@ void CombatManager::SetMoves()
 	allMoves.push_back(defaultMove);
 
 	// Sword_Attack_Combo_LL
+	defaultMove.name = "SwordCombo";
 	defaultMove.AT = 2.0f;
 	defaultMove.ET = 0.5f;
 	defaultMove.ED = 1.25f;
@@ -940,18 +956,6 @@ void CombatManager::SetMoves()
 	defaultMove.AD = 0.0f;
 	defaultMove.pos = kHigh;
 	defaultMove.dir = kDirRight;
-	defaultMove.power = kPowerful;
-	allMoves.push_back(defaultMove);
-
-	// KB_Gun
-	defaultMove.AT = 1.0f;
-	defaultMove.ET = 0.5f;
-	defaultMove.ED = 1.0f;
-	defaultMove.HT = 0.5f;
-	defaultMove.Dmg = 10.0f;
-	defaultMove.AD = 0.0f;
-	defaultMove.pos = kMid;
-	defaultMove.dir = kDirForward;
 	defaultMove.power = kPowerful;
 	allMoves.push_back(defaultMove);
 }

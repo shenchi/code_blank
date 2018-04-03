@@ -263,6 +263,10 @@ void Player::Update(float dT)
 	{
 		attackButtonTimer += dT;
 	}
+	if (specialButtonDown)
+	{
+		specialButtonTimer += dT;
+	}
 
 	// If player has held the button beyond the max attack hold time auto trigger the attack
 	if(attackButtonTimer >= maxHoldTime && attackButtonDown)
@@ -606,7 +610,8 @@ void Player::UpdateState(float dT)
 		}
 		else if (combatManager->GetIsAttacking())
 		{
-			if (stateTimer < combatManager->GetCurrentAttackTime())
+			float currentAttackTime = combatManager->GetCurrentAttackTime();
+			if (stateTimer < currentAttackTime)
 			{
 				currentState = kAttack;
 				animationParameter = (int)combatManager->GetCurrentCombat();
@@ -619,6 +624,17 @@ void Player::UpdateState(float dT)
 				{
 					currentState = kNoState;
 					combatManager->SetResetAttack(false);
+				}
+				if (animationParameter == 12)
+				{
+					if (stateTimer > currentAttackTime * 0.99f)
+					{
+						math::float3 pos = pPlayer->GetPosition();
+						math::float3 fwd = tCharacter->GetForwardVector() * -1.0f;
+						fwd = math::normalize(fwd);
+						fwd = fwd * dT * 70.0f;
+						pPlayer->SetPosition(pos + fwd);
+					}
 				}
 			}
 			else

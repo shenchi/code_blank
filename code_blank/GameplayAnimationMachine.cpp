@@ -28,10 +28,10 @@ void GameplayAnimationMachine::Play(CharacterState state, uint32_t parameter, si
 		//aComp->CrossFade(0, 0.2f);
 		break;
 	case kIdleInCombat:
-		aComp->CrossFade("combat_idle", 0.03f, 0);
-		aComp->CrossFade("combat_idle", 0.03f, 1);
-		//aComp->Play("idle", 0);
-		//aComp->CrossFade("Idle_InCombat", 0.2f, layerMask);
+		/*aComp->CrossFade("combat_idle", 0.03f, 0);
+		aComp->CrossFade("combat_idle", 0.03f, 1);*/
+		aComp->CrossFade("combat_idle", 0.06f, 0);
+		aComp->CrossFade("combat_idle", 0.06f, 1);
 		break;
 	case kWalk:
 		aComp->CrossFade("walk", 0.2f, 0);
@@ -176,16 +176,16 @@ void GameplayAnimationMachine::Play(CharacterState state, uint32_t parameter, si
 				aComp->CrossFade("kKickHorseKick", 0.2f, 1);
 				break;
 			case kSwordAttackR:
-				aComp->CrossFade("kSwordR", 0.2f, 0);
-				aComp->CrossFade("kSwordR", 0.2f, 1);
+				aComp->CrossFade("kSwordR", 0.3f, 0);
+				aComp->CrossFade("kSwordR", 0.3f, 1);
 				break;
 			case kSwordAttackRL:
-				aComp->CrossFade("kSwordR2", 0.2f, 0);
-				aComp->CrossFade("kSwordR2", 0.2f, 1);
+				aComp->CrossFade("kSwordR2", 0.08f, 0);
+				aComp->CrossFade("kSwordR2", 0.08f, 1);
 				break;
 			case kSwordAttackSpU:
-				aComp->CrossFade("kSwordCombo", 0.2f, 0);
-				aComp->CrossFade("kSwordCombo", 0.2f, 1);
+				aComp->CrossFade("kSwordCombo", 0.5f, 0);
+				aComp->CrossFade("kSwordCombo", 0.5f, 1);
 				break;
 			case kSwordAttackComboLL:
 				aComp->CrossFade("kSwordCombo", 0.2f, 0);
