@@ -11,6 +11,11 @@ namespace tofu
 
 	//SINGLETON_IMPL(ResourceManager);
 
+	ResourceManager::~ResourceManager()
+	{
+		if (nullptr != config) delete config;
+	}
+
 	int32_t ResourceManager::Init()
 	{
 		CHECKED(LoadConfig());

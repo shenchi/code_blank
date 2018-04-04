@@ -47,6 +47,7 @@ namespace tofu
 		kFormatR8g8b8a8Snorm,
 		kFormatR16g16b16a16Unorm,
 		kFormatR16g16b16a16Snorm,
+		kFormatR16g16b16a16Float,
 		kFormatR32g32b32a32Float,
 		kFormatR8Sint,
 		kFormatR16Sint,

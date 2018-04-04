@@ -80,6 +80,8 @@ namespace tofu
 
 		int32_t DeferredPipeline();
 
+		int32_t DebugPipeline();
+
 		TF_INLINE void AddLevelResourceHandle(BaseHandle handle)
 		{ 
 			assert(numLevelResources < kMaxLevelResources);

@@ -12,6 +12,8 @@ namespace tofu
 	class ResourceManager
 	{
 		//SINGLETON_DECL(ResourceManager);
+	public:
+		~ResourceManager();
 
 	public:
 

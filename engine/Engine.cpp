@@ -56,6 +56,13 @@ namespace tofu
 
 	int32_t Engine::Init(const char* filename)
 	{
+		// initialize native context
+		nativeContext = NativeContext::Create();
+		if (nullptr == nativeContext)
+			return kErrUnknown;
+		int32_t err = nativeContext->Init();
+		CHECKED(err);
+
 		// Initialize Memory Management for Rendering
 		CHECKED(MemoryAllocator::Allocators[kAllocGlobal].Init(
 			kGlobalMemSize,
@@ -82,13 +89,6 @@ namespace tofu
 		Entity::RegisterComponent<RenderingComponent>();
 		Entity::RegisterComponent<TransformComponent>();
 		CHECKED(Entity::Init());
-
-		// initialize native context
-		nativeContext = NativeContext::Create();
-		if (nullptr == nativeContext)
-			return kErrUnknown;
-		int32_t err = nativeContext->Init();
-		CHECKED(err);
 
 		// initialize rendering system
 		renderingSystem = new RenderingSystem();

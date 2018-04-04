@@ -88,12 +88,15 @@ namespace tofu
 	constexpr uint32_t kFrameBufferCount = 2;
 
 	constexpr uint32_t kGlobalMemSize = 128 * 1024 * 1024;
+	constexpr uint32_t kGlobalVMemSize = 512 * 1024 * 1024;
 	constexpr uint32_t kGlobalMemAlign = 2 * 1024 * 1024;
 
 	constexpr uint32_t kLevelMemSize = 256 * 1024 * 1024;
+	constexpr uint32_t kLevelVMemSize = 512 * 1024 * 1024;
 	constexpr uint32_t kLevelMemAlign = 2 * 1024 * 1024;
 
 	constexpr uint32_t kFrameMemSize = 256 * 1024 * 1024;
+	constexpr uint32_t kFrameVMemSize = 256 * 1024 * 1024;
 	constexpr uint32_t kFrameMemAlign = 2 * 1024 * 1024;
 
 	constexpr uint32_t kMaxComponentTypes = 16;

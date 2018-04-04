@@ -725,7 +725,8 @@ namespace tofu
 
 	int32_t RenderingSystem::Update()
 	{
-		return DeferredPipeline();
+		return DebugPipeline();
+		//return DeferredPipeline();
 	}
 
 	int32_t RenderingSystem::EndFrame()
@@ -1336,7 +1337,7 @@ namespace tofu
 			params->renderTargets[0] = hdrTarget;
 			params->clearColor[0] = 0;
 			params->clearColor[1] = 0;
-			params->clearColor[2] = 0;
+			params->clearColor[2] = 1;
 			params->clearColor[3] = 1;
 
 			//params->clearStencil = 1u;
@@ -1700,6 +1701,7 @@ namespace tofu
 
 		// Shadow Maps
 
+		/*
 		for (uint32_t iLight = 0; iLight < numShadowCastingLights; iLight++)
 		{
 			//uint32_t lightIdx = shadowLights[iLight];
@@ -1768,6 +1770,7 @@ namespace tofu
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
 		}
+		/**/
 
 		// Geometry Pass
 
@@ -1782,6 +1785,7 @@ namespace tofu
 			cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
 		}
 
+		/*
 		// generate draw call for active renderables in command buffer
 		for (uint32_t i = 0; i < numOpaqueObjects; ++i)
 		{
@@ -1848,10 +1852,12 @@ namespace tofu
 
 			cmdBuf->Add(RendererCommand::kCommandDraw, params);
 		}
+		/**/
 
 		// Lighting Pass
 
 		{
+			/*
 			// occluding
 
 			// go through all point lights
@@ -1899,7 +1905,6 @@ namespace tofu
 
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
-			/**/
 
 			// shading
 
@@ -1975,8 +1980,9 @@ namespace tofu
 
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
-
 			/**/
+
+			/*
 			// ambient light & directional lights
 			{
 				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
@@ -2014,6 +2020,7 @@ namespace tofu
 			/**/
 		}
 
+		/*
 		// Transparent Pass
 		for (uint32_t i = numOpaqueObjects; i < numActiveObjects; ++i)
 		{
@@ -2066,11 +2073,12 @@ namespace tofu
 
 			cmdBuf->Add(RendererCommand::kCommandDraw, params);
 		}
+		/**/
 
 		// post-process effect
 		{
 
-			/**/
+			/*
 			{
 				ComputeParams* params = MemoryAllocator::FrameAlloc<ComputeParams>();
 
@@ -2105,6 +2113,7 @@ namespace tofu
 				cmdBuf->Add(RendererCommand::kCommandCompute, params);
 			}
 
+			/**/
 			/*
 
 			// Extract bright part
@@ -2147,7 +2156,7 @@ namespace tofu
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
 
-			/**/
+			/*
 
 			// volumetric fog
 			{
@@ -2189,10 +2198,29 @@ namespace tofu
 				params->startVertex = mesh.StartVertex;
 				params->indexCount = mesh.NumIndices;
 
-				params->psShaderResources[0] = hdrTarget2;
+				params->psShaderResources[0] = hdrTarget;
 
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
+		}
+
+		return kOK;
+	}
+
+	int32_t RenderingSystem::DebugPipeline()
+	{
+		{
+			ClearParams* params = MemoryAllocator::FrameAlloc<ClearParams>();
+
+			//params->renderTargets[0] = TextureHandle();
+			params->clearColor[0] = 0;
+			params->clearColor[1] = 0;
+			params->clearColor[2] = 1;
+			params->clearColor[3] = 1;
+
+			params->depthRenderTarget = TextureHandle();
+
+			cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
 		}
 
 		return kOK;
