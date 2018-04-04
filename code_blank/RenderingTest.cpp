@@ -128,10 +128,10 @@ int32_t RenderingTest::Update()
 			Engine::instance()->Quit();
 		}
 
-		inputDir.z = -input->GetLeftStickY();
+		inputDir.z = input->GetLeftStickY();
 		inputDir.x = input->GetLeftStickX();
 
-		pitch += sensitive * input->GetRightStickY();
+		pitch -= sensitive * input->GetRightStickY();
 		yaw += sensitive * input->GetRightStickX();
 	}
 

@@ -27,7 +27,7 @@ CombatManager::CombatManager(bool _isPlayer, void* _companion, void* owner, Comb
 	adjustMaxDistance = details.adjustMaxDistance;
 	adjustAgle = details.adjustAgle;
 
-
+	currentTarget = nullptr;
 
 
 	inCombatTimer = 0;
