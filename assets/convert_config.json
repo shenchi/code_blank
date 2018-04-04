@@ -41,6 +41,12 @@
 				"avatar": "KB_Jumping_avatar.json",
 				"clip": "KB_Jump_Loop"
 			},
+            {
+				"name": "jump_down",
+				"source": "KB_Jumping.fbx",
+				"avatar": "KB_Jumping_avatar.json",
+				"clip": "KB_Land"
+			},
 			{
 				"name": "run",
 				"source": "archer_running.fbx",
@@ -128,6 +134,12 @@
             {
 				"name": "kSwordCombo",
 				"source": "GreatSwordHighSpin.fbx",
+				"avatar": "mixamo_avatar.json",
+				"clip": "mixamo.com"
+			},
+            {
+				"name": "kDeath",
+				"source": "Death.fbx",
 				"avatar": "mixamo_avatar.json",
 				"clip": "mixamo.com"
 			}

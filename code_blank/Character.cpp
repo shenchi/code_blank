@@ -19,6 +19,7 @@ void Character::Init(bool isPlayer, void* comp, CombatManagerDetails combatDetai
 	gCharacter = new GameplayAnimationMachine(combatManager);
 	physics = tofu::PhysicsSystem::instance();
 	once = true;
+	inAir = false;
 }
 
 
@@ -99,13 +100,13 @@ void Character::HandleAirborneMovement(math::float3 _moveDir, bool _hasInput, fl
 {
 	if (hasJumped)
 	{
-		//velocity.y = lastVelocity.y - gravityMultiplier * dT;
+		velocity.y = lastVelocity.y - gravityMultiplier * dT;
 	}
 	else
 	{
-		//velocity.y = lastVelocity.y - gravityMultiplier * dT * 10.0f;
+		velocity.y = lastVelocity.y - (gravityMultiplier * dT * 20.0f);
 	}
-	velocity.y = lastVelocity.y - gravityMultiplier * dT;
+	//velocity.y = lastVelocity.y - gravityMultiplier * dT;
 	float x = _moveDir.x * airborneSpeedMultiplier * dT;
 	float z = _moveDir.z * airborneSpeedMultiplier * dT;
 
@@ -139,7 +140,9 @@ void Character::HandleAirborneMovement(math::float3 _moveDir, bool _hasInput, fl
  // check to see if player is on the ground and its status
 void Character::CheckGroundStatus()
 {
+	math::float3 playerPos = tCharacter->GetLocalPosition();
 	math::float3 pos{ pCharacter->GetPosition() };
+
 	RayTestResult hitInfo = {};
 	{
 		math::float3 rayStart = pos + math::float3{ 0, 1, 0 };
@@ -147,19 +150,6 @@ void Character::CheckGroundStatus()
 
 		isGrounded = physics->RayTest(rayStart, rayEnd, &hitInfo);
 	}
-
-	// Check if player is in the ground
-	/*{
-		math::float3 rayStart = pos + math::float3{ 0, 1, 0 };
-		math::float3 rayEnd = pos + math::float3{ 0, -0.07f, 0 };
-
-		if (physics->RayTest(rayStart, rayEnd, &hitInfo))
-		{
-			math::float3 playerPos = tCharacter->GetLocalPosition();
-			playerPos.y = pos.y + 0.01f;
-			tCharacter->SetLocalPosition(playerPos);
-		}
-	}*/
 
 	// Additional checks to see if the character is standing on an object
 	if (!isGrounded)
@@ -191,8 +181,11 @@ void Character::CheckGroundStatus()
 		isGrounded = physics->RayTest(rayStart, rayEnd, &hitInfo);
 	}
 
-
 	if (!isGrounded && hasJumped)
+	{
+		inAir = true;
+	}
+	if (inAir && isGrounded)
 	{
 		//charAudio.Stop();
 		//charAudio.PlayOneShot(landFX);

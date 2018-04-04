@@ -17,11 +17,6 @@ enum CharacterState
 	kHit,
 	kDodge,
 	kRoll,
-	kDrawGun,
-	kAimIdle,
-	kShoot,
-	kHolsterGun,
-	kAimMove,
 	kDead
 };
 
@@ -71,7 +66,6 @@ enum Combat
 	kSwordAttackRL,
 	kSwordAttackSpU,
 	kSwordAttackComboLL,
-	kGunShoot,
 	kNumberOfItems
 };
 

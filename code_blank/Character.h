@@ -94,7 +94,7 @@ protected:
 	
 	float moveSpeedMultiplier;
 	float sprintSpeedMultiplier;
-	float gravityMultiplier = 2.5f;
+	float gravityMultiplier = 7.0f;
 	float airbornMaxVelocity = 2.0f;
 	float slopeSpeedMultiplier = 0.18f;
 	float airborneSpeedMultiplier;
@@ -104,7 +104,8 @@ protected:
 	bool isAiming;
 	bool isGrounded;
 	bool isRolling;
-	bool isSprinting; // TODO , why 2???
+	bool isSprinting;
+	bool inAir;
 	bool jump;
 	bool moving;
 	bool hasJumped = false;
@@ -119,6 +120,7 @@ protected:
 	float lerpMod = 0.01f;
 	float vertLerp = 0.35f;
 	float horiLerp = 0.35f;
+	float deathTimer = 3.0f;
 
 	tofu::math::float3 groundNormal;
 	tofu::math::float3 move;

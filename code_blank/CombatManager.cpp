@@ -274,37 +274,7 @@ void CombatManager::SpecialCombat()
 // Gun Shooting
 void CombatManager::GunShot()
 {
-	if (!GetCanAttack() || !isAimming || aimTarget == nullptr)
-	{
-		return;
-	}
-
-	if (CheckRangeTarget())
-	{
-		swordGunAttack = true;
-		//gun.SetActive(true);
-		//combatAudio.clip = gunShotFX;
-		//combatAudio.PlayDelayed(0.5f);
-		currentCombat = kGunShoot;
-
-		// Because of None in the Enum, subtract by 1.
-		CombatMoveDetails currentMoveDetails = allMoves[(int)currentCombat - 1];
-		//Debug.Log(currentCombat + " " + currentMoveDetails.name);
-		currentAttackTime = currentMoveDetails.AT;
-		currentEffectTime = currentMoveDetails.ET;
-		currentEffetDistance = currentMoveDetails.ED;
-		currentDmgAmount = currentMoveDetails.Dmg;
-		currentDirection = currentMoveDetails.dir;
-		currentPower = currentMoveDetails.power;
-		currentHitPos = currentMoveDetails.pos;
-		currentHitTime = currentMoveDetails.HT;
-
-		attackDuration = currentAttackTime;
-		Shoot();
-
-		// TODO Modify hit dir later
-		aimTarget->GetCombatManager()->Hit(aimTarget->GetCombatManager()->GetCurrentHitPos(), kHitBackward, currentPower, currentHitTime, currentDmgAmount);
-	}
+	
 }
 
 // Sword Attack Combos

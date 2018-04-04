@@ -400,12 +400,12 @@ bool Game::LoadScene(sceneType num)
 				playerDetails.modelName = "assets/archer.model";
 				playerDetails.diffuseName = "assets/archer_0.texture";
 				playerDetails.normalMapName = "assets/archer_1.texture";
-				playerDetails.capsuleColliderSize = { 50.0f, 80.0f };
+				playerDetails.capsuleColliderSize = { 50.0f, 90.0f };
 				playerDetails.colliderOrigin = { 0.0f, 100.0f, 0.0f };
 				playerDetails.scale = { 0.01f, 0.01f, 0.01f };
 				playerDetails.position = sceneMgr.GetPlayerSpawnPoint();
 				playerDetails.health = 200.0f;
-				playerDetails.jumpPower = 2.5f;
+				playerDetails.jumpPower = 5.0f;
 				playerDetails.walkSpeed = 4.0f;
 				playerDetails.sprintSpeed = 8.0f;
 				playerDetails.acceleration = 4.0f;

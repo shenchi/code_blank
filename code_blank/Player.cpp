@@ -12,8 +12,8 @@ Player::Player(CharacterDetails details, void* comp)
 		combatDetails.inCombatDuration = 4.0f;
 		combatDetails.maxShotDistance = 20.0f;
 		combatDetails.minShotDistance = 2.0f;
-		combatDetails.jumpUpTime = 0.8f;
-		combatDetails.jumpAirTime = 0.6f;
+		combatDetails.jumpUpTime = 0.3f;			// 0.8f
+		combatDetails.jumpAirTime = 1.0f;
 		combatDetails.jumpDownTime = 0.2f;
 		combatDetails.comboTimer = 0.0f;
 		combatDetails.maxComboTime = 2.0f;
@@ -105,6 +105,8 @@ Player::Player(CharacterDetails details, void* comp)
 			AnimationState *kSwordCombo = stateMachine->AddState("kSwordCombo");
 			kSwordCombo->animationName = "kSwordCombo";
 
+			AnimationState *kDeath = stateMachine->AddState("kDeath", false);
+			kDeath->animationName = "kDeath";
 		}
 
 		// Upper Layer Animations
@@ -178,6 +180,9 @@ Player::Player(CharacterDetails details, void* comp)
 			kSwordR2->animationName = "kSwordR2";
 			AnimationState *kSwordCombo = stateMachine->AddState("kSwordCombo");
 			kSwordCombo->animationName = "kSwordCombo";
+
+			AnimationState *kDeath = stateMachine->AddState("kDeath", false);
+			kDeath->animationName = "kDeath";
 		}
 
 		// Material and Model
@@ -564,7 +569,7 @@ void Player::UpdateState(float dT)
 	lastState = currentState;
 
 
-	if ( !combatManager->UpdateState(stateTimer, dT) )
+	if ( !combatManager->UpdateState(stateTimer, dT) && !isDead)
 	{
 		if (jump)
 		{
@@ -575,8 +580,7 @@ void Player::UpdateState(float dT)
 			}
 			else if (stateTimer >= combatManager->GetJumpUpTime() && stateTimer < combatManager->GetJumpUpTime() + combatManager->GetJumpAirTime() )
 			{
-				currentState = kJumpUp;
-				//currentState = kJumpAir;
+				currentState = kJumpAir;
 			}
 			else if (stateTimer >= combatManager->GetJumpUpTime() + combatManager->GetJumpAirTime()
 				&& stateTimer < combatManager->GetJumpUpTime() + combatManager->GetJumpAirTime() + combatManager->GetJumpDownTime() )
@@ -665,14 +669,8 @@ void Player::UpdateState(float dT)
 				ForceMove(combatManager->GetAdjustSpeed(), dT, 1);
 			}
 		}
-		else if (combatManager->GetIsAimming() && combatManager->GetMoveDir() > -1)
-		{
-			animationParameter = combatManager->GetMoveDir();
-			currentState = kAimMove;
-		}
 		else
 		{
-
 			if (moving)
 			{
 				currentState = kWalk;
@@ -699,18 +697,24 @@ void Player::UpdateState(float dT)
 		}
 	}
 
-	if (isDead)
+	else if (isDead)
 	{
-		currentState = kDead;
+		
+		if (currentState != kDead && currentState != kNoState)
+		{
+			currentState = kDead;
+			stateTimer = 0;
+		}
+		else if (stateTimer > deathTimer)
+		{
+			currentState = kNoState;
+		}
 	}
 
 	if (lastState != currentState)
 	{
-		gCharacter->Play(currentState, animationParameter, 0);
-		//aPlayer->CrossFade(0, 0.2f);
+		gCharacter->Play(currentState, GetAnimationDuration(lastState), 0);
 	}
-
-
 }
 
 
@@ -768,6 +772,7 @@ void Player::Dodge(tofu::math::float3 inputDir)
 // Interact with interactable object
 void Player::Interact()
 {
+	isDead = !isDead;
 	// TODO
 	// Probably a dead feature
 }
@@ -836,6 +841,112 @@ void Player::VisionHack()
 //-------------------------------------------------------------------------------------------------
 // Getters
 
+// Get Custom crossfade duration for combat idle animation
+float Player::GetAnimationDuration(CharacterState state)
+{
+	float duration = 0.03f;
+	switch(state)
+	{
+	case kIdleOutCombat:
+		duration = 0.03f;
+		break;
+	case kIdleInCombat:
+		duration = 0.03f;
+		break;
+	case kWalk:
+		duration = 0.03f;
+		break;
+	case kRun:
+		duration = 0.03f;
+		break;
+	case kJumpingPrepare:
+		duration = 0.03f;
+		break;
+	case kJumpUp:
+		duration = 0.03f;
+		break;
+	case kJumpAir:
+		duration = 0.03f;
+		break;
+	case kJumpDown:
+		duration = 0.03f;
+		break;
+	case kDead:
+		duration = 0.0f;
+		break;
+	case kRoll:
+		duration = 0.03f;
+		break;
+	case kAttack:
+	{
+		switch (combatManager->GetCurrentCombat())
+		{
+		case kNone:
+			duration = 0.03f;
+			break;
+		case kPunchJabL:
+			duration = 0.03f;
+		case kPunchJabR:
+			duration = 0.03f;
+			break;
+		case kPunchHookL:
+			duration = 0.03f;
+			break;
+		case kPunchHookR:
+			duration = 0.03f;
+			break;
+		case kPunchUpperCutL:
+			duration = 0.03f;
+			break;
+		case kPunchUpperCutR:
+			duration = 0.03f;
+			break;
+		case kKickStraightMidR:
+			duration = 0.03f;
+			break;
+		case kKickKnee:
+			duration = 0.06f;
+			break;
+		case kKickAxeKick:
+			duration = 0.06f;
+			break;
+		case kKickHorseKick:
+			duration = 0.06f;
+			break;
+		case kSwordAttackR:
+			duration = 0.06f;
+			break;
+		case kSwordAttackRL:
+			duration = 0.06f;
+			break;
+		case kSwordAttackSpU:
+			duration = 0.06f;
+			break;
+		case kSwordAttackComboLL:
+			duration = 0.06f;
+			break;
+		case kNumberOfItems:
+			duration = 0.03f;
+			break;
+		default:
+			break;
+		}
+	}
+	break;
+	case kAdjustPosition:
+		duration = 0.03f;
+		break;
+	case kHit:
+		duration = 0.03f;
+		/*combatManager.HitPosition pos = (combatManager.HitPosition)((parameter / 100) % 10);
+		combatManager.HitDirection dir = (combatManager.HitDirection)((parameter / 10) % 10);
+		combatManager.HitPower power = (combatManager.HitPower)((parameter / 1) % 10);
+		string animationName = "A_Hit_" + pos.ToString() + "_" + dir.ToString() + "_" + power.ToString();
+		aComp->Play(animationName, -1, 0);*/
+		break;
+	}
 
+	return duration;
+}
 
 
