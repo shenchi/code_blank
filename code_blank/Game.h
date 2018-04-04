@@ -18,6 +18,8 @@ public:
 
 	virtual int32_t Update() override;
 
+	virtual int32_t FixedUpdate() override;
+
 	virtual ~Game() override;
 
 private:
@@ -44,6 +46,7 @@ private:
 	PController* pControl;
 
 	std::vector<Character*>* enemyList;
+	std::vector<PathNode*>* pathNodes;
 
 	enum sceneType
 	{

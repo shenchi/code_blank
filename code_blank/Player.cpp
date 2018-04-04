@@ -7,24 +7,26 @@ using namespace tofu;
 Player::Player(CharacterDetails details, void* comp)
 {
 	CombatManagerDetails combatDetails = {};
-	combatDetails.moveDir = 0;
-	combatDetails.inCombatDuration = 4.0f;
-	combatDetails.maxShotDistance = 20.0f;
-	combatDetails.minShotDistance = 2.0f;
-	combatDetails.jumpUpTime = 0.5f;
-	combatDetails.jumpAirTime = 0.3f;
-	combatDetails.jumpDownTime = 0.35f;
-	combatDetails.comboTimer = 0.0f;
-	combatDetails.maxComboTime = 2.0f;
-	combatDetails.dodgeTime = 0.0f;
-	combatDetails.rollTime = 1.5f;
-	combatDetails.rollSpeed = 3.0f;
-	combatDetails.hitTime = 1.0f;
-	combatDetails.hitMaxWalkSpeed = 1.0f;
-	combatDetails.adjustSpeed = 2.0f;
-	combatDetails.adjustMinDistance = 0.75f;
-	combatDetails.adjustMaxDistance = 2.5f;
-	combatDetails.adjustAgle = 5.0f;
+	{
+		combatDetails.moveDir = 0;
+		combatDetails.inCombatDuration = 4.0f;
+		combatDetails.maxShotDistance = 20.0f;
+		combatDetails.minShotDistance = 2.0f;
+		combatDetails.jumpUpTime = 0.3f;			// 0.8f
+		combatDetails.jumpAirTime = 1.0f;
+		combatDetails.jumpDownTime = 0.2f;
+		combatDetails.comboTimer = 0.0f;
+		combatDetails.maxComboTime = 2.0f;
+		combatDetails.dodgeTime = 0.0f;
+		combatDetails.rollTime = 2.0f;
+		combatDetails.rollSpeed = 3.0f;
+		combatDetails.hitTime = 1.0f;
+		combatDetails.hitMaxWalkSpeed = 1.0f;
+		combatDetails.adjustSpeed = 2.0f;
+		combatDetails.adjustMinDistance = 0.75f;
+		combatDetails.adjustMaxDistance = 2.5f;
+		combatDetails.adjustAgle = 5.0f;
+	}
 
 	Init(true, comp, combatDetails);
 
@@ -38,74 +40,87 @@ Player::Player(CharacterDetails details, void* comp)
 
 		RenderingComponent r = e.AddComponent<RenderingComponent>();
 
-		Model* model = RenderingSystem::instance()->CreateModel("assets/archer.model");
-
-		aPlayer = e.AddComponent<AnimationComponent>();
-
-		AnimationStateMachine *stateMachine = aPlayer->GetStateMachine();
-		
-		// Base Layer Animations
 		{
-		// Idle Animations
-		AnimationState *idle = stateMachine->AddState("idle");
-		idle->animationName = "idle";
-		AnimationState *combat_idle = stateMachine->AddState("combat_idle");
-		combat_idle->animationName = "combat_idle";
+			aPlayer = e.AddComponent<AnimationComponent>();
+
+			AnimationStateMachine *stateMachine = aPlayer->GetStateMachine();
+
+			// Base Layer Animations
+
+			// Idle Animations
+			AnimationState *idle = stateMachine->AddState("idle");
+			idle->animationName = "idle";
+			AnimationState *combat_idle = stateMachine->AddState("combat_idle");
+			combat_idle->animationName = "combat_idle";
 
 
-		// Movement Animations
-		AnimationState *walk = stateMachine->AddState("walk");
-		walk->animationName = "walk";
-		AnimationState *run = stateMachine->AddState("run");
-		run->animationName = "run";
+			// Movement Animations
+			AnimationState *walk = stateMachine->AddState("walk");
+			walk->animationName = "walk";
+			AnimationState *run = stateMachine->AddState("run");
+			run->animationName = "run";
 
 
-		// Jump Animations
-		AnimationState *jump = stateMachine->AddState("jump");
-		jump->animationName = "jump";
-		AnimationState *jump_up = stateMachine->AddState("jump_up");
-		jump_up->animationName = "jump_up";
-		AnimationState *jump_air = stateMachine->AddState("jump_air");
-		jump_air->animationName = "jump_air";
-		AnimationState *jump_down = stateMachine->AddState("jump_down");
-		jump_down->animationName = "jump_down";
+			// Jump Animations
+			AnimationState *jump = stateMachine->AddState("jump");
+			jump->animationName = "jump";
+			AnimationState *jump_up = stateMachine->AddState("jump_up");
+			jump_up->animationName = "jump_up";
+			AnimationState *jump_air = stateMachine->AddState("jump_air");
+			jump_air->animationName = "jump_air";
+			AnimationState *jump_down = stateMachine->AddState("jump_down");
+			jump_down->animationName = "jump_down";
 
 
-		// Roll/Dodge Animations
-		AnimationState *kRoll = stateMachine->AddState("kRoll");
-		kRoll->animationName = "kRoll";
+			// Roll/Dodge Animations
+			AnimationState *kRoll = stateMachine->AddState("kRoll");
+			kRoll->animationName = "kRoll";
 
 
-		// Combat Animations
-		AnimationState *kPunchJabL = stateMachine->AddState("kPunchJabL");
-		kPunchJabL->animationName = "kPunchJabL";
-		AnimationState *kPunchJabR = stateMachine->AddState("kPunchJabR");
-		kPunchJabR->animationName = "kPunchJabR";
-		AnimationState *kPunchHookL = stateMachine->AddState("kPunchHookL");
-		kPunchHookL->animationName = "kPunchHookL";
-		AnimationState *kPunchHookR = stateMachine->AddState("kPunchHookR");
-		kPunchHookR->animationName = "kPunchHookR";
-		AnimationState *kPunchUpperCutL = stateMachine->AddState("kPunchUpperCutL");
-		kPunchUpperCutL->animationName = "kPunchUpperCutL";
-		AnimationState *kPunchUpperCutR = stateMachine->AddState("kPunchUpperCutR");
-		kPunchUpperCutR->animationName = "kPunchUpperCutR";
-		AnimationState *kKickAxeKick = stateMachine->AddState("kKickAxeKick");
-		kKickAxeKick->animationName = "kKickAxeKick";
-		AnimationState *kKickHorseKick = stateMachine->AddState("kKickHorseKick");
-		kKickHorseKick->animationName = "kKickHorseKick";
-		AnimationState *kKickStraightMidR = stateMachine->AddState("kKickStraightMidR");
-		kKickStraightMidR->animationName = "kKickStraightMidR";
-		AnimationState *kKickKnee = stateMachine->AddState("kKickKnee");
-		kKickKnee->animationName = "kKickKnee";
+			// Combat Animations
+			AnimationState *kPunchJabL = stateMachine->AddState("kPunchJabL");
+			kPunchJabL->animationName = "kPunchJabL";
+			AnimationState *kPunchJabR = stateMachine->AddState("kPunchJabR");
+			kPunchJabR->animationName = "kPunchJabR";
+			AnimationState *kPunchHookL = stateMachine->AddState("kPunchHookL");
+			kPunchHookL->animationName = "kPunchHookL";
+			AnimationState *kPunchHookR = stateMachine->AddState("kPunchHookR");
+			kPunchHookR->animationName = "kPunchHookR";
+			AnimationState *kPunchUpperCutL = stateMachine->AddState("kPunchUpperCutL");
+			kPunchUpperCutL->animationName = "kPunchUpperCutL";
+			AnimationState *kPunchUpperCutR = stateMachine->AddState("kPunchUpperCutR");
+			kPunchUpperCutR->animationName = "kPunchUpperCutR";
+			AnimationState *kKickAxeKick = stateMachine->AddState("kKickAxeKick");
+			kKickAxeKick->animationName = "kKickAxeKick";
+			AnimationState *kKickHorseKick = stateMachine->AddState("kKickHorseKick");
+			kKickHorseKick->animationName = "kKickHorseKick";
+			AnimationState *kKickStraightMidR = stateMachine->AddState("kKickStraightMidR");
+			kKickStraightMidR->animationName = "kKickStraightMidR";
+			AnimationState *kKickKnee = stateMachine->AddState("kKickKnee");
+			kKickKnee->animationName = "kKickKnee";
+			AnimationState *kSwordR = stateMachine->AddState("kSwordR");
+			kSwordR->animationName = "kSwordR";
+			AnimationState *kSwordR2 = stateMachine->AddState("kSwordR2");
+			kSwordR2->animationName = "kSwordR2";
+			AnimationState *kSwordCombo = stateMachine->AddState("kSwordCombo");
+			kSwordCombo->animationName = "kSwordCombo";
+
+			AnimationState *kDeath = stateMachine->AddState("kDeath", false);
+			kDeath->animationName = "kDeath";
 		}
 
 		// Upper Layer Animations
 		{
 			AnimationLayer *upperLayer = aPlayer->AddLayer("Upper", 1.0f, kAET_Override);
-			for (int i = 3; i <= 55; i++) {
+
+			// TODO This is causing memory leaks
+			//upperLayer->selectedJoints = new std::vector<uint16_t>();
+
+			for (int i = 3; i <= 55; i++) 
+			{
 				upperLayer->selectedJoints.push_back(i);
 			}
-			
+
 			AnimationStateMachine *stateMachine = upperLayer->GetStateMachine();
 
 			// Idle Animations
@@ -159,32 +174,54 @@ Player::Player(CharacterDetails details, void* comp)
 			kKickStraightMidR->animationName = "kKickStraightMidR";
 			AnimationState *kKickKnee = stateMachine->AddState("kKickKnee");
 			kKickKnee->animationName = "kKickKnee";
+			AnimationState *kSwordR = stateMachine->AddState("kSwordR");
+			kSwordR->animationName = "kSwordR";
+			AnimationState *kSwordR2 = stateMachine->AddState("kSwordR2");
+			kSwordR2->animationName = "kSwordR2";
+			AnimationState *kSwordCombo = stateMachine->AddState("kSwordCombo");
+			kSwordCombo->animationName = "kSwordCombo";
+
+			AnimationState *kDeath = stateMachine->AddState("kDeath", false);
+			kDeath->animationName = "kDeath";
 		}
 
-		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialDeferredGeometryOpaqueSkinned);
-		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");
-		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/archer_1.texture");
+		// Material and Model
+		{			
+			const char* name = details.modelName.c_str();
+			Model* model = RenderingSystem::instance()->CreateModel(name);
+			Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialDeferredGeometryOpaqueSkinned);
+			name = details.diffuseName.c_str();
+			TextureHandle diffuse = RenderingSystem::instance()->CreateTexture(name);
+			name = details.normalMapName.c_str();
+			TextureHandle normalMap = RenderingSystem::instance()->CreateTexture(name);
+			
+			material->SetTexture(diffuse);
+			material->SetNormalMap(normalMap);
 
-		material->SetTexture(diffuse);
-		material->SetNormalMap(normalMap);
+			r->SetMaterial(material);
+			r->SetModel(model);
+		}
 
-		r->SetMaterial(material);
-		r->SetModel(model);
-
+		// Physics
 		pPlayer = e.AddComponent<PhysicsComponent>();
 
-		pPlayer->LockRotation(true, false, true);
+		pPlayer->LockRotation(true, true, true);
 		pPlayer->SetCapsuleCollider(details.capsuleColliderSize.x, details.capsuleColliderSize.y);
 		pPlayer->SetColliderOrigin(details.colliderOrigin);
+		pPlayer->SetGravity(math::float3{});
 
+		lastMoveDir = {};
+		velocity = {};
+		charRot = {};
 
 		SetComponents(tPlayer, pPlayer, aPlayer);
 	}
-
+	
 	baseSpeedMultiplier = details.walkSpeed;
 	moveSpeedMultiplier = baseSpeedMultiplier;
 	sprintSpeedMultiplier = details.sprintSpeed;
-
+	airborneSpeedMultiplier = moveSpeedMultiplier * 0.5f;
+	
 	jumpPower = details.jumpPower;
 
 	rollDodgeCost = details.rollDodgeCost;
@@ -193,7 +230,6 @@ Player::Player(CharacterDetails details, void* comp)
 	
 	physics = tofu::PhysicsSystem::instance();
 
-	//gPlayer = new GameplayAnimationMachine(aPlayer, combatManager);
 	gCharacter->SetAnimComp(aPlayer);
 
 
@@ -204,11 +240,10 @@ Player::Player(CharacterDetails details, void* comp)
 	rotation = charBodyRotation; //m_Rigidbody.transform.rotation;
 	turnMod = 90.0f / 200.0f;
 
-	move = { 0.0f, 0.0f, 0.0f };
-	lastMove = { 0.0f, 0.0f, 0.0f };
-
 	attackButtonDown = false;
 	specialButtonDown = false;
+	isSprinting = false;
+	isRolling = false;
 	attackButtonTimer = 0.0f;
 	specialButtonTimer = 0.0f;
 	minHoldTime = 0.5f;
@@ -233,6 +268,10 @@ void Player::Update(float dT)
 	{
 		attackButtonTimer += dT;
 	}
+	if (specialButtonDown)
+	{
+		specialButtonTimer += dT;
+	}
 
 	// If player has held the button beyond the max attack hold time auto trigger the attack
 	if(attackButtonTimer >= maxHoldTime && attackButtonDown)
@@ -245,38 +284,119 @@ void Player::Update(float dT)
 		combatManager->SwordSpecialCombat();
 		specialButtonDown = false;
 	}
-
-	// Handle charater movement only once per frame
-
-
 }
 
+void Player::FixedUpdate(float fDT)
+{
+	if (isRolling)
+	{
+		CheckGroundStatus();
+
+		if (isGrounded)
+		{
+			HandleGroundedMovement(lastMoveDir, true, false, fDT);
+		}
+		else if (!isGrounded)
+		{
+			//HandleAirborneMovement(lastMove, dT);
+			HandleAirborneMovement(lastMoveDir, true, fDT);
+		}
+	}
+
+	if (currentState == kAttack)
+	{
+		if (combatManager->GetCurrentCombat() == kKickHorseKick
+			|| combatManager->GetCurrentCombat() == kKickAxeKick
+			|| combatManager->GetCurrentCombat() == kKickStraightMidR)
+		{
+			ForceMove(30.0f, fDT, 1);
+		}
+	}
+
+	pPlayer->SetVelocity(velocity);
+}
 
 // Move the player character
 void Player::MoveReg(float dT, bool _jump, math::float3 inputDir, math::quat camRot)
 //void Player::MoveReg(float vert, float hori, Quaternion camRot, bool jump, bool running, bool dash, bool aiming)
 {
-	
-	//*****************************************************************************************
-	//Update(dT);
+	float vert = 0.0f;
+	float hori = 0.0f;
+	// Linear interpolation of movement
+	if (!isSprinting)
+	{
+		if (inputDir.z > 0.0f)
+		{
+			vert = math::mix(0.3f, 1.0f, vertLerp);
 
-	move = { 0.0f, 0.0f, 0.0f };
+			if (vertLerp < 1.0f)
+			{
+				vertLerp += lerpMod;
+			}
+		}
+		else if (inputDir.z < 0.0f)
+		{
+			vert = -math::mix(0.3f, 1.0f, vertLerp);
+
+			if (vertLerp < 1.0f)
+			{
+				vertLerp += lerpMod;
+			}
+		}
+		else
+		{
+			vertLerp = 0.35f;
+			vert = 0.0f;
+		}
+		inputDir.z = vert;
+
+		if (inputDir.x > 0.0f)
+		{
+			hori = math::mix(0.3f, 1.0f, horiLerp);
+
+			if (horiLerp < 1.0f)
+			{
+				horiLerp += lerpMod;
+			}
+		}
+		else if (inputDir.x < 0.0f)
+		{
+			hori = -math::mix(0.3f, 1.0f, horiLerp);
+
+			if (horiLerp < 1.0f)
+			{
+				horiLerp += lerpMod;
+			}
+		}
+		else
+		{
+			horiLerp = 0.35f;
+			hori = 0.0f;
+		}
+
+		inputDir.x = hori;
+	}
+
+
+	lastVelocity = pPlayer->GetVelocity();
+	charRot = pPlayer->GetRotation();
 
 	combatManager->SetIsMoving(false);
 	moving = false;
-	//combatManager->SetIsSprinting(false);
-	//isSprinting = false;
 
 	if (!combatManager->GetCanMove())
 	{
 		return;
 	}
 
+	bool hasInputDir = math::length(inputDir) > 0.25f;
+	//bool hasInputDir = math::length(inputDir) > 0.01f;
+	math::float3 moveDir = { 0,0,0 };
 
-	if (isGrounded && _jump)
-	{
-		HandleGroundedMovement(_jump, lastMove, dT);
-	}
+	velocity = lastVelocity;
+
+	//combatManager->SetIsSprinting(false);
+	//isSprinting = false;
 
 	/*
 	if (!charAudio.isPlaying && m_IsGrounded)
@@ -284,16 +404,82 @@ void Player::MoveReg(float dT, bool _jump, math::float3 inputDir, math::quat cam
 		charAudio.PlayOneShot(footsteps4);
 	}*/
 
-	//calculate initial movement direction and force
-	//move = (vert * m_Rigidbody.transform.forward) + (hori * m_Rigidbody.transform.right);
+	CheckGroundStatus();
+
+	math::float3 fwd{ 0, 0, 1 }; //???
+	if (hasInputDir)
+	{
+		moveDir = camRot * inputDir;
+		moveDir.y = 0.0f;
+		moveDir = math::normalize(moveDir);
+
+		if (isGrounded)
+		{
+			combatManager->SetIsMoving(true);
+			moving = true;
+
+			if (!isSprinting)
+			{
+				moveSpeedMultiplier = baseSpeedMultiplier;
+			}
+			else
+			{
+				moveSpeedMultiplier = sprintSpeedMultiplier;
+				combatManager->SetIsSprinting(true);
+			}
+
+			if (moveSpeedMultiplier > kMaxSpeed)
+				moveSpeedMultiplier = kMaxSpeed;
+
+			// Character's facing direction
+			{
+				math::float3 faceDir = -moveDir;
+				float cosTheta = math::dot(faceDir, fwd);
+				if (cosTheta >= 1.0 - FLT_EPSILON)
+				{
+					charRot = math::quat();
+				}
+				else if (-cosTheta >= 1.0 - FLT_EPSILON)
+				{
+					charRot = { 0, 0, 1, 0 };
+				}
+				else
+				{
+					float angle = math::acos(cosTheta);
+					math::float3 axis = math::normalize(math::cross(fwd, faceDir));
+					charRot = math::angleAxis(angle, axis);
+				}
+				pPlayer->SetRotation(charRot);
+			}
+		}	
+	}
 
 	
+	// control and velocity handling is different when grounded and airborne:
+	if (isGrounded)
+	{
+		HandleGroundedMovement(moveDir, hasInputDir, _jump, dT);
+	}
+	else if (!isGrounded)
+	{
+		//HandleAirborneMovement(lastMove, dT);
+		HandleAirborneMovement(moveDir, hasInputDir, dT);
+	}
 
-	CheckGroundStatus();
-	//move = Vector3.ProjectOnPlane(move, m_GroundNormal);
+	if (hasJumped && isGrounded)
+	{
+		velocity.y = jumpPower;
+	}
 
-	//m_Rigidbody.transform.RotateAround(m_Rigidbody.transform.position, m_Rigidbody.transform.up, charRotation);
+	pPlayer->SetVelocity(velocity);
 
+	if (moveDir.x != 0 || moveDir.z != 0)
+	{
+		lastMoveDir = moveDir;
+	}
+
+	//---------------------------------------------------------------------------------------
+	/*
 	//move the character
 	if (isGrounded && dT > 0)
 	{
@@ -358,24 +544,10 @@ void Player::MoveReg(float dT, bool _jump, math::float3 inputDir, math::quat cam
 
 		move = -tPlayer->GetForwardVector() * dT * moveSpeedMultiplier;
 	}
-
-
+	*/
+	//------------------------------------------------------------------------------------------
 	//Update(dT);
 	
-
-	 // control and velocity handling is different when grounded and airborne:
-	if (isGrounded && !_jump)
-	{
-		HandleGroundedMovement(_jump, move, dT);
-	}
-	else if(!isGrounded)
-	{
-		//HandleAirborneMovement(lastMove, dT);
-		HandleAirborneMovement(move, inputDir, dT);
-	}
-
-	lastMove = move;
-
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Debug lines for character movement
 	//Blue is m_Rigidbody forward, Red is velocity, just backwards
@@ -383,53 +555,6 @@ void Player::MoveReg(float dT, bool _jump, math::float3 inputDir, math::quat cam
 	//Debug.DrawLine(charPos, charVel, Color.red);
 
 }//end move
-
-
-// Player Movement in Aiming Mode
-void Player::MoveAim(float dT, tofu::math::float3 inputDir, math::quat camRot, tofu::math::float3 camFwd)
-{
-	Update(dT);
-
-	if (math::length(inputDir) > 0.25f)
-	{
-		math::float3 moveDir = camRot * inputDir;
-		moveDir.y = 0.0f;
-		moveDir = math::normalize(moveDir);
-
-		camFwd.y = 0;
-		camFwd = math::normalize(camFwd);
-		tPlayer->FaceTo(-camFwd);
-
-		speed += dT * kAccelerate;
-
-		if (!isSprinting)
-		{
-			if (speed > moveSpeedMultiplier)
-				speed = moveSpeedMultiplier;
-		}
-		else
-		{
-			if (speed > sprintSpeedMultiplier)
-				speed = sprintSpeedMultiplier;
-		}
-
-		if (speed > kMaxSpeed)
-			speed = kMaxSpeed;
-
-		//tPlayer->Translate(moveDir * dT * speed);
-
-		//aPlayer->CrossFade(1, 0.3f);
-	}
-	else
-	{
-		speed -= dT * kDeaccelerate;
-		if (speed < 0.0f) speed = 0.0f;
-		//tPlayer->Translate(tPlayer->GetForwardVector() * dT * speed);
-
-		//aPlayer->CrossFade(0, 0.2f);
-	}
-}
-
 
 // Update the Player's State
 void Player::UpdateState(float dT)
@@ -444,14 +569,14 @@ void Player::UpdateState(float dT)
 	lastState = currentState;
 
 
-	if ( !combatManager->UpdateState(stateTimer, dT) )
+	if ( !combatManager->UpdateState(stateTimer, dT) && !isDead)
 	{
 		if (jump)
 		{
 			if (stateTimer < combatManager->GetJumpUpTime())
 			{
 				hasJumped = true;
-				currentState = kJumpUp;
+				currentState = kJumpingPrepare;
 			}
 			else if (stateTimer >= combatManager->GetJumpUpTime() && stateTimer < combatManager->GetJumpUpTime() + combatManager->GetJumpAirTime() )
 			{
@@ -470,35 +595,27 @@ void Player::UpdateState(float dT)
 			}
 
 		}
-		else if (combatManager->GetIsDodging())
-		{
-			if (stateTimer < combatManager->GetDodgeTime())
-			{
-				currentState = kDodge;
-				animationParameter = combatManager->GetDodgeDirection();
-			}
-			else
-			{
-				stateTimer = -1;
-			    combatManager->SetIsDodging(false);
-			}
-		}
 		else if (combatManager->GetIsRolling())
 		{
 			if (stateTimer < combatManager->GetRollTime())
 			{
 				currentState = kRoll;
-				ForceMove(combatManager->GetRollSpeed(), dT, 1);
+			}
+			else if (stateTimer > combatManager->GetRollTime() *.75 && stateTimer < combatManager->GetRollTime())
+			{
+				ForceMove(400.0f, dT);
 			}
 			else
 			{
 				stateTimer = -1;
 				combatManager->SetIsRolling(false);
+				isRolling = false;
 			}
 		}
 		else if (combatManager->GetIsAttacking())
 		{
-			if (stateTimer < combatManager->GetCurrentAttackTime())
+			float currentAttackTime = combatManager->GetCurrentAttackTime();
+			if (stateTimer < currentAttackTime)
 			{
 				currentState = kAttack;
 				animationParameter = (int)combatManager->GetCurrentCombat();
@@ -511,6 +628,17 @@ void Player::UpdateState(float dT)
 				{
 					currentState = kNoState;
 					combatManager->SetResetAttack(false);
+				}
+				if (animationParameter == 12)
+				{
+					if (stateTimer > currentAttackTime * 0.99f)
+					{
+						math::float3 pos = pPlayer->GetPosition();
+						math::float3 fwd = tCharacter->GetForwardVector() * -1.0f;
+						fwd = math::normalize(fwd);
+						fwd = fwd * dT * 70.0f;
+						pPlayer->SetPosition(pos + fwd);
+					}
 				}
 			}
 			else
@@ -541,14 +669,8 @@ void Player::UpdateState(float dT)
 				ForceMove(combatManager->GetAdjustSpeed(), dT, 1);
 			}
 		}
-		else if (combatManager->GetIsAimming() && combatManager->GetMoveDir() > -1)
-		{
-			animationParameter = combatManager->GetMoveDir();
-			currentState = kAimMove;
-		}
 		else
 		{
-
 			if (moving)
 			{
 				currentState = kWalk;
@@ -575,46 +697,29 @@ void Player::UpdateState(float dT)
 		}
 	}
 
-	if (isDead)
+	else if (isDead)
 	{
-		currentState = kDead;
+		
+		if (currentState != kDead && currentState != kNoState)
+		{
+			currentState = kDead;
+			stateTimer = 0;
+		}
+		else if (stateTimer > deathTimer)
+		{
+			currentState = kNoState;
+		}
 	}
 
 	if (lastState != currentState)
 	{
-		gCharacter->Play(currentState, animationParameter, 0);
-		//aPlayer->CrossFade(0, 0.2f);
+		gCharacter->Play(currentState, GetAnimationDuration(lastState), 0);
 	}
-
-
 }
 
 
 //-------------------------------------------------------------------------------------------------
 // Player Actions
-
-// Transistion to Aiming Mode
-void Player::Aim(bool aim)
-{
-	if (AimList() && aim)
-	{
-		currentState = kDrawGun;
-		isAiming = true;
-		combatManager->SetIsAimming(true);
-		gun->SetIsActive(true);
-	}
-	else if (!aim)
-	{
-		isAiming = false;
-		combatManager->SetIsAimming(false);
-		//myCarmera.GetComponent<ThirdPCamera>().SetAimState(false);
-		//enemies.Clear(); clear list of enemies or set a flag???
-		currentState = kHolsterGun;
-		gun->SetIsActive(false);
-		//UnHighlightEnemies();
-		//StartCoroutine(GunHolsterDelay());
-	}
-}
 
 // Attack (Uses a combo system)
 void Player::Attack(bool down, float dT)
@@ -644,23 +749,6 @@ void Player::Attack(bool down, float dT)
 			attackButtonDown = false;
 		}
 	}
-	else if (isAiming)	// Gun Attack
-	{
-		if(!gun->GetIsActive())
-		{
-			gun->SetIsActive(true);
-		}
-		if (!attackButtonDown && down) // TODO Add hook into player energy pool: playerCharacter.SpecialBar > 33.9999f
-		{
-			attackButtonDown = true;
-			attackButtonTimer = 0;
-			combatManager->GunShot();
-		}
-		if (attackButtonDown && !down)
-		{
-			attackButtonDown = false;
-		}
-	}
 }
 
 void Player::Die()
@@ -671,47 +759,20 @@ void Player::Die()
 // Dodge, in the current player direction
 void Player::Dodge(tofu::math::float3 inputDir)
 {
-	// TODO
-	if (!isAiming)
+    // If can roll
+	if(combatManager->GetCanRoll())
     {
-        // If can roll
-		if(combatManager->GetCanRoll())
-        {
-			combatManager->Roll();
-            // Remove stamina
-            //playerCharacter.UseStamina(rollDodgeCost);
-        }
-    }
-    else if(combatManager->GetCanDodge())
-    {
-        if (inputDir.x < 0)  // Left
-        {
-			combatManager->Dodge(0);
-        }
-        else if (inputDir.x > 0) // Right
-        {
-			combatManager->Dodge(1);
-        }
-        else if (inputDir.z < 0)  // Back
-        {
-			combatManager->Dodge(2);
-        }
-        else if (inputDir.z > 0)  // Foward
-        {
-			combatManager->Dodge(3);
-        }
-        else
-        {
-			assert(false);
-        }
-
-		//playerCharacter.UseStamina(rollDodgeCost);
+		isRolling = true;
+		combatManager->Roll();
+        // Remove stamina
+        //playerCharacter.UseStamina(rollDodgeCost);
     }
 }
 
 // Interact with interactable object
 void Player::Interact()
 {
+	isDead = !isDead;
 	// TODO
 	// Probably a dead feature
 }
@@ -719,36 +780,25 @@ void Player::Interact()
 // Combo Special move (Sword)
 void Player::Special(bool down, float dT)
 {
-	// TODO
-	if (!isAiming)
+	// Special (Sword) Attack
+	if (!specialButtonDown && down) //Button 2
 	{
-		// Special (Sword) Attack
-		if (specialButtonDown)
-		{
-			specialButtonTimer += dT;
-		}
-		if (specialButtonDown && down ) // TODO Add energy hook: playerCharacter.SpecialBar > 24.9999f
-		{
-			specialButtonDown = true;
-			specialButtonTimer = 0;
-		}
-		// Button Press Attack
-		if (specialButtonDown && !down && specialButtonTimer <= minHoldTime)	// TODO Add energy hook: playerCharacter.SpecialBar > 24.9999f
-		{
-			combatManager->SwordCombo();
-			specialButtonDown = false;
-		}
-		// Button Hold Attack
-		/*
-		if (((CrossPlatformInputManager.GetButtonUp("Sword") && specialButtonDown && specialButtonTimer > minHoldTime)
-		|| (specialButtonTimer >= maxHoldTime && specialButtonDown)) && playerCharacter.SpecialBar > 49.9999f)
-		*/
-		if ( ((specialButtonDown && !down && specialButtonTimer > minHoldTime)	// TODO Add energy hook: playerCharacter.SpecialBar > 49.9999f
-			|| (specialButtonTimer >= maxHoldTime && specialButtonDown)) )
-		{
-			combatManager->SwordSpecialCombat();
-			specialButtonDown = false;
-		}
+		specialButtonDown = true;
+		specialButtonTimer = 0;
+	}
+
+	// If attack button is released and timer is less than a hold time, use basic attack
+	if (specialButtonDown && !down && specialButtonTimer <= minHoldTime) // TODO Add energy hook: playerCharacter.SpecialBar > 24.9999f
+	{
+		combatManager->SwordCombo();
+		specialButtonDown = false;
+	}
+
+	// If attack button is released
+	if ((!down && attackButtonDown && specialButtonTimer > minHoldTime))
+	{
+		combatManager->SwordSpecialCombat();
+		specialButtonDown = false;
 	}
 }
 
@@ -779,80 +829,6 @@ void Player::VisionHack()
 	*/
 }
 
-
-// Produce an aiming list for the player
-// Return false if no enemies available to aim at
-bool Player::AimList()
-{
-	/*
-	enemies.Clear();
-	bool done = false;
-	enemyArray = GameObject.FindGameObjectsWithTag("Enemy");
-	//GameObject target = null;
-
-	UnHighlightEnemies();
-
-	// Get the enemies in front of me
-	for (int i = 0; i < enemyArray.Length; i++)
-	{
-		float fwdDot = Vector3.Dot((transform.position - enemyArray[i].transform.position), transform.forward);
-		float distance = Vector3.Distance(transform.position, enemyArray[i].transform.position);
-		if (fwdDot < -1 && distance < 20)
-		{
-			enemies.Add(enemyArray[i]);
-		}
-	}
-
-	enemyArray = enemies.ToArray();
-
-	if (enemyArray.Length > 0)
-	{
-		// Sort enemies from left to right
-		while (!done)
-		{
-			done = true;
-			for (int i = 0; i < enemyArray.Length - 1; i++)
-			{
-				float distTo = Vector3.Dot((transform.position - enemyArray[i].transform.position), transform.right);
-				float distTo2 = Vector3.Dot((transform.position - enemyArray[i + 1].transform.position), transform.right);
-
-				if (distTo2 > distTo)
-				{
-					done = false;
-					GameObject temp = enemyArray[i + 1];
-					enemyArray[i + 1] = enemyArray[i];
-					enemyArray[i] = temp;
-				}
-			}
-		}
-
-		float tempDot = 0;
-		// Set the aim target
-		// Use the enemy most centered in the view
-		for (int i = 0; i < enemyArray.Length; i++)
-		{
-
-			float dot = Vector3.Dot((transform.position - enemyArray[i].transform.position), transform.forward);
-			if (dot < tempDot)
-			{
-				tempDot = dot;
-				aimTargetIndex = i;
-				gunTarget = enemyArray[i];
-				aimTarget = gunTarget.transform.GetChild(0).gameObject;
-			}
-		}
-
-
-		myCarmera.GetComponent<ThirdPCamera>().SetAimState(true, aimTarget);
-		m_Character.m_combat.AimTarget = aimTarget.GetComponentInParent<Character>();
-		gunTarget.GetComponentInChildren<SkinnedMeshRenderer>().material = gunTarget.GetComponent<Enemy>().highlightMat;
-
-		return true;
-	} */
-
-	return false;
-}
-
 //-------------------------------------------------------------------------------------------------
 // Setters
 
@@ -865,6 +841,112 @@ bool Player::AimList()
 //-------------------------------------------------------------------------------------------------
 // Getters
 
+// Get Custom crossfade duration for combat idle animation
+float Player::GetAnimationDuration(CharacterState state)
+{
+	float duration = 0.03f;
+	switch(state)
+	{
+	case kIdleOutCombat:
+		duration = 0.03f;
+		break;
+	case kIdleInCombat:
+		duration = 0.03f;
+		break;
+	case kWalk:
+		duration = 0.03f;
+		break;
+	case kRun:
+		duration = 0.03f;
+		break;
+	case kJumpingPrepare:
+		duration = 0.03f;
+		break;
+	case kJumpUp:
+		duration = 0.03f;
+		break;
+	case kJumpAir:
+		duration = 0.03f;
+		break;
+	case kJumpDown:
+		duration = 0.03f;
+		break;
+	case kDead:
+		duration = 0.0f;
+		break;
+	case kRoll:
+		duration = 0.03f;
+		break;
+	case kAttack:
+	{
+		switch (combatManager->GetCurrentCombat())
+		{
+		case kNone:
+			duration = 0.03f;
+			break;
+		case kPunchJabL:
+			duration = 0.03f;
+		case kPunchJabR:
+			duration = 0.03f;
+			break;
+		case kPunchHookL:
+			duration = 0.03f;
+			break;
+		case kPunchHookR:
+			duration = 0.03f;
+			break;
+		case kPunchUpperCutL:
+			duration = 0.03f;
+			break;
+		case kPunchUpperCutR:
+			duration = 0.03f;
+			break;
+		case kKickStraightMidR:
+			duration = 0.03f;
+			break;
+		case kKickKnee:
+			duration = 0.06f;
+			break;
+		case kKickAxeKick:
+			duration = 0.06f;
+			break;
+		case kKickHorseKick:
+			duration = 0.06f;
+			break;
+		case kSwordAttackR:
+			duration = 0.06f;
+			break;
+		case kSwordAttackRL:
+			duration = 0.06f;
+			break;
+		case kSwordAttackSpU:
+			duration = 0.06f;
+			break;
+		case kSwordAttackComboLL:
+			duration = 0.06f;
+			break;
+		case kNumberOfItems:
+			duration = 0.03f;
+			break;
+		default:
+			break;
+		}
+	}
+	break;
+	case kAdjustPosition:
+		duration = 0.03f;
+		break;
+	case kHit:
+		duration = 0.03f;
+		/*combatManager.HitPosition pos = (combatManager.HitPosition)((parameter / 100) % 10);
+		combatManager.HitDirection dir = (combatManager.HitDirection)((parameter / 10) % 10);
+		combatManager.HitPower power = (combatManager.HitPower)((parameter / 1) % 10);
+		string animationName = "A_Hit_" + pos.ToString() + "_" + dir.ToString() + "_" + power.ToString();
+		aComp->Play(animationName, -1, 0);*/
+		break;
+	}
 
+	return duration;
+}
 
 

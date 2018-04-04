@@ -10,13 +10,11 @@ public:
 	~Player();
 
 	void MoveReg(float, bool, tofu::math::float3, tofu::math::quat);
-	void MoveAim(float, tofu::math::float3, tofu::math::quat, tofu::math::float3);
 	//void MoveEnemy(float, bool, tofu::math::float3);
 	void Update(float);
+	void FixedUpdate(float);
 	void UpdateState(float);
 
-
-	void Aim(bool);
 	void Attack(bool, float);
 	void Dodge(tofu::math::float3);
 	void Die();
@@ -24,9 +22,7 @@ public:
 	void Special(bool, float);
 	void VisionHack();
 
-	bool AimList();
-
-	/*void Aim();
+	/*
 	void AnimationParameter(int _animationParameter);
 	
 	void CheckGroundStatus();
@@ -59,6 +55,8 @@ public:
 	//CharacterState LastState();
 
 private:
+	float GetAnimationDuration(CharacterState);
+
 	tofu::TransformComponent	tPlayer;
 	tofu::PhysicsComponent		pPlayer;
 	tofu::AnimationComponent	aPlayer;
@@ -66,8 +64,7 @@ private:
 	
 	tofu::math::quat camRotation;
 
-	tofu::math::float3 move;
-	tofu::math::float3 lastMove;
+	tofu::math::float3 lastMoveDir;
 
 	Gun* gun;
 
@@ -78,7 +75,6 @@ private:
 	float maxHoldTime;
 	float specialButtonTimer;
 	float rollDodgeCost;
-
 
 	//GameObject charBody;
 	//GameObject camera;

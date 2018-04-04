@@ -18,10 +18,8 @@ void Character::Init(bool isPlayer, void* comp, CombatManagerDetails combatDetai
 	combatManager = new CombatManager(isPlayer, comp, this, combatDetails);
 	gCharacter = new GameplayAnimationMachine(combatManager);
 	physics = tofu::PhysicsSystem::instance();
-	jumpTimer = 0.0f;
-	jumpDelay = 0.016f;
-	queueJump = false;
 	once = true;
+	inAir = false;
 }
 
 
@@ -33,38 +31,6 @@ void Character::Update(float dT)
 		pCharacter->LockRotation(true, true, true);
 	}
 	combatManager->Update(dT);
-	if (jumpTimer > 0)
-	{
-		if (dT < 0.0159f)
-		{
-			jumpTimer -= 0.016f;
-		}
-		else
-		{
-			jumpTimer -= dT;
-		}
-	}
-
-	if (queueJump)
-	{
-		if (dT < 0.0159f)
-		{
-			jumpDelay -= 0.016f;
-		}
-		else
-		{
-			jumpDelay -= dT;
-		}
-	}
-	if(queueJump && jumpDelay < 0)
-	{
-		// Original Values 0.0f, 4.0f, 0.0f
-		pCharacter->ApplyImpulse(math::float3{ 0.0f, 5.0f, 0.0f });
-				
-		queueJump = false;
-
-		isGrounded = false;		
-	}
 }
 
 void Character::UpdateState(float dT)
@@ -74,141 +40,182 @@ void Character::UpdateState(float dT)
 
 
 // Handle movement on the ground
-void Character::HandleGroundedMovement(bool _jump, math::float3 move, float dT)
+void Character::HandleGroundedMovement(math::float3 _moveDir, bool _hasInput, bool _jump, float dT)
 {
+	float accelMod = 0.0f;
+	float deaccelMod = 0.0f;
 	// check whether conditions are right to allow a jump
-	if (_jump && !jump && isGrounded && jumpTimer < 0.001f)
+	if (_jump && !jump && isGrounded)
 	{
-		jumpTimer = 0.5f;
 		//charAudio.Stop();
 		//charAudio.PlayOneShot(jumpFX);
 
-		// jump!
-		//rigidbody.velocity = math::float3(m_Rigidbody.velocity.x, jumpPower, m_Rigidbody.velocity.z);
-
-		// TODO
-		// Current jump mechanic
-		// need to wait a frame before jumping
-		//pCharacter->ApplyImpulse(math::float3{ 0.0f, 4.0f, 0.0f });
-		queueJump = true;
-		jumpDelay = 0.768f;
-
 		combatManager->SetIsJumping(true);
 		jump = true;
+		hasJumped = true;
 		stateTimer = 0;
-
-		//move.y = jumpPower * dT * move.y;
-
-		//tCharacter->Translate(math::float3{ move.x, 1.0f, move.z });
-		//isGrounded = false;
-
-		//jump state
-		//combatManager->SetIsJumping(true);
-		//jump = true;
-		//stateTimer = 0;
 	}
-	
-	tCharacter->Translate(move);
-	//math::float3 temp = { 0,0,0 };
-	//pCharacter->LockRotation(false, false, false);
-	//pCharacter->LockPosition(false, false, false);
-	//temp.x = move.x * 20.0f;
-	//temp.y = 0.0f;
-	//temp.z = move.z * 20.0f;
-	//pCharacter->SetVelocity(temp);
-	
+
+	if (!isSprinting && !isRolling)
+	{
+		accelMod = dT * kAccelerate;
+		deaccelMod = dT * kDeaccelerate;
+	}
+	else if (isRolling)
+	{
+		accelMod = dT * kAccelerate * 1.0f;
+	}
+	else
+	{
+		accelMod = dT * kAccelerate * 2.0f;
+		deaccelMod = dT * kDeaccelerate * 1.5f;
+	}
+
+
+	if (_hasInput && isGrounded)
+	{
+		speed += accelMod;
+		if (speed > moveSpeedMultiplier)
+			speed = moveSpeedMultiplier;
+
+		math::float3 moveVector = _moveDir * speed;
+		velocity.x = moveVector.x;
+		velocity.z = moveVector.z;
+	}
+
+	else if (isGrounded)
+	{
+		speed -= deaccelMod;
+		if (speed < 0.0f) speed = 0.0f;
+		math::float3 moveVector = -(charRot * math::float3{ 0, 0, 1 }) * speed;
+		velocity.x = moveVector.x;
+		velocity.z = moveVector.z;
+	}
 } // end ground movement
 
- // TODO
- // Needs fixing in the Unity version and then updated here
+
  // Handle airborne movement
  
-void Character::HandleAirborneMovement(math::float3 move, math::float3 inputDir, float dT)
+void Character::HandleAirborneMovement(math::float3 _moveDir, bool _hasInput, float dT)
 {
-	//float y = tCharacter->GetWorldPosition().y;
-	// TODO Change to only modify if they were sprinting when they started jumping
-	if (!isSprinting)
+	if (hasJumped)
 	{
-		airborneSpeedMultiplier = 4.0f;
+		velocity.y = lastVelocity.y - gravityMultiplier * dT;
 	}
 	else
 	{
-		airborneSpeedMultiplier = 8.0f;
+		velocity.y = lastVelocity.y - (gravityMultiplier * dT * 20.0f);
 	}
+	//velocity.y = lastVelocity.y - gravityMultiplier * dT;
+	float x = _moveDir.x * airborneSpeedMultiplier * dT;
+	float z = _moveDir.z * airborneSpeedMultiplier * dT;
 
-	float y = move.y;
+	velocity.x += x;
+	velocity.z += z;
 
-	//move += 10.0f * dT * move;
-	if (move.x < 0.01f)
+	if (velocity.x > airbornMaxVelocity)
 	{
-		move.x = dT * inputDir.x * airborneSpeedMultiplier;
+		velocity.x = airbornMaxVelocity;
 	}
-
-	if (move.z < 0.01f)
+	else if (velocity.x < -airbornMaxVelocity)
 	{
-		move.z = dT * inputDir.z * airborneSpeedMultiplier;
+		velocity.x = -airbornMaxVelocity;
 	}
-	move.y = y;
-
-	tCharacter->Translate(move);
-
-	// apply extra gravity from multiplier:
-	//math::float3 extraGravityForce = (Physics.gravity * gravityMultiplier) - Physics.gravity;
-	//rigidbody.AddForce(extraGravityForce);
-	//rigidbody.velocity = math::float3(rigidbody.velocity.x - (inputDir.z / 10), rigidbody.velocity.y, rigidbody.velocity.z + (inputDir.x / 10));
-
-	//groundCheckDistance = m_Rigidbody.velocity.y < 0 ? origGroundCheckDistance : 0.01f;
-	
-	/*
-	math::float3 vel = pCharacter->GetVelocity();
-
-	tofu::math::float3 move;
-	if (inputDir.length > 0)
+	if (velocity.z > airbornMaxVelocity)
 	{
-		move = inputDir * dT * moveSpeedMultiplier;
+		velocity.z = airbornMaxVelocity;
 	}
-	else
+	else if (velocity.z < -airbornMaxVelocity)
 	{
-		move = -tCharacter->GetForwardVector() * dT * moveSpeedMultiplier;
+		velocity.z = -airbornMaxVelocity;
 	}
 
-	pCharacter->SetVelocity(vel);
-	*/
-	//tCharacter->Translate(math::float3{ vel.x, 0.0f, vel.z });
-
+	if(!jump && isGrounded)
+	{
+		velocity.y = 0;
+	}
 } //end airborne movement
 
 
  // check to see if player is on the ground and its status
 void Character::CheckGroundStatus()
 {
-	math::float3 pos{ tCharacter->GetWorldPosition() };
-	pos.y = pos.y + 0.1f;
-	math::float3 end{ pos.x, pos.y - 0.11f, pos.z };
+	math::float3 playerPos = tCharacter->GetLocalPosition();
+	math::float3 pos{ pCharacter->GetPosition() };
+
 	RayTestResult hitInfo = {};
-
-	// Raytest to check if the player is standing on an object
-	if (physics->RayTest(pos, end, &hitInfo))
 	{
-		if (hitInfo.hitWorldNormal.y < 0.9f)
-		{
-			moveSpeedMultiplier = slopeSpeedMultiplier;
-		}
-		groundNormal = hitInfo.hitWorldNormal;
+		math::float3 rayStart = pos + math::float3{ 0, 1, 0 };
+		math::float3 rayEnd = pos + math::float3{ 0, -0.08f, 0 };
 
-		if (!isGrounded && hasJumped)
-		{
-			//charAudio.Stop();
-			//charAudio.PlayOneShot(landFX);
-			hasJumped = false;
-		}
-		isGrounded = true;
+		isGrounded = physics->RayTest(rayStart, rayEnd, &hitInfo);
 	}
-	else
+
+	// Additional checks to see if the character is standing on an object
+	if (!isGrounded)
 	{
-		isGrounded = false;
-		groundNormal = tCharacter->GetUpVector();
+		math::float3 rayStart = pos + math::float3{ 0, 1, 0.5f };
+		math::float3 rayEnd = pos + math::float3{ 0, -0.08f, 0 };
+
+		isGrounded = physics->RayTest(rayStart, rayEnd, &hitInfo);
 	}
+	if (!isGrounded)
+	{
+		math::float3 rayStart = pos + math::float3{ 0, 1, -0.5f };
+		math::float3 rayEnd = pos + math::float3{ 0, -0.08f, 0 };
+
+		isGrounded = physics->RayTest(rayStart, rayEnd, &hitInfo);
+	}
+	if (!isGrounded)
+	{
+		math::float3 rayStart = pos + math::float3{ 0.5f, 1, 0 };
+		math::float3 rayEnd = pos + math::float3{ 0, -0.08f, 0 };
+
+		isGrounded = physics->RayTest(rayStart, rayEnd, &hitInfo);
+	}
+	if (!isGrounded)
+	{
+		math::float3 rayStart = pos + math::float3{ -0.5f, 1, 0 };
+		math::float3 rayEnd = pos + math::float3{ 0, -0.08f, 0 };
+
+		isGrounded = physics->RayTest(rayStart, rayEnd, &hitInfo);
+	}
+
+	if (!isGrounded && hasJumped)
+	{
+		inAir = true;
+	}
+	if (inAir && isGrounded)
+	{
+		//charAudio.Stop();
+		//charAudio.PlayOneShot(landFX);
+		hasJumped = false;
+	}
+
+	
+
+	//// Raytest to check if the player is standing on an object
+	//if (physics->RayTest(pos, end, &hitInfo))
+	//{
+	//	if (hitInfo.hitWorldNormal.y < 0.9f)
+	//	{
+	//		moveSpeedMultiplier = slopeSpeedMultiplier;
+	//	}
+	//	groundNormal = hitInfo.hitWorldNormal;
+
+	//	if (!isGrounded && hasJumped)
+	//	{
+	//		//charAudio.Stop();
+	//		//charAudio.PlayOneShot(landFX);
+	//		hasJumped = false;
+	//	}
+	//	isGrounded = true;
+	//}
+	//else
+	//{
+	//	isGrounded = false;
+	//	groundNormal = tCharacter->GetUpVector();
+	//}
 }// end CheckGroundStatus
 
 
@@ -218,12 +225,7 @@ void Character::CheckGroundStatus()
 
  //-------------------------------------------------------------------------------------------------
  // Actions
-
-
-void Character::Aim() {}
-
 void Character::Attack() {}
-
 void Character::Dodge() {}
 void Character::Die() {}
 
@@ -238,34 +240,39 @@ void Character::Sprint(bool _sprint)
 void Character::Special(float, bool, bool) {}
 
 
-
-
-
 // TODO
 // Check to see if forward/right need to be negated to be right
 // Force the player to move a bit
 void Character::ForceMove(float speed, float dT, int direction)
 {
+	math::float3 moveDir = {};
 	if (direction == 0)
 	{
-		//tPlayer->Translate -= tPlayer->GetForwardVector() * speed * dT;
-		tCharacter->Translate(tCharacter->GetForwardVector() * dT * speed);
+		//tCharacter->Translate(tCharacter->GetForwardVector() * dT * speed);
+		moveDir = tCharacter->GetForwardVector();
 	}
 	else if (direction == 1)
 	{
-		//tPlayer->Translate += tPlayer->GetForwardVector() * speed * dT;
-		tCharacter->Translate(tCharacter->GetForwardVector() * dT * -speed);
+		//tCharacter->Translate(tCharacter->GetForwardVector() * dT * -speed);
+		moveDir = tCharacter->GetForwardVector() * -1.0f;
 	}
 	else if (direction == 2)
 	{
-		//tPlayer->Translate += tPlayer->GetRightVector() * speed * dT;
-		tCharacter->Translate(tCharacter->GetRightVector() * dT * -speed);
+		//tCharacter->Translate(tCharacter->GetRightVector() * dT * -speed);
+		moveDir = tCharacter->GetRightVector() * -1.0f;
 	}
 	else if (direction == 3)
 	{
-		//tPlayer->Translate -= tPlayer->GetRightVector() * speed * dT;
-		tCharacter->Translate(tCharacter->GetRightVector() * dT * speed);
+		//tCharacter->Translate(tCharacter->GetRightVector() * dT * speed);
+		moveDir = tCharacter->GetRightVector();
 	}
+
+	if (speed > 500.0f)
+		speed = 500.0f;
+
+	math::float3 moveVector = moveDir * speed;
+	velocity.x = moveVector.x;
+	velocity.z = moveVector.z;
 }
 
 // Force the player to move a bit
@@ -274,6 +281,19 @@ void Character::ForceMove(float speed, float dT, math::float3 direction)
 	//tPlayer->Translate += direction * speed * dT;
 	tCharacter->Translate(direction * dT * speed);
 
+}
+
+// Force move in the players currentlly facing direction
+void Character::ForceMove(float speed, float dT)
+{
+	math::float3 moveDir = tCharacter->GetForwardVector();
+
+	if (speed > 500.0f)
+		speed = 500.0f;
+
+	math::float3 moveVector = moveDir * speed;
+	velocity.x = moveVector.x;
+	velocity.z = moveVector.z;
 }
 
 // Deal damage to the character

@@ -1336,5 +1336,6 @@
   ],
   "spawnerNodes": null,
   "triggerNodes": null,
-  "pathNodes": null
+  "pathNodes": null,
+  "playerSpawn": null
 }

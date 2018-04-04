@@ -8,6 +8,7 @@ enum CharacterState
 	kIdleInCombat,
 	kWalk,
 	kRun,
+	kJumpingPrepare,
 	kJumpUp,
 	kJumpAir,
 	kJumpDown,
@@ -16,11 +17,6 @@ enum CharacterState
 	kHit,
 	kDodge,
 	kRoll,
-	kDrawGun,
-	kAimIdle,
-	kShoot,
-	kHolsterGun,
-	kAimMove,
 	kDead
 };
 
@@ -70,7 +66,6 @@ enum Combat
 	kSwordAttackRL,
 	kSwordAttackSpU,
 	kSwordAttackComboLL,
-	kGunShoot,
 	kNumberOfItems
 };
 
@@ -97,16 +92,21 @@ struct CombatMoveDetails
 
 struct CharacterDetails
 {
+	std::string			modelName;
+	std::string			diffuseName;
+	std::string			normalMapName;
 	std::string			tag;
 	tofu::math::float3	position;
 	tofu::math::float3	scale;
 	float				health;
-	float				walkSpeed;
+	float				walkSpeed;//
 	float				sprintSpeed;
 	float				jumpPower;
 	float				rollDodgeCost;
 	tofu::math::float2	capsuleColliderSize;
 	tofu::math::float3	colliderOrigin;
+	float				acceleration;
+	float				deacceleration;
 	// Add more as needed
 };
 
@@ -131,4 +131,24 @@ struct CombatManagerDetails
 	float adjustMinDistance;
 	float adjustMaxDistance;
 	float adjustAgle;
+};
+
+struct PathNode
+{
+	std::string name;
+	tofu::math::float3 position;
+	PathNode* nearby_1;
+	PathNode* nearby_2;
+	PathNode* nearby_3;
+	PathNode* nearby_4;
+};
+
+struct SpawnNode
+{
+	tofu::math::float3 position;
+};
+
+struct TriggerNode
+{
+	tofu::math::float3 position;
 };

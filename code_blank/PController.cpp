@@ -1,6 +1,6 @@
 #include "PController.h"
 #include <InputSystem.h>
-
+#include <assert.h>
 #include <PhysicsSystem.h>
 
 using namespace tofu;
@@ -25,6 +25,7 @@ PController::PController()
 	specialButtonDown = false;
 
 	// Default control scheme: 1, 1, 1, -1
+	// movement - horizontal, veritcal / camera - veritcal, horizontal
 	SetControlMods(1, 1, -1, 1);
 }
 
@@ -38,6 +39,8 @@ void PController::Update()
 
 	if (input->IsGamepadConnected())
 	{
+		cam->SetSensitivity(camSenWGP);
+
 		if (input->IsButtonDown(ButtonId::kGamepadStart))
 		{
 			paused = !paused;
@@ -46,22 +49,19 @@ void PController::Update()
 
 }
 
-// Update for Player 
-void PController::UpdateP(float dT)
+// Fixed Update
+void PController::FixedUpdate(float fDT)
 {
-	assert(cam != NULL && player != NULL);
 	math::float3 inputDir = math::float3();
 
+	// Gamepad Movement
 	if (input->IsGamepadConnected())
 	{
 		inputDir.z = input->GetLeftStickY();
 		inputDir.x = input->GetLeftStickX();
 	}
 
-	// TODO
-	// Add possible option to change which keys do what
-
-	// Movement
+	// Keyboard Movement
 	if (input->IsButtonDown(kKeyW))
 	{
 		inputDir.z = 1.0f;
@@ -80,40 +80,9 @@ void PController::UpdateP(float dT)
 		inputDir.x = -1.0f;
 	}
 
-	// Actions
-	bool jump = input->IsButtonDown(ButtonId::kKeySpace)
-		|| input->IsButtonDown(ButtonId::kGamepadFaceDown);
-
-	// Basic Attack
-	if ( (input->IsButtonDown(kMouseLButton) || (input->IsButtonDown(kGamepadFaceLeft)) )
-		&& !attackButtonDown )
-	{
-		player->Attack(true, dT);
-		attackButtonDown = true;
-
-		// REMOVE ME: just some debug code
-		//{
-		//	RayTestResult result;
-		//	math::float3 fwd = - math::normalize(player->GetForward());
-		//	math::float3 pos = player->GetPosition() + math::float3{ 0, 1, 0 };
-		//	math::float3 st = pos + fwd;
-		//	math::float3 ed = pos + fwd * 10.0f;
-		//	if (PhysicsSystem::instance()->RayTest(st, ed, &result))
-		//	{
-		//		result.entity.Destroy();
-		//	}
-		//}
-	}
-	else if( !(input->IsButtonDown(kMouseLButton) || (input->IsButtonDown(kGamepadFaceLeft))) 
-		&&  attackButtonDown)
-	{ 
-		player->Attack(false, dT);
-		attackButtonDown = false; 
-	}
-
 	// Dodge
-	if ( (input->IsButtonDown(kMouseRButton) || (input->IsButtonDown(kGamepadFaceRight)))
-		&& !dodgeButtonDown )
+	if ((input->IsButtonDown(kMouseRButton) || (input->IsButtonDown(kGamepadFaceRight)))
+		&& !dodgeButtonDown)
 	{
 		player->Dodge(inputDir);
 		dodgeButtonDown = true;
@@ -124,8 +93,8 @@ void PController::UpdateP(float dT)
 		dodgeButtonDown = false;
 	}
 
-	if(!input->IsButtonDown(kKeyLeftShift)	// Stop Sprinting
-		&& (input->GetRightTrigger() < 0.0001) )
+	if (!input->IsButtonDown(kKeyLeftShift)	// Stop Sprinting
+		&& (input->GetRightTrigger() < 0.0001))
 	{
 		player->Sprint(false);
 	}
@@ -135,6 +104,89 @@ void PController::UpdateP(float dT)
 		player->Sprint(true);
 	}
 
+	// Change Camera control if in aiming mode
+	if (!isAiming)
+	{
+		if (!input->IsGamepadConnected())
+		{
+			pitch = input->GetMouseDeltaY();
+			yaw = input->GetMouseDeltaX();
+		}
+		else
+		{
+			// TODO
+			// May need adjusting
+			pitch = input->GetRightStickY();
+			yaw = input->GetRightStickX();
+		}
+
+		// Camera control modification based on player settings
+		pitch = pitch * pitchMod * fDT;
+		yaw = yaw * yawMod * fDT;
+
+		cam->Rotate(math::float2{ pitch, yaw });
+
+		cam->SetTarget(player->GetPosition());
+	}
+	else
+	{
+		cam->SetTarget(player->GetPosition());
+	}
+
+	// Final adjustment to movement based on any custom axis changes from player
+	inputDir.x = inputDir.x * xAxisMod;
+	inputDir.z = inputDir.z * zAxisMod;
+
+	if (!isHacking)
+	{
+		player->MoveReg(fDT, jump, inputDir, cam->GetRotation());
+	}
+	else
+	{
+		// TODO
+		// player hacking mode movement control
+	}
+}
+
+// Update for Player 
+void PController::UpdateP(float dT)
+{
+	assert(cam != NULL && player != NULL);
+	
+
+	// TODO
+	// Add possible option to change which keys do what
+
+	// Actions
+	jump = input->IsButtonDown(ButtonId::kKeySpace)
+		|| input->IsButtonDown(ButtonId::kGamepadFaceDown);
+
+	// Basic Attack
+	if ( (input->IsButtonDown(kMouseLButton) || (input->IsButtonDown(kGamepadFaceLeft)) )
+		&& !attackButtonDown )
+	{
+		player->Attack(true, dT);
+		attackButtonDown = true;
+	}
+	else if( !(input->IsButtonDown(kMouseLButton) || (input->IsButtonDown(kGamepadFaceLeft))) 
+		&&  attackButtonDown)
+	{ 
+		player->Attack(false, dT);
+		attackButtonDown = false; 
+	}
+
+	//// Dodge
+	//if ( (input->IsButtonDown(kMouseRButton) || (input->IsButtonDown(kGamepadFaceRight)))
+	//	&& !dodgeButtonDown )
+	//{
+	//	player->Dodge(inputDir);
+	//	dodgeButtonDown = true;
+	//}
+	//else if (!(input->IsButtonDown(kMouseRButton) || (input->IsButtonDown(kGamepadFaceRight)))
+	//	&& dodgeButtonDown)
+	//{
+	//	dodgeButtonDown = false;
+	//}
 
 	// Sword Attack
 	if ((input->IsButtonDown(kKeyE) || (input->IsButtonDown(kGamepadFaceUp)))
@@ -161,66 +213,6 @@ void PController::UpdateP(float dT)
 	{
 		player->Interact();
 	}
-	
-	// Aim Mode
-	if ( (input->IsButtonDown(kKeyLeftShift) || (input->GetLeftTrigger() > 0) )
-		&& !isAiming )
-	{
-		//player->Aim(true);
-		//isAiming = true;
-		
-	}
-	else if(isAiming)
-	{
-		player->Aim(false);
-		isAiming = false;
-	}
-
-	// Change Camera control if in aiming mode
-	if (!isAiming)
-	{
-		if (!input->IsGamepadConnected())
-		{
-			pitch = input->GetMouseDeltaY();
-			yaw = input->GetMouseDeltaX();
-		}
-		else
-		{
-			// TODO
-			// May need adjusting
-			pitch = input->GetRightStickY();
-			yaw = input->GetRightStickX();
-		}
-
-		// Camera control modification based on player settings
-		pitch = pitch * pitchMod;
-		yaw = yaw * yawMod;
-
-		cam->Rotate(math::float2{pitch, yaw});
-		cam->UpdateTarget(player->GetPosition());
-	}
-	else
-	{
-		cam->UpdateTarget(player->GetPosition());
-	}
-
-	// Final adjustment to movement based on any custom axis changes from player
-	inputDir.x = inputDir.x * xAxisMod;
-	inputDir.z = inputDir.z * zAxisMod;
-
-	if (!isHacking && !isAiming)
-	{
-		player->MoveReg(dT, jump, inputDir, cam->GetRotation());
-	}
-	else if (isAiming)
-	{
-		player->MoveAim(dT, inputDir, cam->GetRotation(), cam->GetForward());
-	}
-	else
-	{
-		// TODO
-		// player hacking mode movement control
-	}
 }
 
 
@@ -232,6 +224,7 @@ void PController::SetCamera(Camera* _cam)
 {
 	assert(_cam != NULL);
 	cam = _cam;
+	cam->SetSensitivity(camSenWM);
 }
 
 // Set Player Companion

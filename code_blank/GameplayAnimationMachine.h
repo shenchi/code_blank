@@ -10,7 +10,7 @@ public:
 	GameplayAnimationMachine(CombatManager*);
 	~GameplayAnimationMachine();
 
-	void Play(CharacterState, uint32_t, size_t);
+	void Play(CharacterState, float, size_t);
 	void SetAnimComp(tofu::AnimationComponent);
 
 private:

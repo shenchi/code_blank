@@ -16,108 +16,54 @@ void GameplayAnimationMachine::SetAnimComp(tofu::AnimationComponent _aComp)
 }
 
 // 
-void GameplayAnimationMachine::Play(CharacterState state, uint32_t parameter, size_t layerMask)
+void GameplayAnimationMachine::Play(CharacterState state, float duration, size_t layerMask)
 {
 	//Debug.Log(state);
 	switch (state)
 	{
+	case kNoState:
+		return;
 	case kIdleOutCombat:
 		aComp->CrossFade("idle", 0.05f, 0);
 		aComp->CrossFade("idle", 0.05f, 1);
-		//aComp->CrossFade("Idle_OutCombat", 0.2f, layerMask);
-		//aComp->CrossFade(0, 0.2f);
 		break;
 	case kIdleInCombat:
-		aComp->CrossFade("combat_idle", 0.03f, 0);
-		aComp->CrossFade("combat_idle", 0.03f, 1);
-		//aComp->Play("idle", 0);
-		//aComp->CrossFade("Idle_InCombat", 0.2f, layerMask);
+		aComp->CrossFade("combat_idle", duration, 0);
+		aComp->CrossFade("combat_idle", duration, 1);
 		break;
 	case kWalk:
 		aComp->CrossFade("walk", 0.2f, 0);
 		aComp->CrossFade("walk", 0.2f, 1);
-		//aComp->CrossFade("Run", 0.1f, layerMask);
-		//aComp->CrossFade(1, 0.2f);
 		break;
 	case kRun:
 		aComp->CrossFade("run", 0.1f, 0);
 		aComp->CrossFade("run", 0.1f, 1);
-		//aComp->Play("Sprint", layerMask);
-		//aComp->CrossFade(2, 0.3f);
+		break;
+	case kJumpingPrepare:
+		aComp->CrossFade("jump_up", 0.05f, 0);
+		aComp->CrossFade("jump_up", 0.05f, 1);
 		break;
 	case kJumpUp:
 		aComp->CrossFade("jump", 0.5f, 0);
 		aComp->CrossFade("jump", 0.5f, 1);
-		//aComp->CrossFade("jump_up", 0.2f, 0);
-		//aComp->Play("Jump_Up", layerMask);
-		//aComp->CrossFade(3, 0.5f);
 		break;
 	case kJumpAir:
-		//aComp->CrossFade("jump_air", 0.1f, 0);
-		//aComp->Play("Jump_Air", layerMask);
+		aComp->CrossFade("jump_air", 0.1f, 0);
+		aComp->CrossFade("jump_air", 0.1f, 1);
 		break;
 	case kJumpDown:
-		//aComp->CrossFade("jump_down", 0.1f, 0);
-		//aComp->Play("Jump_Down", layerMask);
-		break;
-	case kDrawGun:
-		//aComp->Play("Gun_Draw", layerMask);
-		break;
-	case kHolsterGun:
-		//aComp->Play("Gun_Holster", layerMask);
-		break;
-	case kShoot:
-		//aComp->Play("Gun_Shoot", layerMask);
-		break;
-	case kAimIdle:
-		//aComp->Play("Gun_Idle", layerMask);
-		break;
-	case kAimMove:
-		if (parameter == 0)
-		{
-			//aComp->Play("Aim_Sidestep_L", layerMask);
-		}
-		else if (parameter == 1)
-		{
-			//aComp->Play("Aim_Sidestep_R", layerMask);
-		}
-		else if (parameter == 2)
-		{
-			//aComp->Play("Aim_WalkB", layerMask);
-		}
-		else if (parameter == 3)
-		{
-			//aComp->Play("Aim_WalkF", layerMask);
-		}
-		break;
-	case kDodge:
-		if (parameter == 0)
-		{
-			//aComp->Play("Dodge_L", layerMask);
-		}
-		else if (parameter == 1)
-		{
-			//aComp->Play("Dodge_R", layerMask);
-		}
-		else if (parameter == 2)
-		{
-			//aComp->Play("Dodge_B", layerMask);
-		}
-		else if (parameter == 3)
-		{
-			//aComp->Play("Dodge_F", layerMask);
-		}
+		aComp->CrossFade("jump_down", 0.1f, 0);
+		aComp->CrossFade("jump_down", 0.1f, 1);
 		break;
 	case kDead:
-		//aComp->Play("Death", layerMask);
+		aComp->CrossFade("kDeath", 0.5f, 0);
+		aComp->CrossFade("kDeath", 0.5f, 1);
 		break;
 	case kRoll:
 		aComp->CrossFade("kRoll", 0.5f, 0);
 		aComp->CrossFade("kRoll", 0.5f, 1);
-		//aComp->Play("Roll", layerMask);
 		break;
 	case kAttack:
-		//combatManager->combat = (combatManager->Combat)parameter;
 		{
 			switch (combatManager->GetCurrentCombat())
 			{
@@ -172,24 +118,20 @@ void GameplayAnimationMachine::Play(CharacterState state, uint32_t parameter, si
 				aComp->CrossFade("kKickHorseKick", 0.2f, 1);
 				break;
 			case kSwordAttackR:
-				aComp->CrossFade("", 0.2f, 0);
-				aComp->CrossFade("", 0.2f, 1);
+				aComp->CrossFade("kSwordR", 0.3f, 0);
+				aComp->CrossFade("kSwordR", 0.3f, 1);
 				break;
 			case kSwordAttackRL:
-				aComp->CrossFade("", 0.2f, 0);
-				aComp->CrossFade("", 0.2f, 1);
+				aComp->CrossFade("kSwordR2", 0.08f, 0);
+				aComp->CrossFade("kSwordR2", 0.08f, 1);
 				break;
 			case kSwordAttackSpU:
-				aComp->CrossFade("", 0.2f, 0);
-				aComp->CrossFade("", 0.2f, 1);
+				aComp->CrossFade("kSwordCombo", 0.5f, 0);
+				aComp->CrossFade("kSwordCombo", 0.5f, 1);
 				break;
 			case kSwordAttackComboLL:
-				aComp->CrossFade("", 0.2f, 0);
-				aComp->CrossFade("", 0.2f, 1);
-				break;
-			case kGunShoot:
-				aComp->CrossFade("", 0.2f, 0);
-				aComp->CrossFade("", 0.2f, 1);
+				aComp->CrossFade("kSwordCombo", 0.2f, 0);
+				aComp->CrossFade("kSwordCombo", 0.2f, 1);
 				break;
 			case kNumberOfItems:
 				aComp->CrossFade("", 0.2f, 0);

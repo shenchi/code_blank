@@ -14,6 +14,7 @@ public:
 	~Companion();
 
 	void Update(float, tofu::math::float3, tofu::math::float3);
+	void FixedUpdate(float, tofu::math::float3, tofu::math::float3);
 
 	void SetInUse(bool);
 	void SetActive(bool);
@@ -35,7 +36,7 @@ private:
 	tofu::math::float3 targetFwd;
 
 
-	float distance = 0.75f;
+	float distance = 50.0f;
 	float height = 1.7f;
 	float heightDamping = 1.0f;
 	float positionDamping = 2.0f;
