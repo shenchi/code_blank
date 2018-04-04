@@ -1804,6 +1804,7 @@ namespace tofu
 			params->renderTargets[1] = gBuffer2;
 			params->renderTargets[2] = gBuffer3;
 			params->renderTargets[3] = gBuffer4;
+			params->clearColor[3] = 1;
 			params->depthRenderTarget = TextureHandle();
 			cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
 		}
@@ -2753,6 +2754,7 @@ namespace tofu
 			params->renderTargets[1] = gBuffer2;
 			params->renderTargets[2] = gBuffer3;
 			params->renderTargets[3] = gBuffer4;
+			params->clearColor[3] = 1;
 			params->depthRenderTarget = TextureHandle();
 			cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
 		}
