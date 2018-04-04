@@ -508,6 +508,8 @@ namespace tofu
 		{}
 	};
 
+	extern const TextureHandle kDefaultRenderTarget;
+
 	struct ClearParams
 	{
 		TextureHandle		renderTargets[kMaxRenderTargetBindings];
@@ -520,11 +522,11 @@ namespace tofu
 			:
 			renderTargets(),
 			clearColor(),
-			depthRenderTarget(kMaxTextures),
+			depthRenderTarget(kDefaultRenderTarget),
 			clearDepth(1.0f),
 			clearStencil(0u)
 		{
-			renderTargets[0] = TextureHandle(kMaxTextures + 1);
+			renderTargets[0] = kDefaultRenderTarget;
 		}
 
 		inline void SetClearColor(float r, float g, float b, float a)
@@ -561,8 +563,6 @@ namespace tofu
 		TextureHandle			renderTargets[kMaxRenderTargetBindings];
 		TextureHandle			depthRenderTarget;
 
-		static const TextureHandle DefaultRenderTarget;
-
 		DrawParams()
 			:
 			pipelineState(),
@@ -579,9 +579,9 @@ namespace tofu
 			vsSamplers(),
 			psSamplers(),
 			renderTargets(),
-			depthRenderTarget(DefaultRenderTarget)
+			depthRenderTarget(kDefaultRenderTarget)
 		{
-			renderTargets[0] = DefaultRenderTarget;
+			renderTargets[0] = kDefaultRenderTarget;
 		}
 	};
 

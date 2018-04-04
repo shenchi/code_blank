@@ -96,6 +96,9 @@ namespace tofu
 
 		if (offset + size > memorySize)
 		{
+#ifdef _DEBUG
+			assert(false && "[Memory Allocator] ran out of memory.");
+#endif
 			return nullptr;
 		}
 

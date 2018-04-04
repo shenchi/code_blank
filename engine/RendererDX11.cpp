@@ -526,10 +526,10 @@ namespace tofu
 
 			int32_t BindRenderTargets(DrawParams* params)
 			{
-				if (params->renderTargets[0].id == DrawParams::DefaultRenderTarget.id)
+				if (params->renderTargets[0].id == kDefaultRenderTarget.id)
 					params->renderTargets[0] = TextureHandle(kMaxTextures + 1);
 
-				if (params->depthRenderTarget.id == DrawParams::DefaultRenderTarget.id)
+				if (params->depthRenderTarget.id == kDefaultRenderTarget.id)
 					params->depthRenderTarget = TextureHandle(kMaxTextures);
 
 				bool rebind = false;
@@ -1691,6 +1691,12 @@ namespace tofu
 			int32_t ClearRenderTargets(void* _params)
 			{
 				ClearParams* params = reinterpret_cast<ClearParams*>(_params);
+
+				if (params->renderTargets[0].id == kDefaultRenderTarget.id)
+					params->renderTargets[0] = TextureHandle(kMaxTextures + 1);
+
+				if (params->depthRenderTarget.id == kDefaultRenderTarget.id)
+					params->depthRenderTarget = TextureHandle(kMaxTextures);
 
 				for (uint32_t i = 0; i < kMaxRenderTargetBindings; ++i)
 				{

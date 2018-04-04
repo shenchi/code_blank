@@ -6,7 +6,7 @@
 
 namespace tofu
 {
-	const TextureHandle DrawParams::DefaultRenderTarget(0xfffffffeu);
+	const TextureHandle kDefaultRenderTarget(0xfffffffeu);
 
 	RendererCommandBuffer * RendererCommandBuffer::Create(uint32_t capacity, uint32_t allocNo)
 	{

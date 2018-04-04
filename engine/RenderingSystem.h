@@ -126,6 +126,7 @@ namespace tofu
 		PixelShaderHandle		materialPSs[kMaxMaterialTypes];
 		SamplerHandle			defaultSampler;
 		SamplerHandle           shadowSampler;
+		SamplerHandle			volumeSampler;
 		SamplerHandle           lutSampler;
 
 		Model*					builtinQuad;
