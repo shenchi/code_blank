@@ -164,9 +164,11 @@ namespace tofu
 
 		// resources for volumetric fog
 		ComputeShaderHandle		injectionShader;
+		ComputeShaderHandle		filteringShader;
 		ComputeShaderHandle		scatterShader;
 
 		TextureHandle			injectionTex;
+		TextureHandle			filteredVolumeTex;
 		TextureHandle			scatterTex;
 
 		BufferHandle			fogParamsBuffer;
