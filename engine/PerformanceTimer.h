@@ -46,7 +46,7 @@ namespace tofu
 		// in ms
 		TF_INLINE static float GetTime(int64_t ticks)
 		{
-			return (ticks / counterFreq) / 1000.0f;
+			return (ticks / (float)counterFreq) * 1000.0f;
 		}
 
 		TF_INLINE static void Clear(uint32_t slot)
@@ -65,7 +65,7 @@ namespace tofu
 
 #define PERFORMANCE_TIMER_INIT() PerformanceTimer::Init();
 
-#define PERFORMANCE_TIMER_CLEAR(SLOT) PerformanceTimer::RecordTick(SLOT);
+#define PERFORMANCE_TIMER_CLEAR(SLOT) PerformanceTimer::Clear(SLOT);
 
 #define PERFORMANCE_TIMER_START(SLOT) PerformanceTimer::RecordTick(SLOT);
 

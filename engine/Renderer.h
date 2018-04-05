@@ -49,6 +49,7 @@ namespace tofu
 		kFormatR16g16b16a16Snorm,
 		kFormatR16g16b16a16Float,
 		kFormatR32g32b32a32Float,
+		kFormatR8Unorm,
 		kFormatR8Sint,
 		kFormatR16Sint,
 		kFormatR32Sint,
@@ -65,6 +66,11 @@ namespace tofu
 		kCullNone,
 		kCullFront,
 		kCullBack
+	};
+
+	enum FrontFace
+	{
+
 	};
 
 	enum ComparisonFunc
@@ -440,7 +446,8 @@ namespace tofu
 			struct
 			{
 				uint32_t			cullMode : 2;
-				uint32_t			_reserved2 : 30;
+				uint32_t			frontFaceCcw : 1;
+				uint32_t			_reserved2 : 29;
 			};
 			uint32_t				rasterizerState;
 		};
@@ -495,6 +502,7 @@ namespace tofu
 			stencilReadMask(255u),
 			stencilWriteMask(255u),
 			cullMode(kCullBack),
+			frontFaceCcw(0),
 			blendEnable(0),
 			srcBlend(kBlendOne),
 			destBlend(kBlendZero),

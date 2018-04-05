@@ -35,6 +35,7 @@ namespace
 		DXGI_FORMAT_R16G16B16A16_SNORM,
 		DXGI_FORMAT_R16G16B16A16_FLOAT,
 		DXGI_FORMAT_R32G32B32A32_FLOAT,
+		DXGI_FORMAT_R8_UNORM,
 		DXGI_FORMAT_R8_SINT,
 		DXGI_FORMAT_R16_SINT,
 		DXGI_FORMAT_R32_SINT,
@@ -50,6 +51,8 @@ namespace
 		D3D11_FILTER_MIN_MAG_MIP_LINEAR,
 		D3D11_FILTER_ANISOTROPIC,
 	};
+
+	
 
 	D3D11_INPUT_ELEMENT_DESC InputElemDescNormal[] =
 	{
@@ -1486,7 +1489,15 @@ namespace tofu
 				assert(nullptr == vertexShaders[id].shader);
 
 				// store binary code for further use (input layout)
-				void* ptr = MemoryAllocator::Allocators[kAllocLevel].Allocate(params->size, 4);
+				void* ptr = nullptr;
+				if (params->label == kResourceGlobal)
+				{
+					ptr = MemoryAllocator::Allocators[kAllocGlobal].Allocate(params->size, 4);
+				}
+				else
+				{
+					ptr = MemoryAllocator::Allocators[kAllocLevel].Allocate(params->size, 4);
+				}
 				assert(nullptr != ptr);
 				memcpy(ptr, params->data, params->size);
 
@@ -1527,7 +1538,15 @@ namespace tofu
 				assert(nullptr == pixelShaders[id].shader);
 
 				// store binary code for further use
-				void* ptr = MemoryAllocator::Allocators[kAllocLevel].Allocate(params->size, 4);
+				void* ptr = nullptr;
+				if (params->label == kResourceGlobal)
+				{
+					ptr = MemoryAllocator::Allocators[kAllocGlobal].Allocate(params->size, 4);
+				}
+				else
+				{
+					ptr = MemoryAllocator::Allocators[kAllocLevel].Allocate(params->size, 4);
+				}
 				assert(nullptr != ptr);
 				memcpy(ptr, params->data, params->size);
 
@@ -1568,7 +1587,15 @@ namespace tofu
 				assert(nullptr == computeShaders[id].shader);
 
 				// store binary code for further use
-				void* ptr = MemoryAllocator::Allocators[kAllocLevel].Allocate(params->size, 4);
+				void* ptr = nullptr;
+				if (params->label == kResourceGlobal)
+				{
+					ptr = MemoryAllocator::Allocators[kAllocGlobal].Allocate(params->size, 4);
+				}
+				else
+				{
+					ptr = MemoryAllocator::Allocators[kAllocLevel].Allocate(params->size, 4);
+				}
 				assert(nullptr != ptr);
 				memcpy(ptr, params->data, params->size);
 
@@ -1627,6 +1654,8 @@ namespace tofu
 
 				CD3D11_RASTERIZER_DESC rsState(D3D11_DEFAULT);
 				rsState.CullMode = (D3D11_CULL_MODE)(params->cullMode + 1u);
+				rsState.FrontCounterClockwise = (params->frontFaceCcw == 1 ? TRUE : FALSE);
+
 				DXCHECKED(device->CreateRasterizerState(&rsState, &(pipelineStates[id].rasterizerState)));
 
 				CD3D11_BLEND_DESC blendState(D3D11_DEFAULT);

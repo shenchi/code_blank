@@ -21,6 +21,7 @@ namespace tofu
 		kMaterialPostProcessExtractBright,
 		kMaterialPostProcessBlur,
 		kMaterialPostProcessVolumetricFog,
+		kMaterialFontRendering,
 		kMaxMaterialTypes
 	};
 

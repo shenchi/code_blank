@@ -239,6 +239,10 @@ namespace tofu
 
 		CHECKED(LoadPixelShader("assets/volumetric_fog_apply_ps.shader", materialPSs[kMaterialPostProcessVolumetricFog]));
 
+		CHECKED(InitBuiltinMaterial(kMaterialFontRendering,
+			"assets/font_vs.shader",
+			"assets/font_ps.shader"));
+
 		CHECKED(LoadComputeShader("assets/volumetric_fog_inject_lights_cs.shader", injectionShader));
 #if TOFU_FILTER_VFOG == 1
 		CHECKED(LoadComputeShader("assets/volumetric_fog_filtering_cs.shader", filteringShader));
@@ -565,6 +569,31 @@ namespace tofu
 			cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 		}
 
+		materialPSOs[kMaterialFontRendering] = pipelineStateHandleAlloc.Allocate();
+		assert(materialPSOs[kMaterialFontRendering]);
+		{
+			CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
+			params->handle = materialPSOs[kMaterialFontRendering];
+			params->vertexShader = materialVSs[kMaterialFontRendering];
+			params->pixelShader = materialPSs[kMaterialFontRendering];
+
+			params->depthEnable = 0;
+			params->blendEnable = 1;
+			params->srcBlend = kBlendSrcAlpha;
+			params->destBlend = kBlendInvSrcAlpha;
+
+			params->cullMode = kCullBack;
+
+			params->frontFaceCcw = 1;
+
+			params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
+			params->vertexFormat = kVertexFormatOverlay;
+
+			params->label = kResourceGlobal;
+
+			cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+		}
+
 		// create default sampler
 		{
 			defaultSampler = samplerHandleAlloc.Allocate();
@@ -727,11 +756,56 @@ namespace tofu
 			return kErrUnknown;
 		}
 
+		{
+			uint32_t maxVerts = 2048;
+			uint32_t vertSize = sizeof(float) * 9u;
+			TextureHandle fontAtlas = textureHandleAlloc.Allocate();
+			BufferHandle vb = bufferHandleAlloc.Allocate();
+			BufferHandle ib = bufferHandleAlloc.Allocate();
+			if (!fontAtlas || !vb || !ib)
+				return kErrUnknown;
+
+			{
+				CreateBufferParams* params = MemoryAllocator::FrameAlloc<CreateBufferParams>();
+				params->handle = vb;
+				params->bindingFlags = kBindingVertexBuffer;
+				params->dynamic = 1;
+				params->data = nullptr;
+				params->size = vertSize * maxVerts;
+				params->stride = vertSize;
+				params->label = kResourceGlobal;
+
+				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
+			}
+
+			{
+				CreateBufferParams* params = MemoryAllocator::FrameAlloc<CreateBufferParams>();
+				params->handle = ib;
+				params->bindingFlags = kBindingIndexBuffer;
+				params->dynamic = 1;
+				params->data = nullptr;
+				params->size = sizeof(uint16_t) * maxVerts;
+				params->label = kResourceGlobal;
+
+				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
+			}
+
+			fontRenderer.Setup(materialPSOs[kMaterialFontRendering], 
+				fontAtlas, 
+				volumeSampler, 
+				vb, ib, frameConstantBuffer, maxVerts);
+
+			CHECKED(fontRenderer.Reset(cmdBuf));
+			CHECKED(fontRenderer.Init());
+		}
+
 		return kOK;
 	}
 
 	int32_t RenderingSystem::Shutdown()
 	{
+		CHECKED(fontRenderer.Shutdown());
+
 		CHECKED(renderer->Release());
 
 		return kOK;
@@ -749,13 +823,18 @@ namespace tofu
 		cmdBuf = RendererCommandBuffer::Create(kCommandBufferCapacity);
 		assert(nullptr != cmdBuf);
 
+		CHECKED(fontRenderer.Reset(cmdBuf));
+
 		return kOK;
 	}
 
 	int32_t RenderingSystem::Update()
 	{
-		return DebugPipeline();
-		//return DeferredPipeline();
+		CHECKED(DebugPipeline());
+		//CHECKED(DeferredPipeline());
+
+		CHECKED(fontRenderer.Submit());
+		return kOK;
 	}
 
 	int32_t RenderingSystem::EndFrame()
@@ -1109,6 +1188,11 @@ namespace tofu
 		numLevelResources = 0;
 
 		return renderer->CleanupResources(kResourceLevel);
+	}
+
+	int32_t RenderingSystem::RenderText(const char * text, float x, float y)
+	{
+		return fontRenderer.Render(text, x, y);
 	}
 
 	BufferHandle RenderingSystem::CreateConstantBuffer(uint32_t size, bool dynamic, uint32_t label)

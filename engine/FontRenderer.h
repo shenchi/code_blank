@@ -25,7 +25,7 @@ namespace tofu
 	{
 	public:
 
-		int32_t Setup(PipelineStateHandle pso, TextureHandle tex, SamplerHandle samp, BufferHandle vb, BufferHandle ib, uint32_t maxVertices);
+		int32_t Setup(PipelineStateHandle pso, TextureHandle tex, SamplerHandle samp, BufferHandle vb, BufferHandle ib, BufferHandle cb, uint32_t maxVertices);
 
 		int32_t Init();
 
@@ -33,7 +33,9 @@ namespace tofu
 
 		int32_t Reset(RendererCommandBuffer* cmdBuf);
 
-		int32_t Render();
+		int32_t Render(const char* text, float x, float y);
+
+		int32_t Submit();
 
 	private:
 		FontRendererContext		context;
@@ -42,5 +44,8 @@ namespace tofu
 		SamplerHandle			samp;
 		BufferHandle			vb;
 		BufferHandle			ib;
+		BufferHandle			cb;
+
+		int32_t					font;
 	};
 }

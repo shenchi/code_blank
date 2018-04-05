@@ -11,7 +11,10 @@ SamplerState samp : register (s0);
 
 float4 main(PSInput input) : SV_TARGET
 {
-	float3 color = tex.Sample(samp, input.texcoord).r * input.color.rgb;
+	float v = tex.Sample(samp, input.texcoord).r;
+	//float3 color = v * input.color.rgb;
+	
+	//float a = step(0, -v) * input.color.a;
 
-	return float4(color, input.color.a);
+	return input.color * v;// float4(color, a);
 }

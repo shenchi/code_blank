@@ -45,7 +45,7 @@ cbuffer SpotLightParams : register (b2)
 
 cbuffer ShadowTransforms : register (b3)
 {
-	LightVP					matLightVPs[16];
+	LightVP					matLightVPs[8];
 }
 
 Texture2D gBuffer1 : register(t0);

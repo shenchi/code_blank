@@ -1,3 +1,19 @@
+cbuffer FrameConstants : register (b0)
+{
+	float4x4				matView;
+	float4x4				matProj;
+	float4x4				matViewInv;
+	float4x4				matProjInv;
+	float4					cameraPos;
+	float4					bufferSize;
+	float4					leftTopRay;
+	float4					rightTopRay;
+	float4					leftBottomRay;
+	float4					rightBottomRay;
+	float4					perspectiveParams;
+	float					padding3[4 * 9];
+};
+
 struct VSInput
 {
 	float3 position : POSITION;
@@ -16,7 +32,12 @@ VSOutput main(VSInput input)
 {
 	VSOutput output;
 
-	output.position = float4(input.position, 1);
+	float3 pos = input.position;
+	pos.xy /= (bufferSize.xy * 0.5);
+	pos.y = - pos.y;
+	pos.xy += float2(-1, 1);
+
+	output.position = float4(pos, 1);
 	output.color = input.color;
 	output.texcoord = input.texcoord;
 

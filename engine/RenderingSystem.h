@@ -6,6 +6,7 @@
 #include "Material.h"
 
 #include "Renderer.h"
+#include "FontRenderer.h"
 
 #include "HandleAllocator.h"
 
@@ -62,6 +63,8 @@ namespace tofu
 
 		int32_t CleanupLevelResources();
 
+		int32_t RenderText(const char* text, float x, float y);
+
 	private:
 
 		BufferHandle CreateConstantBuffer(uint32_t size, bool dynamic = true, uint32_t label = kResourceGlobal);
@@ -107,6 +110,8 @@ namespace tofu
 		uint32_t				numLevelResources;
 
 		std::unordered_map<std::string, ModelHandle>		modelTable;
+
+		FontRenderer			fontRenderer;
 
 		Renderer*				renderer;
 

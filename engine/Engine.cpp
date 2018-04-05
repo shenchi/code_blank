@@ -120,6 +120,8 @@ namespace tofu
 		Time::TotalTime = 0.0f;
 		Time::PhysicsTotalTime = 0.0f;
 
+		char textBuf[1024] = {};
+
 		// process native event and see if we need to quit
 		while(nativeContext->ProcessEvent())
 		{
@@ -131,6 +133,16 @@ namespace tofu
 
 			// lock to 60 fps
 			if (deltaTime < 0.016f) continue;
+
+			float cpuTime = PerformanceTimer::GetTime(PerformanceTimer::deltaTimerSlots[kPerformanceTimerSlotFrameTime]);
+			float physicsTime = PerformanceTimer::GetTime(PerformanceTimer::deltaTimerSlots[kPerformanceTimerSlotPhysicsTime]);
+			float userModuleTime = PerformanceTimer::GetTime(PerformanceTimer::deltaTimerSlots[kPerformanceTimerSlotUserUpdateTime]);
+			float renderingSystemTime = PerformanceTimer::GetTime(PerformanceTimer::deltaTimerSlots[kPerformanceTimerSlotRenderingSystemTime]);
+
+			PERFORMANCE_TIMER_CLEAR(kPerformanceTimerSlotFrameTime);
+			PERFORMANCE_TIMER_CLEAR(kPerformanceTimerSlotPhysicsTime);
+			PERFORMANCE_TIMER_CLEAR(kPerformanceTimerSlotUserUpdateTime);
+			PERFORMANCE_TIMER_CLEAR(kPerformanceTimerSlotRenderingSystemTime);
 
 			PERFORMANCE_TIMER_START(kPerformanceTimerSlotFrameTime);
 
@@ -187,6 +199,18 @@ namespace tofu
 			PERFORMANCE_TIMER_END(kPerformanceTimerSlotUserUpdateTime);
 
 			PERFORMANCE_TIMER_START(kPerformanceTimerSlotRenderingSystemTime);
+
+			sprintf_s(textBuf, "CPU Time: %.2f ms", cpuTime);
+			renderingSystem->RenderText(textBuf, 0, 0);
+
+			sprintf_s(textBuf, "Physics Time: %.2f ms", physicsTime);
+			renderingSystem->RenderText(textBuf, 0, 30);
+
+			sprintf_s(textBuf, "User Module Time: %.2f ms", userModuleTime);
+			renderingSystem->RenderText(textBuf, 0, 60);
+
+			sprintf_s(textBuf, "Rendering System Time: %.2f ms", renderingSystemTime);
+			renderingSystem->RenderText(textBuf, 0, 90);
 
 			CHECKED(renderingSystem->Update());
 
