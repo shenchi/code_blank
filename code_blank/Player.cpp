@@ -73,8 +73,9 @@ Player::Player(CharacterDetails details, void* comp)
 
 
 			// Roll/Dodge Animations
-			AnimationState *kRoll = stateMachine->AddState("kRoll");
+			AnimationState *kRoll = stateMachine->AddState("kRoll", false);
 			kRoll->animationName = "kRoll";
+			kRoll->playbackSpeed = 1.08f;
 
 
 			// Combat Animations
@@ -149,8 +150,9 @@ Player::Player(CharacterDetails details, void* comp)
 
 
 			// Roll/Dodge Animations
-			AnimationState *kRoll = stateMachine->AddState("kRoll");
+			AnimationState *kRoll = stateMachine->AddState("kRoll", false);
 			kRoll->animationName = "kRoll";
+			kRoll->playbackSpeed = 1.08f;
 
 
 			// Combat Animations
