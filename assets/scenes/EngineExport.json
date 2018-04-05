@@ -5453,6 +5453,107 @@
           "components": null,
           "children": [
             {
+              "name": "TrafficLight1 (1)",
+              "transform": {
+                "translate": {
+                  "x": -42.51999,
+                  "y": 1.61000013,
+                  "z": -44.89
+                },
+                "rotate": {
+                  "x": 0.0,
+                  "y": 0.444180936,
+                  "z": 0.0,
+                  "w": 0.895937145
+                },
+                "scale": {
+                  "x": 0.8000001,
+                  "y": 0.8,
+                  "z": 0.8000001
+                }
+              },
+              "components": null,
+              "children": [
+                {
+                  "name": "Cube",
+                  "transform": {
+                    "translate": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0
+                    },
+                    "rotate": {
+                      "x": -0.7071068,
+                      "y": 0.0,
+                      "z": 0.0,
+                      "w": 0.7071067
+                    },
+                    "scale": {
+                      "x": 100.0,
+                      "y": 100.000008,
+                      "z": 100.000008
+                    }
+                  },
+                  "components": [
+                    {
+                      "model": "models/TrafficLight1_Cube.model",
+                      "materials": [
+                        "TrafficLight1"
+                      ],
+                      "type": "renderable"
+                    },
+                    {
+                      "colliderType": "mesh",
+                      "center": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                      },
+                      "size": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                      },
+                      "model": "models/TrafficLight1_Cube.model",
+                      "type": "physics"
+                    }
+                  ],
+                  "children": null
+                },
+                {
+                  "name": "Cube.001",
+                  "transform": {
+                    "translate": {
+                      "x": 0.00438788533,
+                      "y": -6.704,
+                      "z": 0.00231671333
+                    },
+                    "rotate": {
+                      "x": -0.7071068,
+                      "y": 0.0,
+                      "z": 0.0,
+                      "w": 0.7071067
+                    },
+                    "scale": {
+                      "x": 41.64702,
+                      "y": 41.64702,
+                      "z": 19.7935
+                    }
+                  },
+                  "components": [
+                    {
+                      "model": "models/TrafficLight1_Cube.001.model",
+                      "materials": [
+                        "TrafficLight2-2"
+                      ],
+                      "type": "renderable"
+                    }
+                  ],
+                  "children": null
+                }
+              ]
+            },
+            {
               "name": "Street_Lamp (1)",
               "transform": {
                 "translate": {
@@ -5622,7 +5723,7 @@
                       "range": 11.48,
                       "intensity": 4.0,
                       "spotAngle": 50.0,
-                      "castShadow": false,
+                      "castShadow": true,
                       "type": "light"
                     }
                   ],
@@ -5800,7 +5901,7 @@
                       "range": 11.48,
                       "intensity": 4.0,
                       "spotAngle": 50.0,
-                      "castShadow": false,
+                      "castShadow": true,
                       "type": "light"
                     }
                   ],
@@ -5978,7 +6079,7 @@
                       "range": 11.48,
                       "intensity": 4.0,
                       "spotAngle": 50.0,
-                      "castShadow": false,
+                      "castShadow": true,
                       "type": "light"
                     }
                   ],
@@ -6156,7 +6257,7 @@
                       "range": 11.48,
                       "intensity": 4.0,
                       "spotAngle": 50.0,
-                      "castShadow": false,
+                      "castShadow": true,
                       "type": "light"
                     }
                   ],
@@ -6334,7 +6435,7 @@
                       "range": 11.48,
                       "intensity": 4.0,
                       "spotAngle": 50.0,
-                      "castShadow": false,
+                      "castShadow": true,
                       "type": "light"
                     }
                   ],
@@ -6512,7 +6613,7 @@
                       "range": 11.48,
                       "intensity": 4.0,
                       "spotAngle": 50.0,
-                      "castShadow": false,
+                      "castShadow": true,
                       "type": "light"
                     }
                   ],
@@ -6690,7 +6791,7 @@
                       "range": 11.48,
                       "intensity": 4.0,
                       "spotAngle": 50.0,
-                      "castShadow": false,
+                      "castShadow": true,
                       "type": "light"
                     }
                   ],
@@ -6868,7 +6969,7 @@
                       "range": 11.48,
                       "intensity": 4.0,
                       "spotAngle": 50.0,
-                      "castShadow": false,
+                      "castShadow": true,
                       "type": "light"
                     }
                   ],
@@ -7046,7 +7147,7 @@
                       "range": 11.48,
                       "intensity": 4.0,
                       "spotAngle": 50.0,
-                      "castShadow": false,
+                      "castShadow": true,
                       "type": "light"
                     }
                   ],
@@ -7224,7 +7325,7 @@
                       "range": 11.48,
                       "intensity": 4.0,
                       "spotAngle": 50.0,
-                      "castShadow": false,
+                      "castShadow": true,
                       "type": "light"
                     }
                   ],
@@ -7402,7 +7503,7 @@
                       "range": 11.48,
                       "intensity": 4.0,
                       "spotAngle": 50.0,
-                      "castShadow": false,
+                      "castShadow": true,
                       "type": "light"
                     }
                   ],
@@ -7580,7 +7681,7 @@
                       "range": 11.48,
                       "intensity": 4.0,
                       "spotAngle": 50.0,
-                      "castShadow": false,
+                      "castShadow": true,
                       "type": "light"
                     }
                   ],
@@ -7758,7 +7859,7 @@
                       "range": 11.48,
                       "intensity": 4.0,
                       "spotAngle": 50.0,
-                      "castShadow": false,
+                      "castShadow": true,
                       "type": "light"
                     }
                   ],
@@ -7936,7 +8037,7 @@
                       "range": 11.48,
                       "intensity": 4.0,
                       "spotAngle": 50.0,
-                      "castShadow": false,
+                      "castShadow": true,
                       "type": "light"
                     }
                   ],
@@ -8114,7 +8215,7 @@
                       "range": 11.48,
                       "intensity": 4.0,
                       "spotAngle": 50.0,
-                      "castShadow": false,
+                      "castShadow": true,
                       "type": "light"
                     }
                   ],
@@ -8292,7 +8393,7 @@
                       "range": 11.48,
                       "intensity": 4.0,
                       "spotAngle": 50.0,
-                      "castShadow": false,
+                      "castShadow": true,
                       "type": "light"
                     }
                   ],

@@ -91,7 +91,7 @@ namespace tofu
 	constexpr uint32_t kGlobalVMemSize = 512 * 1024 * 1024;
 	constexpr uint32_t kGlobalMemAlign = 2 * 1024 * 1024;
 
-	constexpr uint32_t kLevelMemSize = 256 * 1024 * 1024;
+	constexpr uint32_t kLevelMemSize = 512 * 1024 * 1024;
 	constexpr uint32_t kLevelVMemSize = 512 * 1024 * 1024;
 	constexpr uint32_t kLevelMemAlign = 2 * 1024 * 1024;
 
@@ -99,7 +99,7 @@ namespace tofu
 	constexpr uint32_t kFrameVMemSize = 256 * 1024 * 1024;
 	constexpr uint32_t kFrameMemAlign = 2 * 1024 * 1024;
 
-	constexpr uint32_t kMaxComponentTypes = 16;
+	constexpr uint32_t kMaxComponentTypes = 8;
 	constexpr uint32_t kMaxUserModules = 8;
 	constexpr uint32_t kMaxEntities = 4096;
 	constexpr uint32_t kMaxModels = 1024;
@@ -110,11 +110,11 @@ namespace tofu
 	constexpr uint32_t kMaxPointLights = 1024;
 	constexpr uint32_t kMaxSpotLights = 1024;
 	constexpr uint32_t kMaxDirectionalLights = 8;
-	constexpr uint32_t kMaxShadowCastingLights = 16;
+	constexpr uint32_t kMaxShadowCastingLights = 8;
 
 	constexpr uint32_t kMaxMeshesPerModel = 8;
 
-	constexpr uint32_t kCommandBufferCapacity = 2048;
+	constexpr uint32_t kCommandBufferCapacity = 4096;
 
 	constexpr uint32_t kMaxBuffers = 1024;
 	constexpr uint32_t kMaxTextures = 1024;
