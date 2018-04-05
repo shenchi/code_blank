@@ -16,7 +16,7 @@ namespace
 int32_t AnimationDemo::Init()
 {
 	{
-		Entity eBox = Entity::Create();
+		eBox = Entity::Create();
 		Entity &e = eBox;
 
 		tBox = e.AddComponent<TransformComponent>();
