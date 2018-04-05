@@ -20,6 +20,8 @@
 
 #include "Collision.h"
 
+#define TOFU_FILTER_VFOG 1
+
 namespace
 {
 	using tofu::math::float4x4;
@@ -238,6 +240,9 @@ namespace tofu
 		CHECKED(LoadPixelShader("assets/volumetric_fog_apply_ps.shader", materialPSs[kMaterialPostProcessVolumetricFog]));
 
 		CHECKED(LoadComputeShader("assets/volumetric_fog_inject_lights_cs.shader", injectionShader));
+#if TOFU_FILTER_VFOG == 1
+		CHECKED(LoadComputeShader("assets/volumetric_fog_filtering_cs.shader", filteringShader));
+#endif
 		CHECKED(LoadComputeShader("assets/volumetric_fog_scatter_cs.shader", scatterShader));
 
 		// constant buffers
@@ -710,6 +715,11 @@ namespace tofu
 		}
 
 		injectionTex = CreateTexture(kFormatR32g32b32a32Float, 160, 90, 128, 0, 0, nullptr, kBindingShaderResource | kBindingUnorderedAccess, kResourceGlobal);
+#if TOFU_FILTER_VFOG == 1
+		filteredVolumeTex = CreateTexture(kFormatR32g32b32a32Float, 160, 90, 128, 0, 0, nullptr, kBindingShaderResource | kBindingUnorderedAccess, kResourceGlobal);
+		if (!filteredVolumeTex)
+			return kErrUnknown;
+#endif
 		scatterTex = CreateTexture(kFormatR32g32b32a32Float, 160, 90, 128, 0, 0, nullptr, kBindingShaderResource | kBindingUnorderedAccess, kResourceGlobal);
 
 		if (!injectionTex || !scatterTex)
@@ -3067,11 +3077,32 @@ namespace tofu
 				cmdBuf->Add(RendererCommand::kCommandCompute, params);
 			}
 
+#if TOFU_FILTER_VFOG == 1
+			{
+				ComputeParams* params = MemoryAllocator::FrameAlloc<ComputeParams>();
+
+				params->shader = filteringShader;
+
+				params->shaderResources[0] = injectionTex;
+				params->rwShaderResources[0] = filteredVolumeTex;
+
+				params->threadGroupCountX = 10;
+				params->threadGroupCountY = 10;
+				params->threadGroupCountZ = 32;
+
+				cmdBuf->Add(RendererCommand::kCommandCompute, params);
+			}
+#endif
+
 			{
 				ComputeParams* params = MemoryAllocator::FrameAlloc<ComputeParams>();
 
 				params->shader = scatterShader;
+#if TOFU_FILTER_VFOG == 1
+				params->shaderResources[0] = filteredVolumeTex;
+#else
 				params->shaderResources[0] = injectionTex;
+#endif
 				params->rwShaderResources[0] = scatterTex;
 
 				params->threadGroupCountX = 10;
