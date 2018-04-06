@@ -54,6 +54,13 @@ namespace tofu
 			deltaTimerSlots[slot] = 0;
 		}
 
+		TF_INLINE static void Start(uint32_t slot)
+		{
+			deltaTimerSlots[slot] = 0;
+			int64_t stamp = NativeContext::instance()->GetTimeCounter();
+			timerSlots[slot] = stamp;
+		}
+
 		TF_INLINE static void RecordTick(uint32_t slot)
 		{
 			int64_t stamp = NativeContext::instance()->GetTimeCounter();
@@ -67,7 +74,11 @@ namespace tofu
 
 #define PERFORMANCE_TIMER_CLEAR(SLOT) PerformanceTimer::Clear(SLOT);
 
-#define PERFORMANCE_TIMER_START(SLOT) PerformanceTimer::RecordTick(SLOT);
+#define PERFORMANCE_TIMER_START(SLOT) PerformanceTimer::Start(SLOT);
+
+#define PERFORMANCE_TIMER_PAUSE(SLOT) PerformanceTimer::RecordTick(SLOT);
+
+#define PERFORMANCE_TIMER_RESUME(SLOT) PerformanceTimer::RecordTick(SLOT);
 
 #define PERFORMANCE_TIMER_END(SLOT) PerformanceTimer::RecordTick(SLOT);
 
@@ -75,7 +86,13 @@ namespace tofu
 
 #define PERFORMANCE_TIMER_INIT() 
 
+#define PERFORMANCE_TIMER_CLEAR(SLOT) 
+
 #define PERFORMANCE_TIMER_START(SLOT) 
+
+#define PERFORMANCE_TIMER_PAUSE(SLOT)
+
+#define PERFORMANCE_TIMER_RESUME(SLOT)
 
 #define PERFORMANCE_TIMER_END(SLOT)
 
