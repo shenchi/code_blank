@@ -1195,6 +1195,11 @@ namespace tofu
 		return fontRenderer.Render(text, x, y);
 	}
 
+	float RenderingSystem::GetGPUTime()
+	{
+		return renderer->GetGPUTime(0);
+	}
+
 	BufferHandle RenderingSystem::CreateConstantBuffer(uint32_t size, bool dynamic, uint32_t label)
 	{
 		BufferHandle handle = bufferHandleAlloc.Allocate();

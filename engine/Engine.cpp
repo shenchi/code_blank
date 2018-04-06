@@ -197,16 +197,19 @@ namespace tofu
 
 #if PERFORMANCE_TIMER_ENABLED == 1
 			sprintf_s(textBuf, "CPU Time: %.2f ms", cpuTime);
-			renderingSystem->RenderText(textBuf, 0, 0);
+			renderingSystem->RenderText(textBuf, 5, 0);
 
 			sprintf_s(textBuf, "Physics Time: %.2f ms", physicsTime);
-			renderingSystem->RenderText(textBuf, 0, 30);
+			renderingSystem->RenderText(textBuf, 5, 20);
 
 			sprintf_s(textBuf, "User Module Time: %.2f ms", userModuleTime);
-			renderingSystem->RenderText(textBuf, 0, 60);
+			renderingSystem->RenderText(textBuf, 5, 40);
 
 			sprintf_s(textBuf, "Rendering System Time: %.2f ms", renderingSystemTime);
-			renderingSystem->RenderText(textBuf, 0, 90);
+			renderingSystem->RenderText(textBuf, 5, 60);
+
+			sprintf_s(textBuf, "GPU Time: %.2f ms", renderingSystem->GetGPUTime());
+			renderingSystem->RenderText(textBuf, 5, 80);
 #endif
 
 			CHECKED(renderingSystem->Update());

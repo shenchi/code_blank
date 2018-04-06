@@ -65,6 +65,8 @@ namespace tofu
 
 		int32_t RenderText(const char* text, float x, float y);
 
+		float GetGPUTime();
+
 	private:
 
 		BufferHandle CreateConstantBuffer(uint32_t size, bool dynamic = true, uint32_t label = kResourceGlobal);

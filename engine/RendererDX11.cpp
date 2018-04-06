@@ -26,6 +26,8 @@
 
 namespace
 {
+	using namespace tofu;
+
 	DXGI_FORMAT PixelFormatTable[tofu::kMaxPixelFormats] =
 	{
 		DXGI_FORMAT_UNKNOWN, // AUTO
@@ -45,14 +47,14 @@ namespace
 		DXGI_FORMAT_D24_UNORM_S8_UINT,
 	};
 
-	D3D11_FILTER FilterTable[tofu::kMaxTextureFilters] = 
+	D3D11_FILTER FilterTable[tofu::kMaxTextureFilters] =
 	{
 		D3D11_FILTER_MIN_MAG_MIP_POINT,
 		D3D11_FILTER_MIN_MAG_MIP_LINEAR,
 		D3D11_FILTER_ANISOTROPIC,
 	};
 
-	
+
 
 	D3D11_INPUT_ELEMENT_DESC InputElemDescNormal[] =
 	{
@@ -156,6 +158,77 @@ namespace
 		uint32_t					label;
 		uint8_t						stencilRef;
 	};
+
+#if PERFORMANCE_TIMER_ENABLED == 1
+	struct TimeQuery
+	{
+		ID3D11Query*				disjoint;
+		ID3D11Query*				start;
+		ID3D11Query*				end;
+
+		// duration in ms
+		float						deltaTime;
+
+		int32_t Init(ID3D11Device1* device)
+		{
+			DXCHECKED(device->CreateQuery(
+			&CD3D11_QUERY_DESC(D3D11_QUERY_TIMESTAMP_DISJOINT, 0u),
+				&disjoint));
+
+			DXCHECKED(device->CreateQuery(
+				&CD3D11_QUERY_DESC(D3D11_QUERY_TIMESTAMP, 0u),
+				&start));
+
+			DXCHECKED(device->CreateQuery(
+				&CD3D11_QUERY_DESC(D3D11_QUERY_TIMESTAMP, 0u),
+				&end));
+
+			return kOK;
+		}
+
+		int32_t Release()
+		{
+			RELEASE(disjoint);
+			RELEASE(start);
+			RELEASE(end);
+
+			return kOK;
+		}
+
+		int32_t Start(ID3D11DeviceContext1* context)
+		{
+			context->Begin(disjoint);
+			context->End(start);
+
+			return kOK;
+		}
+
+		int32_t End(ID3D11DeviceContext1* context)
+		{
+			context->End(end);
+			context->End(disjoint);
+			return kOK;
+		}
+
+		bool RetrieveData(ID3D11DeviceContext1* context)
+		{
+			D3D11_QUERY_DATA_TIMESTAMP_DISJOINT data = {};
+			if (S_OK != context->GetData(disjoint, &data, sizeof(data), 0))
+				return false;
+
+			UINT64 startTime, endTime;
+			if (S_OK != context->GetData(start, &startTime, sizeof(UINT64), 0))
+				return false;
+
+			if (S_OK != context->GetData(end, &endTime, sizeof(UINT64), 0))
+				return false;
+
+			deltaTime = (endTime - startTime) / (float)data.Frequency * 1000.0f;
+
+			return true;
+		}
+	};
+#endif
 }
 
 namespace tofu
@@ -240,11 +313,39 @@ namespace tofu
 					return kErrUnknown;
 				}
 
+				// gpu time query begins here
+#if PERFORMANCE_TIMER_ENABLED == 1
+				while (firstQuery < lastQuery)
+				{
+					uint32_t firstIdx = firstQuery % kMaxGpuTimeQueries;
+					if (queries[firstIdx].RetrieveData(context))
+					{
+						gpuTime = queries[firstIdx].deltaTime;
+						firstQuery++;
+					}
+					else
+						break;
+				}
+				if (lastQuery - firstQuery < kMaxGpuTimeQueries)
+				{
+					queries[lastQuery % kMaxGpuTimeQueries].Start(context);
+				}
+#endif
+
 				for (uint32_t i = 0; i < buffer->size; ++i)
 				{
 					cmd_callback_t cmd = commands[buffer->cmds[i]];
 					CHECKED((this->*cmd)(buffer->params[i]));
 				}
+
+				// gpu time query ends here
+#if PERFORMANCE_TIMER_ENABLED == 1
+				if (lastQuery - firstQuery < kMaxGpuTimeQueries)
+				{
+					queries[lastQuery % kMaxGpuTimeQueries].End(context);
+					lastQuery++;
+				}
+#endif
 
 				return kOK;
 			}
@@ -291,6 +392,13 @@ namespace tofu
 				ReleaseResources(computeShaders, kMaxComputeShaders, shader, DestroyComputeShader);
 				ReleaseResources(pipelineStates, kMaxPipelineStates, depthStencilState, DestroyPipelineState);
 
+#if PERFORMANCE_TIMER_ENABLED == 1
+				for (uint32_t i = 0; i < kMaxGpuTimeQueries; i++)
+				{
+					DXCHECKED(queries[i].Release());
+				}
+#endif
+
 				return kOK;
 			}
 
@@ -299,6 +407,11 @@ namespace tofu
 				width = winWidth;
 				height = winHeight;
 				return kOK;
+			}
+
+			virtual float GetGPUTime(uint32_t slot) override
+			{
+				return gpuTime;
 			}
 
 		private:
@@ -323,6 +436,13 @@ namespace tofu
 			PipelineStateHandle			currentPipelineState;
 			TextureHandle				renderTargets[kMaxRenderTargetBindings];
 			TextureHandle				depthRenderTarget;
+
+#if PERFORMANCE_TIMER_ENABLED == 1
+			TimeQuery					queries[kMaxGpuTimeQueries];
+			uint32_t					firstQuery;
+			uint32_t					lastQuery;
+			float						gpuTime;
+#endif
 
 			typedef int32_t(RendererDX11::*cmd_callback_t)(void*);
 
@@ -443,6 +563,16 @@ namespace tofu
 				}
 
 				factory->Release();
+
+#if PERFORMANCE_TIMER_ENABLED == 1
+				for (uint32_t i = 0; i < kMaxGpuTimeQueries; i++)
+				{
+					DXCHECKED(queries[i].Init(device));
+				}
+				firstQuery = 0;
+				lastQuery = 0;
+#endif
+
 				return 0;
 			}
 
@@ -1410,7 +1540,7 @@ namespace tofu
 					};
 
 					context->UpdateSubresource(textures[id].tex, params->subRes,
-						updateWhole ? nullptr : &box, 
+						updateWhole ? nullptr : &box,
 						params->data, params->pitch, params->slicePitch);
 				}
 
