@@ -190,6 +190,7 @@ void Character::CheckGroundStatus()
 		//charAudio.Stop();
 		//charAudio.PlayOneShot(landFX);
 		hasJumped = false;
+		inAir = false;
 	}
 
 	
