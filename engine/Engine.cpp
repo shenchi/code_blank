@@ -139,11 +139,6 @@ namespace tofu
 			float userModuleTime = PerformanceTimer::GetTime(PerformanceTimer::deltaTimerSlots[kPerformanceTimerSlotUserUpdateTime]);
 			float renderingSystemTime = PerformanceTimer::GetTime(PerformanceTimer::deltaTimerSlots[kPerformanceTimerSlotRenderingSystemTime]);
 
-			PERFORMANCE_TIMER_CLEAR(kPerformanceTimerSlotFrameTime);
-			PERFORMANCE_TIMER_CLEAR(kPerformanceTimerSlotPhysicsTime);
-			PERFORMANCE_TIMER_CLEAR(kPerformanceTimerSlotUserUpdateTime);
-			PERFORMANCE_TIMER_CLEAR(kPerformanceTimerSlotRenderingSystemTime);
-
 			PERFORMANCE_TIMER_START(kPerformanceTimerSlotFrameTime);
 
 			Time::DeltaTime = deltaTime;
@@ -200,6 +195,7 @@ namespace tofu
 
 			PERFORMANCE_TIMER_START(kPerformanceTimerSlotRenderingSystemTime);
 
+#if PERFORMANCE_TIMER_ENABLED == 1
 			sprintf_s(textBuf, "CPU Time: %.2f ms", cpuTime);
 			renderingSystem->RenderText(textBuf, 0, 0);
 
@@ -211,6 +207,7 @@ namespace tofu
 
 			sprintf_s(textBuf, "Rendering System Time: %.2f ms", renderingSystemTime);
 			renderingSystem->RenderText(textBuf, 0, 90);
+#endif
 
 			CHECKED(renderingSystem->Update());
 
