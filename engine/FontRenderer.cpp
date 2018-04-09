@@ -133,7 +133,8 @@ namespace tofu
 		if (nullptr == fonsContext)
 			return kErrUnknown;
 		
-		font = fonsAddFont(fonsContext, "Arial Regular", "C:\\Windows\\Fonts\\arial.ttf");
+		font = fonsAddFont(fonsContext, "Conthrax Sb", "assets/conthrax-sb.ttf");
+		//font = fonsAddFont(fonsContext, "Arial Regular", "C:\\Windows\\Fonts\\arial.ttf");
 		//font = fonsAddFont(fonsContext, "sans", "D:\\DroidSerif-Regular.ttf");
 		if (font == FONS_INVALID) {
 			return kErrUnknown;
