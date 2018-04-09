@@ -77,9 +77,12 @@ private:
 
 	//*********************************************************************************************
 	//temp for test
-	//Enemy* enemy01;
-	//Enemy* enemy02;
-	//Enemy* enemy03;
+	Enemy* enemy01;
+	Enemy* enemy02;
+	Enemy* enemy03;
+	Enemy* enemy04;
+	Enemy* enemy05;
+	Enemy* enemy06;
 	float timePassed;
 	float startTime;
 	bool loopStart;

@@ -91,7 +91,7 @@ namespace tofu
 	constexpr uint32_t kGlobalVMemSize = 512 * 1024 * 1024;
 	constexpr uint32_t kGlobalMemAlign = 2 * 1024 * 1024;
 
-	constexpr uint32_t kLevelMemSize = 512 * 1024 * 1024;
+	constexpr uint32_t kLevelMemSize = 768 * 1024 * 1024;
 	constexpr uint32_t kLevelVMemSize = 512 * 1024 * 1024;
 	constexpr uint32_t kLevelMemAlign = 2 * 1024 * 1024;
 

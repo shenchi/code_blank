@@ -430,6 +430,110 @@ CharacterState Character::LastState()
 	return lastState;
 }
 
+// Get Custom crossfade duration for combat idle animation
+float Character::GetAnimationDuration(CharacterState state)
+{
+	float duration = 0.03f;
+	switch (state)
+	{
+	case kIdleOutCombat:
+		duration = 0.03f;
+		break;
+	case kIdleInCombat:
+		duration = 0.03f;
+		break;
+	case kWalk:
+		duration = 0.03f;
+		break;
+	case kRun:
+		duration = 0.03f;
+		break;
+	case kJumpingPrepare:
+		duration = 0.03f;
+		break;
+	case kJumpUp:
+		duration = 0.03f;
+		break;
+	case kJumpAir:
+		duration = 0.03f;
+		break;
+	case kJumpDown:
+		duration = 0.03f;
+		break;
+	case kDead:
+		duration = 0.0f;
+		break;
+	case kRoll:
+		duration = 0.03f;
+		break;
+	case kAttack:
+	{
+		switch (combatManager->GetCurrentCombat())
+		{
+		case kNone:
+			duration = 0.03f;
+			break;
+		case kPunchJabL:
+			duration = 0.03f;
+		case kPunchJabR:
+			duration = 0.03f;
+			break;
+		case kPunchHookL:
+			duration = 0.03f;
+			break;
+		case kPunchHookR:
+			duration = 0.03f;
+			break;
+		case kPunchUpperCutL:
+			duration = 0.03f;
+			break;
+		case kPunchUpperCutR:
+			duration = 0.03f;
+			break;
+		case kKickStraightMidR:
+			duration = 0.03f;
+			break;
+		case kKickKnee:
+			duration = 0.06f;
+			break;
+		case kKickAxeKick:
+			duration = 0.06f;
+			break;
+		case kKickHorseKick:
+			duration = 0.06f;
+			break;
+		case kSwordAttackR:
+			duration = 0.06f;
+			break;
+		case kSwordAttackRL:
+			duration = 0.06f;
+			break;
+		case kSwordAttackSpU:
+			duration = 0.06f;
+			break;
+		case kSwordAttackComboLL:
+			duration = 0.06f;
+			break;
+		case kNumberOfItems:
+			duration = 0.03f;
+			break;
+		default:
+			break;
+		}
+	}
+	break;
+	case kAdjustPosition:
+		duration = 0.03f;
+		break;
+	case kHit:
+		duration = 0.03f;
+		/*combatManager.HitPosition pos = (combatManager.HitPosition)((parameter / 100) % 10);
+		combatManager.HitDirection dir = (combatManager.HitDirection)((parameter / 10) % 10);
+		combatManager.HitPower power = (combatManager.HitPower)((parameter / 1) % 10);
+		string animationName = "A_Hit_" + pos.ToString() + "_" + dir.ToString() + "_" + power.ToString();
+		aComp->Play(animationName, -1, 0);*/
+		break;
+	}
 
-
-
+	return duration;
+}

@@ -11,9 +11,12 @@ Game::~Game()
 {
 	//*********************************************************************************************
 	//temp for test
-	/*delete enemy01;
+	delete enemy01;
 	delete enemy02;
-	delete enemy03;*/
+	delete enemy03;
+	delete enemy04;
+	delete enemy05;
+	delete enemy06;
 	//*********************************************************************************************
 
 	if (enemyList != nullptr)
@@ -216,6 +219,12 @@ int32_t Game::Update()
 			cam->Update(Time::DeltaTime);
 			pControl->UpdateP(Time::DeltaTime);
 			player->Update(Time::DeltaTime);
+			enemy01->Update(Time::DeltaTime);
+			enemy02->Update(Time::DeltaTime);
+			enemy03->Update(Time::DeltaTime);
+			enemy04->Update(Time::DeltaTime);
+			enemy05->Update(Time::DeltaTime);
+			enemy06->Update(Time::DeltaTime);
 
 			//*******************************************************************************
 			// Temp Enemy control code
@@ -432,11 +441,45 @@ bool Game::LoadScene(sceneType num)
 				cam->SetPosition(playerDetails.position);
 				cam->SetTarget(playerDetails.position);				
 				
+				CharacterDetails enemyDetails = {};
+				enemyDetails.tag = "player";
+				enemyDetails.modelName = "assets/archer.model";
+				enemyDetails.diffuseName = "assets/archer_0.texture";
+				enemyDetails.normalMapName = "assets/archer_1.texture";
+				enemyDetails.capsuleColliderSize = { 50.0f, 90.0f };
+				enemyDetails.colliderOrigin = { 0.0f, 100.0f, 0.0f };
+				enemyDetails.scale = { 0.01f, 0.01f, 0.01f };
+				enemyDetails.health = 200.0f;
+				enemyDetails.jumpPower = 5.0f;
+				enemyDetails.walkSpeed = 4.0f;
+				enemyDetails.sprintSpeed = 8.0f;
+				enemyDetails.acceleration = 4.0f;
+				enemyDetails.deacceleration = 10.0f;
+				enemyDetails.rollDodgeCost = 10.0f;
+				enemyDetails.position = tofu::math::float3{413.0f, 2.0f, 77.0f};
+
 				//*********************************************************************************************
 				//temp for test
-				/*enemy01 = new Enemy(math::float3{ 10.0f, 1.0f, 0.0f });
-				enemy02 = new Enemy(math::float3{ -10.0f, 1.0f, -10.0f });
-				enemy03 = new Enemy(math::float3{ -10.0f, 1.0f, 10.0f });*/
+				Model* model = RenderingSystem::instance()->CreateModel("assets/archer.model");
+
+				Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialDeferredGeometryOpaqueSkinned);
+				TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");
+				TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/archer_1.texture");
+
+				material->SetTexture(diffuse);
+				material->SetNormalMap(normalMap);
+
+				enemy01 = new Enemy(enemyDetails, model, material);
+				enemyDetails.position = tofu::math::float3{ 410.0f, 2.0f, 70.0f };
+				enemy02 = new Enemy(enemyDetails, model, material);
+				enemyDetails.position = tofu::math::float3{ 423.0f, 2.0f, 67.0f };
+				enemy03 = new Enemy(enemyDetails, model, material);
+				enemyDetails.position = tofu::math::float3{ 424.0f, 2.0f, 67.0f };
+				enemy04 = new Enemy(enemyDetails, model, material);
+				enemyDetails.position = tofu::math::float3{ 411.0f, 2.0f, 70.0f };
+				enemy05 = new Enemy(enemyDetails, model, material);
+				enemyDetails.position = tofu::math::float3{ 414.0f, 2.0f, 77.0f };
+				enemy06 = new Enemy(enemyDetails, model, material);
 				//*********************************************************************************************
 
 				// Add each enemy to the enemy list

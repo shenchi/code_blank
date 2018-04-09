@@ -55,7 +55,6 @@ public:
 	//CharacterState LastState();
 
 private:
-	float GetAnimationDuration(CharacterState);
 
 	tofu::TransformComponent	tPlayer;
 	tofu::PhysicsComponent		pPlayer;

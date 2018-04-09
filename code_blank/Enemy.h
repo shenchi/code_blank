@@ -5,7 +5,7 @@
 class Enemy : public Character
 {
 public:
-	Enemy(CharacterDetails, void*);
+	Enemy(CharacterDetails, void*, void*);
 	~Enemy();
 
 	void MoveEnemy(float, bool, tofu::math::float3);

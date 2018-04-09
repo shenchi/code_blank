@@ -4,7 +4,7 @@
 
 using namespace tofu;
 
-Enemy::Enemy(CharacterDetails details, void* comp)
+Enemy::Enemy(CharacterDetails details, void* model, void* material)
 {
 
 	CombatManagerDetails combatDetails = {};
@@ -40,36 +40,172 @@ Enemy::Enemy(CharacterDetails details, void* comp)
 
 		RenderingComponent r = e.AddComponent<RenderingComponent>();
 
-		Model* model = RenderingSystem::instance()->CreateModel("assets/archer.model");
+		//Model* model = RenderingSystem::instance()->CreateModel("assets/archer.model");
 
-		aEnemy = e.AddComponent<AnimationComponent>();
 
-		AnimationStateMachine *stateMachine = aEnemy->GetStateMachine();
+		{
+			aEnemy = e.AddComponent<AnimationComponent>();
 
-		AnimationState *idle = stateMachine->AddState("idle");
-		idle->animationName = "idle";
-		AnimationState *walk = stateMachine->AddState("walk");
-		walk->animationName = "walk";
-		AnimationState *jump = stateMachine->AddState("jump");
-		jump->animationName = "jump";
-		AnimationState *run = stateMachine->AddState("run");
-		run->animationName = "run";
+			AnimationStateMachine *stateMachine = aEnemy->GetStateMachine();
 
-		Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialDeferredGeometryOpaqueSkinned);
+			// Base Layer Animations
+
+			// Idle Animations
+			AnimationState *idle = stateMachine->AddState("idle");
+			idle->animationName = "idle";
+			AnimationState *combat_idle = stateMachine->AddState("combat_idle");
+			combat_idle->animationName = "combat_idle";
+
+
+			// Movement Animations
+			AnimationState *walk = stateMachine->AddState("walk");
+			walk->animationName = "walk";
+			AnimationState *run = stateMachine->AddState("run");
+			run->animationName = "run";
+
+
+			// Jump Animations
+			AnimationState *jump = stateMachine->AddState("jump");
+			jump->animationName = "jump";
+			AnimationState *jump_up = stateMachine->AddState("jump_up");
+			jump_up->animationName = "jump_up";
+			AnimationState *jump_air = stateMachine->AddState("jump_air");
+			jump_air->animationName = "jump_air";
+			AnimationState *jump_down = stateMachine->AddState("jump_down");
+			jump_down->animationName = "jump_down";
+
+
+			// Roll/Dodge Animations
+			AnimationState *kRoll = stateMachine->AddState("kRoll", false);
+			kRoll->animationName = "kRoll";
+			kRoll->playbackSpeed = 1.08f;
+
+
+			// Combat Animations
+			AnimationState *kPunchJabL = stateMachine->AddState("kPunchJabL");
+			kPunchJabL->animationName = "kPunchJabL";
+			AnimationState *kPunchJabR = stateMachine->AddState("kPunchJabR");
+			kPunchJabR->animationName = "kPunchJabR";
+			AnimationState *kPunchHookL = stateMachine->AddState("kPunchHookL");
+			kPunchHookL->animationName = "kPunchHookL";
+			AnimationState *kPunchHookR = stateMachine->AddState("kPunchHookR");
+			kPunchHookR->animationName = "kPunchHookR";
+			AnimationState *kPunchUpperCutL = stateMachine->AddState("kPunchUpperCutL");
+			kPunchUpperCutL->animationName = "kPunchUpperCutL";
+			AnimationState *kPunchUpperCutR = stateMachine->AddState("kPunchUpperCutR");
+			kPunchUpperCutR->animationName = "kPunchUpperCutR";
+			AnimationState *kKickAxeKick = stateMachine->AddState("kKickAxeKick");
+			kKickAxeKick->animationName = "kKickAxeKick";
+			AnimationState *kKickHorseKick = stateMachine->AddState("kKickHorseKick");
+			kKickHorseKick->animationName = "kKickHorseKick";
+			AnimationState *kKickStraightMidR = stateMachine->AddState("kKickStraightMidR");
+			kKickStraightMidR->animationName = "kKickStraightMidR";
+			AnimationState *kKickKnee = stateMachine->AddState("kKickKnee");
+			kKickKnee->animationName = "kKickKnee";
+			AnimationState *kSwordR = stateMachine->AddState("kSwordR");
+			kSwordR->animationName = "kSwordR";
+			AnimationState *kSwordR2 = stateMachine->AddState("kSwordR2");
+			kSwordR2->animationName = "kSwordR2";
+			AnimationState *kSwordCombo = stateMachine->AddState("kSwordCombo");
+			kSwordCombo->animationName = "kSwordCombo";
+
+			AnimationState *kDeath = stateMachine->AddState("kDeath", false);
+			kDeath->animationName = "kDeath";
+		}
+
+		// Upper Layer Animations
+		{
+			AnimationLayer *upperLayer = aEnemy->AddLayer("Upper", 1.0f, kAET_Override);
+
+			// TODO This is causing memory leaks
+			//upperLayer->selectedJoints = new std::vector<uint16_t>();
+
+			for (int i = 3; i <= 55; i++)
+			{
+				upperLayer->selectedJoints.push_back(i);
+			}
+
+			AnimationStateMachine *stateMachine = upperLayer->GetStateMachine();
+
+			// Idle Animations
+			AnimationState *idle = stateMachine->AddState("idle");
+			idle->animationName = "idle";
+			AnimationState *combat_idle = stateMachine->AddState("combat_idle");
+			combat_idle->animationName = "combat_idle";
+
+
+			// Movement Animations
+			AnimationState *walk = stateMachine->AddState("walk");
+			walk->animationName = "walk";
+			AnimationState *run = stateMachine->AddState("run");
+			run->animationName = "run";
+
+
+			// Jump Animations
+			AnimationState *jump = stateMachine->AddState("jump");
+			jump->animationName = "jump";
+			AnimationState *jump_up = stateMachine->AddState("jump_up");
+			jump_up->animationName = "jump_up";
+			AnimationState *jump_air = stateMachine->AddState("jump_air");
+			jump_air->animationName = "jump_air";
+			AnimationState *jump_down = stateMachine->AddState("jump_down");
+			jump_down->animationName = "jump_down";
+
+
+			// Roll/Dodge Animations
+			AnimationState *kRoll = stateMachine->AddState("kRoll", false);
+			kRoll->animationName = "kRoll";
+			kRoll->playbackSpeed = 1.08f;
+
+
+			// Combat Animations
+			AnimationState *kPunchJabL = stateMachine->AddState("kPunchJabL");
+			kPunchJabL->animationName = "kPunchJabL";
+			AnimationState *kPunchJabR = stateMachine->AddState("kPunchJabR");
+			kPunchJabR->animationName = "kPunchJabR";
+			AnimationState *kPunchHookL = stateMachine->AddState("kPunchHookL");
+			kPunchHookL->animationName = "kPunchHookL";
+			AnimationState *kPunchHookR = stateMachine->AddState("kPunchHookR");
+			kPunchHookR->animationName = "kPunchHookR";
+			AnimationState *kPunchUpperCutL = stateMachine->AddState("kPunchUpperCutL");
+			kPunchUpperCutL->animationName = "kPunchUpperCutL";
+			AnimationState *kPunchUpperCutR = stateMachine->AddState("kPunchUpperCutR");
+			kPunchUpperCutR->animationName = "kPunchUpperCutR";
+			AnimationState *kKickAxeKick = stateMachine->AddState("kKickAxeKick");
+			kKickAxeKick->animationName = "kKickAxeKick";
+			AnimationState *kKickHorseKick = stateMachine->AddState("kKickHorseKick");
+			kKickHorseKick->animationName = "kKickHorseKick";
+			AnimationState *kKickStraightMidR = stateMachine->AddState("kKickStraightMidR");
+			kKickStraightMidR->animationName = "kKickStraightMidR";
+			AnimationState *kKickKnee = stateMachine->AddState("kKickKnee");
+			kKickKnee->animationName = "kKickKnee";
+			AnimationState *kSwordR = stateMachine->AddState("kSwordR");
+			kSwordR->animationName = "kSwordR";
+			AnimationState *kSwordR2 = stateMachine->AddState("kSwordR2");
+			kSwordR2->animationName = "kSwordR2";
+			AnimationState *kSwordCombo = stateMachine->AddState("kSwordCombo");
+			kSwordCombo->animationName = "kSwordCombo";
+
+			AnimationState *kDeath = stateMachine->AddState("kDeath", false);
+			kDeath->animationName = "kDeath";
+		}
+
+		/*Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialDeferredGeometryOpaqueSkinned);
 		TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");
 		TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/archer_1.texture");
 
 		material->SetTexture(diffuse);
-		material->SetNormalMap(normalMap);
+		material->SetNormalMap(normalMap);*/
 
-		r->SetMaterial(material);
-		r->SetModel(model);
+		r->SetMaterial(static_cast<Material*>(material));
+		r->SetModel(static_cast<Model*>(model));
 
 		pEnemy = e.AddComponent<PhysicsComponent>();
 
-		pEnemy->LockRotation(true, false, true);
-		pEnemy->SetCapsuleCollider(0.5f, 1.0f);
-		pEnemy->SetColliderOrigin(math::float3{ 0.0f, 1.0f, 0.0f });
+		pEnemy->LockRotation(true, true, true);
+		pEnemy->SetCapsuleCollider(details.capsuleColliderSize.x, details.capsuleColliderSize.y);
+		pEnemy->SetColliderOrigin(details.colliderOrigin);
+		pEnemy->SetGravity(math::float3{});
 
 		SetComponents(tEnemy, pEnemy, aEnemy);
 	}
@@ -101,12 +237,167 @@ Enemy::~Enemy() {}
 void Enemy::Update(float dT)
 {
 	Character::Update(dT);
-	//combatManager->Update(dT);
+	UpdateState(dT);
 }
 
 void Enemy::UpdateState(float dT)
 {
+	animationParameter = 0;
 
+	if (stateTimer >= 0)
+	{
+		stateTimer += dT;
+	}
+
+	lastState = currentState;
+
+
+	if (!combatManager->UpdateState(stateTimer, dT) && !isDead)
+	{
+		if (jump)
+		{
+			if (stateTimer < combatManager->GetJumpUpTime())
+			{
+				hasJumped = true;
+				currentState = kJumpingPrepare;
+			}
+			else if (stateTimer >= combatManager->GetJumpUpTime() && stateTimer < combatManager->GetJumpUpTime() + combatManager->GetJumpAirTime())
+			{
+				currentState = kJumpAir;
+			}
+			else if (stateTimer >= combatManager->GetJumpUpTime() + combatManager->GetJumpAirTime()
+				&& stateTimer < combatManager->GetJumpUpTime() + combatManager->GetJumpAirTime() + combatManager->GetJumpDownTime())
+			{
+				currentState = kJumpDown;
+			}
+			else
+			{
+				stateTimer = -1;
+				jump = false;
+				combatManager->SetIsJumping(false);
+			}
+
+		}
+		else if (combatManager->GetIsRolling())
+		{
+			if (stateTimer < combatManager->GetRollTime())
+			{
+				currentState = kRoll;
+			}
+			else if (stateTimer > combatManager->GetRollTime() *.75 && stateTimer < combatManager->GetRollTime())
+			{
+				ForceMove(400.0f, dT);
+			}
+			else
+			{
+				stateTimer = -1;
+				combatManager->SetIsRolling(false);
+				isRolling = false;
+			}
+		}
+		else if (combatManager->GetIsAttacking())
+		{
+			float currentAttackTime = combatManager->GetCurrentAttackTime();
+			if (stateTimer < currentAttackTime)
+			{
+				currentState = kAttack;
+				animationParameter = (int)combatManager->GetCurrentCombat();
+				if (stateTimer >= combatManager->GetCurrentEffectTime() && !hasEffect)
+				{
+					hasEffect = true;
+					combatManager->Effect();
+				}
+				if (combatManager->GetResetAttack())
+				{
+					currentState = kNoState;
+					combatManager->SetResetAttack(false);
+				}
+				if (animationParameter == 12)
+				{
+					if (stateTimer > currentAttackTime * 0.99f)
+					{
+						math::float3 pos = pEnemy->GetPosition();
+						math::float3 fwd = tCharacter->GetForwardVector() * -1.0f;
+						fwd = math::normalize(fwd);
+						fwd = fwd * dT * 70.0f;
+						pEnemy->SetPosition(pos + fwd);
+					}
+				}
+			}
+			else
+			{
+				stateTimer = -1;
+				combatManager->SetIsAttacking(false);
+				hasEffect = false;
+				combatManager->SetComboTimer(0);
+			}
+
+		}
+		else if (combatManager->GetIsAdjusting())
+		{
+			if (combatManager->CheckTarget())
+			{
+				combatManager->SetIsAdjusting(false);
+				combatManager->Attack();
+			}
+			else
+			{
+				//look at target
+				math::float3 target = combatManager->GetCurrentTarget()->GetPosition() - GetPosition();
+				tEnemy->FaceTo(target);
+
+				// TODO
+				// Rotate player 
+				currentState = kAdjustPosition;
+				ForceMove(combatManager->GetAdjustSpeed(), dT, 1);
+			}
+		}
+		else
+		{
+			if (moving)
+			{
+				currentState = kWalk;
+				if (isSprinting)
+				{
+					currentState = kRun;
+				}
+			}
+			else
+			{
+				if (combatManager->GetInCombat())
+				{
+					currentState = kIdleInCombat;
+				}
+				else if (combatManager->GetIsAimming())
+				{
+					currentState = kIdleInCombat;
+				}
+				else
+				{
+					currentState = kIdleOutCombat;
+				}
+			}
+		}
+	}
+
+	else if (isDead)
+	{
+
+		if (currentState != kDead && currentState != kNoState)
+		{
+			currentState = kDead;
+			stateTimer = 0;
+		}
+		else if (stateTimer > deathTimer)
+		{
+			currentState = kNoState;
+		}
+	}
+
+	if (lastState != currentState)
+	{
+		gCharacter->Play(currentState, GetAnimationDuration(lastState), 0);
+	}
 }
 
 
@@ -161,7 +452,7 @@ void Enemy::MoveEnemy(float dT, bool jump, math::float3 inputDir)
 
 	if (jump && !inAir)
 	{
-		pEnemy->ApplyImpulse(math::float3{ 0.0f, 2.0f, 0.0f });
+		//pEnemy->ApplyImpulse(math::float3{ 0.0f, 2.0f, 0.0f });
 	}
 }
 
