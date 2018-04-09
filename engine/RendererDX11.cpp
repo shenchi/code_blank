@@ -299,6 +299,13 @@ namespace tofu
 					RELEASE(ds.tex);
 				}
 
+#if PERFORMANCE_TIMER_ENABLED == 1
+				for (uint32_t i = 0; i < kMaxGpuTimeQueries; i++)
+				{
+					DXCHECKED(queries[i].Release());
+				}
+#endif
+
 				swapChain->Release();
 				context->Release();
 				device->Release();
@@ -391,13 +398,7 @@ namespace tofu
 				ReleaseResources(pixelShaders, kMaxPixelShaders, shader, DestroyPixelShader);
 				ReleaseResources(computeShaders, kMaxComputeShaders, shader, DestroyComputeShader);
 				ReleaseResources(pipelineStates, kMaxPipelineStates, depthStencilState, DestroyPipelineState);
-
-#if PERFORMANCE_TIMER_ENABLED == 1
-				for (uint32_t i = 0; i < kMaxGpuTimeQueries; i++)
-				{
-					DXCHECKED(queries[i].Release());
-				}
-#endif
+#undef ReleaseResources
 
 				return kOK;
 			}
