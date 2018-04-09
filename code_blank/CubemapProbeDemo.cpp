@@ -11,7 +11,7 @@ int32_t CubemapProbeDemo::Init()
 	CHECKED(sceneMgr.LoadScene("assets/scenes/test.json"));
 
 	{
-		//Material* skyboxMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeSkybox);
+		//Material* skyboxMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialSkybox);
 		//TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/craterlake.texture");
 		//skyboxMat->SetTexture(tex);
 		ghostPlayer = new Utility::GhostPlayer(math::float3(-5.0f, 8.0f, -5.0f));

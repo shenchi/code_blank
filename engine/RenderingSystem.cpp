@@ -179,8 +179,6 @@ namespace tofu
 
 	int32_t RenderingSystem::Init()
 	{
-		
-
 		// Initialize Renderer Backend
 		CHECKED(renderer->Init());
 
@@ -189,10 +187,10 @@ namespace tofu
 		BeginFrame();
 
 		// Create Built-in Shaders
-		//CHECKED(InitBuiltinMaterial(kMaterialTypeSkybox,
-		//	"assets/skybox_vs.shader",
-		//	"assets/skybox_ps.shader"
-		//));
+		CHECKED(InitBuiltinMaterial(kMaterialSkybox,
+			"assets/skybox_vs.shader",
+			"assets/skybox_ps.shader"
+		));
 
 		//CHECKED(InitBuiltinMaterial(kMaterialTypeOpaque,
 		//	"assets/opaque_vs.shader",
@@ -276,6 +274,25 @@ namespace tofu
 
 		// create built-in pipeline states
 		{
+			materialPSOs[kMaterialSkybox] = pipelineStateHandleAlloc.Allocate();
+			assert(materialPSOs[kMaterialSkybox]);
+
+			{
+				CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
+				params->handle = materialPSOs[kMaterialSkybox];
+				params->vertexShader = materialVSs[kMaterialSkybox];
+				params->pixelShader = materialPSs[kMaterialSkybox];
+
+				params->cullMode = kCullFront;
+				params->depthFunc = kComparisonLEqual;
+
+				params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
+
+				params->label = kResourceGlobal;
+
+				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+			}
+
 			materialPSOs[kMaterialShadow] = pipelineStateHandleAlloc.Allocate();
 			assert(materialPSOs[kMaterialShadow]);
 			{
@@ -2992,28 +3009,28 @@ namespace tofu
 				params->pipelineState = materialPSOs[kMaterialDeferredLightingPointLight];
 
 				params->vertexBuffer = mesh.VertexBuffer;
-				params->indexBuffer = mesh.IndexBuffer;
-				params->startIndex = mesh.StartIndex;
-				params->startVertex = mesh.StartVertex;
-				params->indexCount = mesh.NumIndices;
+params->indexBuffer = mesh.IndexBuffer;
+params->startIndex = mesh.StartIndex;
+params->startVertex = mesh.StartVertex;
+params->indexCount = mesh.NumIndices;
 
-				params->instanceCount = numPointLights;
+params->instanceCount = numPointLights;
 
-				params->vsConstantBuffers[0] = { pointLightTransformBuffer, 0, 0 };
-				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
+params->vsConstantBuffers[0] = { pointLightTransformBuffer, 0, 0 };
+params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
 
-				params->psConstantBuffers[0] = params->vsConstantBuffers[0];
-				params->psConstantBuffers[1] = params->vsConstantBuffers[1];
-				params->psConstantBuffers[2] = { pointLightBuffer, 0, 0 };
+params->psConstantBuffers[0] = params->vsConstantBuffers[0];
+params->psConstantBuffers[1] = params->vsConstantBuffers[1];
+params->psConstantBuffers[2] = { pointLightBuffer, 0, 0 };
 
-				params->psShaderResources[0] = gBuffer1;
-				params->psShaderResources[1] = gBuffer2;
-				params->psShaderResources[2] = gBuffer3;
-				params->psSamplers[0] = defaultSampler;
+params->psShaderResources[0] = gBuffer1;
+params->psShaderResources[1] = gBuffer2;
+params->psShaderResources[2] = gBuffer3;
+params->psSamplers[0] = defaultSampler;
 
-				params->renderTargets[0] = hdrTarget;
+params->renderTargets[0] = hdrTarget;
 
-				cmdBuf->Add(RendererCommand::kCommandDraw, params);
+cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
 
 			// go through all spot lights
@@ -3075,12 +3092,12 @@ namespace tofu
 				params->psShaderResources[1] = gBuffer2;
 				params->psShaderResources[2] = gBuffer3;
 				params->psShaderResources[3] = gBuffer4;
-				if (camera.skybox)
+				/*if (camera.skybox)
 				{
 					params->psShaderResources[4] = camera.skyboxDiff;
 					params->psShaderResources[5] = camera.skyboxDiff;
 					params->psShaderResources[6] = lutMap;
-				}
+				}*/
 
 				params->psSamplers[0] = defaultSampler;
 				params->psSamplers[1] = lutSampler;
@@ -3089,6 +3106,28 @@ namespace tofu
 
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
+		}
+
+		// skybox
+		if (camera.skybox)
+		{
+			Mesh& mesh = meshes[builtinCube->meshes[0].id];
+
+			DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
+			params->pipelineState = materialPSOs[kMaterialSkybox];
+			params->vertexBuffer = mesh.VertexBuffer;
+			params->indexBuffer = mesh.IndexBuffer;
+			params->startIndex = mesh.StartIndex;
+			params->startVertex = mesh.StartVertex;
+			params->indexCount = mesh.NumIndices;
+			params->vsConstantBuffers[0] = { frameConstantBuffer, 0, 0 };
+
+			params->psShaderResources[0] = camera.skybox;
+			params->psSamplers[0] = defaultSampler;
+
+			params->renderTargets[0] = hdrTarget;
+
+			cmdBuf->Add(RendererCommand::kCommandDraw, params);
 		}
 
 		// Transparent Pass

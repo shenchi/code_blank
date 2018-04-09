@@ -70,14 +70,14 @@ int32_t RenderingTest::Init()
 		cam->SetFOV(60.0f);
 		tCamera->SetLocalPosition(math::float3{ 0, 0, -2 });
 
-		//TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/nightSky.dds");
-		TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/textures/test/darkcity - Copy.texture");
-		TextureHandle skyboxDiff = RenderingSystem::instance()->CreateTexture("assets/textures/test/diffuseIrradianceMapd - Copy.texture");
-		TextureHandle skyboxSpec = RenderingSystem::instance()->CreateTexture("assets/textures/test/prefilteredMapd - Copy.texture");
+		TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/nightSky.dds");
+		//TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/textures/test/darkcity - Copy.texture");
+		//TextureHandle skyboxDiff = RenderingSystem::instance()->CreateTexture("assets/textures/test/diffuseIrradianceMapd - Copy.texture");
+		//TextureHandle skyboxSpec = RenderingSystem::instance()->CreateTexture("assets/textures/test/prefilteredMapd - Copy.texture");
 
 		cam->SetSkybox(tex);
-		cam->SetSkyboxDiffuseMap(skyboxDiff);
-		cam->SetSkyboxSpecularMap(skyboxSpec);
+		//cam->SetSkyboxDiffuseMap(skyboxDiff);
+		//cam->SetSkyboxSpecularMap(skyboxSpec);
 	}
 
 	pitch = InitPitch;

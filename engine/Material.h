@@ -7,6 +7,7 @@ namespace tofu
 	enum MaterialType
 	{
 		kMaterialNone,
+		kMaterialSkybox,
 		kMaterialShadow,
 		kMaterialShadowSkinned,
 		kMaterialDeferredGeometryOpaque,
