@@ -134,4 +134,6 @@ namespace tofu
 	constexpr uint32_t kMaxLevelResources = 10240;
 
 	constexpr uint32_t kMaxGpuTimeQueries = 8;
+
+	constexpr uint32_t kMaxGUILayers = 8;
 }
