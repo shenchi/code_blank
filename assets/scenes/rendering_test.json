@@ -1332,6 +1332,82 @@
         }
       ],
       "children": null
+    },
+    {
+      "name": "Directional light",
+      "transform": {
+        "translate": {
+          "x": 6.269745,
+          "y": 14.5489779,
+          "z": 9.651531
+        },
+        "rotate": {
+          "x": 0.7071068,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 0.7071068
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "lightType": "directional",
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "range": 10.0,
+          "intensity": 1.0,
+          "spotAngle": 30.0,
+          "castShadow": false,
+          "type": "light"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Directional light (1)",
+      "transform": {
+        "translate": {
+          "x": 6.269745,
+          "y": 14.55,
+          "z": 0.67
+        },
+        "rotate": {
+          "x": -0.7071068,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 0.7071068
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "lightType": "directional",
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "range": 10.0,
+          "intensity": 1.0,
+          "spotAngle": 30.0,
+          "castShadow": false,
+          "type": "light"
+        }
+      ],
+      "children": null
     }
   ],
   "spawnerNodes": null,

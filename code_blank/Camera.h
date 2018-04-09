@@ -26,7 +26,7 @@ public:
 	void SetFov(float);
 	void SetPosition(tofu::math::float3);
 	void SetSensitivity(float);
-	void SetSkybox(tofu::Material*);
+	void SetSkybox(tofu::TextureHandle);
 	void SetTarget(tofu::math::float3);
 
 private:
