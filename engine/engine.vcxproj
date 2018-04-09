@@ -162,6 +162,7 @@
     <ClInclude Include="Error.h" />
     <ClInclude Include="FileIO.h" />
     <ClInclude Include="FontRenderer.h" />
+    <ClInclude Include="GUI.h" />
     <ClInclude Include="HandleAllocator.h" />
     <ClInclude Include="InputStates.h" />
     <ClInclude Include="InputSystem.h" />
@@ -199,6 +200,7 @@
     <ClCompile Include="FileIOWin32.cpp" />
     <ClCompile Include="FontRenderer.cpp" />
     <ClCompile Include="fontstash.c" />
+    <ClCompile Include="GUI.cpp" />
     <ClCompile Include="InputSystem.cpp" />
     <ClCompile Include="MemoryAllocator.cpp" />
     <ClCompile Include="NativeContextWin32.cpp" />
