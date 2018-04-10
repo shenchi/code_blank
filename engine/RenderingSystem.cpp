@@ -135,6 +135,7 @@ namespace tofu
 		// levelResources(), // we don't need initialize this
 		numLevelResources(),
 		modelTable(),
+		gui(),
 		renderer(nullptr),
 		frameNo(0),
 		transformBuffer(),
@@ -236,6 +237,10 @@ namespace tofu
 		CHECKED(LoadPixelShader("assets/post_process_blur_ps.shader", materialPSs[kMaterialPostProcessBlur]));
 
 		CHECKED(LoadPixelShader("assets/volumetric_fog_apply_ps.shader", materialPSs[kMaterialPostProcessVolumetricFog]));
+
+		CHECKED(InitBuiltinMaterial(kMaterialOverlay,
+			"assets/overlay_vs.shader",
+			"assets/overlay_ps.shader"));
 
 		CHECKED(InitBuiltinMaterial(kMaterialFontRendering,
 			"assets/font_vs.shader",
@@ -586,6 +591,29 @@ namespace tofu
 			cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 		}
 
+		materialPSOs[kMaterialOverlay] = pipelineStateHandleAlloc.Allocate();
+		assert(materialPSOs[kMaterialOverlay]);
+		{
+			CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
+			params->handle = materialPSOs[kMaterialOverlay];
+			params->vertexShader = materialVSs[kMaterialOverlay];
+			params->pixelShader = materialPSs[kMaterialOverlay];
+
+			params->depthEnable = 0;
+			params->blendEnable = 1;
+			params->srcBlend = kBlendSrcAlpha;
+			params->destBlend = kBlendInvSrcAlpha;
+
+			params->cullMode = kCullBack;
+
+			params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
+			params->vertexFormat = kVertexFormatOverlay;
+
+			params->label = kResourceGlobal;
+
+			cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+		}
+
 		materialPSOs[kMaterialFontRendering] = pipelineStateHandleAlloc.Allocate();
 		assert(materialPSOs[kMaterialFontRendering]);
 		{
@@ -775,45 +803,13 @@ namespace tofu
 
 		{
 			uint32_t maxVerts = 2048;
-			uint32_t vertSize = sizeof(float) * 9u;
 			TextureHandle fontAtlas = textureHandleAlloc.Allocate();
 			BufferHandle vb = bufferHandleAlloc.Allocate();
-			BufferHandle ib = bufferHandleAlloc.Allocate();
-			if (!fontAtlas || !vb || !ib)
+			if (!fontAtlas || !vb)
 				return kErrUnknown;
 
-			{
-				CreateBufferParams* params = MemoryAllocator::FrameAlloc<CreateBufferParams>();
-				params->handle = vb;
-				params->bindingFlags = kBindingVertexBuffer;
-				params->dynamic = 1;
-				params->data = nullptr;
-				params->size = vertSize * maxVerts;
-				params->stride = vertSize;
-				params->label = kResourceGlobal;
-
-				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
-			}
-
-			{
-				CreateBufferParams* params = MemoryAllocator::FrameAlloc<CreateBufferParams>();
-				params->handle = ib;
-				params->bindingFlags = kBindingIndexBuffer;
-				params->dynamic = 1;
-				params->data = nullptr;
-				params->size = sizeof(uint16_t) * maxVerts;
-				params->label = kResourceGlobal;
-
-				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, params);
-			}
-
-			fontRenderer.Setup(materialPSOs[kMaterialFontRendering], 
-				fontAtlas, 
-				volumeSampler, 
-				vb, ib, frameConstantBuffer, maxVerts);
-
-			CHECKED(fontRenderer.Reset(cmdBuf));
-			CHECKED(fontRenderer.Init());
+			CHECKED(gui.Init(vb, maxVerts, fontAtlas));
+			gui.SetFrameBufferSize(bufferWidth, bufferHeight);
 		}
 
 		return kOK;
@@ -821,7 +817,7 @@ namespace tofu
 
 	int32_t RenderingSystem::Shutdown()
 	{
-		CHECKED(fontRenderer.Shutdown());
+		CHECKED(gui.Shutdown());
 
 		CHECKED(renderer->Release());
 
@@ -840,7 +836,7 @@ namespace tofu
 		cmdBuf = RendererCommandBuffer::Create(kCommandBufferCapacity);
 		assert(nullptr != cmdBuf);
 
-		CHECKED(fontRenderer.Reset(cmdBuf));
+		gui.Reset();
 
 		return kOK;
 	}
@@ -849,7 +845,12 @@ namespace tofu
 	{
 		CHECKED(DeferredPipeline());
 
-		CHECKED(fontRenderer.Submit());
+		CHECKED(gui.Render(cmdBuf, 
+			frameConstantBuffer,
+			materialPSOs[kMaterialOverlay],
+			materialPSOs[kMaterialFontRendering], 
+			volumeSampler));
+
 		return kOK;
 	}
 
@@ -1204,11 +1205,6 @@ namespace tofu
 		numLevelResources = 0;
 
 		return renderer->CleanupResources(kResourceLevel);
-	}
-
-	int32_t RenderingSystem::RenderText(const char * text, float x, float y)
-	{
-		return fontRenderer.Render(text, x, y);
 	}
 
 	float RenderingSystem::GetGPUTime()

@@ -1933,24 +1933,38 @@ namespace tofu
 					}
 
 					// set index buffer
-					assert(true == params->indexBuffer);
-					Buffer& ib = buffers[params->indexBuffer.id];
-					if (!(ib.bindingFlags & kBindingIndexBuffer))
+					if (true == params->indexBuffer)
 					{
-						return kErrUnknown;
-					}
-					assert(nullptr != ib.buf);
-					context->IASetIndexBuffer(ib.buf, DXGI_FORMAT_R16_UINT, 0);
+						Buffer& ib = buffers[params->indexBuffer.id];
+						if (!(ib.bindingFlags & kBindingIndexBuffer))
+						{
+							return kErrUnknown;
+						}
+						assert(nullptr != ib.buf);
+						context->IASetIndexBuffer(ib.buf, DXGI_FORMAT_R16_UINT, 0);
 
-					// draw it!
-					if (params->instanceCount > 0)
-					{
-						context->DrawIndexedInstanced(params->indexCount, params->instanceCount, params->startIndex, params->startVertex, 0);
+						// draw it!
+						if (params->instanceCount > 0)
+						{
+							context->DrawIndexedInstanced(params->indexCount, params->instanceCount, params->startIndex, params->startVertex, 0);
+						}
+						else
+						{
+							context->DrawIndexed(params->indexCount, params->startIndex, params->startVertex);
+						}
 					}
 					else
 					{
-						context->DrawIndexed(params->indexCount, params->startIndex, params->startVertex);
+						if (params->instanceCount > 0)
+						{
+							context->DrawInstanced(params->indexCount, params->instanceCount, params->startVertex, 0);
+						}
+						else
+						{
+							context->Draw(params->indexCount, params->startVertex);
+						}
 					}
+
 				}
 				//context->RSSetState(0);
 				return kOK;

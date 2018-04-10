@@ -31,5 +31,7 @@ private:
 	float						yaw;
 	float						speed;
 
+	tofu::TextureHandle			uiTex;
+
 	bool						sceneLoaded;
 };

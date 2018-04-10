@@ -6,7 +6,7 @@
 #include "Material.h"
 
 #include "Renderer.h"
-#include "FontRenderer.h"
+#include "GUI.h"
 
 #include "HandleAllocator.h"
 
@@ -63,8 +63,6 @@ namespace tofu
 
 		int32_t CleanupLevelResources();
 
-		int32_t RenderText(const char* text, float x, float y);
-
 		float GetGPUTime();
 
 	private:
@@ -111,7 +109,7 @@ namespace tofu
 
 		std::unordered_map<std::string, ModelHandle>		modelTable;
 
-		FontRenderer			fontRenderer;
+		GUI						gui;
 
 		Renderer*				renderer;
 

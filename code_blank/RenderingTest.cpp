@@ -57,6 +57,8 @@ int32_t RenderingTest::Init()
 		pPlayer->LockRotation(true, true, true);
 		pPlayer->SetCapsuleCollider(50.0f, 100.0f);
 		pPlayer->SetColliderOrigin(math::float3{ 0.0f, 100.0f, 0.0f });
+
+		uiTex = diffuse;
 	}
 
 	// camera
@@ -196,6 +198,11 @@ int32_t RenderingTest::Update()
 
 		anim->CrossFade("idle", 0.1f);
 	}
+
+	GUI* gui = GUI::instance();
+	gui->SetCanvasSize(1920, 1080);
+	gui->SetupLayer(0, uiTex);
+	gui->Image(0, -960, -540, 400, 400);
 
 	return kOK;
 }

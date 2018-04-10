@@ -34,7 +34,7 @@ VSOutput main(VSInput input)
 
 	float3 pos = input.position;
 	pos.xy /= (bufferSize.xy * 0.5);
-	pos.y = - pos.y;
+	pos.y = -pos.y;
 
 	output.position = float4(pos, 1);
 	output.color = input.color;

@@ -196,20 +196,27 @@ namespace tofu
 			PERFORMANCE_TIMER_START(kPerformanceTimerSlotRenderingSystemTime);
 
 #if PERFORMANCE_TIMER_ENABLED == 1
+			GUI* gui = GUI::instance();
+
+			gui->SetCanvasSize(1920, 1080);
+
+			uint32_t layer = kMaxGUILayers - 1;
+			gui->SetupLayer(layer);
+
 			sprintf_s(textBuf, "CPU Time: %.2f ms", cpuTime);
-			renderingSystem->RenderText(textBuf, 5, 0);
+			gui->Text(layer, -960, -540, 24, textBuf);
 
 			sprintf_s(textBuf, "Physics Time: %.2f ms", physicsTime);
-			renderingSystem->RenderText(textBuf, 5, 20);
+			gui->Text(layer, -960, -520, 24, textBuf);
 
 			sprintf_s(textBuf, "User Module Time: %.2f ms", userModuleTime);
-			renderingSystem->RenderText(textBuf, 5, 40);
+			gui->Text(layer, -960, -500, 24, textBuf);
 
 			sprintf_s(textBuf, "Rendering System Time: %.2f ms", renderingSystemTime);
-			renderingSystem->RenderText(textBuf, 5, 60);
+			gui->Text(layer, -960, -480, 24, textBuf);
 
 			sprintf_s(textBuf, "GPU Time: %.2f ms", renderingSystem->GetGPUTime());
-			renderingSystem->RenderText(textBuf, 5, 80);
+			gui->Text(layer, -960, -460, 24, textBuf);
 #endif
 
 			CHECKED(renderingSystem->Update());
