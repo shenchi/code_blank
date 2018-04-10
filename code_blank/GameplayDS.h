@@ -69,6 +69,13 @@ enum Combat
 	kNumberOfItems
 };
 
+enum customBool
+{
+	kTrue,
+	kFalse,
+	kDoesntMatter
+};
+
 struct CombatMoveDetails
 {
 	// AT - Attack Time
@@ -151,4 +158,68 @@ struct SpawnNode
 struct TriggerNode
 {
 	tofu::math::float3 position;
+};
+
+struct State
+{
+
+	customBool hasTarget;
+	// int targetState;
+	customBool canTargetAttack;
+	customBool canIAttack;
+	customBool targetStunned;
+	customBool amIStunned;
+	customBool isTargetFacingMe;
+	customBool amIFacingTheTarget;
+
+	std::string myPrevMove;
+	std::string targetPrevMove;
+
+	State(customBool _hasTarget = kTrue, customBool _canTargetAttack = kDoesntMatter, customBool _canIAttack = kTrue, 
+		customBool _targetStunned = kDoesntMatter, customBool _amIStunned = kFalse, 
+		customBool _isTargetFacingMe = kDoesntMatter, customBool _amIFacingTheTarget = kTrue, 
+		std::string _myPrevMove = "", std::string _targetPrevMove = "")
+	{
+		hasTarget = _hasTarget;
+		canTargetAttack = _canTargetAttack;
+		canIAttack = _canIAttack;
+		targetStunned = _targetStunned;
+		amIStunned = _amIStunned;
+		isTargetFacingMe = _isTargetFacingMe;
+		amIFacingTheTarget = _amIFacingTheTarget;
+		myPrevMove = _myPrevMove;
+		targetPrevMove = _targetPrevMove;
+	}
+
+};
+
+struct Action
+{
+	// Combat attributes are taken care of by the Combat. The final State contains the estimated final state.
+	std::string name;
+
+	State intialState;
+	State finalState;
+
+	Combat combat;
+
+	float actionTime;
+	float damage;
+
+	// We need a preference to make sure that the actions would not be repeated.
+	int preference;
+
+
+	Action(std::string _name, State _initialState, State _finalState, Combat _combat, 
+		float actionTime, float _damage, int _preference = 10)
+	{
+		name = _name;
+		intialState = _initialState;
+		finalState = _finalState;
+		combat = _combat;
+		actionTime = actionTime;
+		damage = _damage;
+		preference = _preference;
+	}
+
 };

@@ -31,6 +31,23 @@ Enemy::Enemy(CharacterDetails details, void* model, void* material)
 
 	tag = details.tag;
 
+	// TODO Make a new action selector here
+	//s_action = GetComponent<ActionSelector>();
+
+	//seekTarget = playerTarget = GameObject.FindGameObjectWithTag("Player").transform;
+	seekTarget = {};
+
+
+	customNavigationAgent = NavigationAgent();
+
+	//m_combat.SetChar(this);
+
+	// Set the destination for the NavMesh.
+	if (tofu::math::float3{} != seekTarget)
+	{
+		customNavigationAgent.SetDestination(seekTarget);
+	}
+
 	{
 		Entity e = Entity::Create();
 
@@ -230,18 +247,182 @@ Enemy::Enemy(CharacterDetails details, void* model, void* material)
 	charBodyRotation = tEnemy->GetWorldRotation(); //charBody.transform.rotation;
 	rotation = charBodyRotation; //m_Rigidbody.transform.rotation;
 	turnMod = 90.0f / 200.0f;
+
+	customNavigationAgent.Init(this, details.position);
 }
 
 Enemy::~Enemy() {}
 
+
+void Enemy::FixedUpdate(float fDT)
+{}
+
+
 void Enemy::Update(float dT)
 {
+	// Temp
+	// -------------------------------------------------------------------
 	Character::Update(dT);
 	UpdateState(dT);
+	// -------------------------------------------------------------------
+
+	{// May cause performance hit
+		tofu::math::quat rotB = charBody.transform.rotation;
+		rotB.x = 0.0f;
+		rotB.z = 0.0f;
+		charBody.transform.rotation = rotB;
+	}
+
+	if (GameObject.FindGameObjectWithTag("Ghost") != null)
+	{
+		ghostTarget = GameObject.FindGameObjectWithTag("Ghost").transform;
+		seekTarget = ghostTarget;
+	}
+	else if (GameObject.FindGameObjectWithTag("GhostRecord") != null)
+	{
+		seekTarget = null;
+	}
+	else
+	{
+		seekTarget = playerTarget;
+	}
+	if (null == seekTarget)
+	{
+		// Play the Idle Animation.
+		return;
+	}
+
+	if (this.m_combat.IsTurning && (null != m_combat.CurrentTarget))
+	{
+		Vector3 direc = this.m_combat.CurrentTarget.transform.position - transform.position;
+		Quaternion rot = Quaternion.LookRotation(direc, transform.TransformDirection(Vector3.up));
+
+		// TODO: The angle calculation seem a bit off.
+		float angle = Quaternion.Angle(transform.rotation, new Quaternion(0, rot.y, 0, rot.w));
+		if (angle < 20) { this.m_combat.IsTurning = false; }
+		else
+		{
+			transform.rotation = Quaternion.RotateTowards(transform.rotation, new Quaternion(0, rot.y, 0, rot.w), turnSpeed * Time.deltaTime);
+		}
+	}
+
+	if (this.m_combat.IsAdjusting)
+	{
+		// ??? ????????, ??????? ??????? ??????. ????.
+		// Well... Adjust.. and adjust only.. Do not move do not look to perform the next action..
+		float distanceToTarget = Vector3.Distance(this.transform.position, this.m_combat.CurrentTarget.transform.position);
+		if (distanceToTarget > this.m_combat.GetAdjustMaxDistance())
+		{
+			ForceMove(1.0f, 1);
+			// TODO: Check if this return affects something else? 
+			return;
+		}
+		else if (distanceToTarget < this.m_combat.GetAdjustMinDistance())
+		{
+			// Going Back is 0 and not negative 1.. Welp
+			ForceMove(1.0f, 0);
+			// TODO: Check if this affects something else? 
+			return;
+		}
+		else if (!(distanceToTarget > this.m_combat.GetAdjustMaxDistance() || distanceToTarget < this.m_combat.GetAdjustMinDistance()))
+		{
+			this.m_combat.IsAdjusting = false;
+		}
+
+		// Also Check if the adjusting is done..
+	}
+
+
+
+	if (ghostTarget != null && Vector3.Distance(transform.position, ghostTarget.position) <= maxSensoryRadius)
+	{
+		if (Vector3.Distance(transform.position, seekTarget.position) <= this.m_combat.GetAdjustMaxDistance())
+		{
+			this.customNavigationAgent.SetIsStopped(true);
+			this.m_combat.IsMoving = false;
+
+			if (null == this.m_combat.CurrentTarget)
+			{
+				this.m_combat.CurrentTarget = seekTarget.gameObject.GetComponent<Character>();
+			}
+
+			if (timer > m_combat.TimeBetweenAttacks)
+			{
+				// Only call this when we aren't stunned..
+				// ??? ????????? ???? ??????.
+				if (!this.m_combat.IsHit)
+				{
+					this.s_action.selectNextOption();
+					timer = 0;
+				}
+			}
+		}
+		else
+		{
+			Vector3 targetPos = seekTarget.position;
+			this.customNavigationAgent.SetIsStopped(false);
+
+			// If the player moves, and the distance b/w your target and their position is >= .. , Recalculate the Path.
+			if (Vector3.Distance(this.transform.position, seekTarget.position) >= this.m_combat.GetAdjustMaxDistance())
+			{
+				customNavigationAgent.SetDestination(seekTarget.position, seekTarget.gameObject.layer);
+			}
+
+			// Play the Animation here            
+			this.m_combat.IsMoving = true;
+		}
+	}
+	else if (Vector3.Distance(transform.position, seekTarget.position) <= maxSensoryRadius)
+	{
+		if (Vector3.Distance(transform.position, seekTarget.position) <= this.m_combat.GetAdjustMaxDistance())
+		{
+
+			this.customNavigationAgent.SetIsStopped(true);
+			this.m_combat.IsMoving = false;
+
+			if (null == this.m_combat.CurrentTarget)
+			{
+				this.m_combat.CurrentTarget = seekTarget.gameObject.GetComponent<Character>();
+			}
+
+			if (timer > m_combat.TimeBetweenAttacks)
+			{
+				// TODO: Use the Action Selector here. Select an Item and then, reduce the preference.
+				this.s_action.selectNextOption();
+				timer = 0;
+			}
+		}
+		else
+		{
+			this.customNavigationAgent.SetIsStopped(false);
+			// If the player moves, and the distance b/w yourself and their position is >= .. , Recalculate the Path.
+			if (Vector3.Distance(this.transform.position, seekTarget.position) >= this.m_combat.GetAdjustMaxDistance())
+			{
+				customNavigationAgent.SetDestination(seekTarget.position, seekTarget.gameObject.layer);
+			}
+			// Play the Animation here            
+			this.m_combat.IsMoving = true;
+		}
+	}
+	else
+	{
+		// TODO: Play IDLE Animaiton Here.
+		this.customNavigationAgent.SetIsStopped(true);
+		this.m_combat.IsMoving = false;
+	}
+
+	// Update the Moving State for animating..
+	this.m_moving = !(customNavigationAgent.isStopped);
+	timer += Time.deltaTime;
+	UpdateState();
+
+
+
 }
 
 void Enemy::UpdateState(float dT)
 {
+
 	animationParameter = 0;
 
 	if (stateTimer >= 0)
@@ -489,3 +670,7 @@ void Enemy::Die()
 //-------------------------------------------------------------------------------------------------
 // Getters
 
+float Enemy::GetMaxSensoryRadius()
+{
+	return maxSensoryRadius;
+}

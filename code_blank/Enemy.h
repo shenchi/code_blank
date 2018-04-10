@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Character.h"
+#include "ActionSelector.h"
+#include "NavigationAgent.h"
 
 class Enemy : public Character
 {
@@ -11,6 +13,7 @@ public:
 	void MoveEnemy(float, bool, tofu::math::float3);
 	//void MoveReg(float, bool, tofu::math::float3, tofu::math::quat);
 	//void MoveAim(float, tofu::math::float3, tofu::math::quat, tofu::math::float3);
+	void FixedUpdate(float);
 	void Update(float);
 	void UpdateState(float);
 
@@ -25,7 +28,7 @@ public:
 	//void ForceMove(float, float, tofu::math::float3);
 	//void Special();
 
-
+	float GetMaxSensoryRadius();
 
 private:
 	tofu::TransformComponent	tEnemy;
@@ -47,6 +50,21 @@ private:
 	const float kMaxSpeed = 5.0f;
 	const float kAccelerate = 6.67f;
 	const float kDeaccelerate = 10.0f;
+
+	float timer = 0.0f;
+
+	tofu::math::float3 seekTarget;    // A variable to store the transform of the target to seek.
+	tofu::math::float3 playerTarget;
+	tofu::math::float3 ghostTarget;
+
+	float maxSensoryRadius; // A variable to store the maximum sensory radius of the AI.
+
+
+							// protected NavMeshAgent navMeshAgent;      // A Reference to the NavMeshAgent Component attached to the GameObject.
+	NavigationAgent customNavigationAgent;
+
+	ActionSelector s_action;
+
 
 	// Audio
 	/*
