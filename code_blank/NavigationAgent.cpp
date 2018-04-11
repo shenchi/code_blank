@@ -1,27 +1,33 @@
 #include "NavigationAgent.h"
 
+using namespace tofu;
 
 NavigationAgent::NavigationAgent() {}
 
 void NavigationAgent::Init(Enemy* character, tofu::math::float3 initPos)
 {
+	navigation = NavigationSingleton::Instance();
+
 	initialLocation = initPos;
+	position = initialLocation;
 
 	enemyCharacter = character;
 	assert(nullptr != enemyCharacter);
 	
 	maxSensoryRadius = enemyCharacter->GetMaxSensoryRadius();
-	Debug.Assert(0.5 < maxSensoryRadius);
+	assert(0.5 < maxSensoryRadius);
 }
 
 
-void Update() {
+void NavigationAgent::Update(float dT, math::float3 pos, math::float3 fwd)
+{
+	position = pos;
 
-	visionLingerTimeCountDown -= Time.deltaTime;
+	visionLingerTimeCountDown -= dT;
 
 	// This would get the Current node and set it.
-	// ????????????? Node.
-	currentNode = NavigationSingleton.Instance.GetCurrentNode(this.transform.position);
+
+	currentNode = navigation->GetCurrentNode(position);
 
 	if (reCalculatePath)
 	{
@@ -32,32 +38,45 @@ void Update() {
 	if (canTraverseDirectly)
 	{
 		// Check for Rotation.
-		var direc = destination - transform.position;
-		var rot = Quaternion.LookRotation(direc, transform.TransformDirection(Vector3.up));
-		float angle = Quaternion.Angle(transform.rotation, new Quaternion(0, rot.y, 0, rot.w));
-		if (angle > 10) { transform.rotation = Quaternion.RotateTowards(transform.rotation, new Quaternion(0, rot.y, 0, rot.w), enemyCharacter.turnSpeed * Time.deltaTime); return; }
+		tofu::math::float3 direc = destination - position;
+		//var rot = Quaternion.LookRotation(direc, transform.TransformDirection(Vector3.up));
+		//float angle = Quaternion.Angle(transform.rotation, new Quaternion(0, rot.y, 0, rot.w));
+		float angle = tofu::math::angleBetween(fwd, direc);
+		
+		if (angle > 10) 
+		{ 
+			// TODO Rotate the enemy to face the player
+			enemyCharacter->RotateEnemey(angle);
+			
+			return; 
+		}
 
 		// Rotate First.
-		this.enemyCharacter.ForceMove(AISpeedMod, 1);
+		enemyCharacter->ForceMove(AISpeedMod, dT, 1);
 	}
 	else
 	{
-
 		if (canChase && visionLingerTimeCountDown > 0.0f)
 		{
-			Debug.DrawRay(rayCastSourcePoint, (rayCastTargetPoint - rayCastSourcePoint), Color.green);
 			isChasingUsingNodes = true;
-			if (null != path && path.Count > 0)
+			if (path.size > 0)
 			{
-				this.destination = this.path[0].nodePosition;
+				destination = path.at(0)->GetPosition();
 				// Check for Rotation.
-				var direc = destination - transform.position;
-				var rot = Quaternion.LookRotation(direc, transform.TransformDirection(Vector3.up));
-				float angle = Quaternion.Angle(transform.rotation, new Quaternion(0, rot.y, 0, rot.w));
-				if (angle > 10) { transform.rotation = Quaternion.RotateTowards(transform.rotation, new Quaternion(0, rot.y, 0, rot.w), enemyCharacter.turnSpeed * Time.deltaTime); return; }
+				tofu::math::float3 direc = destination - position;
+				//var rot = Quaternion.LookRotation(direc, transform.TransformDirection(Vector3.up));
+				//float angle = Quaternion.Angle(transform.rotation, new Quaternion(0, rot.y, 0, rot.w));
+				float angle = tofu::math::angleBetween(fwd, direc);
+				
+				if (angle > 10) 
+				{ 
+					//transform.rotation = Quaternion.RotateTowards(transform.rotation, new Quaternion(0, rot.y, 0, rot.w), enemyCharacter.turnSpeed * dT);
+					enemyCharacter->RotateEnemey(angle);
+					return; 
+				}
 
 				// Rotate First.
-				this.enemyCharacter.ForceMove(AISpeedMod, 1);
+				enemyCharacter->ForceMove(AISpeedMod, dT, 1);
 			}
 			// Chase the Player.
 		}
@@ -65,7 +84,6 @@ void Update() {
 		{
 			canChase = false;
 			isChasingUsingNodes = false;
-			Debug.DrawRay(rayCastSourcePoint, (rayCastTargetPoint - rayCastSourcePoint), Color.red);
 		}
 	}
 }
@@ -73,48 +91,44 @@ void Update() {
 
 void NavigationAgent::calculatePath()
 {
-	targetNode = NavigationSingleton.Instance.GetCurrentNode(destination);
+	targetNode = navigation->GetCurrentNode(destination);
 
-	Debug.Assert(null != currentNode);
-	Debug.Assert(null != targetNode);
+	assert(nullptr != currentNode);
+	assert(nullptr != targetNode);
 
 	// This is an infinite loop waiting for the canCalculate Flag to be set.
-	// ???? ???????????? ???? ???. ??? ??? ?????????? ???????.
-	while (!NavigationSingleton.Instance.canCalculte)
+	while (!navigation->GetCanCalculate())
 	{
 		continue;
 	}
-	path = NavigationSingleton.Instance.GetPath(currentNode, targetNode);
+	path = navigation->GetPath(currentNode, targetNode);
 
-	Debug.Assert(null != path);
+	//assert(path.size != 0);
 }
 
 
-void SetDestination(tofu::math::float3 targetPos, int _targetLayer)
+void NavigationAgent::SetDestination(tofu::math::float3 targetPos)
 {
 	//TODO: This needs to be conditional on if we want to chase using nodes or switch to targeting directly.
-	this.targetLayer = _targetLayer;
 
-	this.rayCastSourcePoint = this.transform.position;
+	rayCastSourcePoint = position;
 	rayCastSourcePoint.y = rayCastHeight;
-	this.rayCastTargetPoint = targetPos;
+	rayCastTargetPoint = targetPos;
 	rayCastTargetPoint.y = rayCastHeight;
 
-	Vector3 rayDir = (rayCastTargetPoint - rayCastSourcePoint).normalized;
+	tofu::math::float3 rayDir = tofu::math::normalize(rayCastTargetPoint - rayCastSourcePoint);
 
 	// Raycast for the target, and if you can find it, we do not need the pathing nodes anymore...
-	if (Physics.Raycast(rayCastSourcePoint, rayDir, out hitInfo, maxSensoryRadius))
+	//if (Physics.Raycast(rayCastSourcePoint, rayDir, out hitInfo, maxSensoryRadius))
+	if(enemyCharacter->RayCastHitPlayer(rayCastSourcePoint, rayDir, maxSensoryRadius) )
 	{
 		//Debug.DrawRay(rayCastSourcePoint, (rayCastTargetPoint - rayCastSourcePoint).normalized * maxSensoryRadius, Color.blue, 0.5f);
-		if (targetLayer == hitInfo.collider.transform.gameObject.layer)
-		{
-			this.destination = targetPos;
-			Debug.DrawRay(rayCastSourcePoint, (rayCastTargetPoint - rayCastSourcePoint).normalized * maxSensoryRadius, Color.blue, 0.5f);
-			canTraverseDirectly = true;
-			canChase = true;
-			visionLingerTimeCountDown = visionLingerTime;
-			return;
-		}
+
+		destination = targetPos;
+		canTraverseDirectly = true;
+		canChase = true;
+		visionLingerTimeCountDown = visionLingerTime;
+		return;
 	}
 
 	// If you cannot traverse directly, and are chasing using nodes, then set the path accordingly. For now, do not modify the destination that was already set.

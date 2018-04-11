@@ -17,6 +17,7 @@ namespace tofu
 	uint32_t Entity::numRegisteredComponentTypes = 0;
 
 	bool* Entity::activeFlags = nullptr;
+	uint32_t* Entity::tags = nullptr;
 
 	int32_t Entity::Destroy()
 	{
@@ -54,6 +55,7 @@ namespace tofu
 	int32_t Entity::Init()
 	{
 		activeFlags = new bool[kMaxEntities] { false };
+		tags = new uint32_t[kMaxEntities]{ 0 };
 
 		// initialize component groups
 		for (uint32_t i = 0; i < numRegisteredComponentTypes; i++)
@@ -73,6 +75,7 @@ namespace tofu
 		}
 
 		delete[] activeFlags;
+		delete[] tags;
 
 		return kOK;
 	}
@@ -80,6 +83,7 @@ namespace tofu
 	int32_t Entity::Reset()
 	{
 		std::fill(activeFlags, activeFlags + kMaxEntities, false);
+		std::fill(tags, tags + kMaxEntities, 0);
 
 		for (uint32_t i = 0; i < numRegisteredComponentTypes; i++)
 		{

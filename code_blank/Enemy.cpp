@@ -35,21 +35,23 @@ Enemy::Enemy(CharacterDetails details, void* model, void* material)
 	//s_action = GetComponent<ActionSelector>();
 
 	//seekTarget = playerTarget = GameObject.FindGameObjectWithTag("Player").transform;
-	seekTarget = {};
-
+	seekTarget = nullptr;
+	playerTarget = nullptr;
+	ghostTarget = nullptr;
 
 	customNavigationAgent = NavigationAgent();
 
 	//m_combat.SetChar(this);
 
 	// Set the destination for the NavMesh.
-	if (tofu::math::float3{} != seekTarget)
+	/*if (tofu::math::float3{} != seekTarget)
 	{
 		customNavigationAgent.SetDestination(seekTarget);
-	}
+	}*/
 
 	{
 		Entity e = Entity::Create();
+		e.SetTag(2);
 
 		tEnemy = e.AddComponent<TransformComponent>();
 		tEnemy->SetLocalPosition(details.position);
@@ -234,6 +236,10 @@ Enemy::Enemy(CharacterDetails details, void* model, void* material)
 
 	stateTimer = 0;
 
+	isGhostActive = false;
+	isPlayerActive = true;
+	hasTarget = false;
+
 	physics = tofu::PhysicsSystem::instance();
 
 	//combatManager = new CombatManager(true, comp, this);
@@ -266,67 +272,84 @@ void Enemy::Update(float dT)
 	UpdateState(dT);
 	// -------------------------------------------------------------------
 
-	{// May cause performance hit
-		tofu::math::quat rotB = charBody.transform.rotation;
+	{// May cause performance hit, probably not needed here
+		/*tofu::math::quat rotB = pCharacter->GetRotation();
 		rotB.x = 0.0f;
 		rotB.z = 0.0f;
-		charBody.transform.rotation = rotB;
+		pCharacter->SetRotation(rotB);*/
 	}
 
-	if (GameObject.FindGameObjectWithTag("Ghost") != null)
+	// Is the ghost mechanic active?
+	if (isGhostActive)
 	{
-		ghostTarget = GameObject.FindGameObjectWithTag("Ghost").transform;
 		seekTarget = ghostTarget;
+		hasTarget = true;
 	}
-	else if (GameObject.FindGameObjectWithTag("GhostRecord") != null)
+	else if (isPlayerActive)
 	{
-		seekTarget = null;
+		seekTarget = playerTarget;
+		hasTarget = true;
 	}
 	else
 	{
-		seekTarget = playerTarget;
+		seekTarget = nullptr;
+		hasTarget = false;
 	}
-	if (null == seekTarget)
+	if (nullptr == seekTarget)
 	{
 		// Play the Idle Animation.
 		return;
 	}
 
-	if (this.m_combat.IsTurning && (null != m_combat.CurrentTarget))
+	//if (this.m_combat.IsTurning && (null != m_combat.CurrentTarget))
+	if(combatManager->GetIsTurning() && hasTarget)
 	{
-		Vector3 direc = this.m_combat.CurrentTarget.transform.position - transform.position;
-		Quaternion rot = Quaternion.LookRotation(direc, transform.TransformDirection(Vector3.up));
+		math::float3 fwd = GetForward();
+		//Vector3 direc = this.m_combat.CurrentTarget.transform.position - transform.position;
+		math::float3 direc = combatManager->GetCurrentTarget()->GetPosition() - GetPosition();
+		//Quaternion rot = Quaternion.LookRotation(direc, transform.TransformDirection(Vector3.up));
 
 		// TODO: The angle calculation seem a bit off.
-		float angle = Quaternion.Angle(transform.rotation, new Quaternion(0, rot.y, 0, rot.w));
-		if (angle < 20) { this.m_combat.IsTurning = false; }
+		//float angle = Quaternion.Angle(transform.rotation, new Quaternion(0, rot.y, 0, rot.w));
+		float angle = tofu::math::angleBetween(fwd, direc);
+
+		if (angle < 20) { combatManager->SetIsTurning(false); }
 		else
 		{
-			transform.rotation = Quaternion.RotateTowards(transform.rotation, new Quaternion(0, rot.y, 0, rot.w), turnSpeed * Time.deltaTime);
+			//transform.rotation = Quaternion.RotateTowards(transform.rotation, new Quaternion(0, rot.y, 0, rot.w), turnSpeed * Time.deltaTime);
+			float cosTheta = math::dot(direc, fwd);
+			float angle = math::acos(cosTheta);
+			math::float3 axis = math::normalize(math::cross(fwd, direc));
+			charRot = math::angleAxis(angle, axis);
+		
+			pEnemy->SetRotation(charRot);
+
+			// If enemy rotates weirdly, the above code is why
 		}
 	}
 
-	if (this.m_combat.IsAdjusting)
+	if (combatManager->GetIsAdjusting())
 	{
-		// ??? ????????, ??????? ??????? ??????. ????.
 		// Well... Adjust.. and adjust only.. Do not move do not look to perform the next action..
-		float distanceToTarget = Vector3.Distance(this.transform.position, this.m_combat.CurrentTarget.transform.position);
-		if (distanceToTarget > this.m_combat.GetAdjustMaxDistance())
+		//float distanceToTarget = Vector3.Distance(this.transform.position, this.m_combat.CurrentTarget.transform.position);
+		float distanceToTarget = math::distance(GetPosition(), combatManager->GetCurrentTarget()->GetPosition());
+
+		if (distanceToTarget > combatManager->GetAdjustMaxDistance())
 		{
 			ForceMove(1.0f, 1);
 			// TODO: Check if this return affects something else? 
 			return;
 		}
-		else if (distanceToTarget < this.m_combat.GetAdjustMinDistance())
+		else if (distanceToTarget < combatManager->GetAdjustMinDistance())
 		{
 			// Going Back is 0 and not negative 1.. Welp
 			ForceMove(1.0f, 0);
 			// TODO: Check if this affects something else? 
 			return;
 		}
-		else if (!(distanceToTarget > this.m_combat.GetAdjustMaxDistance() || distanceToTarget < this.m_combat.GetAdjustMinDistance()))
+		else if (!(distanceToTarget > combatManager->GetAdjustMaxDistance() || distanceToTarget < combatManager->GetAdjustMinDistance()))
 		{
-			this.m_combat.IsAdjusting = false;
+			combatManager->SetIsAdjusting(false);
 		}
 
 		// Also Check if the adjusting is done..
@@ -334,90 +357,86 @@ void Enemy::Update(float dT)
 
 
 
-	if (ghostTarget != null && Vector3.Distance(transform.position, ghostTarget.position) <= maxSensoryRadius)
+	if (nullptr != ghostTarget && math::distance(GetPosition(), ghostTarget->GetPosition()) <= maxSensoryRadius)
 	{
-		if (Vector3.Distance(transform.position, seekTarget.position) <= this.m_combat.GetAdjustMaxDistance())
+		if (math::distance(GetPosition(), seekTarget->GetPosition()) <= combatManager->GetAdjustMaxDistance())
 		{
-			this.customNavigationAgent.SetIsStopped(true);
-			this.m_combat.IsMoving = false;
+			customNavigationAgent.SetIsStopped(true);
+			combatManager->SetIsMoving(false);
 
-			if (null == this.m_combat.CurrentTarget)
+			if (nullptr != seekTarget)
 			{
-				this.m_combat.CurrentTarget = seekTarget.gameObject.GetComponent<Character>();
+				combatManager->SetCurrentTarget(seekTarget);
 			}
 
-			if (timer > m_combat.TimeBetweenAttacks)
+			if (timer > combatManager->GetTimeBetweenAttacks())
 			{
 				// Only call this when we aren't stunned..
-				// ??? ????????? ???? ??????.
-				if (!this.m_combat.IsHit)
+				if (!combatManager->GetIsHit())
 				{
-					this.s_action.selectNextOption();
+					s_action.selectNextOption(GetPosition(), GetForward());
 					timer = 0;
 				}
 			}
 		}
 		else
 		{
-			Vector3 targetPos = seekTarget.position;
-			this.customNavigationAgent.SetIsStopped(false);
+			math::float3 targetPos = seekTarget->GetPosition();
+			customNavigationAgent.SetIsStopped(false);
 
 			// If the player moves, and the distance b/w your target and their position is >= .. , Recalculate the Path.
-			if (Vector3.Distance(this.transform.position, seekTarget.position) >= this.m_combat.GetAdjustMaxDistance())
+			if (math::distance(GetPosition(), seekTarget->GetPosition()) >= combatManager->GetAdjustMaxDistance())
 			{
-				customNavigationAgent.SetDestination(seekTarget.position, seekTarget.gameObject.layer);
+				customNavigationAgent.SetDestination(seekTarget->GetPosition());
 			}
 
 			// Play the Animation here            
-			this.m_combat.IsMoving = true;
+			combatManager->SetIsMoving(true);
 		}
 	}
-	else if (Vector3.Distance(transform.position, seekTarget.position) <= maxSensoryRadius)
+	else if (math::distance(GetPosition(), seekTarget->GetPosition()) <= maxSensoryRadius)
 	{
-		if (Vector3.Distance(transform.position, seekTarget.position) <= this.m_combat.GetAdjustMaxDistance())
+		if (math::distance(GetPosition(), seekTarget->GetPosition()) <= combatManager->GetAdjustMaxDistance())
 		{
 
-			this.customNavigationAgent.SetIsStopped(true);
-			this.m_combat.IsMoving = false;
+			customNavigationAgent.SetIsStopped(true);
+			combatManager->SetIsMoving(false);
 
-			if (null == this.m_combat.CurrentTarget)
+			if (nullptr == combatManager->GetCurrentTarget())
 			{
-				this.m_combat.CurrentTarget = seekTarget.gameObject.GetComponent<Character>();
+				combatManager->SetCurrentTarget(seekTarget);
 			}
 
-			if (timer > m_combat.TimeBetweenAttacks)
+			if (timer > combatManager->GetTimeBetweenAttacks())
 			{
 				// TODO: Use the Action Selector here. Select an Item and then, reduce the preference.
-				this.s_action.selectNextOption();
+				s_action.selectNextOption(GetPosition(), GetForward());
 				timer = 0;
 			}
 		}
 		else
 		{
-			this.customNavigationAgent.SetIsStopped(false);
+			customNavigationAgent.SetIsStopped(false);
 			// If the player moves, and the distance b/w yourself and their position is >= .. , Recalculate the Path.
-			if (Vector3.Distance(this.transform.position, seekTarget.position) >= this.m_combat.GetAdjustMaxDistance())
+			if (math::distance(GetPosition(), seekTarget->GetPosition()) >= combatManager->GetAdjustMaxDistance())
 			{
-				customNavigationAgent.SetDestination(seekTarget.position, seekTarget.gameObject.layer);
+				customNavigationAgent.SetDestination(seekTarget->GetPosition());
 			}
 			// Play the Animation here            
-			this.m_combat.IsMoving = true;
+			combatManager->SetIsMoving(true);
 		}
 	}
 	else
 	{
 		// TODO: Play IDLE Animaiton Here.
-		this.customNavigationAgent.SetIsStopped(true);
-		this.m_combat.IsMoving = false;
+		customNavigationAgent.SetIsStopped(true);
+		combatManager->SetIsMoving(false);
 	}
 
 	// Update the Moving State for animating..
-	this.m_moving = !(customNavigationAgent.isStopped);
-	timer += Time.deltaTime;
-	UpdateState();
-
-
-
+	moving = !(customNavigationAgent.GetIsStopped());
+	timer += dT;
+	UpdateState(dT);
 }
 
 void Enemy::UpdateState(float dT)
@@ -581,10 +600,6 @@ void Enemy::UpdateState(float dT)
 	}
 }
 
-
-
-
-
 // TODO
 // Change as needed, this is really only a temp function for testing
 // Enemy Movement
@@ -637,6 +652,30 @@ void Enemy::MoveEnemy(float dT, bool jump, math::float3 inputDir)
 	}
 }
 
+void Enemy::RotateEnemey(float angle)
+{
+	//transform.rotation = Quaternion.RotateTowards(transform.rotation, new Quaternion(0, rot.y, 0, rot.w), enemyCharacter.turnSpeed * dT);
+}
+
+bool Enemy::RayCastHitPlayer(math::float3 source, math::float3 dir, float dist)
+{
+	math::float3 pos = { pEnemy->GetPosition() };
+	pos.y = source.y;
+
+	RayTestResult hitInfo = {};
+	math::float3 rayStart = pos;
+	math::float3 rayEnd = (rayStart + dir) * dist;
+
+	if (physics->RayTest(rayStart, rayEnd, &hitInfo))
+	{
+		if (hitInfo.entity.getTag() == 1)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
 
 
 //-------------------------------------------------------------------------------------------------

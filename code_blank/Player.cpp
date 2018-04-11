@@ -33,6 +33,7 @@ Player::Player(CharacterDetails details, void* comp)
 	tag = details.tag;
 	{
 		Entity e = Entity::Create();
+		e.SetTag(1);
 
 		tPlayer = e.AddComponent<TransformComponent>();
 		tPlayer->SetLocalPosition(details.position);

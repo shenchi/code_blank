@@ -31,7 +31,7 @@ public:
 	void Dodge(int);
 	void Roll();
 	void AimMove(int);
-	void PerformAction(Combat);
+	void PerformAction(Action);
 	void NextCombat();
 	void NextSpecial();
 	void NextSwordCombat();
@@ -39,6 +39,8 @@ public:
 
 	// Setters
 	void SetComboTimer(float);
+	void SetAdjustMinDistance(float);
+	void SetAdjustMaxDistance(float);
 	void SetAimTarget(Character*);
 	void SetCurrentTarget(Character*);
 	void SetCurrentHitPos(HitPosition);
@@ -51,6 +53,7 @@ public:
 	void SetIsMoving(bool);
 	void SetIsRolling(bool);
 	void SetIsSprinting(bool);
+	void SetIsTurning(bool);
 	void SetMoveDir(int _moveDir);
 	void SetResetAttack(bool);
 	void SetEnemyList(std::vector<Character*>*);
@@ -86,6 +89,7 @@ public:
 	bool GetIsMoving();
 	bool GetIsRolling();
 	bool GetIsSprinting();
+	bool GetIsTurning();
 	float GetJumpAirTime();
 	float GetJumpDownTime();
 	float GetJumpUpTime();
@@ -93,6 +97,7 @@ public:
 	bool GetResetAttack();
 	float GetRollSpeed();
 	float GetRollTime();
+	float GetTimeBetweenAttacks();
 	
 	// A List with all the Actions and their parameters. ( Dictionary has to made serializable manually by writing a new class and stuff ).
 	// The index is the enum value of the combat. (The evaluated integer)  
@@ -143,7 +148,7 @@ private:
 	float inCombatDuration;
 	float comboTimer;
 	float maxComboTime;
-	
+	float timeBetweenAttacks;
 
 	// Aiming 
 	bool isAimming;
@@ -169,9 +174,10 @@ private:
 	float attackDuration;
 	float currentAttackTime;
 	float currentEffectTime;
-	float currentEffetDistance;
+	float currentEffectDistance;
 	float currentDmgAmount;
 	float currentHitTime;
+	float currentAttackDistance;
 	CombatDirection currentDirection;
 	HitPower currentPower;
 	HitPosition currentHitPos;
@@ -200,6 +206,7 @@ private:
 	float adjustMinDistance;
 	float adjustMaxDistance;
 	float adjustAgle;
+	bool isTurning = false;
 
 	// Temp
 	CombatMoveDetails defaultMove;

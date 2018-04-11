@@ -8,6 +8,8 @@
 class ActionSelector
 {
 public:
+
+	ActionSelector();
 	ActionSelector(ActionList*, CombatManager*);
 
 	void selectNextOption(tofu::math::float3, tofu::math::float3);

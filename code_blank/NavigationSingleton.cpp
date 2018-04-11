@@ -2,24 +2,25 @@
 #include <unordered_set>
 #include <assert.h>
 
+NavigationSingleton* NavigationSingleton::instance = 0;
 
 NavigationSingleton::NavigationSingleton()
-{
-	//Init();
-}
+{}
 
 // Return instance of class
-NavigationSingleton& NavigationSingleton::Instance()
+NavigationSingleton* NavigationSingleton::Instance()
 {
-	static NavigationSingleton instance;
+	if (instance == 0)
+	{
+		instance = new NavigationSingleton();
+	}
 
 	return instance;
 }
 
 // Setup class
 void NavigationSingleton::Init()
-{
-}
+{}
 
 // Returns the current node that you are standing over.
 PathingNode* NavigationSingleton::GetCurrentNode(tofu::math::float3 currentPosition)
@@ -189,4 +190,9 @@ int NavigationSingleton::GetDistance(PathingNode* nodeA, PathingNode* nodeB)
 void NavigationSingleton::SetNodes(std::vector<PathingNode>* _nodes)
 {
 	nodes = _nodes;
+}
+
+bool NavigationSingleton::GetCanCalculate()
+{
+	return canCalculate;
 }

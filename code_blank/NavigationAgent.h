@@ -4,7 +4,8 @@
 #include <Tofu.h>
 #include <vector>
 #include "PathingNode.h"
-#include "Character.h"
+#include "NavigationSingleton.h"
+#include "Enemy.h"
 
 // This should be aligned as close to the Unitys NavMesh Agent as possible.
 class NavigationAgent
@@ -14,13 +15,14 @@ public:
 
 	void Init(Enemy*, tofu::math::float3);
 	void calculatePath();
-	void SetDestination(tofu::math::float3, int);
+	void SetDestination(tofu::math::float3);
 	void SetIsStopped(bool);
-	void Update();
+	void Update(float, tofu::math::float3, tofu::math::float3);
 
 	bool GetIsStopped();
 
 private:
+	NavigationSingleton* navigation;
 
 	float AISpeedMod;
 
@@ -36,6 +38,7 @@ private:
 
 	// This location is used to go back once you lose the target.
 	tofu::math::float3 initialLocation;
+	tofu::math::float3 position;
 
 	std::vector<PathingNode*> path;
 

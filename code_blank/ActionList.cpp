@@ -1,9 +1,10 @@
 #include "ActionList.h"
 #include <algorithm>
 
-ActionList::ActionList() {}
-
-
+ActionList::ActionList() 
+{
+	initalActionsList = {};
+}
 
 void ActionList::UpdateActionPreference(std::string actionName, int preference)
 {

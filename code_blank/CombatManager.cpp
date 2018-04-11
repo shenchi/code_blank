@@ -350,7 +350,7 @@ void CombatManager::Effect()
 		float distance = math::distance(character->GetPosition(), currentTarget->GetPosition());
 		HitDirection dir = kHitForward;
 
-		if (distance <= currentEffetDistance)
+		if (distance <= currentEffectDistance)
 		{
 			//float angleFB = Vector3.Angle(currentTarget.charBody.transform.position - character->charBody.transform.position, currentTarget.charBody.transform.forward);
 			//float angleLR = Vector3.Angle(currentTarget.charBody.transform.position - character->charBody.transform.position, currentTarget.charBody.transform.right);
@@ -528,22 +528,75 @@ void CombatManager::AimMove(int dir)
 }
 
 // Function to perform the combat that was passed.
-void CombatManager::PerformAction(Combat _input)
+//void CombatManager::PerformAction(Combat _input)
+//{
+//	currentCombat = _input;
+//	// TODO: A Variable for the Sound in the CombatMoveDetails Struct.
+//	//combatAudio.PlayOneShot(punchFX);
+//
+//	// Remove 1 from the current combat because of the None in the Enum.
+//	CombatMoveDetails currentMoveDetails = allMoves[(int)currentCombat - 1];
+//	currentAttackTime = currentMoveDetails.AT;
+//	currentEffectTime = currentMoveDetails.ET;
+//	currentEffectDistance = currentMoveDetails.ED;
+//	currentDmgAmount = currentMoveDetails.Dmg;
+//	currentDirection = currentMoveDetails.dir;
+//	currentPower = currentMoveDetails.power;
+//	currentHitPos = currentMoveDetails.pos;
+//	currentHitTime = currentMoveDetails.HT;
+//
+//	Attack();
+//
+//}
+
+// Function to perform the combat that was passed.
+void CombatManager::PerformAction(Action _action)
 {
+
+	Combat _input = _action.combat;
+
+	if (kNone == _input)
+	{
+		// Perform the Action even though the Combat is set to None.
+		if (_action.name == "Face_Towards_The_Enemy")
+		{
+			isTurning = true;
+			return;
+		}
+		else
+		{
+			return;
+		}
+		
+		/*switch (_action.name)
+		{
+		case "Face_Towards_The_Enemy":
+			isTurning = true;
+			return;
+		default:
+			return;
+		}*/
+
+	}
+
 	currentCombat = _input;
-	// TODO: A Variable for the Sound in the CombatMoveDetails Struct.
-	//combatAudio.PlayOneShot(punchFX);
 
 	// Remove 1 from the current combat because of the None in the Enum.
 	CombatMoveDetails currentMoveDetails = allMoves[(int)currentCombat - 1];
 	currentAttackTime = currentMoveDetails.AT;
 	currentEffectTime = currentMoveDetails.ET;
-	currentEffetDistance = currentMoveDetails.ED;
+	currentEffectDistance = currentMoveDetails.ED;
 	currentDmgAmount = currentMoveDetails.Dmg;
 	currentDirection = currentMoveDetails.dir;
 	currentPower = currentMoveDetails.power;
 	currentHitPos = currentMoveDetails.pos;
 	currentHitTime = currentMoveDetails.HT;
+	currentAttackDistance = currentMoveDetails.strikeDistance;
+	//currentSFX = allMoves[(int)currentCombat - 1].CombatSFX;
+
+	// Move according to the Attack Distance.
+
+	// Variable for the Sound
 
 	Attack();
 
@@ -591,7 +644,7 @@ void CombatManager::NextCombat()
 	CombatMoveDetails currentMoveDetails = allMoves[(int)currentCombat - 1];
 	currentAttackTime = currentMoveDetails.AT;
 	currentEffectTime = currentMoveDetails.ET;
-	currentEffetDistance = currentMoveDetails.ED;
+	currentEffectDistance = currentMoveDetails.ED;
 	currentDmgAmount = currentMoveDetails.Dmg;
 	currentDirection = currentMoveDetails.dir;
 	currentPower = currentMoveDetails.power;
@@ -643,7 +696,7 @@ void CombatManager::NextSpecial()
 
 	currentAttackTime = currentMoveDetails.AT;
 	currentEffectTime = currentMoveDetails.ET;
-	currentEffetDistance = currentMoveDetails.ED;
+	currentEffectDistance = currentMoveDetails.ED;
 	currentDmgAmount = currentMoveDetails.Dmg;
 	currentDirection = currentMoveDetails.dir;
 	currentPower = currentMoveDetails.power;
@@ -676,7 +729,7 @@ void CombatManager::NextSwordCombat()
 
 	currentAttackTime = currentMoveDetails.AT;
 	currentEffectTime = currentMoveDetails.ET;
-	currentEffetDistance = currentMoveDetails.ED;
+	currentEffectDistance = currentMoveDetails.ED;
 	currentDmgAmount = currentMoveDetails.Dmg;
 	currentDirection = currentMoveDetails.dir;
 	currentPower = currentMoveDetails.power;
@@ -739,7 +792,7 @@ void CombatManager::NextSwordSpecial()
 
 	currentAttackTime = currentMoveDetails.AT;
 	currentEffectTime = currentMoveDetails.ET;
-	currentEffetDistance = currentMoveDetails.ED;
+	currentEffectDistance = currentMoveDetails.ED;
 	currentDmgAmount = currentMoveDetails.Dmg;
 	currentDirection = currentMoveDetails.dir;
 	currentPower = currentMoveDetails.power;
@@ -930,7 +983,20 @@ void CombatManager::SetMoves()
 	allMoves.push_back(defaultMove);
 }
 
+//-------------------------------------------------------------------------------------------------
 // Setters
+
+void CombatManager::SetAdjustMinDistance(float minDistance)
+{
+	adjustMinDistance = minDistance;
+}
+
+
+void CombatManager::SetAdjustMaxDistance(float maxDistance)
+{
+	adjustMaxDistance = maxDistance;
+}
+
 // Set the Move Direction
 void CombatManager::SetMoveDir(int _moveDir)
 {
@@ -971,6 +1037,12 @@ void CombatManager::SetIsMoving(bool _isMoving)
 void CombatManager::SetIsSprinting(bool _isSprinting)
 {
 	isSprinting = _isSprinting;
+}
+
+// Set if is turning
+void CombatManager::SetIsTurning(bool _isTurning)
+{
+	isTurning = _isTurning;
 }
 
 // Set if is jumping
@@ -1021,7 +1093,9 @@ void CombatManager::SetComboTimer(float _comboTimer)
 	comboTimer = _comboTimer;
 }
 
+//-------------------------------------------------------------------------------------------------
 // Getters
+
 // Return if the character can move
 bool CombatManager::GetCanMove()
 {
@@ -1104,6 +1178,12 @@ bool CombatManager::GetIsMoving()
 bool CombatManager::GetIsSprinting()
 {
 	return isSprinting;
+}
+
+// Return if the character is turning
+bool CombatManager::GetIsTurning()
+{
+	return isTurning;
 }
 
 // Return if the character is jumping
@@ -1242,4 +1322,9 @@ Combat CombatManager::GetCurrentCombat()
 float CombatManager::GetComboTimer()
 {
 	return comboTimer;
+}
+
+float CombatManager::GetTimeBetweenAttacks()
+{
+	return timeBetweenAttacks;
 }

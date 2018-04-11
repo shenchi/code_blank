@@ -219,12 +219,12 @@ int32_t Game::Update()
 			cam->Update(Time::DeltaTime);
 			pControl->UpdateP(Time::DeltaTime);
 			player->Update(Time::DeltaTime);
-			enemy01->Update(Time::DeltaTime);
-			enemy02->Update(Time::DeltaTime);
-			enemy03->Update(Time::DeltaTime);
-			enemy04->Update(Time::DeltaTime);
-			enemy05->Update(Time::DeltaTime);
-			enemy06->Update(Time::DeltaTime);
+			//enemy01->Update(Time::DeltaTime);
+			//enemy02->Update(Time::DeltaTime);
+			//enemy03->Update(Time::DeltaTime);
+			//enemy04->Update(Time::DeltaTime);
+			//enemy05->Update(Time::DeltaTime);
+			//enemy06->Update(Time::DeltaTime);
 
 			//*******************************************************************************
 			// Temp Enemy control code
@@ -469,17 +469,17 @@ bool Game::LoadScene(sceneType num)
 				material->SetTexture(diffuse);
 				material->SetNormalMap(normalMap);
 
-				enemy01 = new Enemy(enemyDetails, model, material);
-				enemyDetails.position = tofu::math::float3{ 410.0f, 2.0f, 70.0f };
-				enemy02 = new Enemy(enemyDetails, model, material);
-				enemyDetails.position = tofu::math::float3{ 423.0f, 2.0f, 67.0f };
-				enemy03 = new Enemy(enemyDetails, model, material);
-				enemyDetails.position = tofu::math::float3{ 424.0f, 2.0f, 67.0f };
-				enemy04 = new Enemy(enemyDetails, model, material);
-				enemyDetails.position = tofu::math::float3{ 411.0f, 2.0f, 70.0f };
-				enemy05 = new Enemy(enemyDetails, model, material);
-				enemyDetails.position = tofu::math::float3{ 414.0f, 2.0f, 77.0f };
-				enemy06 = new Enemy(enemyDetails, model, material);
+				//enemy01 = new Enemy(enemyDetails, model, material);
+				//enemyDetails.position = tofu::math::float3{ 410.0f, 2.0f, 70.0f };
+				//enemy02 = new Enemy(enemyDetails, model, material);
+				//enemyDetails.position = tofu::math::float3{ 423.0f, 2.0f, 67.0f };
+				//enemy03 = new Enemy(enemyDetails, model, material);
+				//enemyDetails.position = tofu::math::float3{ 424.0f, 2.0f, 67.0f };
+				//enemy04 = new Enemy(enemyDetails, model, material);
+				//enemyDetails.position = tofu::math::float3{ 411.0f, 2.0f, 70.0f };
+				//enemy05 = new Enemy(enemyDetails, model, material);
+				//enemyDetails.position = tofu::math::float3{ 414.0f, 2.0f, 77.0f };
+				//enemy06 = new Enemy(enemyDetails, model, material);
 				//*********************************************************************************************
 
 				// Add each enemy to the enemy list

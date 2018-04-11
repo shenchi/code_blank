@@ -140,7 +140,6 @@ void Character::HandleAirborneMovement(math::float3 _moveDir, bool _hasInput, fl
  // check to see if player is on the ground and its status
 void Character::CheckGroundStatus()
 {
-	math::float3 playerPos = tCharacter->GetLocalPosition();
 	math::float3 pos{ pCharacter->GetPosition() };
 
 	RayTestResult hitInfo = {};

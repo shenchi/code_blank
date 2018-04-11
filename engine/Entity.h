@@ -45,6 +45,10 @@ namespace tofu
 
 		TF_INLINE void SetActive(bool active) { activeFlags[id] = active; }
 
+		TF_INLINE void SetTag(uint32_t _tag) { tags[id] = _tag; }
+
+		TF_INLINE uint32_t getTag() const { return tags[id]; }
+
 		int32_t Destroy();
 
 		// create a new entity
@@ -89,5 +93,7 @@ namespace tofu
 		static uint32_t numRegisteredComponentTypes;
 
 		static bool* activeFlags;
+
+		static uint32_t* tags;
 	};
 }

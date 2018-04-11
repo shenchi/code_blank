@@ -95,6 +95,7 @@ struct CombatMoveDetails
 	HitPosition pos;
 	CombatDirection dir;
 	HitPower power;
+	float strikeDistance;
 };
 
 struct CharacterDetails

@@ -24,11 +24,15 @@ public:
 	//void CurrentState(CharacterState _currentState);
 	//void Dodge();
 	void Die();
+	void RotateEnemey(float);
+	void SetIsGhostActive(bool);
+	void SetIsPlayerActive(bool);
 	//void ForceMove(float, float, int);
 	//void ForceMove(float, float, tofu::math::float3);
 	//void Special();
 
 	float GetMaxSensoryRadius();
+	bool RayCastHitPlayer(tofu::math::float3, tofu::math::float3, float);
 
 private:
 	tofu::TransformComponent	tEnemy;
@@ -43,6 +47,9 @@ private:
 	float speed;
 	bool inAir;
 	bool isDashing;
+	bool isGhostActive;
+	bool isPlayerActive;
+	bool hasTarget;
 
 	// Enemy Stats
 	float health;
@@ -53,9 +60,9 @@ private:
 
 	float timer = 0.0f;
 
-	tofu::math::float3 seekTarget;    // A variable to store the transform of the target to seek.
-	tofu::math::float3 playerTarget;
-	tofu::math::float3 ghostTarget;
+	Character* seekTarget;    // A variable to store the transform of the target to seek.
+	Character* playerTarget;
+	Character* ghostTarget;
 
 	float maxSensoryRadius; // A variable to store the maximum sensory radius of the AI.
 
