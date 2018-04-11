@@ -7,6 +7,8 @@
 #include "Enemy.h"
 #include "Utility.h"
 
+using namespace tofu;
+
 // Game: The main game loop.
 // Runs all things game related.
 class Game : public tofu::Module

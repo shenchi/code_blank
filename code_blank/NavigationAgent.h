@@ -5,8 +5,9 @@
 #include <vector>
 #include "PathingNode.h"
 #include "NavigationSingleton.h"
-#include "Enemy.h"
+#include "Character.h"
 
+class Enemy;
 // This should be aligned as close to the Unitys NavMesh Agent as possible.
 class NavigationAgent
 {

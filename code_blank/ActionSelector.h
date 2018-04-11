@@ -1,7 +1,6 @@
 // Darren Farr
 // AI Conversion, original by Sravan Kuraturi in C#
 #pragma once
-#include <Tofu.h>
 #include "ActionList.h"
 #include "CombatManager.h"
 

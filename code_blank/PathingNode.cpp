@@ -84,6 +84,11 @@ int PathingNode::GetGridY()
 	return gridY;
 }
 
+int PathingNode::GetIndex()
+{
+	return index;
+}
+
 int* PathingNode::GetNeighbours()
 {
 	return neighbours;

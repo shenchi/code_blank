@@ -1,4 +1,5 @@
 #include "NavigationAgent.h"
+#include "Enemy.h"
 
 using namespace tofu;
 
@@ -59,7 +60,7 @@ void NavigationAgent::Update(float dT, math::float3 pos, math::float3 fwd)
 		if (canChase && visionLingerTimeCountDown > 0.0f)
 		{
 			isChasingUsingNodes = true;
-			if (path.size > 0)
+			if (path.size() > 0)
 			{
 				destination = path.at(0)->GetPosition();
 				// Check for Rotation.
@@ -103,7 +104,7 @@ void NavigationAgent::calculatePath()
 	}
 	path = navigation->GetPath(currentNode, targetNode);
 
-	//assert(path.size != 0);
+	//assert(path.size() != 0);
 }
 
 

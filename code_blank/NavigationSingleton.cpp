@@ -30,7 +30,7 @@ PathingNode* NavigationSingleton::GetCurrentNode(tofu::math::float3 currentPosit
 	float temporaryDistance = 1000;
 
 	// This is not ideal as we call this quite frequently and we do not want to perform this same function over and over again unless you actually optimise this.
-	for (int i = 0; i < nodes->size; i++)
+	for (int i = 0; i < nodes->size(); i++)
 	{
 		if (temporaryDistance > tofu::math::distance(currentPosition, nodes->at(i).GetPosition() ))
 		{
@@ -47,21 +47,21 @@ PathingNode* NavigationSingleton::GetCurrentNode(tofu::math::float3 currentPosit
 std::vector<PathingNode*> NavigationSingleton::GetPath(PathingNode* nodeA, PathingNode* nodeB)
 {
 	// Assume that the distance between two adjacent nodes is 1. We will be using A* method for Pathfinding.
-
+	/*
 	std::vector<PathingNode*> openSet;
 	//HashSet<PathingNode> closedSet = new HashSet<PathingNode>();
-	std::unordered_set<PathingNode> closedSet;
+	std::unordered_set<int> closedSet = {};
 	int nodeIndex = 0;
 
 	openSet.push_back(nodeA);
 	nodeA->SetGCost(0);
 
-	while (openSet.size > 0)
+	while (openSet.size() > 0)
 	{
 
 		PathingNode* currentNode = openSet.at(0);
 
-		for (uint32_t i = 1; i < openSet.size; i++)
+		for (uint32_t i = 1; i < openSet.size(); i++)
 		{
 			if (openSet.at(i)->FCost() < currentNode->FCost() || ((openSet.at(i)->FCost() == currentNode->FCost()) && openSet.at(i)->HCost() < currentNode->HCost()))
 			{
@@ -81,10 +81,10 @@ std::vector<PathingNode*> NavigationSingleton::GetPath(PathingNode* nodeA, Pathi
 		closedSet.emplace(currentNode);
 		//openSet.Remove(currentNode);
 		//closedSet.Add(currentNode);
-
+		
 		for (uint32_t i = 0; i < 4; i++)
 		{
-			std::unordered_set<PathingNode>::const_iterator neighbour = closedSet.find(*currentNode);
+			std::unordered_set<int>::const_iterator neighbour = closedSet.find(currentNode->GetIndex());
 
 			if ( !(neighbour == closedSet.end()) )
 			{
@@ -92,7 +92,7 @@ std::vector<PathingNode*> NavigationSingleton::GetPath(PathingNode* nodeA, Pathi
 				assert(nullptr != nodeB);
 				assert(nullptr != neighbour._Ptr);
 
-				PathingNode node = *neighbour;
+				PathingNode node = neighbour;
 
 				int newMovementCostToNeighbour = currentNode->GCost() + GetDistance(currentNode, &node);
 				if (newMovementCostToNeighbour < node.GCost() ) 
@@ -102,7 +102,7 @@ std::vector<PathingNode*> NavigationSingleton::GetPath(PathingNode* nodeA, Pathi
 					node.SetCameFrom(currentNode);
 
 					bool contains = false;
-					for (uint32_t i = 0; i < openSet.size; i++)
+					for (uint32_t i = 0; i < openSet.size(); i++)
 					{
 						if (openSet.at(i) == &node)
 						{
@@ -117,7 +117,7 @@ std::vector<PathingNode*> NavigationSingleton::GetPath(PathingNode* nodeA, Pathi
 				}
 				else
 				{
-					for (uint32_t i = 0; i < openSet.size; i++)
+					for (uint32_t i = 0; i < openSet.size(); i++)
 					{
 						if (openSet.at(i) == &node)
 						{
@@ -126,7 +126,7 @@ std::vector<PathingNode*> NavigationSingleton::GetPath(PathingNode* nodeA, Pathi
 							node.SetCameFrom(currentNode);
 
 							bool contains = false;
-							for (uint32_t i = 0; i < openSet.size; i++)
+							for (uint32_t i = 0; i < openSet.size(); i++)
 							{
 								if (openSet.at(i) == &node)
 								{
@@ -146,10 +146,10 @@ std::vector<PathingNode*> NavigationSingleton::GetPath(PathingNode* nodeA, Pathi
 				// Not found.
 			}
 		}
-	}
+	}*/
 
 	// Well, if you reach this. There is no path..
-	assert(false);
+	//assert(false);
 
 	// Return an empty path.
 	std::vector<PathingNode*> returnPath{};
@@ -168,10 +168,10 @@ std::vector<PathingNode*> NavigationSingleton::RetracePath(PathingNode* nodeA, P
 		returnPath.push_back(currentNode);
 		assert(nullptr != currentNode->GetCameFrom());
 		//Debug.Assert(null != currentNode.cameToThisNodeFrom, "This path is broken / incomplete.");
-		currentNode = currentNode->GetCameFrom;
+		currentNode = currentNode->GetCameFrom();
 	}
 
-	returnPath.reserve(returnPath.size);
+	returnPath.reserve(returnPath.size());
 	return returnPath;
 }
 

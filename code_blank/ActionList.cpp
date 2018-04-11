@@ -8,7 +8,7 @@ ActionList::ActionList()
 
 void ActionList::UpdateActionPreference(std::string actionName, int preference)
 {
-	for (int i = 0; i < initalActionsList.size; i++)
+	for (int i = 0; i < initalActionsList.size(); i++)
 	{
 		if (actionName == initalActionsList[i].name)
 		{
@@ -52,13 +52,20 @@ bool ActionList::Compatible(customBool needed, customBool given)
 	return false;
 }
 
+int ActionList::CompareMyType(Action a, Action b)
+{
+	if (a.preference < b.preference) return -1;
+	if (a.preference == b.preference) return 0;
+	if (a.preference > b.preference) return 1;
+}
+
 // Get the valid actions for the given state.
 std::vector<Action> ActionList::GetValidActions(State currentState)
 {
 
 	std::vector<Action> validActions;
 
-	for (int i = 0; i < initalActionsList.size; i++)
+	for (int i = 0; i < initalActionsList.size(); i++)
 	{
 
 		if (Compatible(initalActionsList[i].intialState, currentState))
@@ -69,16 +76,14 @@ std::vector<Action> ActionList::GetValidActions(State currentState)
 
 	// Sort all the actions by the preference..
 	// TODO Does this run on PS4???
-	std::sort(validActions.begin(), validActions.end(), CompareMyType);//((a, b) = > (a.preference - b.preference));
+	std::sort(validActions.begin(), validActions.end(), [](const Action &a, const Action &b)
+	{
+		return a.preference - b.preference;
+	});//(int)(a, b) = > (a.preference - b.preference));//();
 
 	// Return the Valid ACtions. This could be an empty string.
 	return validActions;
 }
 
 
-int ActionList::CompareMyType(Action a, Action b)
-{
-	if (a.preference < b.preference) return -1;
-	if (a.preference == b.preference) return 0;
-	if (a.preference > b.preference) return 1;
-}
+

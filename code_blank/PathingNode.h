@@ -24,6 +24,7 @@ public:
 	int HCost();
 	int GetGridX();
 	int GetGridY();
+	int GetIndex();
 	int* GetNeighbours();
 	tofu::math::float3 GetPosition();
 

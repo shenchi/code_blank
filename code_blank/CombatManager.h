@@ -1,5 +1,6 @@
 #pragma once
 #include "Companion.h"
+#include "Character.h"
 #include "GameplayDS.h"
 
 class Character;

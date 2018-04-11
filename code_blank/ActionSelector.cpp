@@ -1,5 +1,4 @@
 #include "ActionSelector.h"
-#include "Character.h" // May induce circular inclusion
 
 ActionSelector::ActionSelector() {}
 
@@ -71,9 +70,9 @@ void ActionSelector::selectNextOption(tofu::math::float3 pos, tofu::math::float3
 	std::vector<Action> validActions = actionList->GetValidActions(currentState);
 
 	// Select one of the valid actions.
-	if (validActions.size > 0)
+	if (validActions.size() > 0)
 	{
-		int curAction = validActions.size - 1;
+		int curAction = validActions.size() - 1;
 
 		// Get the Action.
 		if (combatManager->GetCanAttack())

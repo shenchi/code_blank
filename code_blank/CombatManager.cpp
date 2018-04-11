@@ -1,5 +1,5 @@
 #include "CombatManager.h"
-#include "Character.h"
+//#include "Character.h"
 
 using namespace tofu;
 

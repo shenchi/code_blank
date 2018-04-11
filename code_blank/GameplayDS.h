@@ -1,5 +1,6 @@
 #pragma once
-
+#include <string>
+#include <TofuMath.h>
 
 enum CharacterState
 {
@@ -141,15 +142,15 @@ struct CombatManagerDetails
 	float adjustAgle;
 };
 
-struct PathNode
-{
-	std::string name;
-	tofu::math::float3 position;
-	PathNode* nearby_1;
-	PathNode* nearby_2;
-	PathNode* nearby_3;
-	PathNode* nearby_4;
-};
+//struct PathNode
+//{
+//	std::string name;
+//	tofu::math::float3 position;
+//	PathNode* nearby_1;
+//	PathNode* nearby_2;
+//	PathNode* nearby_3;
+//	PathNode* nearby_4;
+//};
 
 struct SpawnNode
 {
