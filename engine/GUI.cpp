@@ -465,6 +465,10 @@ namespace tofu
 				}
 			}
 		}
+
+		focused = false;
+		highlighted = false;
+
 		return selectedMenuItem;
 	}
 

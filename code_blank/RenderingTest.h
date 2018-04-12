@@ -36,6 +36,10 @@ private:
 	tofu::Atlas					atlas;
 
 	uint32_t					mainMenuSelectedItem;
+	uint32_t					levelMenuSelectedItem;
+
+	bool						mainMenuFocused;
+	bool						levelMenuFocused;
 
 	bool						sceneLoaded;
 };

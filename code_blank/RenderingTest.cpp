@@ -90,6 +90,8 @@ int32_t RenderingTest::Init()
 		{
 			return kErrUnknown;
 		}
+
+		mainMenuFocused = true;
 	}
 
 	pitch = InitPitch;
@@ -249,8 +251,28 @@ int32_t RenderingTest::Update()
 			atlas.rects[4],
 		};
 
+
+		GUIStyle style6 = {
+			{ 1, 1, 1, 0.5f },
+			{ 1, 1, 1, 1 },
+			atlas.rects[3],
+			atlas.rects[3],
+		};
+		GUIStyle style7 = {
+			{ 1, 1, 1, 0.5f },
+			{ 1, 1, 1, 1 },
+			atlas.rects[7],
+			atlas.rects[7],
+		};
+		GUIStyle style8 = {
+			{ 1, 1, 1, 0.5f },
+			{ 1, 1, 1, 1 },
+			atlas.rects[6],
+			atlas.rects[6],
+		};
+
 		// main menu
-		gui->BeginMenu(1, mainMenuSelectedItem);
+		gui->BeginMenu(1, mainMenuSelectedItem, mainMenuFocused);
 
 		gui->BeginMenuItem(1);
 		gui->Image(1, -500, 0, 288, 53, style1);
@@ -274,11 +296,54 @@ int32_t RenderingTest::Update()
 
 		mainMenuSelectedItem = gui->EndMenu();
 
+		if (levelMenuFocused)
+		{
+			gui->BeginMenu(1, levelMenuSelectedItem, levelMenuFocused);
+
+			gui->BeginMenuItem(1);
+			gui->Image(1, -144, 0, 288, 53, style6);
+			gui->EndMenuItem();
+
+			gui->BeginMenuItem(1);
+			gui->Image(1, -144, 60, 288, 53, style7);
+			gui->EndMenuItem();
+
+			gui->BeginMenuItem(1);
+			gui->Image(1, -144, 120, 288, 53, style8);
+			gui->EndMenuItem();
+
+			levelMenuSelectedItem = gui->EndMenu();
+		}
+
 		if (input->IsButtonReleased(kKeyEnter))
 		{
-			if (mainMenuSelectedItem == 0)
+			if (mainMenuFocused)
 			{
-
+				switch (mainMenuSelectedItem)
+				{
+				case 0:
+					mainMenuFocused = false;
+					levelMenuFocused = true;
+					levelMenuSelectedItem = 0;
+					break;
+				case 4:
+					Engine::instance()->Quit();
+					break;
+				default:
+					break;
+				}
+			}
+			else if (levelMenuFocused)
+			{
+				switch (levelMenuSelectedItem)
+				{
+				case 2:
+					mainMenuFocused = true;
+					levelMenuFocused = false;
+					break;
+				default:
+					break;
+				}
 			}
 		}
 	}
