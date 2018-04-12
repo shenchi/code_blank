@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Common.h"
+#include "TofuMath.h"
 
 struct FONScontext;
 
@@ -27,6 +28,23 @@ namespace tofu
 
 		uint32_t		startWidgetVert;
 		uint32_t		startTextVert;
+	};
+
+	struct GUIStyle
+	{
+		math::float4	normalColor;
+		math::float4	highlightedColor;
+
+		math::float4	normalUVs;
+		math::float4	highlightedUVs;
+	};
+
+	struct Atlas
+	{
+		math::float4	rects[64];
+		uint32_t		numTextures;
+
+		int32_t LoadFromFile(const char* filename);
 	};
 
 	struct RendererCommandBuffer; 
@@ -109,6 +127,32 @@ namespace tofu
 		void Text(uint32_t layer, float x, float y, float size, const char* text, TextAlign align = kTextAlignLeft);
 
 		// draw part of a texture
-		void Image(uint32_t layer, float x, float y, float w, float h, float u0 = 0.0f, float v0 = 0.0f, float u1 = 1.0f, float v1 = 1.0f);
+		void Texture(uint32_t layer, float x, float y, float w, float h, float u0 = 0.0f, float v0 = 0.0f, float u1 = 1.0f, float v1 = 1.0f, float r = 1.0f, float g = 1.0f, float b = 1.0f, float a = 1.0f);
+
+	private:
+
+		bool			focused;
+		bool			highlighted;
+		uint32_t		selectedMenuItem;
+		uint32_t		selectedSwitchItem;
+
+		uint32_t		currentMenuIndex;
+		uint32_t		currentSwitchIndex;
+
+	public:
+
+		void BeginMenu(uint32_t layer, uint32_t selectedIndex = 0, bool focused = true);
+
+		uint32_t EndMenu();
+
+		void BeginMenuItem(uint32_t layer);
+
+		void EndMenuItem();
+
+
+
+		void Label(uint32_t layer, float x, float y, float w, float h, float fontSize, const char * text, const GUIStyle & style);
+
+		void Image(uint32_t layer, float x, float y, float w, float h, const GUIStyle& style);
 	};
 }

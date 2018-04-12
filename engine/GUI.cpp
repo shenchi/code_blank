@@ -3,6 +3,10 @@
 #include "MemoryAllocator.h"
 #include "TofuMath.h"
 #include "Renderer.h"
+#include "InputSystem.h"
+#include "FileIO.h"
+
+#include <rapidjson/document.h>
 
 extern "C"
 {
@@ -96,7 +100,7 @@ namespace tofu
 
 		float scale = gui->fbHeight / gui->height;
 
-		for (uint32_t i = 0; i < nverts; i++)
+		for (int32_t i = 0; i < nverts; i++)
 		{
 			uint16_t vid = uint16_t(layer.numTextVerts + i);
 			float* vert = layer.textVerts + (vid * 9);
@@ -402,7 +406,7 @@ namespace tofu
 		x = fonsDrawText(fonsContext, x, y + lh, text, nullptr);
 	}
 
-	void GUI::Image(uint32_t layer, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
+	void GUI::Texture(uint32_t layer, float x, float y, float w, float h, float u0, float v0, float u1, float v1, float r, float g, float b, float a)
 	{
 		if (layer >= kMaxGUILayers) return;
 		if (nullptr == layers[layer].widgetVerts) return;
@@ -419,19 +423,113 @@ namespace tofu
 		float x1 = (x + w) * scale;
 		float y1 = (y + h) * scale;
 
-		FillVertex(ptr, x0, y0, 0, 1, 1, 1, 1, u0, v0);
-		ptr += 9;
-		FillVertex(ptr, x1, y0, 0, 1, 1, 1, 1, u1, v0);
-		ptr += 9;
-		FillVertex(ptr, x1, y1, 0, 1, 1, 1, 1, u1, v1);
-		ptr += 9;
-		FillVertex(ptr, x0, y0, 0, 1, 1, 1, 1, u0, v0);
-		ptr += 9;
-		FillVertex(ptr, x1, y1, 0, 1, 1, 1, 1, u1, v1);
-		ptr += 9;
-		FillVertex(ptr, x0, y1, 0, 1, 1, 1, 1, u0, v1);
+		FillVertex(ptr, x0, y0, 0, r, g, b, a, u0, v0); ptr += 9;
+		FillVertex(ptr, x1, y0, 0, r, g, b, a, u1, v0); ptr += 9;
+		FillVertex(ptr, x1, y1, 0, r, g, b, a, u1, v1); ptr += 9;
+		FillVertex(ptr, x0, y0, 0, r, g, b, a, u0, v0); ptr += 9;
+		FillVertex(ptr, x1, y1, 0, r, g, b, a, u1, v1); ptr += 9;
+		FillVertex(ptr, x0, y1, 0, r, g, b, a, u0, v1);
 
 		layers[layer].numWidgetVerts += 6;
+	}
+
+	void GUI::BeginMenu(uint32_t layer, uint32_t selectedIndex, bool focused)
+	{
+		currentMenuIndex = 0;
+		selectedMenuItem = selectedIndex;
+		this->focused = focused;
+	}
+
+	uint32_t GUI::EndMenu()
+	{
+		if (focused)
+		{
+			InputSystem& input = *(InputSystem::instance());
+			if (input.IsButtonReleased(kKeyDown))
+			{
+				selectedMenuItem++;
+				if (selectedMenuItem >= currentMenuIndex)
+				{
+					selectedMenuItem = 0;
+				}
+			}
+			else if (input.IsButtonReleased(kKeyUp))
+			{
+				if (selectedMenuItem == 0)
+				{
+					selectedMenuItem = currentMenuIndex - 1;
+				}
+				else
+				{
+					selectedMenuItem--;
+				}
+			}
+		}
+		return selectedMenuItem;
+	}
+
+	void GUI::BeginMenuItem(uint32_t layer)
+	{
+		if (focused)
+		{
+			highlighted = (currentMenuIndex == selectedMenuItem);
+		}
+	}
+
+	void GUI::EndMenuItem()
+	{
+		currentMenuIndex++;
+	}
+
+	void GUI::Label(uint32_t layer, float x, float y, float w, float h, float fontSize, const char * text, const GUIStyle & style)
+	{
+	}
+
+	void GUI::Image(uint32_t layer, float x, float y, float w, float h, const GUIStyle & style)
+	{
+		math::float4 uvs = style.normalUVs;
+		math::float4 color = style.normalColor;
+
+		if (highlighted)
+		{
+			uvs = style.highlightedUVs;
+			color = style.highlightedColor;
+		}
+
+		Texture(layer, x, y, w, h, 
+			uvs.x, uvs.y, uvs.z, uvs.w,
+			color.x, color.y, color.z, color.w);
+	}
+
+	int32_t Atlas::LoadFromFile(const char* filename)
+	{
+		char* json = nullptr;
+		CHECKED(FileIO::ReadFile(filename, true, 4, (void**)&json, nullptr));
+
+		rapidjson::Document doc;
+		doc.Parse(json);
+
+		if (doc.HasParseError() || !doc.HasMember("atlas"))
+			return kErrUnknown;
+
+		const rapidjson::Value& atlas = doc["atlas"];
+
+		if (!atlas.IsArray())
+			return kErrUnknown;
+
+		for (rapidjson::SizeType i = 0; i < atlas.Size(); i++)
+		{
+			const rapidjson::Value& uvs = atlas[i]["uvs"];
+
+			rects[i].x = uvs["x"].GetFloat();
+			rects[i].y = uvs["y"].GetFloat();
+			rects[i].z = uvs["z"].GetFloat();
+			rects[i].w = uvs["w"].GetFloat();
+		}
+
+		numTextures = atlas.Size();
+
+		return kOK;
 	}
 
 }

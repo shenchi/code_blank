@@ -809,7 +809,7 @@ namespace tofu
 				return kErrUnknown;
 
 			CHECKED(gui.Init(vb, maxVerts, fontAtlas));
-			gui.SetFrameBufferSize(bufferWidth, bufferHeight);
+			gui.SetFrameBufferSize((float)bufferWidth, (float)bufferHeight);
 		}
 
 		return kOK;

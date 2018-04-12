@@ -30,6 +30,24 @@ namespace tofu
 			return states.IsButtonDown(button);
 		}
 
+		TF_INLINE bool IsButtonPressed(ButtonId button) const
+		{
+			if (button > ButtonId::kKeyMaxId)
+			{
+				return states.gamepad.IsButtonPressed(button);
+			}
+			return states.IsButtonPressed(button);
+		}
+
+		TF_INLINE bool IsButtonReleased(ButtonId button) const
+		{
+			if (button > ButtonId::kKeyMaxId)
+			{
+				return states.gamepad.IsButtonReleased(button);
+			}
+			return states.IsButtonReleased(button);
+		}
+
 		TF_INLINE float GetMouseDeltaX() const
 		{
 			return states.mouseDeltaX;

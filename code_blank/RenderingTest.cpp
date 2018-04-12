@@ -57,8 +57,6 @@ int32_t RenderingTest::Init()
 		pPlayer->LockRotation(true, true, true);
 		pPlayer->SetCapsuleCollider(50.0f, 100.0f);
 		pPlayer->SetColliderOrigin(math::float3{ 0.0f, 100.0f, 0.0f });
-
-		uiTex = diffuse;
 	}
 
 	// camera
@@ -80,6 +78,18 @@ int32_t RenderingTest::Init()
 		cam->SetSkybox(tex);
 		//cam->SetSkyboxDiffuseMap(skyboxDiff);
 		//cam->SetSkyboxSpecularMap(skyboxSpec);
+	}
+
+	{
+		uiTex = RenderingSystem::instance()->CreateTexture("assets/001.texture", kResourceGlobal);
+		uiTex1 = RenderingSystem::instance()->CreateTexture("assets/ui.texture", kResourceGlobal);
+
+		CHECKED(atlas.LoadFromFile("assets/ui.json"));
+
+		if (!uiTex || !uiTex1)
+		{
+			return kErrUnknown;
+		}
 	}
 
 	pitch = InitPitch;
@@ -199,10 +209,79 @@ int32_t RenderingTest::Update()
 		anim->CrossFade("idle", 0.1f);
 	}
 
-	GUI* gui = GUI::instance();
-	gui->SetCanvasSize(1920, 1080);
-	gui->SetupLayer(0, uiTex);
-	gui->Image(0, -960, -540, 400, 400);
+	{
+		GUI* gui = GUI::instance();
+		gui->SetCanvasSize(1920, 1080);
+
+		gui->SetupLayer(0, uiTex);
+		gui->Texture(0, -960, -540, 1920, 1080);
+
+		gui->SetupLayer(1, uiTex1);
+
+		GUIStyle style1 = {
+			{ 1, 1, 1, 0.5f },
+			{ 1, 1, 1, 1 },
+			atlas.rects[0],
+			atlas.rects[0],
+		};
+		GUIStyle style2 = {
+			{ 1, 1, 1, 0.5f },
+			{ 1, 1, 1, 1 },
+			atlas.rects[1],
+			atlas.rects[1],
+		};
+		GUIStyle style3 = {
+			{ 1, 1, 1, 0.5f },
+			{ 1, 1, 1, 1 },
+			atlas.rects[5],
+			atlas.rects[5],
+		};
+		GUIStyle style4 = {
+			{ 1, 1, 1, 0.5f },
+			{ 1, 1, 1, 1 },
+			atlas.rects[2],
+			atlas.rects[2],
+		};
+		GUIStyle style5 = {
+			{ 1, 1, 1, 0.5f },
+			{ 1, 1, 1, 1 },
+			atlas.rects[4],
+			atlas.rects[4],
+		};
+
+		// main menu
+		gui->BeginMenu(1, mainMenuSelectedItem);
+
+		gui->BeginMenuItem(1);
+		gui->Image(1, -500, 0, 288, 53, style1);
+		gui->EndMenuItem();
+
+		gui->BeginMenuItem(1);
+		gui->Image(1, -500, 60, 288, 53, style2);
+		gui->EndMenuItem();
+
+		gui->BeginMenuItem(1);
+		gui->Image(1, -500, 120, 288, 53, style3);
+		gui->EndMenuItem();
+
+		gui->BeginMenuItem(1);
+		gui->Image(1, -500, 180, 288, 53, style4);
+		gui->EndMenuItem();
+
+		gui->BeginMenuItem(1);
+		gui->Image(1, -500, 240, 288, 53, style5);
+		gui->EndMenuItem();
+
+		mainMenuSelectedItem = gui->EndMenu();
+
+		if (input->IsButtonReleased(kKeyEnter))
+		{
+			if (mainMenuSelectedItem == 0)
+			{
+
+			}
+		}
+	}
 
 	return kOK;
 }

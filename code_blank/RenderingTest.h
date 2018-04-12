@@ -32,6 +32,10 @@ private:
 	float						speed;
 
 	tofu::TextureHandle			uiTex;
+	tofu::TextureHandle			uiTex1;
+	tofu::Atlas					atlas;
+
+	uint32_t					mainMenuSelectedItem;
 
 	bool						sceneLoaded;
 };

@@ -164,6 +164,7 @@ namespace tofu
 	struct GamePadState
 	{
 		uint32_t		state;
+		uint32_t		lastState;
 		float			leftStickX;
 		float			leftStickY;
 		float			rightStickX;
@@ -172,7 +173,7 @@ namespace tofu
 		float			rightTrigger;
 		bool			isConnected;
 
-		inline void SetButtonState(uint32_t id, uint32_t isDown)
+		TF_INLINE void SetButtonState(uint32_t id, uint32_t isDown)
 		{
 			isDown &= 0x1u;
 
@@ -180,22 +181,48 @@ namespace tofu
 			state &= ~((~isDown) << (id - static_cast<uint32_t>(kGamepadStartId)));
 		}
 
-		inline bool IsButtonDown(uint32_t id) const
+		TF_INLINE bool IsButtonDown(uint32_t id) const
 		{
-			return (state & (1u << (id - static_cast<uint32_t>(kGamepadStartId)))) != 0;
+			uint32_t mask = (1u << (id - static_cast<uint32_t>(kGamepadStartId)));
+			return (state & mask) != 0;
+		}
+
+		TF_INLINE bool IsButtonPressed(uint32_t id) const
+		{
+			uint32_t mask = (1u << (id - static_cast<uint32_t>(kGamepadStartId)));
+			return (state & mask) != 0 && (lastState & mask) == 0;
+		}
+
+		TF_INLINE bool IsButtonReleased(uint32_t id) const
+		{
+			uint32_t mask = (1u << (id - static_cast<uint32_t>(kGamepadStartId)));
+			return (state & mask) == 0 && (lastState & mask) != 0;
 		}
 	};
 
 	struct InputStates
 	{
 		uint32_t		kb_mouse[8];
+		uint32_t		last_kb_mouse[8];
 		float			mouseDeltaX;
 		float			mouseDeltaY;
 		GamePadState	gamepad;
 
-		inline bool IsButtonDown(uint32_t id) const
+		TF_INLINE bool IsButtonDown(uint32_t id) const
 		{
 			return (kb_mouse[(id >> 5u)] & (1u << (id & 0x1fu))) != 0;
+		}
+
+		TF_INLINE bool IsButtonPressed(uint32_t id) const
+		{
+			return (kb_mouse[(id >> 5u)] & (1u << (id & 0x1fu))) != 0 &&
+				(last_kb_mouse[(id >> 5u)] & (1u << (id & 0x1fu))) == 0;
+		}
+
+		TF_INLINE bool IsButtonReleased(uint32_t id) const
+		{
+			return (kb_mouse[(id >> 5u)] & (1u << (id & 0x1fu))) == 0 &&
+				(last_kb_mouse[(id >> 5u)] & (1u << (id & 0x1fu))) != 0;
 		}
 	};
 
