@@ -622,6 +622,8 @@ namespace tofu
 
 		virtual int32_t GetFrameBufferSize(int32_t& width, int32_t& height) = 0;
 
+		virtual float GetGPUTime(uint32_t slot) = 0;
+
 		static Renderer* CreateRenderer();
 	};
 

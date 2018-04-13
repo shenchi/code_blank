@@ -2,11 +2,11 @@
 #include "Renderer.h"
 #include "MemoryAllocator.h"
 #include <cstring>
+#include "TofuMath.h"
 
 extern "C" {
 #include <fontstash.h>
 }
-
 
 namespace
 {
@@ -33,7 +33,17 @@ namespace
 
 		ctx->cmdBuf->Add(RendererCommand::kCommandDestroyTexture, &(ctx->tex));
 
-		return TofuRenderCreate(userPtr, width, height);
+		if (1 != TofuRenderCreate(userPtr, width, height))
+		{
+			return 0;
+		}
+
+		ctx->updateRectX = 0;
+		ctx->updateRectY = 0;
+		ctx->updateRectW = ctx->width;
+		ctx->updateRectH = ctx->height;
+
+		return 1;
 	}
 
 	void TofuRenderUpdate(void* userPtr, int* rect, const unsigned char* data)
@@ -45,21 +55,32 @@ namespace
 		if (!ctx->tex)
 			return;
 
-		uint8_t* ptr = const_cast<unsigned char*>(data);
-		ptr += rect[0] + rect[1] * ctx->width;
+		ctx->texData = data;
 
-		UpdateTextureParams* params = MemoryAllocator::FrameAlloc<UpdateTextureParams>();
-		params->handle = ctx->tex;
-		params->data = ptr;
-		params->pitch = ctx->width;
-		params->left = rect[0];
-		params->top = rect[1];
-		params->right = rect[2];
-		params->bottom = rect[3];
-		params->front = 0;
-		params->back = 1;
-		
-		ctx->cmdBuf->Add(RendererCommand::kCommandUpdateTexture, params);
+		if (ctx->updateRectW == 0 || ctx->updateRectH == 0)
+		{
+			ctx->updateRectX = rect[0];
+			ctx->updateRectY = rect[1];
+			ctx->updateRectW = w;
+			ctx->updateRectH = h;
+		}
+		else
+		{
+			int left = ctx->updateRectX;
+			int top = ctx->updateRectY;
+			int right = ctx->updateRectX + ctx->updateRectW;
+			int bottom = ctx->updateRectY + ctx->updateRectH;
+
+			left = math::min(left, rect[0]);
+			top = math::min(top, rect[1]);
+			right = math::max(right, rect[2]);
+			bottom = math::max(bottom, rect[3]);
+
+			ctx->updateRectX = left;
+			ctx->updateRectY = top;
+			ctx->updateRectW = right - left;
+			ctx->updateRectH = bottom - top;
+		}
 	}
 
 	void TofuRenderDraw(void* userPtr, const float* verts, const float* tcoords, const unsigned int* colors, int nverts)
@@ -84,8 +105,6 @@ namespace
 		
 			*(vert + 7) = tcoords[i * 2 + 0];
 			*(vert + 8) = tcoords[i * 2 + 1];
-		
-			*(ctx->indices + vid) = vid;
 		}
 
 		ctx->numVerts += nverts;
@@ -102,13 +121,12 @@ namespace
 namespace tofu
 {
 
-	int32_t FontRenderer::Setup(PipelineStateHandle pso, TextureHandle tex, SamplerHandle samp, BufferHandle vb, BufferHandle ib, BufferHandle cb, uint32_t maxVertices)
+	int32_t FontRenderer::Setup(PipelineStateHandle pso, TextureHandle tex, SamplerHandle samp, BufferHandle vb, BufferHandle cb, uint32_t maxVertices)
 	{
 		this->pso = pso;
 		context.tex = tex;
 		this->samp = samp;
 		this->vb = vb;
-		this->ib = ib;
 		this->cb = cb;
 		context.maxVerts = maxVertices;
 
@@ -133,7 +151,8 @@ namespace tofu
 		if (nullptr == fonsContext)
 			return kErrUnknown;
 		
-		font = fonsAddFont(fonsContext, "Arial Regular", "C:\\Windows\\Fonts\\arial.ttf");
+		font = fonsAddFont(fonsContext, "Conthrax Sb", "assets/conthrax-sb.ttf");
+		//font = fonsAddFont(fonsContext, "Arial Regular", "C:\\Windows\\Fonts\\arial.ttf");
 		//font = fonsAddFont(fonsContext, "sans", "D:\\DroidSerif-Regular.ttf");
 		if (font == FONS_INVALID) {
 			return kErrUnknown;
@@ -158,11 +177,13 @@ namespace tofu
 			MemoryAllocator::FrameAlloc(context.maxVerts * sizeof(float) * 9u)
 			);
 
-		context.indices = reinterpret_cast<uint16_t*>(
-			MemoryAllocator::FrameAlloc(context.maxVerts * sizeof(uint16_t))
-			);
-
 		context.numVerts = 0;
+
+		context.texData = nullptr;
+		context.updateRectX = 0;
+		context.updateRectY = 0;
+		context.updateRectW = 0;
+		context.updateRectH = 0;
 
 		return kOK;
 	}
@@ -181,6 +202,36 @@ namespace tofu
 		return kOK;
 	}
 
+	int32_t FontRenderer::UploadTexture()
+	{
+		if (nullptr != context.texData && context.updateRectW > 0 && context.updateRectH > 0)
+		{
+			uint8_t* ptr = const_cast<uint8_t*>(context.texData);
+			ptr += context.updateRectX + context.updateRectY * context.width;
+
+			UpdateTextureParams* params = MemoryAllocator::FrameAlloc<UpdateTextureParams>();
+			params->handle = context.tex;
+			params->data = ptr;
+			params->pitch = context.width;
+			params->left = context.updateRectX;
+			params->top = context.updateRectY;
+			params->right = context.updateRectX + context.updateRectW;
+			params->bottom = context.updateRectY + context.updateRectH;
+			params->front = 0;
+			params->back = 1;
+
+			context.cmdBuf->Add(RendererCommand::kCommandUpdateTexture, params);
+
+			context.texData = nullptr;
+			context.updateRectX = 0;
+			context.updateRectY = 0;
+			context.updateRectW = 0;
+			context.updateRectH = 0;
+		}
+
+		return kOK;
+	}
+
 	int32_t FontRenderer::Submit()
 	{
 		if (context.numVerts == 0) return kOK;
@@ -194,19 +245,11 @@ namespace tofu
 		}
 
 		{
-			UpdateBufferParams* params = MemoryAllocator::FrameAlloc<UpdateBufferParams>();
-			params->handle = ib;
-			params->data = context.indices;
-			params->size = context.numVerts * sizeof(uint16_t);
-			context.cmdBuf->Add(RendererCommand::kCommandUpdateBuffer, params);
-		}
-
-		{
 			DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
 
 			params->pipelineState = pso;
 			params->vertexBuffer = vb;
-			params->indexBuffer = ib;
+			params->indexBuffer = BufferHandle();
 
 			params->vsConstantBuffers[0] = { cb, 0, 0 };
 			params->psShaderResources[0] = context.tex;

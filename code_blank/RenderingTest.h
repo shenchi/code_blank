@@ -31,5 +31,20 @@ private:
 	float						yaw;
 	float						speed;
 
+	tofu::TextureHandle			uiTex;
+	tofu::TextureHandle			uiTex1;
+	tofu::Atlas					atlas;
+
+	uint32_t					mainMenuSelectedItem;
+	uint32_t					levelMenuSelectedItem;
+	uint32_t					optionMenuSelectedItem;
+
+	bool						mainMenuFocused;
+	bool						levelMenuFocused;
+	bool						optionMenuFocused;
+
+	uint32_t					inverseCameraAxisX;
+	uint32_t					inverseCameraAxisY;
+
 	bool						sceneLoaded;
 };
