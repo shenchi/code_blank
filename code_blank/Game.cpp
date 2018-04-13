@@ -438,6 +438,9 @@ bool Game::LoadScene(sceneType num)
 				}
 				assert(player != NULL);
 
+				TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/nightSky.dds");
+
+				cam->SetSkybox(tex);
 				cam->SetPosition(playerDetails.position);
 				cam->SetTarget(playerDetails.position);				
 				

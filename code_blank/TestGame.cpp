@@ -175,7 +175,7 @@ int32_t TestGame::Init()
 		cam->SetFOV(60.0f);
 		tCamera->SetLocalPosition(math::float3{ 0, 0, -2 });
 
-		//Material* skyboxMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialTypeSkybox);
+		//Material* skyboxMat = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialSkybox);
 		//TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/craterlake.texture");
 		//TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/textures/test/diffuseIrradianceMap.texture");
 		//TextureHandle specular = RenderingSystem::instance()->CreateTexture("assets/textures/test/prefilteredMap.texture");

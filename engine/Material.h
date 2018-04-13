@@ -7,6 +7,7 @@ namespace tofu
 	enum MaterialType
 	{
 		kMaterialNone,
+		kMaterialSkybox,
 		kMaterialShadow,
 		kMaterialShadowSkinned,
 		kMaterialDeferredGeometryOpaque,
@@ -21,6 +22,7 @@ namespace tofu
 		kMaterialPostProcessExtractBright,
 		kMaterialPostProcessBlur,
 		kMaterialPostProcessVolumetricFog,
+		kMaterialOverlay,
 		kMaterialFontRendering,
 		kMaxMaterialTypes
 	};

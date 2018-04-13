@@ -204,10 +204,12 @@ void Camera::SetSensitivity(float sen)
 }
 
 // Set Skybox
-void Camera::SetSkybox(tofu::Material* skyBox)
+//void Camera::SetSkybox(tofu::Material* skyBox)
+void Camera::SetSkybox(tofu::TextureHandle skyBox)
 {
-	//cam->SetSkybox(skyB);
+	cam->SetSkybox(skyBox);
 }
+
 
 // Set Camera Target
 void Camera::SetTarget(math::float3 target)

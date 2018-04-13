@@ -348,7 +348,7 @@ namespace tofu
 	{
 		if (NULL != pathNodes)
 		{
-			return pathNodes->size();
+			return int32_t(pathNodes->size());
 		}
 		else
 		{

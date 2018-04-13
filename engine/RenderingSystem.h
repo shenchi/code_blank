@@ -6,7 +6,7 @@
 #include "Material.h"
 
 #include "Renderer.h"
-#include "FontRenderer.h"
+#include "GUI.h"
 
 #include "HandleAllocator.h"
 
@@ -63,7 +63,7 @@ namespace tofu
 
 		int32_t CleanupLevelResources();
 
-		int32_t RenderText(const char* text, float x, float y);
+		float GetGPUTime();
 
 	private:
 
@@ -82,8 +82,6 @@ namespace tofu
 		int32_t ReallocAnimationResources(AnimationComponentData& c);
 
 		int32_t DeferredPipeline();
-
-		int32_t DebugPipeline();
 
 		TF_INLINE void AddLevelResourceHandle(BaseHandle handle)
 		{ 
@@ -111,7 +109,7 @@ namespace tofu
 
 		std::unordered_map<std::string, ModelHandle>		modelTable;
 
-		FontRenderer			fontRenderer;
+		GUI						gui;
 
 		Renderer*				renderer;
 
