@@ -362,8 +362,8 @@ bool Game::LoadScene(sceneType num)
 
 			//CHECKED(sceneMgr.LoadScene("assets/scenes/Node_Export.json"));
 			//CHECKED(sceneMgr.LoadScene("assets/scenes/Engine_Tut.json"));
-			//CHECKED(sceneMgr.LoadScene("assets/scenes/OptiTest.json"));
-			CHECKED(sceneMgr.LoadScene("assets/scenes/EngineExport.json"));
+			CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial_WIP.json"));
+			//CHECKED(sceneMgr.LoadScene("assets/scenes/EngineExport.json"));
 
 			int pathLength = sceneMgr.GetPathNodesLength();
 			if (pathLength > 0)
@@ -441,7 +441,7 @@ bool Game::LoadScene(sceneType num)
 				cam->SetPosition(playerDetails.position);
 				cam->SetTarget(playerDetails.position);				
 				
-				CharacterDetails enemyDetails = {};
+				/*CharacterDetails enemyDetails = {};
 				enemyDetails.tag = "player";
 				enemyDetails.modelName = "assets/archer.model";
 				enemyDetails.diffuseName = "assets/archer_0.texture";
@@ -456,18 +456,18 @@ bool Game::LoadScene(sceneType num)
 				enemyDetails.acceleration = 4.0f;
 				enemyDetails.deacceleration = 10.0f;
 				enemyDetails.rollDodgeCost = 10.0f;
-				enemyDetails.position = tofu::math::float3{413.0f, 2.0f, 77.0f};
+				enemyDetails.position = tofu::math::float3{413.0f, 2.0f, 77.0f};*/
 
 				//*********************************************************************************************
 				//temp for test
-				Model* model = RenderingSystem::instance()->CreateModel("assets/archer.model");
+				/*Model* model = RenderingSystem::instance()->CreateModel("assets/archer.model");
 
 				Material* material = RenderingSystem::instance()->CreateMaterial(MaterialType::kMaterialDeferredGeometryOpaqueSkinned);
 				TextureHandle diffuse = RenderingSystem::instance()->CreateTexture("assets/archer_0.texture");
 				TextureHandle normalMap = RenderingSystem::instance()->CreateTexture("assets/archer_1.texture");
 
 				material->SetTexture(diffuse);
-				material->SetNormalMap(normalMap);
+				material->SetNormalMap(normalMap);*/
 
 				//enemy01 = new Enemy(enemyDetails, model, material);
 				//enemyDetails.position = tofu::math::float3{ 410.0f, 2.0f, 70.0f };
