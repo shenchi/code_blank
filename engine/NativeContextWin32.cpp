@@ -70,8 +70,8 @@ namespace tofu
 
 			//int32_t w = 1600;// config->GetInt32("display.width", 800);
 			//int32_t h = 900;// config->GetInt32("display.height", 600);
-			int32_t w =	1280; //1280 1770 x 996 is the largest none full screen resolution that fits
-			int32_t h = 720;  //720
+			int32_t w =	1600; //1280 1770 x 996 is the largest none full screen resolution that fits
+			int32_t h = 900;  //720
 			std::string title = "tofu";// config->GetString("game.title");
 			std::wstring wtitle(title.begin(), title.end());
 

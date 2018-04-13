@@ -7,17 +7,22 @@ enum CharacterState
 	kNoState,
 	kIdleOutCombat,
 	kIdleInCombat,
+	kInjuredIdle,
 	kWalk,
+	kInjuredWalk,
 	kRun,
 	kJumpingPrepare,
 	kJumpUp,
 	kJumpAir,
 	kJumpDown,
+	kRunJump,
 	kAttack,
 	kAdjustPosition,
 	kHit,
+	kHitHeadWeak,
 	kDodge,
 	kRoll,
+	kRunRoll,
 	kDead
 };
 

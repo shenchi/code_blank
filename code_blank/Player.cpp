@@ -12,7 +12,7 @@ Player::Player(CharacterDetails details, void* comp)
 		combatDetails.inCombatDuration = 4.0f;
 		combatDetails.maxShotDistance = 20.0f;
 		combatDetails.minShotDistance = 2.0f;
-		combatDetails.jumpUpTime = 0.3f;			// 0.8f
+		combatDetails.jumpUpTime = 0.3f;//.3			// 0.8f
 		combatDetails.jumpAirTime = 1.0f;
 		combatDetails.jumpDownTime = 0.2f;
 		combatDetails.comboTimer = 0.0f;
@@ -51,6 +51,8 @@ Player::Player(CharacterDetails details, void* comp)
 			// Idle Animations
 			AnimationState *idle = stateMachine->AddState("idle");
 			idle->animationName = "idle";
+			AnimationState *kInjuredIdle = stateMachine->AddState("kInjuredIdle");
+			kInjuredIdle->animationName = "kInjuredIdle";
 			AnimationState *combat_idle = stateMachine->AddState("combat_idle");
 			combat_idle->animationName = "combat_idle";
 
@@ -58,6 +60,8 @@ Player::Player(CharacterDetails details, void* comp)
 			// Movement Animations
 			AnimationState *walk = stateMachine->AddState("walk");
 			walk->animationName = "walk";
+			AnimationState *kInjuredWalk = stateMachine->AddState("kInjuredWalk");
+			kInjuredWalk->animationName = "kInjuredWalk";
 			AnimationState *run = stateMachine->AddState("run");
 			run->animationName = "run";
 
@@ -71,12 +75,18 @@ Player::Player(CharacterDetails details, void* comp)
 			jump_air->animationName = "jump_air";
 			AnimationState *jump_down = stateMachine->AddState("jump_down");
 			jump_down->animationName = "jump_down";
+			AnimationState *kRunJump = stateMachine->AddState("kRunJump", false);
+			kRunJump->animationName = "kRunJump";
 
 
 			// Roll/Dodge Animations
 			AnimationState *kRoll = stateMachine->AddState("kRoll", false);
 			kRoll->animationName = "kRoll";
 			kRoll->playbackSpeed = 1.08f;
+
+			AnimationState *kRunRoll = stateMachine->AddState("kRunRoll", false);
+			kRunRoll->animationName = "kRunRoll";
+			kRunRoll->playbackSpeed = 1.1f;
 
 
 			// Combat Animations
@@ -106,6 +116,9 @@ Player::Player(CharacterDetails details, void* comp)
 			kSwordR2->animationName = "kSwordR2";
 			AnimationState *kSwordCombo = stateMachine->AddState("kSwordCombo");
 			kSwordCombo->animationName = "kSwordCombo";
+
+			AnimationState *kHitHeadWeak = stateMachine->AddState("kHitHeadWeak");
+			kHitHeadWeak->animationName = "kHitHeadWeak";
 
 			AnimationState *kDeath = stateMachine->AddState("kDeath", false);
 			kDeath->animationName = "kDeath";
@@ -128,6 +141,8 @@ Player::Player(CharacterDetails details, void* comp)
 			// Idle Animations
 			AnimationState *idle = stateMachine->AddState("idle");
 			idle->animationName = "idle";
+			AnimationState *kInjuredIdle = stateMachine->AddState("kInjuredIdle");
+			kInjuredIdle->animationName = "kInjuredIdle";
 			AnimationState *combat_idle = stateMachine->AddState("combat_idle");
 			combat_idle->animationName = "combat_idle";
 
@@ -135,6 +150,8 @@ Player::Player(CharacterDetails details, void* comp)
 			// Movement Animations
 			AnimationState *walk = stateMachine->AddState("walk");
 			walk->animationName = "walk";
+			AnimationState *kInjuredWalk = stateMachine->AddState("kInjuredWalk");
+			kInjuredWalk->animationName = "kInjuredWalk";
 			AnimationState *run = stateMachine->AddState("run");
 			run->animationName = "run";
 
@@ -148,12 +165,18 @@ Player::Player(CharacterDetails details, void* comp)
 			jump_air->animationName = "jump_air";
 			AnimationState *jump_down = stateMachine->AddState("jump_down");
 			jump_down->animationName = "jump_down";
+			AnimationState *kRunJump = stateMachine->AddState("kRunJump", false);
+			kRunJump->animationName = "kRunJump";
 
 
 			// Roll/Dodge Animations
 			AnimationState *kRoll = stateMachine->AddState("kRoll", false);
 			kRoll->animationName = "kRoll";
 			kRoll->playbackSpeed = 1.08f;
+
+			AnimationState *kRunRoll = stateMachine->AddState("kRunRoll", false);
+			kRunRoll->animationName = "kRunRoll";
+			kRunRoll->playbackSpeed = 1.1f;
 
 
 			// Combat Animations
@@ -183,6 +206,9 @@ Player::Player(CharacterDetails details, void* comp)
 			kSwordR2->animationName = "kSwordR2";
 			AnimationState *kSwordCombo = stateMachine->AddState("kSwordCombo");
 			kSwordCombo->animationName = "kSwordCombo";
+
+			AnimationState *kHitHeadWeak = stateMachine->AddState("kHitHeadWeak");
+			kHitHeadWeak->animationName = "kHitHeadWeak";
 
 			AnimationState *kDeath = stateMachine->AddState("kDeath", false);
 			kDeath->animationName = "kDeath";
