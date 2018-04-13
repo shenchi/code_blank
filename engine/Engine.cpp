@@ -203,20 +203,22 @@ namespace tofu
 			uint32_t layer = kMaxGUILayers - 1;
 			gui->SetupLayer(layer);
 
+			math::float4 white(1, 1, 1, 1);
+
 			sprintf_s(textBuf, "CPU Time: %.2f ms", cpuTime);
-			gui->Text(layer, -960, -540, 24, textBuf);
+			gui->Text(layer, -950, -540, 24, textBuf, white, kTextAlignTop);
 
 			sprintf_s(textBuf, "Physics Time: %.2f ms", physicsTime);
-			gui->Text(layer, -960, -520, 24, textBuf);
+			gui->Text(layer, -950, -520, 24, textBuf, white, kTextAlignTop);
 
 			sprintf_s(textBuf, "User Module Time: %.2f ms", userModuleTime);
-			gui->Text(layer, -960, -500, 24, textBuf);
+			gui->Text(layer, -950, -500, 24, textBuf, white, kTextAlignTop);
 
 			sprintf_s(textBuf, "Rendering System Time: %.2f ms", renderingSystemTime);
-			gui->Text(layer, -960, -480, 24, textBuf);
+			gui->Text(layer, -950, -480, 24, textBuf, white, kTextAlignTop);
 
 			sprintf_s(textBuf, "GPU Time: %.2f ms", renderingSystem->GetGPUTime());
-			gui->Text(layer, -960, -460, 24, textBuf);
+			gui->Text(layer, -950, -460, 24, textBuf, white, kTextAlignTop);
 #endif
 
 			CHECKED(renderingSystem->Update());

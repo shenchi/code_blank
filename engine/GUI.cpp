@@ -109,10 +109,7 @@ namespace tofu
 			*(vert + 1) = verts[i * 2 + 1] * scale;
 			*(vert + 2) = 0.0f;
 
-			*(vert + 3) = 1.0f;
-			*(vert + 4) = 1.0f;
-			*(vert + 5) = 1.0f;
-			*(vert + 6) = 1.0f;
+			*reinterpret_cast<math::float4*>(vert + 3) = gui->currentColor;
 
 			*(vert + 7) = tcoords[i * 2 + 0];
 			*(vert + 8) = tcoords[i * 2 + 1];
@@ -388,22 +385,25 @@ namespace tofu
 		}
 	}
 
-	void GUI::Text(uint32_t layer, float x, float y, float size, const char* text, TextAlign align)
+	void GUI::Text(uint32_t layer, float x, float y, float size, const char* text, math::float4 color, uint32_t align)
 	{
 		if (layer >= kMaxGUILayers) return;
 		if (nullptr == layers[layer].textVerts) return;
 		
 		currentLayer = layer;
 
+		currentColor = color;
+
 		float lh = 0;
 		fonsClearState(fonsContext);
-		fonsSetSize(fonsContext, 18.0f);
+		fonsSetSize(fonsContext, size);
 		fonsSetFont(fonsContext, font);
 		fonsVertMetrics(fonsContext, nullptr, nullptr, &lh);
 		fonsSetColor(fonsContext, 0xffffffffu);
+		fonsSetAlign(fonsContext, align);
 
 		// it will flush the buffer
-		x = fonsDrawText(fonsContext, x, y + lh, text, nullptr);
+		x = fonsDrawText(fonsContext, x, y, text, nullptr);
 	}
 
 	void GUI::Texture(uint32_t layer, float x, float y, float w, float h, float u0, float v0, float u1, float v1, float r, float g, float b, float a)
@@ -433,7 +433,7 @@ namespace tofu
 		layers[layer].numWidgetVerts += 6;
 	}
 
-	void GUI::BeginMenu(uint32_t layer, uint32_t selectedIndex, bool focused)
+	void GUI::BeginMenu(uint32_t selectedIndex, bool focused)
 	{
 		currentMenuIndex = 0;
 		selectedMenuItem = selectedIndex;
@@ -445,7 +445,7 @@ namespace tofu
 		if (focused)
 		{
 			InputSystem& input = *(InputSystem::instance());
-			if (input.IsButtonReleased(kKeyDown))
+			if (input.IsButtonReleased(kKeyDown) || input.IsButtonReleased(kGamepadDPadDown))
 			{
 				selectedMenuItem++;
 				if (selectedMenuItem >= currentMenuIndex)
@@ -453,7 +453,7 @@ namespace tofu
 					selectedMenuItem = 0;
 				}
 			}
-			else if (input.IsButtonReleased(kKeyUp))
+			else if (input.IsButtonReleased(kKeyUp) || input.IsButtonReleased(kGamepadDPadUp))
 			{
 				if (selectedMenuItem == 0)
 				{
@@ -472,21 +472,96 @@ namespace tofu
 		return selectedMenuItem;
 	}
 
-	void GUI::BeginMenuItem(uint32_t layer)
+	void GUI::BeginMenuItem()
 	{
-		if (focused)
-		{
-			highlighted = (currentMenuIndex == selectedMenuItem);
-		}
+		highlighted = focused && (currentMenuIndex == selectedMenuItem);
 	}
 
 	void GUI::EndMenuItem()
 	{
+		highlighted = false;
 		currentMenuIndex++;
 	}
 
-	void GUI::Label(uint32_t layer, float x, float y, float w, float h, float fontSize, const char * text, const GUIStyle & style)
+	void GUI::BeginSwitch(float x, float y, float w, float h, uint32_t selectedIndex)
 	{
+		selectedSwitchItem = selectedIndex;
+		currentSwitchIndex = 0;
+		switchX = x;
+		switchY = y;
+		switchW = w;
+		switchH = h;
+	}
+
+	uint32_t GUI::EndSwitch()
+	{
+		if (focused && highlighted)
+		{
+			InputSystem& input = *(InputSystem::instance());
+			if (input.IsButtonReleased(kKeyRight) || input.IsButtonReleased(kGamepadDPadRight))
+			{
+				selectedSwitchItem++;
+				if (selectedSwitchItem >= currentSwitchIndex)
+				{
+					selectedSwitchItem = 0;
+				}
+			}
+			else if (input.IsButtonReleased(kKeyLeft) || input.IsButtonReleased(kGamepadDPadLeft))
+			{
+				if (selectedSwitchItem == 0)
+				{
+					selectedSwitchItem = currentSwitchIndex - 1;
+				}
+				else
+				{
+					selectedSwitchItem--;
+				}
+			}
+		}
+
+		return selectedSwitchItem;
+	}
+
+	void GUI::Option(uint32_t layer, float fontSize, const char * text, const GUIStyle& style)
+	{
+		if (selectedSwitchItem == currentSwitchIndex)
+		{
+			GUI::Label(layer, switchX, switchY, switchW, switchH, fontSize, text, style, kTextAlignCenter | kTextAlignMiddle);
+		}
+		currentSwitchIndex++;
+	}
+
+	void GUI::Label(uint32_t layer, float x, float y, float w, float h, float fontSize, const char * text, const GUIStyle& style, int align)
+	{
+		math::float4 color = style.normalColor;
+
+		if (highlighted)
+		{
+			color = style.highlightedColor;
+		}
+
+		float textPosX = x;
+		float textPosY = y;
+
+		if (align & kTextAlignCenter)
+		{
+			textPosX = x + w * 0.5f;
+		}
+		else if (align & kTextAlignRight)
+		{
+			textPosX = x + w;
+		}
+
+		if (align & kTextAlignMiddle)
+		{
+			textPosY = y + h * 0.5f;
+		}
+		else if (align & (kTextAlignBottom | kTextAlignBaseline))
+		{
+			textPosY = y + h;
+		}
+
+		Text(layer, textPosX, textPosY, fontSize, text, color, align);
 	}
 
 	void GUI::Image(uint32_t layer, float x, float y, float w, float h, const GUIStyle & style)

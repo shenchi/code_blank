@@ -218,6 +218,8 @@ int32_t RenderingTest::Update()
 		gui->SetupLayer(0, uiTex);
 		gui->Texture(0, -960, -540, 1920, 1080);
 
+		gui->Text(0, 0, -400, 128, "Code Blank", math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignTop);
+
 		gui->SetupLayer(1, uiTex1);
 
 		GUIStyle style1 = {
@@ -271,51 +273,84 @@ int32_t RenderingTest::Update()
 			atlas.rects[6],
 		};
 
-		// main menu
-		gui->BeginMenu(1, mainMenuSelectedItem, mainMenuFocused);
-
-		gui->BeginMenuItem(1);
-		gui->Image(1, -500, 0, 288, 53, style1);
-		gui->EndMenuItem();
-
-		gui->BeginMenuItem(1);
-		gui->Image(1, -500, 60, 288, 53, style2);
-		gui->EndMenuItem();
-
-		gui->BeginMenuItem(1);
-		gui->Image(1, -500, 120, 288, 53, style3);
-		gui->EndMenuItem();
-
-		gui->BeginMenuItem(1);
-		gui->Image(1, -500, 180, 288, 53, style4);
-		gui->EndMenuItem();
-
-		gui->BeginMenuItem(1);
-		gui->Image(1, -500, 240, 288, 53, style5);
-		gui->EndMenuItem();
-
-		mainMenuSelectedItem = gui->EndMenu();
-
-		if (levelMenuFocused)
+		if (!optionMenuFocused)
 		{
-			gui->BeginMenu(1, levelMenuSelectedItem, levelMenuFocused);
+			// main menu
+			gui->BeginMenu(mainMenuSelectedItem, mainMenuFocused);
 
-			gui->BeginMenuItem(1);
-			gui->Image(1, -144, 0, 288, 53, style6);
+			gui->BeginMenuItem();
+			gui->Image(1, -500, 0, 288, 53, style1);
 			gui->EndMenuItem();
 
-			gui->BeginMenuItem(1);
-			gui->Image(1, -144, 60, 288, 53, style7);
+			gui->BeginMenuItem();
+			gui->Image(1, -500, 60, 288, 53, style2);
 			gui->EndMenuItem();
 
-			gui->BeginMenuItem(1);
+			gui->BeginMenuItem();
+			gui->Image(1, -500, 120, 288, 53, style3);
+			gui->EndMenuItem();
+
+			gui->BeginMenuItem();
+			gui->Image(1, -500, 180, 288, 53, style4);
+			gui->EndMenuItem();
+
+			gui->BeginMenuItem();
+			gui->Image(1, -500, 240, 288, 53, style5);
+			gui->EndMenuItem();
+
+			mainMenuSelectedItem = gui->EndMenu();
+
+			if (levelMenuFocused)
+			{
+				gui->BeginMenu(levelMenuSelectedItem, levelMenuFocused);
+
+				gui->BeginMenuItem();
+				gui->Image(1, -144, 0, 288, 53, style6);
+				gui->EndMenuItem();
+
+				gui->BeginMenuItem();
+				gui->Image(1, -144, 60, 288, 53, style7);
+				gui->EndMenuItem();
+
+				gui->BeginMenuItem();
+				gui->Image(1, -144, 120, 288, 53, style8);
+				gui->EndMenuItem();
+
+				levelMenuSelectedItem = gui->EndMenu();
+			}
+		}
+		else
+		{
+			gui->BeginMenu(optionMenuSelectedItem, optionMenuFocused);
+
+			gui->BeginMenuItem();
+			gui->Label(1, -400, -100, 400, 50, 36, "Inverse Camera Axis X", style1, kTextAlignLeft | kTextAlignMiddle);
+
+			gui->BeginSwitch(300, -100, 100, 50, inverseCameraAxisX);
+			gui->Option(1, 36, "Off", style1);
+			gui->Option(1, 36, "On", style1);
+			inverseCameraAxisX = gui->EndSwitch();
+
+			gui->EndMenuItem();
+
+			gui->BeginMenuItem();
+			gui->Label(1, -400, -50, 400, 50, 36, "Inverse Camera Axis Y", style1, kTextAlignLeft | kTextAlignMiddle);
+
+			gui->BeginSwitch(300, -50, 100, 50, inverseCameraAxisY);
+			gui->Option(1, 36, "Off", style1);
+			gui->Option(1, 36, "On", style1);
+			inverseCameraAxisY = gui->EndSwitch();
+
+			gui->EndMenuItem();
+
+			gui->BeginMenuItem();
 			gui->Image(1, -144, 120, 288, 53, style8);
 			gui->EndMenuItem();
 
-			levelMenuSelectedItem = gui->EndMenu();
+			optionMenuSelectedItem = gui->EndMenu();
 		}
 
-		if (input->IsButtonReleased(kKeyEnter))
+		if (input->IsButtonReleased(kKeyEnter) || input->IsButtonReleased(kGamepadFaceDown))
 		{
 			if (mainMenuFocused)
 			{
@@ -325,6 +360,11 @@ int32_t RenderingTest::Update()
 					mainMenuFocused = false;
 					levelMenuFocused = true;
 					levelMenuSelectedItem = 0;
+					break;
+				case 1:
+					mainMenuFocused = false;
+					optionMenuFocused = true;
+					optionMenuSelectedItem = 0;
 					break;
 				case 4:
 					Engine::instance()->Quit();
@@ -340,6 +380,18 @@ int32_t RenderingTest::Update()
 				case 2:
 					mainMenuFocused = true;
 					levelMenuFocused = false;
+					break;
+				default:
+					break;
+				}
+			}
+			else if (optionMenuFocused)
+			{
+				switch (optionMenuSelectedItem)
+				{
+				case 2:
+					mainMenuFocused = true;
+					optionMenuFocused = false;
 					break;
 				default:
 					break;

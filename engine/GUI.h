@@ -9,9 +9,14 @@ namespace tofu
 {
 	enum TextAlign
 	{
-		kTextAlignLeft,
-		kTextAlignCenter,
-		kTextAlignRight,
+		kTextAlignLeft = 1 << 0,
+		kTextAlignCenter = 1 << 1,
+		kTextAlignRight = 1 << 2,
+
+		kTextAlignTop = 1 << 3,
+		kTextAlignMiddle = 1 << 4,
+		kTextAlignBottom = 1 << 5,
+		kTextAlignBaseline = 1 << 6
 	};
 
 	struct GUILayer
@@ -93,6 +98,8 @@ namespace tofu
 
 		uint32_t				currentLayer;
 
+		math::float4			currentColor;
+
 	private:
 		BufferHandle			vertBuf;
 		uint32_t				maxVerts;
@@ -124,7 +131,7 @@ namespace tofu
 		void SetupLayer(uint32_t layer, TextureHandle tex = TextureHandle(), uint32_t maxWidgets = 512, uint32_t maxCharacters = 512);
 
 		// draw text
-		void Text(uint32_t layer, float x, float y, float size, const char* text, TextAlign align = kTextAlignLeft);
+		void Text(uint32_t layer, float x, float y, float size, const char* text, math::float4 color = math::float4(1), uint32_t align = (kTextAlignLeft | kTextAlignBaseline));
 
 		// draw part of a texture
 		void Texture(uint32_t layer, float x, float y, float w, float h, float u0 = 0.0f, float v0 = 0.0f, float u1 = 1.0f, float v1 = 1.0f, float r = 1.0f, float g = 1.0f, float b = 1.0f, float a = 1.0f);
@@ -134,24 +141,29 @@ namespace tofu
 		bool			focused;
 		bool			highlighted;
 		uint32_t		selectedMenuItem;
-		uint32_t		selectedSwitchItem;
-
 		uint32_t		currentMenuIndex;
+
+		uint32_t		selectedSwitchItem;
 		uint32_t		currentSwitchIndex;
+		float			switchX, switchY, switchW, switchH;
 
 	public:
 
-		void BeginMenu(uint32_t layer, uint32_t selectedIndex = 0, bool focused = true);
+		void BeginMenu(uint32_t selectedIndex = 0, bool focused = true);
 
 		uint32_t EndMenu();
 
-		void BeginMenuItem(uint32_t layer);
+		void BeginMenuItem();
 
 		void EndMenuItem();
 
+		void BeginSwitch(float x, float y, float w, float h, uint32_t selectedIndex = 0);
 
+		uint32_t EndSwitch();
 
-		void Label(uint32_t layer, float x, float y, float w, float h, float fontSize, const char * text, const GUIStyle & style);
+		void Option(uint32_t layer, float fontSize, const char * text, const GUIStyle& style);
+
+		void Label(uint32_t layer, float x, float y, float w, float h, float fontSize, const char* text, const GUIStyle& style, int align = kTextAlignCenter | kTextAlignTop);
 
 		void Image(uint32_t layer, float x, float y, float w, float h, const GUIStyle& style);
 	};
