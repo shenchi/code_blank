@@ -92,6 +92,7 @@ int32_t RenderingTest::Init()
 		}
 
 		mainMenuFocused = true;
+		uiEnabled = true;
 	}
 
 	pitch = InitPitch;
@@ -211,6 +212,7 @@ int32_t RenderingTest::Update()
 		anim->CrossFade("idle", 0.1f);
 	}
 
+	if (uiEnabled)
 	{
 		GUI* gui = GUI::instance();
 		gui->SetCanvasSize(1920, 1080);
@@ -382,6 +384,7 @@ int32_t RenderingTest::Update()
 					levelMenuFocused = false;
 					break;
 				default:
+					uiEnabled = false;
 					break;
 				}
 			}

@@ -235,6 +235,7 @@ namespace tofu
 		CHECKED(LoadPixelShader("assets/post_process_tone_mapping_ps.shader", materialPSs[kMaterialPostProcessToneMapping]));
 		CHECKED(LoadPixelShader("assets/post_process_extract_bright_ps.shader", materialPSs[kMaterialPostProcessExtractBright]));
 		CHECKED(LoadPixelShader("assets/post_process_blur_ps.shader", materialPSs[kMaterialPostProcessBlur]));
+		CHECKED(LoadPixelShader("assets/post_process_fxaa_ps.shader", materialPSs[kMaterialPostProcessAntiAliasing]));
 
 		CHECKED(LoadPixelShader("assets/volumetric_fog_apply_ps.shader", materialPSs[kMaterialPostProcessVolumetricFog]));
 
@@ -579,6 +580,25 @@ namespace tofu
 			params->handle = materialPSOs[kMaterialPostProcessVolumetricFog];
 			params->vertexShader = materialVSs[kMaterialDeferredLightingAmbient];
 			params->pixelShader = materialPSs[kMaterialPostProcessVolumetricFog];
+
+			params->depthEnable = 0;
+
+			params->cullMode = kCullBack;
+
+			params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
+
+			params->label = kResourceGlobal;
+
+			cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+		}
+
+		materialPSOs[kMaterialPostProcessAntiAliasing] = pipelineStateHandleAlloc.Allocate();
+		assert(materialPSOs[kMaterialPostProcessAntiAliasing]);
+		{
+			CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
+			params->handle = materialPSOs[kMaterialPostProcessAntiAliasing];
+			params->vertexShader = materialVSs[kMaterialDeferredLightingAmbient];
+			params->pixelShader = materialPSs[kMaterialPostProcessAntiAliasing];
 
 			params->depthEnable = 0;
 
@@ -2280,45 +2300,45 @@ namespace tofu
 				cmdBuf->Add(RendererCommand::kCommandCompute, params);
 			}
 
-			// Extract bright part
-			{
-				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
-				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
-
-				params->pipelineState = materialPSOs[kMaterialPostProcessExtractBright];
-
-				params->vertexBuffer = mesh.VertexBuffer;
-				params->indexBuffer = mesh.IndexBuffer;
-				params->startIndex = mesh.StartIndex;
-				params->startVertex = mesh.StartVertex;
-				params->indexCount = mesh.NumIndices;
-
-				params->psShaderResources[0] = hdrTarget;
-
-				params->renderTargets[0] = hdrTarget2;
-
-				cmdBuf->Add(RendererCommand::kCommandDraw, params);
-			}
-
-			// Blur
-			{
-				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
-				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
-
-				params->pipelineState = materialPSOs[kMaterialPostProcessBlur];
-
-				params->vertexBuffer = mesh.VertexBuffer;
-				params->indexBuffer = mesh.IndexBuffer;
-				params->startIndex = mesh.StartIndex;
-				params->startVertex = mesh.StartVertex;
-				params->indexCount = mesh.NumIndices;
-
-				params->psShaderResources[0] = hdrTarget2;
-
-				params->renderTargets[0] = hdrTarget;
-
-				cmdBuf->Add(RendererCommand::kCommandDraw, params);
-			}
+			//// Extract bright part
+			//{
+			//	Mesh& mesh = meshes[builtinQuad->meshes[0].id];
+			//	DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
+			//
+			//	params->pipelineState = materialPSOs[kMaterialPostProcessExtractBright];
+			//
+			//	params->vertexBuffer = mesh.VertexBuffer;
+			//	params->indexBuffer = mesh.IndexBuffer;
+			//	params->startIndex = mesh.StartIndex;
+			//	params->startVertex = mesh.StartVertex;
+			//	params->indexCount = mesh.NumIndices;
+			//
+			//	params->psShaderResources[0] = hdrTarget;
+			//
+			//	params->renderTargets[0] = hdrTarget2;
+			//
+			//	cmdBuf->Add(RendererCommand::kCommandDraw, params);
+			//}
+			//
+			//// Blur
+			//{
+			//	Mesh& mesh = meshes[builtinQuad->meshes[0].id];
+			//	DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
+			//
+			//	params->pipelineState = materialPSOs[kMaterialPostProcessBlur];
+			//
+			//	params->vertexBuffer = mesh.VertexBuffer;
+			//	params->indexBuffer = mesh.IndexBuffer;
+			//	params->startIndex = mesh.StartIndex;
+			//	params->startVertex = mesh.StartVertex;
+			//	params->indexCount = mesh.NumIndices;
+			//
+			//	params->psShaderResources[0] = hdrTarget2;
+			//
+			//	params->renderTargets[0] = hdrTarget;
+			//
+			//	cmdBuf->Add(RendererCommand::kCommandDraw, params);
+			//}
 
 			// volumetric fog
 			{
@@ -2360,6 +2380,28 @@ namespace tofu
 				params->indexCount = mesh.NumIndices;
 
 				params->psShaderResources[0] = hdrTarget2;
+				params->renderTargets[0] = hdrTarget;
+
+				cmdBuf->Add(RendererCommand::kCommandDraw, params);
+			}
+
+			// anti-aliasing
+			{
+				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
+				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
+
+				params->pipelineState = materialPSOs[kMaterialPostProcessAntiAliasing];
+
+				params->psConstantBuffers[0] = { frameConstantBuffer, 0, 0 };
+
+				params->vertexBuffer = mesh.VertexBuffer;
+				params->indexBuffer = mesh.IndexBuffer;
+				params->startIndex = mesh.StartIndex;
+				params->startVertex = mesh.StartVertex;
+				params->indexCount = mesh.NumIndices;
+
+				params->psShaderResources[0] = hdrTarget;
+				params->psSamplers[0] = volumeSampler;
 
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}

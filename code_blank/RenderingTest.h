@@ -39,6 +39,8 @@ private:
 	uint32_t					levelMenuSelectedItem;
 	uint32_t					optionMenuSelectedItem;
 
+	bool						uiEnabled;
+
 	bool						mainMenuFocused;
 	bool						levelMenuFocused;
 	bool						optionMenuFocused;
