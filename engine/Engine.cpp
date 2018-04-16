@@ -138,6 +138,7 @@ namespace tofu
 			float physicsTime = PerformanceTimer::GetTime(PerformanceTimer::deltaTimerSlots[kPerformanceTimerSlotPhysicsTime]);
 			float userModuleTime = PerformanceTimer::GetTime(PerformanceTimer::deltaTimerSlots[kPerformanceTimerSlotUserUpdateTime]);
 			float renderingSystemTime = PerformanceTimer::GetTime(PerformanceTimer::deltaTimerSlots[kPerformanceTimerSlotRenderingSystemTime]);
+			float customMeasuringTime = PerformanceTimer::GetTime(PerformanceTimer::deltaTimerSlots[kPerformanceTimerSlotCustem]);
 
 			PERFORMANCE_TIMER_START(kPerformanceTimerSlotFrameTime);
 
@@ -219,11 +220,18 @@ namespace tofu
 
 			sprintf_s(textBuf, "GPU Time: %.2f ms", renderingSystem->GetGPUTime());
 			gui->Text(layer, -950, -460, 24, textBuf, white, kTextAlignTop);
+
+			sprintf_s(textBuf, "Custom Measuring Time: %.2f ms", customMeasuringTime);
+			gui->Text(layer, -950, -440, 24, textBuf, white, kTextAlignTop);
 #endif
 
 			CHECKED(renderingSystem->Update());
 
+			PERFORMANCE_TIMER_START(kPerformanceTimerSlotCustem);
+			//PERFORMANCE_TIMER_PAUSE(kPerformanceTimerSlotCustem);
 			CHECKED(renderingSystem->EndFrame());
+			//PERFORMANCE_TIMER_RESUME(kPerformanceTimerSlotCustem);
+			PERFORMANCE_TIMER_END(kPerformanceTimerSlotCustem);
 
 			PERFORMANCE_TIMER_END(kPerformanceTimerSlotRenderingSystemTime);
 
