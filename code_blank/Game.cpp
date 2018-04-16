@@ -58,10 +58,13 @@ int32_t Game::Init()
 
 	// Load the initial scene (Defalut is Intro)
 	// Load other scenes here for fast testing
-	currentScene = level;
+	currentScene = intro;
 
 	// Set up initial UI
 	{
+		uiTimer = 0;
+		deathMenuSelectedItem = 0;
+
 		uiBGTex_0 = RenderingSystem::instance()->CreateTexture("assets/UI_Textures/title_background.texture", kResourceGlobal);
 		uiButTex = RenderingSystem::instance()->CreateTexture("assets/UI_Textures/ui.texture", kResourceGlobal);
 		uiGamePadPC = RenderingSystem::instance()->CreateTexture("assets/UI_Textures/gamePad_PC.texture", kResourceGlobal);
@@ -191,21 +194,72 @@ int32_t Game::Update()
 			ret = UnloadScene(menu);
 			assert(ret == kOK);
 		}
+		else if (uiResult.uiCode == 5)
+		{
+			// Load next scene
+			currentScene = loading;
+			levelToLoad = tutorial;
+			ret = LoadScene(loading);
+			assert(ret == kOK);
+
+			// Unload last scene
+			lastScene = menu;
+			ret = UnloadScene(menu);
+			assert(ret == kOK);
+		}
+		else if (uiResult.uiCode == 6)
+		{
+			// Load next scene
+			currentScene = loading;
+			levelToLoad = level;
+			ret = LoadScene(loading);
+			assert(ret == kOK);
+
+			// Unload last scene
+			lastScene = intro;
+			ret = UnloadScene(intro);
+			assert(ret == kOK);
+		}
+		else if (uiResult.uiCode == 10)
+		{
+			// Load next scene
+			currentScene = credits;
+			ret = LoadScene(credits);
+			assert(ret == kOK);
+
+			// Unload last scene
+			lastScene = menu;
+			ret = UnloadScene(menu);
+			assert(ret == kOK);
+		}
+		{
+			int camXMod = inverseCameraAxisX;
+			int camYMod = inverseCameraAxisY;
+			if (camXMod == 0)
+				camXMod = -1;
+
+			if (camYMod == 0)
+				camYMod = -1;
+			pControl->SetControlMods(1, 1, camYMod, camXMod);
+		}
 		break;
 	}
 	case 4:	// Loading
 	{
-		if (uiResult.uiCode == 5)
+		if (levelToLoad = level)
 		{
-			// Load next scene
-			currentScene = tutorial;
-			ret = LoadScene(tutorial);
+			currentScene = level;
+			ret = LoadScene(level);
 			assert(ret == kOK);
 
 			// Unload last scene
-			lastScene = loading;
-			ret = UnloadScene(loading);
+			lastScene = tutorial;
+			ret = UnloadScene(tutorial);
 			assert(ret == kOK);
+		}
+		else if (levelToLoad = tutorial)
+		{
+
 		}
 		break;
 	}
@@ -296,12 +350,52 @@ int32_t Game::Update()
 
 		break;
 	}
+	case 8: // End of Level
+	{
+		if (uiResult.uiCode == 5)
+		{
+			// Load next scene
+			currentScene = tutorial;
+			ret = LoadScene(tutorial);
+			assert(ret == kOK);
+
+			// Unload last scene
+			lastScene = death;
+			ret = UnloadScene(death);
+			assert(ret == kOK);
+		}
+		else if (uiResult.uiCode == 6)
+		{
+			// Load next scene
+			currentScene = level;
+			ret = LoadScene(level);
+			assert(ret == kOK);
+
+			// Unload last scene
+			lastScene = death;
+			ret = UnloadScene(death);
+			assert(ret == kOK);
+		}
+		else if (uiResult.uiCode == 10)
+		{
+			// Load next scene
+			currentScene = credits;
+			ret = LoadScene(credits);
+			assert(ret == kOK);
+
+			// Unload last scene
+			lastScene = death;
+			ret = UnloadScene(death);
+			assert(ret == kOK);
+		}
+		break;
+	}
 	case 9: // End of Level
 	{
 		if (uiResult.uiCode == 10)
 		{
 			// Load next scene
-			currentScene = levelEnd;
+			currentScene = credits;
 			ret = LoadScene(credits);
 			assert(ret == kOK);
 
@@ -825,6 +919,7 @@ UIResult Game::LoadUI(sceneType num)
 						break;
 					case 3:
 						mainMenuFocused = false;
+						creditsMenuSelectedItem = 0;
 						result.uiCode = 10;
 						break;
 					case 4:
@@ -838,6 +933,16 @@ UIResult Game::LoadUI(sceneType num)
 				{
 					switch (levelMenuSelectedItem)
 					{
+					case 0:
+						uiTimer = 0;
+						levelMenuFocused = false;
+						result.uiCode = 5;
+						break;
+					case 1:
+						uiTimer = 0;
+						levelMenuFocused = false;
+						result.uiCode = 6;
+						break;
 					case 2:
 						mainMenuFocused = true;
 						levelMenuFocused = false;
@@ -877,7 +982,67 @@ UIResult Game::LoadUI(sceneType num)
 	case 2:
 	{
 		// TODO
-		//  Options UI
+		gui->SetupLayer(0, uiBGTex_0);
+		gui->Texture(0, -960, -540, 1920, 1080);
+
+		gui->SetupLayer(1, uiButTex);
+
+		GUIStyle style1 = {
+			{ 1, 1, 1, 0.5f },
+			{ 1, 1, 1, 1 },
+			atlas.rects[0],
+			atlas.rects[0],
+		};
+		GUIStyle style8 = {
+			{ 1, 1, 1, 0.5f },
+			{ 1, 1, 1, 1 },
+			atlas.rects[6],
+			atlas.rects[6],
+		};
+
+		{
+			gui->BeginMenu(optionMenuSelectedItem, optionMenuFocused);
+
+			gui->BeginMenuItem();
+			gui->Label(1, -400, -100, 400, 50, 36, "Inverse Camera Axis X", style1, kTextAlignLeft | kTextAlignMiddle);
+
+			gui->BeginSwitch(300, -100, 100, 50, inverseCameraAxisX);
+			gui->Option(1, 36, "Off", style1);
+			gui->Option(1, 36, "On", style1);
+			inverseCameraAxisX = gui->EndSwitch();
+
+			gui->EndMenuItem();
+
+			gui->BeginMenuItem();
+			gui->Label(1, -400, -50, 400, 50, 36, "Inverse Camera Axis Y", style1, kTextAlignLeft | kTextAlignMiddle);
+
+			gui->BeginSwitch(300, -50, 100, 50, inverseCameraAxisY);
+			gui->Option(1, 36, "Off", style1);
+			gui->Option(1, 36, "On", style1);
+			inverseCameraAxisY = gui->EndSwitch();
+
+			gui->EndMenuItem();
+
+			gui->BeginMenuItem();
+			gui->Image(1, -144, 120, 288, 53, style8);
+			gui->EndMenuItem();
+
+			optionMenuSelectedItem = gui->EndMenu();
+		}
+
+		if (input->IsButtonReleased(kKeyEnter) || input->IsButtonReleased(kGamepadFaceDown))
+		{
+			switch (optionMenuSelectedItem)
+			{
+			case 2:
+				mainMenuFocused = true;
+				//result.uiCode = ;
+				break;
+			default:
+				break;
+			}
+		}
+
 		break;
 	}
 	case 3:
@@ -888,8 +1053,26 @@ UIResult Game::LoadUI(sceneType num)
 	}
 	case 4:
 	{
-		// TODO
-		//  Loading UI
+		// Background texture
+		gui->SetupLayer(0, uiBGTex_0);
+		gui->Texture(0, -960, -540, 1920, 1080);
+
+		// TODO Find better loading feeback
+		// Layer, pos x, pos, y, size, text, color, algin, algin 2
+		if(uiTimer < 16)
+			gui->Text(0, -300, 500, 128, "Loading", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignMiddle);
+		else if(uiTimer > 15 && uiTimer < 31)
+			gui->Text(0, -300, 500, 128, "Loading.", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignMiddle);
+		else if (uiTimer > 30 && uiTimer < 46)
+			gui->Text(0, -300, 500, 128, "Loading..", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignMiddle);
+		else if (uiTimer > 45 && uiTimer < 61)
+			gui->Text(0, -300, 500, 128, "Loading...", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignMiddle);
+		else if (uiTimer > 60 && uiTimer < 76)
+			gui->Text(0, -300, 500, 128, "Loading....", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignMiddle);
+
+		uiTimer++;
+		if (uiTimer > 75)
+			uiTimer = 0;
 		break;
 	}
 	case 5:
@@ -900,7 +1083,6 @@ UIResult Game::LoadUI(sceneType num)
 	}
 	case 6:
 	{
-		result.uiCode = 0;
 		// TODO
 		//  Main Level UI
 		break;
@@ -913,20 +1095,202 @@ UIResult Game::LoadUI(sceneType num)
 	}
 	case 8:
 	{
-		// TODO
-		// Death UI
+		gui->SetupLayer(0, uiBGTex_0);
+		gui->Texture(0, -960, -540, 1920, 1080);
+
+		gui->SetupLayer(1, uiButTex);
+
+		GUIStyle style1 = {
+			{ 1, 1, 1, 0.5f },
+			{ 1, 1, 1, 1 },
+			atlas.rects[9],
+			atlas.rects[9],
+		};
+		GUIStyle style2 = {
+			{ 1, 1, 1, 0.5f },
+			{ 1, 1, 1, 1 },
+			atlas.rects[3],
+			atlas.rects[3],
+		};
+		GUIStyle style3 = {
+			{ 1, 1, 1, 0.5f },
+			{ 1, 1, 1, 1 },
+			atlas.rects[10],
+			atlas.rects[10],
+		};
+
+		gui->Text(0, 0, -150, 128, "You", math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignMiddle);
+
+		gui->Text(0, 0, -50, 128, "Died", math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignMiddle);
+
+		gui->BeginMenu(deathMenuSelectedItem, true);
+
+		gui->BeginMenuItem();
+		gui->Image(1, -150, 60, 288, 53, style1);
+		gui->EndMenuItem();
+
+		gui->BeginMenuItem();
+		gui->Image(1, -150, 120, 288, 53, style2);
+		gui->EndMenuItem();
+
+		gui->BeginMenuItem();
+		gui->Image(1, -150, 180, 288, 53, style3);
+		gui->EndMenuItem();
+
+		deathMenuSelectedItem = gui->EndMenu();
+
+		if (input->IsButtonReleased(kKeyEnter) || input->IsButtonReleased(kGamepadFaceDown))
+		{
+			switch (deathMenuSelectedItem)
+			{
+			case 0:
+				result.uiCode = 6;
+				break;
+			case 1:
+				result.uiCode = 5;
+				break;
+			case 2:
+				result.uiCode = 10;
+				break;
+			default:
+				break;
+			}
+		}
+
 		break;
 	}
 	case 9:
 	{
-		// TODO
-		//  End of Level UI
+		// Background texture
+		gui->SetupLayer(0, uiBGTex_0);
+		gui->Texture(0, -960, -540, 1920, 1080);
+
+		gui->Text(0, 0, -50, 128, "Level", math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignMiddle);
+
+		gui->Text(0, 0, 50, 128, "Complete", math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignMiddle);
+
+		// Button
+		gui->SetupLayer(1, uiButTex, 512u, 1024u);
+
+		GUIStyle style1 = {
+			{ 1, 1, 1, 0.5f },
+			{ 1, 1, 1, 1 },
+			atlas.rects[2],
+			atlas.rects[2],
+		};
+
+		gui->BeginMenu(endMenuSelectedItem, true);
+
+		gui->BeginMenuItem();
+		// layer, pos x, pos y, width, height, style
+		gui->Image(1, -150, 200, 288, 53, style1);
+		gui->EndMenuItem();
+
+		endMenuSelectedItem = gui->EndMenu();
+
+		if (input->IsButtonReleased(kKeyEnter) || input->IsButtonReleased(kGamepadFaceDown))
+		{
+			// Only one button
+			result.uiCode = 10;
+			creditsMenuSelectedItem = 0;
+		}
+
 		break;
 	}
 	case 10:
 	{
-		// TODO
-		//  Credits UI
+		{
+			// Background texture
+			gui->SetupLayer(0, uiBGTex_0);
+			gui->Texture(0, -960, -540, 1920, 1080);
+
+			// Title Text
+			// Layer, pos x, pos, y, size, text, color, algin, algin 2
+			gui->Text(0, 0, -515, 32, "Credits", math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignMiddle);
+
+			// Button
+			gui->SetupLayer(1, uiButTex, 512u, 1024u);
+
+			GUIStyle style1 = {
+				{ 1, 1, 1, 0.5f },
+				{ 1, 1, 1, 1 },
+				atlas.rects[11],
+				atlas.rects[11],
+			};
+			
+			gui->Text(1, 0, -464, 32, "In house development team:", 
+				math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignMiddle);
+			
+			gui->Text(1, 0, -428, 32, "Shih-Kuang Chu - Animation System, Post Processing, Optimization.",
+				math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignMiddle);
+			
+			gui->Text(1, 0, -372, 32, "Darren Farr - Producer, Gameplay Programmer, Design, UI.",
+				math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignMiddle);
+
+			gui->Text(1, 0, -316, 32, "Sravan Karuturi - Artificial Intelligence, User Interface Development.",
+				math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignMiddle);
+			
+			gui->Text(1, 0, -260, 32, "Chi Shen - Base Engine, Memory, File I/O, Rendering.",
+				math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignMiddle);
+
+			gui->Text(1, 0, -204, 32, "Rui Xia - Graphics, Lighting, Shaders, Textures.",
+				math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignMiddle);
+
+			gui->Text(1, 0, -148, 32, "Pengfei Zhang - Design, Animation, Art Director.",
+				math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignMiddle);
+
+			gui->Text(1, 0, -72, 32, "Third party art team:",
+				math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignMiddle);
+
+			gui->Text(1, 0, -36, 32, "Hexuan Cai - Concept Art",
+				math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignMiddle);
+
+			gui->Text(1, 0, 20, 32, "Feitong Chen - 3D Modeler",
+				math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignMiddle);
+
+			gui->Text(1, 0, 76, 32, "Wentao Huang - 3D Modeler",
+				math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignMiddle);
+
+			gui->Text(1, 0, 132, 32, "Shengjie Liu  - 3D Modeler",
+				math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignMiddle);
+
+			gui->Text(1, 0, 188, 32, "Jing Lyu  - 3D modeler",
+				math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignMiddle);
+
+			gui->Text(1, 0, 244, 32, "Zhuoxin Xu - UI Artist",
+				math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignMiddle);
+
+			gui->Text(1, 0, 300, 32, "Longji Zhang  - 3D Modeler",
+				math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignMiddle);
+			
+			gui->Text(1, 0, 376, 32, "Sound:",
+				math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignMiddle);
+
+			gui->Text(1, 0, 412, 32, "Alexandria Murray - Music",
+				math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignMiddle);
+
+			gui->Text(1, 0, 468, 32, "Unity Store - SFX (Also models, textures, etc)",
+				math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignMiddle);
+			
+			
+
+			gui->BeginMenu(creditsMenuSelectedItem, true);
+
+			gui->BeginMenuItem();
+			// layer, pos x, pos y, width, height, style
+			gui->Image(1, -150, 490, 288, 53, style1);
+			gui->EndMenuItem();
+
+			creditsMenuSelectedItem = gui->EndMenu();
+
+			if (input->IsButtonReleased(kKeyEnter) || input->IsButtonReleased(kGamepadFaceDown))
+			{
+				// Only one button
+				result.uiCode = 1;
+
+				mainMenuFocused = true;
+			}
+		}
 		break;
 	}
 	default:

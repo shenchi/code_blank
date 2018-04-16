@@ -68,6 +68,7 @@ private:
 	tofu::SceneManager sceneMgr;
 	sceneType currentScene;
 	sceneType lastScene;
+	sceneType levelToLoad;
 
 	// Member Functions
 	// These may be temporary or call the needed functions.
@@ -105,15 +106,19 @@ private:
 	uint32_t					levelMenuSelectedItem;
 	uint32_t					optionMenuSelectedItem;
 	uint32_t					helpMenuSelectedItem;
+	uint32_t					creditsMenuSelectedItem;
+	uint32_t					endMenuSelectedItem;
+	uint32_t					deathMenuSelectedItem;
 
 	bool						mainMenuFocused;
 	bool						levelMenuFocused;
 	bool						optionMenuFocused;
 	bool						helpMenuFocused;
-	bool						creditsMenuFocused;
 
 	uint32_t					inverseCameraAxisX;
 	uint32_t					inverseCameraAxisY;
 
 	UIResult					uiResult;
+
+	uint32_t					uiTimer;
 };

@@ -263,7 +263,7 @@ namespace tofu
 		{
 			if (maxVerts > 0)
 			{
-				cmdBuf->Add(RendererCommand::kCommandCreateBuffer, &vertBuf);
+				cmdBuf->Add(RendererCommand::kCommandDestroyBuffer, &vertBuf);
 				maxVerts = ((bufferSize + 255u) & (~255u));
 			}
 			else
