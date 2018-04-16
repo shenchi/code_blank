@@ -10,6 +10,8 @@ namespace tofu
 		kOK = 0,
 
 		kErrConfigLoadingFailed,
+
+		kErrUILoadingFailed,
 	};
 
 	

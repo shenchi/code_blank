@@ -230,3 +230,9 @@ struct Action
 	}
 
 };
+
+struct UIResult
+{
+	uint32_t errorCode;	// Error handling code
+	uint32_t uiCode;	// UI Code for action
+};

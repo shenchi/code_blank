@@ -76,6 +76,7 @@ private:
 	bool UnloadScene(sceneType);
 	bool LoadOnTop(sceneType);
 	bool UnloadOffTop(sceneType);
+	UIResult LoadUI(sceneType);
 
 	//*********************************************************************************************
 	//temp for test
@@ -93,4 +94,26 @@ private:
 
 	Utility::GhostPlayer* DebugPlayer;
 	//*********************************************************************************************
+
+	// UI
+	tofu::TextureHandle			uiBGTex_0;
+	tofu::TextureHandle			uiButTex;
+	tofu::TextureHandle			uiGamePadPC;
+	tofu::Atlas					atlas;
+
+	uint32_t					mainMenuSelectedItem;
+	uint32_t					levelMenuSelectedItem;
+	uint32_t					optionMenuSelectedItem;
+	uint32_t					helpMenuSelectedItem;
+
+	bool						mainMenuFocused;
+	bool						levelMenuFocused;
+	bool						optionMenuFocused;
+	bool						helpMenuFocused;
+	bool						creditsMenuFocused;
+
+	uint32_t					inverseCameraAxisX;
+	uint32_t					inverseCameraAxisY;
+
+	UIResult					uiResult;
 };
