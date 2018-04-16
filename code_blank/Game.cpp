@@ -58,7 +58,7 @@ int32_t Game::Init()
 
 	// Load the initial scene (Defalut is Intro)
 	// Load other scenes here for fast testing
-	currentScene = intro;
+	currentScene = level;
 
 	// Set up initial UI
 	{
@@ -75,7 +75,7 @@ int32_t Game::Init()
 		}
 
 
-		uiResult = LoadUI(intro);
+		uiResult = LoadUI(currentScene);
 		assert(uiResult.errorCode != kErrUILoadingFailed);
 
 	}
@@ -656,8 +656,6 @@ UIResult Game::LoadUI(sceneType num)
 			gui->SetupLayer(0, uiBGTex_0);
 			gui->Texture(0, -960, -540, 1920, 1080);
 
-			gui->Text(0, 0, -400, 128, "Code Blank", math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignTop);
-
 			gui->SetupLayer(1, uiButTex);
 
 			GUIStyle style1 = {
@@ -713,6 +711,8 @@ UIResult Game::LoadUI(sceneType num)
 
 			if (!optionMenuFocused && !helpMenuFocused)
 			{
+				gui->Text(0, 0, -400, 128, "Code Blank", math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignTop);
+
 				// main menu
 				gui->BeginMenu(mainMenuSelectedItem, mainMenuFocused);
 
@@ -794,8 +794,10 @@ UIResult Game::LoadUI(sceneType num)
 				gui->SetupLayer(1, uiGamePadPC);
 				gui->Texture(1, -480, -270, 960, 540);
 
+				gui->SetupLayer(2, uiButTex);
+
 				gui->BeginMenuItem();
-				gui->Image(2, -144, 120, 288, 53, style8);
+				gui->Image(2, -150, 400, 288, 53, style8);
 				gui->EndMenuItem();
 
 				helpMenuSelectedItem = gui->EndMenu();
@@ -898,6 +900,7 @@ UIResult Game::LoadUI(sceneType num)
 	}
 	case 6:
 	{
+		result.uiCode = 0;
 		// TODO
 		//  Main Level UI
 		break;
