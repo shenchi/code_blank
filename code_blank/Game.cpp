@@ -235,11 +235,11 @@ int32_t Game::Update()
 		{
 			int camXMod = inverseCameraAxisX;
 			int camYMod = inverseCameraAxisY;
-			if (camXMod == 0)
-				camXMod = -1;
 
-			if (camYMod == 0)
-				camYMod = -1;
+			if (camXMod == 0) { camXMod = 1; }
+			else if (camXMod == 1) { camXMod = -1; }
+			if (camYMod == 0) { camYMod = -1; }
+			else if (camYMod == 1) { camYMod = 1; }
 			pControl->SetControlMods(1, 1, camYMod, camXMod);
 		}
 		break;
