@@ -9,6 +9,7 @@
 #include <AnimationComponent.h>
 #include <PhysicsComponent.h>
 #include <LightComponent.h>
+#include <AudioManager.h>
 
 class TestGame : public tofu::Module
 {
@@ -37,4 +38,7 @@ private:
 	float yaw;
 	float speed;
 	bool inAir;
+
+	tofu::AudioSource			gameplay { "assets/sounds/Game_Play.wav" };
+	tofu::AudioSource			jumpSfx { "assets/sounds/Jump.wav" };
 };

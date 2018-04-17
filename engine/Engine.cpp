@@ -7,6 +7,7 @@
 #include "RenderingSystem.h"
 #include "PhysicsSystem.h"
 #include "InputSystem.h"
+#include "AudioManager.h"
 #include "MemoryAllocator.h"
 
 #include "AnimationComponent.h"
@@ -32,6 +33,7 @@ namespace tofu
 		nativeContext(nullptr),
 		renderingSystem(nullptr),
 		inputSystem(nullptr),
+		audioManager(nullptr),
 		userModules(),
 		numUserModules(0),
 		timeCounterFreq(0),
@@ -102,6 +104,9 @@ namespace tofu
 		inputSystem = new InputSystem();
 		CHECKED(inputSystem->Init());
 
+		audioManager = new AudioManager();
+		CHECKED(audioManager->Init());
+
 		Time::FixedDeltaTime = kDefaultFixedDeltaTime;
 
 		return kOK;
@@ -153,6 +158,8 @@ namespace tofu
 			CHECKED(renderingSystem->BeginFrame());
 
 			CHECKED(inputSystem->Update());
+
+			CHECKED(audioManager->Update());
 
 			PERFORMANCE_TIMER_START(kPerformanceTimerSlotPhysicsTime);
 
@@ -268,6 +275,9 @@ namespace tofu
 		CHECKED(renderingSystem->Shutdown());
 		delete renderingSystem;
 
+		CHECKED(audioManager->Shutdown());
+		delete audioManager;
+
 		CHECKED(nativeContext->Shutdown());
 		delete nativeContext;
 
@@ -288,5 +298,4 @@ namespace tofu
 
 		return kOK;
 	}
-
 }

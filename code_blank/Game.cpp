@@ -60,6 +60,8 @@ int32_t Game::Init()
 	//temp for test
 	timePassed = 0.0f;
 	loopStart = true;
+
+	gameplay.Play();
 	//*********************************************************************************************
 
 	return kOK;

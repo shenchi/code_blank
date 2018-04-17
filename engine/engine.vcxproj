@@ -151,6 +151,7 @@
     <ClInclude Include="..\3rd_party\DirectXTK\Src\PlatformHelpers.h" />
     <ClInclude Include="AnimationComponent.h" />
     <ClInclude Include="AnimationStateMachine.h" />
+    <ClInclude Include="AudioManager.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Common.h" />
@@ -195,6 +196,7 @@
     <ClCompile Include="..\3rd_party\DirectXTK\Src\Mouse.cpp" />
     <ClCompile Include="AnimationComponent.cpp" />
     <ClCompile Include="AnimationStateMachine.cpp" />
+    <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Entity.cpp" />
@@ -571,6 +573,14 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="PBR.hlsli" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\3rd_party\DirectXTK\Audio\DirectXTKAudio_Desktop_2015_Win8.vcxproj">
+      <Project>{4f150a30-cecb-49d1-8283-6a3f57438cf5}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd_party\DirectXTK\DirectXTK_Desktop_2015.vcxproj">
+      <Project>{e0b52ae7-e160-4d32-bf3f-910b785e5a8e}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
