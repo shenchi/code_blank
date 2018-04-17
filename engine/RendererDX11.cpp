@@ -159,7 +159,7 @@ namespace
 		uint8_t						stencilRef;
 	};
 
-#if PERFORMANCE_TIMER_ENABLED == 1
+#if TOFU_PERFORMANCE_TIMER_ENABLED == 1
 	struct TimeQuery
 	{
 		ID3D11Query*				disjoint;
@@ -299,7 +299,7 @@ namespace tofu
 					RELEASE(ds.tex);
 				}
 
-#if PERFORMANCE_TIMER_ENABLED == 1
+#if TOFU_PERFORMANCE_TIMER_ENABLED == 1
 				for (uint32_t i = 0; i < kMaxGpuTimeQueries; i++)
 				{
 					DXCHECKED(queries[i].Release());
@@ -321,7 +321,7 @@ namespace tofu
 				}
 
 				// gpu time query begins here
-#if PERFORMANCE_TIMER_ENABLED == 1
+#if TOFU_PERFORMANCE_TIMER_ENABLED == 1
 				while (firstQuery < lastQuery)
 				{
 					uint32_t firstIdx = firstQuery % kMaxGpuTimeQueries;
@@ -346,7 +346,7 @@ namespace tofu
 				}
 
 				// gpu time query ends here
-#if PERFORMANCE_TIMER_ENABLED == 1
+#if TOFU_PERFORMANCE_TIMER_ENABLED == 1
 				if (lastQuery - firstQuery < kMaxGpuTimeQueries)
 				{
 					queries[lastQuery % kMaxGpuTimeQueries].End(context);
@@ -412,7 +412,11 @@ namespace tofu
 
 			virtual float GetGPUTime(uint32_t slot) override
 			{
+#if TOFU_PERFORMANCE_TIMER_ENABLED == 1
 				return gpuTime;
+#else
+				return 0.0f;
+#endif
 			}
 
 		private:
@@ -438,7 +442,7 @@ namespace tofu
 			TextureHandle				renderTargets[kMaxRenderTargetBindings];
 			TextureHandle				depthRenderTarget;
 
-#if PERFORMANCE_TIMER_ENABLED == 1
+#if TOFU_PERFORMANCE_TIMER_ENABLED == 1
 			TimeQuery					queries[kMaxGpuTimeQueries];
 			uint32_t					firstQuery;
 			uint32_t					lastQuery;
@@ -565,7 +569,7 @@ namespace tofu
 
 				factory->Release();
 
-#if PERFORMANCE_TIMER_ENABLED == 1
+#if TOFU_PERFORMANCE_TIMER_ENABLED == 1
 				for (uint32_t i = 0; i < kMaxGpuTimeQueries; i++)
 				{
 					DXCHECKED(queries[i].Init(device));

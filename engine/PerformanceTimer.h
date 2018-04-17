@@ -15,7 +15,7 @@ namespace tofu
 	};
 }
 
-#if PERFORMANCE_TIMER_ENABLED == 1
+#if TOFU_PERFORMANCE_TIMER_ENABLED == 1
 
 #include "NativeContext.h"
 

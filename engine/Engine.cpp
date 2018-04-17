@@ -134,11 +134,13 @@ namespace tofu
 			// lock to 60 fps
 			if (deltaTime < 0.016f) continue;
 
+#if TOFU_PERFORMANCE_TIMER_ENABLED == 1
 			float cpuTime = PerformanceTimer::GetTime(PerformanceTimer::deltaTimerSlots[kPerformanceTimerSlotFrameTime]);
 			float physicsTime = PerformanceTimer::GetTime(PerformanceTimer::deltaTimerSlots[kPerformanceTimerSlotPhysicsTime]);
 			float userModuleTime = PerformanceTimer::GetTime(PerformanceTimer::deltaTimerSlots[kPerformanceTimerSlotUserUpdateTime]);
 			float renderingSystemTime = PerformanceTimer::GetTime(PerformanceTimer::deltaTimerSlots[kPerformanceTimerSlotRenderingSystemTime]);
 			float customMeasuringTime = PerformanceTimer::GetTime(PerformanceTimer::deltaTimerSlots[kPerformanceTimerSlotCustem]);
+#endif
 
 			PERFORMANCE_TIMER_START(kPerformanceTimerSlotFrameTime);
 
@@ -196,7 +198,7 @@ namespace tofu
 
 			PERFORMANCE_TIMER_START(kPerformanceTimerSlotRenderingSystemTime);
 
-#if PERFORMANCE_TIMER_ENABLED == 1
+#if TOFU_PERFORMANCE_TIMER_ENABLED == 1
 			GUI* gui = GUI::instance();
 
 			gui->SetCanvasSize(1920, 1080);

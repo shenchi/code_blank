@@ -1656,6 +1656,7 @@ namespace tofu
 			return a.sortKey < b.sortKey;
 		});
 
+#if TOFU_DYNAMIC_INSTANCING_ENABLED == 1
 		// find instanced objs
 		for (uint32_t i = 0; i < numActiveObjects; i++)
 		{
@@ -1686,6 +1687,7 @@ namespace tofu
 		{
 			return a.sortKey < b.sortKey;
 		});
+#endif
 
 		// update transform matrices
 		for (uint32_t i = 0; i < numActiveObjects; i++)
@@ -1976,6 +1978,8 @@ namespace tofu
 			}
 
 			uint32_t iObject = 0;
+
+#if TOFU_DYNAMIC_INSTANCING_ENABLED == 1
 			for (; iObject < numOpaqueObjects; iObject++)
 			{
 				uint32_t startIdx = iObject;
@@ -2022,6 +2026,7 @@ namespace tofu
 
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
+#endif
 
 			// TODO: culling
 			for (; iObject < numOpaqueObjects; iObject++)
@@ -2097,6 +2102,8 @@ namespace tofu
 		// generate draw call for active renderables in command buffer
 		{
 			uint32_t i = 0;
+
+#if TOFU_DYNAMIC_INSTANCING_ENABLED == 1
 			for (; i < numOpaqueObjects; ++i)
 			{
 				uint32_t startIdx = i;
@@ -2153,6 +2160,7 @@ namespace tofu
 
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
+#endif
 
 			for (; i < numOpaqueObjects; ++i)
 			{
@@ -2412,6 +2420,8 @@ namespace tofu
 		// Transparent Pass
 		{
 			uint32_t i = numOpaqueObjects;
+
+#if TOFU_DYNAMIC_INSTANCING_ENABLED == 1
 			for (; i < numActiveObjects; ++i)
 			{
 				uint32_t startIdx = i;
@@ -2458,6 +2468,7 @@ namespace tofu
 
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
+#endif
 
 			for (; i < numActiveObjects; ++i)
 			{

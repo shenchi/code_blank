@@ -1,6 +1,6 @@
 #include "PerformanceTimer.h"
 
-#if PERFORMANCE_TIMER_ENABLED == 1
+#if TOFU_PERFORMANCE_TIMER_ENABLED == 1
 
 namespace tofu
 {
