@@ -165,6 +165,8 @@ int32_t TestGame::Init()
 
 	inAir = true;
 
+	gameplay.Play();
+
 	return kOK;
 }
 
@@ -268,6 +270,7 @@ int32_t TestGame::Update()
 	if (jump && !inAir)
 	{
 		pPlayer->ApplyImpulse(math::float3{ 0.0f, 2.0f, 0.0f });
+		jumpSfx.PlayOneShot();
 	}
 
 	return kOK;

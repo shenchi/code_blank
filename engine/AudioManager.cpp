@@ -1,10 +1,52 @@
 #include "AudioManager.h"
-#include <cassert>
 #include <Audio.h>
 
 using namespace DirectX;
 
 namespace tofu {
+	/**
+		AudioSource
+	*/
+	AudioSource::AudioSource(char* file)
+	{
+		size_t outSize;
+		wchar_t wstr[256];
+		mbstowcs_s(&outSize, wstr, 256, file, strlen(file));
+
+		sound = std::make_unique<SoundEffect>(AudioManager::instance()->audEngine.get(), wstr);
+		//soundEffect = std::make_unique<SoundEffect>(audEngine.get(), L"assets/sounds/steps.wav");
+	}
+
+	AudioSource::~AudioSource()
+	{
+	}
+
+	void AudioSource::Play()
+	{
+		if (soundInstance == nullptr) {
+			soundInstance = sound->CreateInstance();
+		}
+
+		// TODO: maintain background music list in AudioManager for volumn management
+
+		soundInstance->SetVolume(AudioManager::instance()->volumn);
+		soundInstance->Play();
+	}
+
+	void AudioSource::Stop()
+	{
+		if (soundInstance)
+			soundInstance->Stop();
+	}
+
+	void AudioSource::PlayOneShot()
+	{
+		sound->Play(AudioManager::instance()->volumn, 0.f, 0.f);
+	}
+
+	/**
+		Audio Manager
+	*/
 	SINGLETON_IMPL(AudioManager)
 
 	AudioManager::AudioManager()
@@ -41,12 +83,6 @@ namespace tofu {
 		if (nullptr == audEngine)
 			return kErrUnknown;
 
-		soundEffect = std::make_unique<SoundEffect>(audEngine.get(), L"assets/sounds/steps.wav");
-		soundEffect2 = std::make_unique<SoundEffect>(audEngine.get(), L"assets/sounds/game-sound-correct.wav");
-		effect = soundEffect->CreateInstance();
-		//effect->SetVolume(0.1f);
-		effect->Play(true);
-
 		return kOK;
 	}
 
@@ -67,16 +103,5 @@ namespace tofu {
 		}
 
 		return kOK;
-	}
-
-	void AudioManager::Play(const char * file)
-	{
-		size_t outSize;
-
-		wchar_t wstr[256];
-		mbstowcs_s(&outSize, wstr, 256, file, strlen(file));
-
-		//soundEffect = std::make_unique<SoundEffect>(audEngine.get(), wstr);
-		soundEffect2->Play(0.01f, 0.f, 0.f);
 	}
 }

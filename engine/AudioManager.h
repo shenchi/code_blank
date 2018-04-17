@@ -9,13 +9,27 @@ namespace DirectX
 	class AudioEngine;
 	class SoundEffect;
 	class SoundEffectInstance;
-	class SoundEffect;
 }
 
 namespace tofu {
+	class AudioSource {
+	public:
+		AudioSource(char* file);
+		~AudioSource();
+
+		void Play();
+		void Stop();
+
+		void PlayOneShot();
+
+	private:
+		std::unique_ptr<DirectX::SoundEffect> sound;
+		std::unique_ptr<DirectX::SoundEffectInstance> soundInstance = nullptr;
+	};
 
 	class AudioManager : public Module
 	{
+		friend class AudioSource;
 		SINGLETON_DECL(AudioManager)
 
 	public:
@@ -26,14 +40,9 @@ namespace tofu {
 		int32_t Shutdown() override;
 		int32_t Update() override;
 
-		void Play(const char * file);
+		float volumn = 1.0f;
 
 	private:
 		std::unique_ptr<DirectX::AudioEngine> audEngine;
-
-		std::unique_ptr<DirectX::SoundEffect> soundEffect;
-		std::unique_ptr<DirectX::SoundEffectInstance> effect;
-
-		std::unique_ptr<DirectX::SoundEffect> soundEffect2;
 	};
 }
