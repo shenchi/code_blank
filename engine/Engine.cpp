@@ -81,6 +81,8 @@ namespace tofu
 				kFrameMemAlign));
 		}
 
+		MemoryAllocator::currentFrameAllocIdx = 0;
+
 		// init entity system
 		Entity::RegisterComponent<AnimationComponent>();
 		Entity::RegisterComponent<CameraComponent>();

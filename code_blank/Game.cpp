@@ -354,8 +354,10 @@ bool Game::LoadScene(sceneType num)
 			//CHECKED(sceneMgr.LoadScene("assets/scenes/Node_Export.json"));
 			//CHECKED(sceneMgr.LoadScene("assets/scenes/Engine_Tut.json"));
 			//CHECKED(sceneMgr.LoadScene("assets/scenes/OptiTest.json"));
+			//CHECKED(sceneMgr.LoadScene("assets/scenes/OptiTest_Batched.json"));
 			//CHECKED(sceneMgr.LoadScene("assets/scenes/EngineExport.json"));
-			CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial_WIP.json"));
+			//CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial_WIP.json"));
+			CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial_WIP_Batched.json"));
 
 			int pathLength = sceneMgr.GetPathNodesLength();
 			if (pathLength > 0)
