@@ -80,6 +80,7 @@ int32_t RenderingTest::Init()
 		//cam->SetSkyboxSpecularMap(skyboxSpec);
 	}
 
+#if UI_ENABLED == 1
 	{
 		uiTex = RenderingSystem::instance()->CreateTexture("assets/001.texture", kResourceGlobal);
 		uiTex1 = RenderingSystem::instance()->CreateTexture("assets/ui.texture", kResourceGlobal);
@@ -94,6 +95,7 @@ int32_t RenderingTest::Init()
 		mainMenuFocused = true;
 		uiEnabled = true;
 	}
+#endif
 
 	pitch = InitPitch;
 	yaw = 0.0f;
@@ -212,6 +214,7 @@ int32_t RenderingTest::Update()
 		anim->CrossFade("idle", 0.1f);
 	}
 
+#if UI_ENABLED == 1
 	if (uiEnabled)
 	{
 		GUI* gui = GUI::instance();
@@ -402,6 +405,7 @@ int32_t RenderingTest::Update()
 			}
 		}
 	}
+#endif
 
 	return kOK;
 }

@@ -1,0 +1,1371 @@
+{
+  "entities": [
+    {
+      "name": "Hotel_Neon",
+      "transform": {
+        "translate": {
+          "x": 11.57,
+          "y": 7.84,
+          "z": -14.82
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": null,
+      "children": [
+        {
+          "name": "Point light",
+          "transform": {
+            "translate": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "lightType": "point",
+              "color": {
+                "x": 1.0,
+                "y": 0.349019617,
+                "z": 0.192156881,
+                "w": 1.0
+              },
+              "range": 10.0,
+              "intensity": 5.0,
+              "spotAngle": 30.0,
+              "castShadow": false,
+              "type": "light"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "hotel",
+          "transform": {
+            "translate": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            },
+            "scale": {
+              "x": 0.2,
+              "y": 0.2,
+              "z": 0.2
+            }
+          },
+          "components": [
+            {
+              "model": "models/signs_hotel.model",
+              "materials": [
+                "Mat_Signs"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "Plane",
+      "transform": {
+        "translate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "model": "models/Unity_Builtin_Plane.model",
+          "materials": [
+            "unity_builtin_extra"
+          ],
+          "type": "renderable"
+        },
+        {
+          "colliderType": "mesh",
+          "center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "size": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "model": "models/Unity_Builtin_Plane.model",
+          "type": "physics"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Plane (1)",
+      "transform": {
+        "translate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 10.0
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "model": "models/Unity_Builtin_Plane.model",
+          "materials": [
+            "unity_builtin_extra"
+          ],
+          "type": "renderable"
+        },
+        {
+          "colliderType": "mesh",
+          "center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "size": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "model": "models/Unity_Builtin_Plane.model",
+          "type": "physics"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Plane (2)",
+      "transform": {
+        "translate": {
+          "x": 10.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "model": "models/Unity_Builtin_Plane.model",
+          "materials": [
+            "unity_builtin_extra"
+          ],
+          "type": "renderable"
+        },
+        {
+          "colliderType": "mesh",
+          "center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "size": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "model": "models/Unity_Builtin_Plane.model",
+          "type": "physics"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Plane (3)",
+      "transform": {
+        "translate": {
+          "x": 10.0,
+          "y": 0.0,
+          "z": -10.0
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "model": "models/Unity_Builtin_Plane.model",
+          "materials": [
+            "unity_builtin_extra"
+          ],
+          "type": "renderable"
+        },
+        {
+          "colliderType": "mesh",
+          "center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "size": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "model": "models/Unity_Builtin_Plane.model",
+          "type": "physics"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Plane (4)",
+      "transform": {
+        "translate": {
+          "x": -10.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "model": "models/Unity_Builtin_Plane.model",
+          "materials": [
+            "unity_builtin_extra"
+          ],
+          "type": "renderable"
+        },
+        {
+          "colliderType": "mesh",
+          "center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "size": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "model": "models/Unity_Builtin_Plane.model",
+          "type": "physics"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Plane (5)",
+      "transform": {
+        "translate": {
+          "x": 0.0,
+          "y": 5.0,
+          "z": 15.0
+        },
+        "rotate": {
+          "x": -0.7071068,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 0.7071068
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "model": "models/Unity_Builtin_Plane.model",
+          "materials": [
+            "unity_builtin_extra"
+          ],
+          "type": "renderable"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Spotlight",
+      "transform": {
+        "translate": {
+          "x": 13.0,
+          "y": 5.0,
+          "z": -3.0
+        },
+        "rotate": {
+          "x": 0.7071068,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 0.7071068
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "lightType": "spot",
+          "color": {
+            "x": 1.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "range": 10.0,
+          "intensity": 2.0,
+          "spotAngle": 45.0,
+          "castShadow": true,
+          "type": "light"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Spotlight (1)",
+      "transform": {
+        "translate": {
+          "x": 13.0,
+          "y": 5.0,
+          "z": 3.0
+        },
+        "rotate": {
+          "x": 0.7071068,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 0.7071068
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "lightType": "spot",
+          "color": {
+            "x": 0.0,
+            "y": 1.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "range": 10.0,
+          "intensity": 2.0,
+          "spotAngle": 45.0,
+          "castShadow": true,
+          "type": "light"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Spotlight (2)",
+      "transform": {
+        "translate": {
+          "x": 7.0,
+          "y": 5.0,
+          "z": 3.0
+        },
+        "rotate": {
+          "x": 0.7071068,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 0.7071068
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "lightType": "spot",
+          "color": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "range": 10.0,
+          "intensity": 2.0,
+          "spotAngle": 45.0,
+          "castShadow": true,
+          "type": "light"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Spotlight (3)",
+      "transform": {
+        "translate": {
+          "x": 7.0,
+          "y": 5.0,
+          "z": -3.0
+        },
+        "rotate": {
+          "x": 0.7071068,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 0.7071068
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "lightType": "spot",
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "range": 10.0,
+          "intensity": 2.0,
+          "spotAngle": 45.0,
+          "castShadow": true,
+          "type": "light"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Point light",
+      "transform": {
+        "translate": {
+          "x": 1.0,
+          "y": 7.0,
+          "z": 14.5
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "lightType": "point",
+          "color": {
+            "x": 0.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "range": 2.0,
+          "intensity": 2.0,
+          "spotAngle": 30.0,
+          "castShadow": false,
+          "type": "light"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Point light (1)",
+      "transform": {
+        "translate": {
+          "x": -2.0,
+          "y": 6.0,
+          "z": 14.5
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "lightType": "point",
+          "color": {
+            "x": 1.0,
+            "y": 0.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "range": 2.0,
+          "intensity": 2.0,
+          "spotAngle": 30.0,
+          "castShadow": false,
+          "type": "light"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Point light (2)",
+      "transform": {
+        "translate": {
+          "x": 3.0,
+          "y": 4.0,
+          "z": 14.5
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "lightType": "point",
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "range": 2.0,
+          "intensity": 2.0,
+          "spotAngle": 30.0,
+          "castShadow": false,
+          "type": "light"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Point light (3)",
+      "transform": {
+        "translate": {
+          "x": -2.0,
+          "y": 3.0,
+          "z": 14.5
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "lightType": "point",
+          "color": {
+            "x": 1.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "range": 2.0,
+          "intensity": 2.0,
+          "spotAngle": 30.0,
+          "castShadow": false,
+          "type": "light"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Point light (4)",
+      "transform": {
+        "translate": {
+          "x": 1.0,
+          "y": 2.0,
+          "z": 14.5
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "lightType": "point",
+          "color": {
+            "x": 0.0,
+            "y": 1.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "range": 2.0,
+          "intensity": 2.0,
+          "spotAngle": 30.0,
+          "castShadow": false,
+          "type": "light"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Point light (5)",
+      "transform": {
+        "translate": {
+          "x": -4.0,
+          "y": 9.0,
+          "z": 14.5
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "lightType": "point",
+          "color": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "range": 2.0,
+          "intensity": 2.0,
+          "spotAngle": 30.0,
+          "castShadow": false,
+          "type": "light"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Point light (6)",
+      "transform": {
+        "translate": {
+          "x": 4.0,
+          "y": 9.0,
+          "z": 14.5
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "lightType": "point",
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "range": 2.0,
+          "intensity": 2.0,
+          "spotAngle": 30.0,
+          "castShadow": false,
+          "type": "light"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Flamable_2",
+      "transform": {
+        "translate": {
+          "x": -9.44,
+          "y": 0.604,
+          "z": 1.8
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "model": "models/barrel_Barrel.model",
+          "materials": [
+            "Flamable_2"
+          ],
+          "type": "renderable"
+        },
+        {
+          "colliderType": "capsule",
+          "center": {
+            "x": -0.000479400158,
+            "y": -0.0004914701,
+            "z": -0.000404685736
+          },
+          "size": {
+            "x": 0.442401,
+            "y": 0.3213421,
+            "z": 0.0
+          },
+          "model": null,
+          "type": "physics"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Spotlight (4)",
+      "transform": {
+        "translate": {
+          "x": -9.3,
+          "y": 8.53,
+          "z": -5.24
+        },
+        "rotate": {
+          "x": 0.5,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 0.8660254
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "lightType": "spot",
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "range": 20.0,
+          "intensity": 4.5,
+          "spotAngle": 60.0,
+          "castShadow": true,
+          "type": "light"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Flamable_2 (1)",
+      "transform": {
+        "translate": {
+          "x": -10.92,
+          "y": 0.604,
+          "z": 1.27
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "model": "models/barrel_Barrel.model",
+          "materials": [
+            "Flamable_2"
+          ],
+          "type": "renderable"
+        },
+        {
+          "colliderType": "capsule",
+          "center": {
+            "x": -0.000479400158,
+            "y": -0.0004914701,
+            "z": -0.000404685736
+          },
+          "size": {
+            "x": 0.442401,
+            "y": 0.3213421,
+            "z": 0.0
+          },
+          "model": null,
+          "type": "physics"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Wooden_Barrel",
+      "transform": {
+        "translate": {
+          "x": -8.821,
+          "y": 0.6,
+          "z": -3.122
+        },
+        "rotate": {
+          "x": 2.18556941E-08,
+          "y": 3.774895E-08,
+          "z": -8.556457E-16,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 2.0,
+          "y": 2.0,
+          "z": 2.0
+        }
+      },
+      "components": [
+        {
+          "model": "models/Wooden_Barrel_Barrel_Low.model",
+          "materials": [
+            "Wooden_Barrel"
+          ],
+          "type": "renderable"
+        },
+        {
+          "colliderType": "capsule",
+          "center": {
+            "x": 1.49011612E-08,
+            "y": 0.0004413426,
+            "z": -0.00110585988
+          },
+          "size": {
+            "x": 0.266112983,
+            "y": 0.07698208,
+            "z": 0.0
+          },
+          "model": null,
+          "type": "physics"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Wooden_Barrel (1)",
+      "transform": {
+        "translate": {
+          "x": -11.172,
+          "y": 0.6,
+          "z": -2.45
+        },
+        "rotate": {
+          "x": 2.18556941E-08,
+          "y": 3.774895E-08,
+          "z": -8.556457E-16,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 2.0,
+          "y": 2.0,
+          "z": 2.0
+        }
+      },
+      "components": [
+        {
+          "model": "models/Wooden_Barrel_Barrel_Low.model",
+          "materials": [
+            "Wooden_Barrel"
+          ],
+          "type": "renderable"
+        },
+        {
+          "colliderType": "capsule",
+          "center": {
+            "x": 1.49011612E-08,
+            "y": 0.0004413426,
+            "z": -0.00110585988
+          },
+          "size": {
+            "x": 0.266112983,
+            "y": 0.07698208,
+            "z": 0.0
+          },
+          "model": null,
+          "type": "physics"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Plane (6)",
+      "transform": {
+        "translate": {
+          "x": 10.0,
+          "y": 5.0,
+          "z": -15.0
+        },
+        "rotate": {
+          "x": 0.7071068,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 0.7071068
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "model": "models/Unity_Builtin_Plane.model",
+          "materials": [
+            "unity_builtin_extra"
+          ],
+          "type": "renderable"
+        },
+        {
+          "colliderType": "mesh",
+          "center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "size": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "model": "models/Unity_Builtin_Plane.model",
+          "type": "physics"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Plane (7)",
+      "transform": {
+        "translate": {
+          "x": 15.0,
+          "y": 5.0,
+          "z": -10.0
+        },
+        "rotate": {
+          "x": 0.5,
+          "y": -0.5,
+          "z": 0.5,
+          "w": 0.5
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "model": "models/Unity_Builtin_Plane.model",
+          "materials": [
+            "unity_builtin_extra"
+          ],
+          "type": "renderable"
+        },
+        {
+          "colliderType": "mesh",
+          "center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "size": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "model": "models/Unity_Builtin_Plane.model",
+          "type": "physics"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "HandLight",
+      "transform": {
+        "translate": {
+          "x": -10.0,
+          "y": 0.796,
+          "z": -10.43
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": null,
+      "children": [
+        {
+          "name": "HandLight",
+          "transform": {
+            "translate": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "model": "models/HandLight_HandLight.model",
+              "materials": [
+                "HandlightMat"
+              ],
+              "type": "renderable"
+            }
+          ],
+          "children": null
+        },
+        {
+          "name": "Point light",
+          "transform": {
+            "translate": {
+              "x": 0.283,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "rotate": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "components": [
+            {
+              "lightType": "point",
+              "color": {
+                "x": 0.976470649,
+                "y": 0.407843173,
+                "z": 0.0,
+                "w": 1.0
+              },
+              "range": 3.0,
+              "intensity": 3.0,
+              "spotAngle": 30.0,
+              "castShadow": false,
+              "type": "light"
+            }
+          ],
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "Plane (8)",
+      "transform": {
+        "translate": {
+          "x": -10.0,
+          "y": 0.0,
+          "z": -10.0
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "model": "models/Unity_Builtin_Plane.model",
+          "materials": [
+            "unity_builtin_extra"
+          ],
+          "type": "renderable"
+        },
+        {
+          "colliderType": "mesh",
+          "center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "size": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "model": "models/Unity_Builtin_Plane.model",
+          "type": "physics"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Plane (9)",
+      "transform": {
+        "translate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": -10.0
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "model": "models/Unity_Builtin_Plane.model",
+          "materials": [
+            "unity_builtin_extra"
+          ],
+          "type": "renderable"
+        },
+        {
+          "colliderType": "mesh",
+          "center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "size": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "model": "models/Unity_Builtin_Plane.model",
+          "type": "physics"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Plane (10)",
+      "transform": {
+        "translate": {
+          "x": -10.0,
+          "y": 0.0,
+          "z": 10.0
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "model": "models/Unity_Builtin_Plane.model",
+          "materials": [
+            "unity_builtin_extra"
+          ],
+          "type": "renderable"
+        },
+        {
+          "colliderType": "mesh",
+          "center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "size": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "model": "models/Unity_Builtin_Plane.model",
+          "type": "physics"
+        }
+      ],
+      "children": null
+    },
+    {
+      "name": "Plane (11)",
+      "transform": {
+        "translate": {
+          "x": 10.0,
+          "y": 0.0,
+          "z": 10.0
+        },
+        "rotate": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": [
+        {
+          "model": "models/Unity_Builtin_Plane.model",
+          "materials": [
+            "unity_builtin_extra"
+          ],
+          "type": "renderable"
+        },
+        {
+          "colliderType": "mesh",
+          "center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "size": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "model": "models/Unity_Builtin_Plane.model",
+          "type": "physics"
+        }
+      ],
+      "children": null
+    }
+  ],
+  "spawnerNodes": null,
+  "triggerNodes": null,
+  "pathNodes": null,
+  "playerSpawn": null
+}

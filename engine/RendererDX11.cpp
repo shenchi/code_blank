@@ -569,10 +569,7 @@ namespace tofu
 				}
 
 				// get actual client area size from window size
-				RECT rect = {};
-				GetClientRect(hWnd, &rect);
-				winWidth = rect.right - rect.left;
-				winHeight = rect.bottom - rect.top;
+				NativeContext::instance()->GetResolution(&winWidth, &winHeight);
 
 				bool fullscreen = NativeContext::instance()->IsFullScreen();
 

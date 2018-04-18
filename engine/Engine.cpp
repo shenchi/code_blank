@@ -216,7 +216,7 @@ namespace tofu
 			sprintf_s(textBuf, "Physics Time: %.2f ms", physicsTime);
 			gui->Text(layer, -950, -520, 24, textBuf, white, kTextAlignTop);
 
-			sprintf_s(textBuf, "User Module Time: %.2f ms", userModuleTime);
+			sprintf_s(textBuf, "Gameplay Logic Time: %.2f ms", userModuleTime);
 			gui->Text(layer, -950, -500, 24, textBuf, white, kTextAlignTop);
 
 			sprintf_s(textBuf, "Rendering System Time: %.2f ms", renderingSystemTime);
@@ -225,8 +225,8 @@ namespace tofu
 			sprintf_s(textBuf, "GPU Time: %.2f ms", renderingSystem->GetGPUTime());
 			gui->Text(layer, -950, -460, 24, textBuf, white, kTextAlignTop);
 
-			sprintf_s(textBuf, "Custom Measuring Time: %.2f ms", customMeasuringTime);
-			gui->Text(layer, -950, -440, 24, textBuf, white, kTextAlignTop);
+			//sprintf_s(textBuf, "Custom Measuring Time: %.2f ms", customMeasuringTime);
+			//gui->Text(layer, -950, -440, 24, textBuf, white, kTextAlignTop);
 #endif
 
 			CHECKED(renderingSystem->Update());
