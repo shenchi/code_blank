@@ -24,6 +24,8 @@ namespace tofu
 		kMaterialPostProcessToneMapping,
 		kMaterialPostProcessExtractBright,
 		kMaterialPostProcessBlur,
+		kMaterialPostProcessGaussianBlurH,
+		kMaterialPostProcessGaussianBlurV,
 		kMaterialPostProcessVolumetricFog,
 		kMaterialPostProcessAntiAliasing,
 		kMaterialOverlay,
