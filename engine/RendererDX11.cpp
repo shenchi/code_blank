@@ -594,8 +594,6 @@ namespace tofu
 					return -1;
 				}
 
-				factory->Release();
-
 				if (fullscreen)
 				{
 					DXGI_MODE_DESC desc = {};
@@ -606,6 +604,12 @@ namespace tofu
 
 					swapChain->SetFullscreenState(TRUE, nullptr);
 				}
+				else
+				{
+					factory->MakeWindowAssociation(hWnd, DXGI_MWA_NO_ALT_ENTER);
+				}
+
+				factory->Release();
 
 #if TOFU_PERFORMANCE_TIMER_ENABLED == 1
 				for (uint32_t i = 0; i < kMaxGpuTimeQueries; i++)

@@ -57,7 +57,7 @@ struct BaseHandle
 		TF_INLINE explicit CLASS_NAME##Handle(uint32_t _id) : BaseHandle(_id, kHandleType##CLASS_NAME) {} \
 	};
 
-#define TOFU_PERFORMANCE_TIMER_ENABLED 1
+#define TOFU_PERFORMANCE_TIMER_ENABLED 0
 #define TOFU_DYNAMIC_INSTANCING_ENABLED 1
 #define TOFU_VSYNC 1
 
@@ -91,21 +91,21 @@ namespace tofu
 
 	constexpr uint32_t kFrameBufferCount = 2;
 
-	constexpr uint32_t kGlobalMemSize = 256 * 1024 * 1024;
+	constexpr uint32_t kGlobalMemSize = 128 * 1024 * 1024;
 	constexpr uint32_t kGlobalVMemSize = 512 * 1024 * 1024;
 	constexpr uint32_t kGlobalMemAlign = 2 * 1024 * 1024;
 
-	constexpr uint32_t kLevelMemSize = 512 * 1024 * 1024;
+	constexpr uint32_t kLevelMemSize = 256 * 1024 * 1024;
 	constexpr uint32_t kLevelVMemSize = 512 * 1024 * 1024;
 	constexpr uint32_t kLevelMemAlign = 2 * 1024 * 1024;
 
-	constexpr uint32_t kFrameMemSize = 512 * 1024 * 1024;
+	constexpr uint32_t kFrameMemSize = 256 * 1024 * 1024;
 	constexpr uint32_t kFrameVMemSize = 256 * 1024 * 1024;
 	constexpr uint32_t kFrameMemAlign = 2 * 1024 * 1024;
 
 	constexpr uint32_t kMaxComponentTypes = 8;
 	constexpr uint32_t kMaxUserModules = 8;
-	constexpr uint32_t kMaxEntities = 8192;// 4096;
+	constexpr uint32_t kMaxEntities = 4096;
 	constexpr uint32_t kMaxModels = 1024;
 	constexpr uint32_t kMaxMeshes = 1024;
 	constexpr uint32_t kMaxMaterials = 1024;
@@ -118,7 +118,7 @@ namespace tofu
 
 	constexpr uint32_t kMaxMeshesPerModel = 8;
 
-	constexpr uint32_t kCommandBufferCapacity = 8192;// 4096;
+	constexpr uint32_t kCommandBufferCapacity = 4096;
 
 	constexpr uint32_t kMaxBuffers = 1024;
 	constexpr uint32_t kMaxTextures = 1024;

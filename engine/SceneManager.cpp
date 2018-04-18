@@ -303,6 +303,35 @@ namespace tofu
 						center["z"].GetFloat()
 					});
 				}
+				else if (strcmp(colliderTypeStr, "sphere") == 0)
+				{
+					value_t size = comp["size"];
+					p->SetSphereCollider(
+						size["x"].GetFloat()
+					);
+
+					value_t center = comp["center"];
+					p->SetColliderOrigin(math::float3{
+						center["x"].GetFloat(),
+						center["y"].GetFloat(),
+						center["z"].GetFloat()
+					});
+				}
+				else if (strcmp(colliderTypeStr, "capsule") == 0)
+				{
+					value_t size = comp["size"];
+					p->SetCapsuleCollider(
+						size["x"].GetFloat(),
+						size["y"].GetFloat()
+					);
+
+					value_t center = comp["center"];
+					p->SetColliderOrigin(math::float3{
+						center["x"].GetFloat(),
+						center["y"].GetFloat(),
+						center["z"].GetFloat()
+					});
+				}
 			}
 			else if (strcmp(typeStr, "light") == 0)
 			{
