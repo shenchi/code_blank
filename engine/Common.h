@@ -57,7 +57,7 @@ struct BaseHandle
 		TF_INLINE explicit CLASS_NAME##Handle(uint32_t _id) : BaseHandle(_id, kHandleType##CLASS_NAME) {} \
 	};
 
-#define TOFU_PERFORMANCE_TIMER_ENABLED 0
+#define TOFU_PERFORMANCE_TIMER_ENABLED 1
 #define TOFU_DYNAMIC_INSTANCING_ENABLED 1
 #define TOFU_VSYNC 1
 
@@ -99,7 +99,7 @@ namespace tofu
 	constexpr uint32_t kLevelVMemSize = 512 * 1024 * 1024;
 	constexpr uint32_t kLevelMemAlign = 2 * 1024 * 1024;
 
-	constexpr uint32_t kFrameMemSize = 256 * 1024 * 1024;
+	constexpr uint32_t kFrameMemSize = 512 * 1024 * 1024;
 	constexpr uint32_t kFrameVMemSize = 256 * 1024 * 1024;
 	constexpr uint32_t kFrameMemAlign = 2 * 1024 * 1024;
 
