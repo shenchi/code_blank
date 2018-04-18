@@ -62,6 +62,8 @@ namespace tofu
 		DirectX::Keyboard*		keyboard;
 		DirectX::Mouse*			mouse;
 		DirectX::GamePad*		gamepad;
+
+		bool					fullscreen;
 		
 	public:
 		int32_t Init() override
@@ -70,18 +72,26 @@ namespace tofu
 
 			//int32_t w = 1600;// config->GetInt32("display.width", 800);
 			//int32_t h = 900;// config->GetInt32("display.height", 600);
-			int32_t w =	1280;
-			int32_t h = 720;
+			//int32_t w =	1280;
+			//int32_t h = 720;
+
+			int32_t w = 1920;
+			int32_t h = 1080;
+			fullscreen = true;
+
 			std::string title = "tofu";// config->GetString("game.title");
 			std::wstring wtitle(title.begin(), title.end());
 
 			WNDCLASSEX cls{ 0 };
 			cls.cbSize = sizeof(WNDCLASSEX);
-			cls.hbrBackground = (HBRUSH)COLOR_BACKGROUND;
 			cls.hInstance = hInstance;
 			cls.lpfnWndProc = WndProc;
 			cls.lpszClassName = g_WindowClassName;
 			cls.style = CS_HREDRAW | CS_VREDRAW;
+			if (!fullscreen)
+			{
+				cls.hbrBackground = (HBRUSH)COLOR_BACKGROUND;
+			}
 
 			if (!RegisterClassEx(&cls))
 			{
@@ -161,6 +171,11 @@ namespace tofu
 		intptr_t GetContextHandle() override
 		{
 			return reinterpret_cast<intptr_t>(hWnd);
+		}
+
+		bool IsFullScreen() override
+		{
+			return fullscreen;
 		}
 
 		int64_t GetTimeCounter() override

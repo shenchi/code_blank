@@ -27,6 +27,8 @@ namespace tofu
 		// rendering context( Win32: HWND )
 		virtual intptr_t GetContextHandle() = 0;
 
+		virtual bool IsFullScreen() = 0;
+
 		// system performance counter (used for engine timing)
 		virtual int64_t GetTimeCounter() = 0;
 
