@@ -2,6 +2,8 @@
 
 #include <Tofu.h>
 
+#define UI_ENABLED  0
+
 class RenderingTest : public tofu::Module
 {
 public:
@@ -31,6 +33,7 @@ private:
 	float						yaw;
 	float						speed;
 
+#if UI_ENABLED == 1
 	tofu::TextureHandle			uiTex;
 	tofu::TextureHandle			uiTex1;
 	tofu::Atlas					atlas;
@@ -39,12 +42,15 @@ private:
 	uint32_t					levelMenuSelectedItem;
 	uint32_t					optionMenuSelectedItem;
 
+	bool						uiEnabled;
+
 	bool						mainMenuFocused;
 	bool						levelMenuFocused;
 	bool						optionMenuFocused;
 
 	uint32_t					inverseCameraAxisX;
 	uint32_t					inverseCameraAxisY;
+#endif
 
 	bool						sceneLoaded;
 };

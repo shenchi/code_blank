@@ -10,6 +10,7 @@ namespace tofu
 	class ScriptingSystem;
 	class PhysicsSystem;
 	class InputSystem;
+	class AudioManager;
 
 	class Time
 	{
@@ -49,6 +50,8 @@ namespace tofu
 		RenderingSystem*	renderingSystem;
 		PhysicsSystem*		physicsSystem;
 		InputSystem*		inputSystem;
+
+		AudioManager*		audioManager;
 
 		Module*				userModules[kMaxUserModules];
 		uint32_t			numUserModules;

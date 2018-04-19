@@ -159,7 +159,7 @@ namespace
 		uint8_t						stencilRef;
 	};
 
-#if PERFORMANCE_TIMER_ENABLED == 1
+#if TOFU_PERFORMANCE_TIMER_ENABLED == 1
 	struct TimeQuery
 	{
 		ID3D11Query*				disjoint;
@@ -299,12 +299,17 @@ namespace tofu
 					RELEASE(ds.tex);
 				}
 
-#if PERFORMANCE_TIMER_ENABLED == 1
+#if TOFU_PERFORMANCE_TIMER_ENABLED == 1
 				for (uint32_t i = 0; i < kMaxGpuTimeQueries; i++)
 				{
 					DXCHECKED(queries[i].Release());
 				}
 #endif
+
+				if (NativeContext::instance()->IsFullScreen())
+				{
+					swapChain->SetFullscreenState(FALSE, nullptr);
+				}
 
 				swapChain->Release();
 				context->Release();
@@ -320,8 +325,13 @@ namespace tofu
 					return kErrUnknown;
 				}
 
+				if (standby)
+				{
+					return kOK;
+				}
+
 				// gpu time query begins here
-#if PERFORMANCE_TIMER_ENABLED == 1
+#if TOFU_PERFORMANCE_TIMER_ENABLED == 1
 				while (firstQuery < lastQuery)
 				{
 					uint32_t firstIdx = firstQuery % kMaxGpuTimeQueries;
@@ -346,7 +356,7 @@ namespace tofu
 				}
 
 				// gpu time query ends here
-#if PERFORMANCE_TIMER_ENABLED == 1
+#if TOFU_PERFORMANCE_TIMER_ENABLED == 1
 				if (lastQuery - firstQuery < kMaxGpuTimeQueries)
 				{
 					queries[lastQuery % kMaxGpuTimeQueries].End(context);
@@ -359,8 +369,24 @@ namespace tofu
 
 			virtual int32_t Present() override
 			{
-				if (S_OK != swapChain->Present(0, 0))
+				HRESULT ret = S_OK;
+
+				if (standby)
 				{
+					if (S_OK == swapChain->Present(0, DXGI_PRESENT_TEST))
+					{
+						standby = false;
+					}
+					return kOK;
+				}
+
+				if (S_OK != (ret = swapChain->Present(TOFU_VSYNC, 0)))
+				{
+					if (ret == DXGI_STATUS_OCCLUDED)
+					{
+						standby = true;
+						return kOK;
+					}
 					return kErrUnknown;
 				}
 
@@ -412,7 +438,11 @@ namespace tofu
 
 			virtual float GetGPUTime(uint32_t slot) override
 			{
+#if TOFU_PERFORMANCE_TIMER_ENABLED == 1
 				return gpuTime;
+#else
+				return 0.0f;
+#endif
 			}
 
 		private:
@@ -438,7 +468,9 @@ namespace tofu
 			TextureHandle				renderTargets[kMaxRenderTargetBindings];
 			TextureHandle				depthRenderTarget;
 
-#if PERFORMANCE_TIMER_ENABLED == 1
+			bool						standby;
+
+#if TOFU_PERFORMANCE_TIMER_ENABLED == 1
 			TimeQuery					queries[kMaxGpuTimeQueries];
 			uint32_t					firstQuery;
 			uint32_t					lastQuery;
@@ -537,10 +569,9 @@ namespace tofu
 				}
 
 				// get actual client area size from window size
-				RECT rect = {};
-				GetClientRect(hWnd, &rect);
-				winWidth = rect.right - rect.left;
-				winHeight = rect.bottom - rect.top;
+				NativeContext::instance()->GetResolution(&winWidth, &winHeight);
+
+				bool fullscreen = NativeContext::instance()->IsFullScreen();
 
 				// create swap chain
 				DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
@@ -553,7 +584,7 @@ namespace tofu
 				swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 				swapChainDesc.BufferCount = 2;
 				swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-				swapChainDesc.Flags = 0;// DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+				swapChainDesc.Flags = fullscreen ? DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH : 0;
 
 				if (S_OK != (hr = factory->CreateSwapChainForHwnd(device, hWnd, &swapChainDesc, nullptr, nullptr, &(swapChain))))
 				{
@@ -563,9 +594,24 @@ namespace tofu
 					return -1;
 				}
 
+				if (fullscreen)
+				{
+					DXGI_MODE_DESC desc = {};
+					desc.Width = winWidth;
+					desc.Height = winHeight;
+					desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+					swapChain->ResizeTarget(&desc);
+
+					swapChain->SetFullscreenState(TRUE, nullptr);
+				}
+				else
+				{
+					factory->MakeWindowAssociation(hWnd, DXGI_MWA_NO_ALT_ENTER);
+				}
+
 				factory->Release();
 
-#if PERFORMANCE_TIMER_ENABLED == 1
+#if TOFU_PERFORMANCE_TIMER_ENABLED == 1
 				for (uint32_t i = 0; i < kMaxGpuTimeQueries; i++)
 				{
 					DXCHECKED(queries[i].Init(device));

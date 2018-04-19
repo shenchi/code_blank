@@ -10,11 +10,12 @@ namespace tofu
 		kPerformanceTimerSlotPhysicsTime,
 		kPerformanceTimerSlotUserUpdateTime,
 		kPerformanceTimerSlotRenderingSystemTime,
+		kPerformanceTimerSlotCustem,
 		kMaxPerformanceTimerSlot
 	};
 }
 
-#if PERFORMANCE_TIMER_ENABLED == 1
+#if TOFU_PERFORMANCE_TIMER_ENABLED == 1
 
 #include "NativeContext.h"
 
@@ -67,6 +68,12 @@ namespace tofu
 			deltaTimerSlots[slot] += (stamp - timerSlots[slot]);
 			timerSlots[slot] = stamp;
 		}
+
+		TF_INLINE static void UpdateLastTick(uint32_t slot)
+		{
+			int64_t stamp = NativeContext::instance()->GetTimeCounter();
+			timerSlots[slot] = stamp;
+		}
 	};
 }
 
@@ -78,7 +85,7 @@ namespace tofu
 
 #define PERFORMANCE_TIMER_PAUSE(SLOT) PerformanceTimer::RecordTick(SLOT);
 
-#define PERFORMANCE_TIMER_RESUME(SLOT) PerformanceTimer::RecordTick(SLOT);
+#define PERFORMANCE_TIMER_RESUME(SLOT) PerformanceTimer::UpdateLastTick(SLOT);
 
 #define PERFORMANCE_TIMER_END(SLOT) PerformanceTimer::RecordTick(SLOT);
 

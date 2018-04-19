@@ -44,6 +44,7 @@ struct BaseHandle
 	};
 
 	BaseHandle() : id(UINT16_MAX) {}
+	BaseHandle(uint32_t r) : raw(r) {}
 	BaseHandle(uint32_t _id, uint32_t _type) : id(_id), type(_type) {}
 
 	TF_INLINE operator bool() const { return id != UINT16_MAX; }
@@ -52,10 +53,13 @@ struct BaseHandle
 #define HANDLE_DECL(CLASS_NAME) \
 	struct CLASS_NAME##Handle : BaseHandle \
 	{ \
-		TF_INLINE explicit CLASS_NAME##Handle(uint32_t _id = UINT16_MAX) : BaseHandle(_id, kHandleType##CLASS_NAME) {} \
+		TF_INLINE explicit CLASS_NAME##Handle() : BaseHandle(((kHandleType##CLASS_NAME) << 16u) | UINT16_MAX) {} \
+		TF_INLINE explicit CLASS_NAME##Handle(uint32_t _id) : BaseHandle(_id, kHandleType##CLASS_NAME) {} \
 	};
 
-#define PERFORMANCE_TIMER_ENABLED 1
+#define TOFU_PERFORMANCE_TIMER_ENABLED 1
+#define TOFU_DYNAMIC_INSTANCING_ENABLED 1
+#define TOFU_VSYNC 1
 
 namespace tofu
 {
@@ -95,7 +99,7 @@ namespace tofu
 	constexpr uint32_t kLevelVMemSize = 512 * 1024 * 1024;
 	constexpr uint32_t kLevelMemAlign = 2 * 1024 * 1024;
 
-	constexpr uint32_t kFrameMemSize = 512 * 1024 * 1024;	//256
+	constexpr uint32_t kFrameMemSize = 512 * 1024 * 1024;
 	constexpr uint32_t kFrameVMemSize = 256 * 1024 * 1024;
 	constexpr uint32_t kFrameMemAlign = 2 * 1024 * 1024;
 

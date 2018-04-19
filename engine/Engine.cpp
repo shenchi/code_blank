@@ -7,6 +7,7 @@
 #include "RenderingSystem.h"
 #include "PhysicsSystem.h"
 #include "InputSystem.h"
+#include "AudioManager.h"
 #include "MemoryAllocator.h"
 
 #include "AnimationComponent.h"
@@ -32,6 +33,7 @@ namespace tofu
 		nativeContext(nullptr),
 		renderingSystem(nullptr),
 		inputSystem(nullptr),
+		audioManager(nullptr),
 		userModules(),
 		numUserModules(0),
 		timeCounterFreq(0),
@@ -81,6 +83,8 @@ namespace tofu
 				kFrameMemAlign));
 		}
 
+		MemoryAllocator::currentFrameAllocIdx = 0;
+
 		// init entity system
 		Entity::RegisterComponent<AnimationComponent>();
 		Entity::RegisterComponent<CameraComponent>();
@@ -101,6 +105,9 @@ namespace tofu
 		// initialize input system
 		inputSystem = new InputSystem();
 		CHECKED(inputSystem->Init());
+
+		audioManager = new AudioManager();
+		CHECKED(audioManager->Init());
 
 		Time::FixedDeltaTime = kDefaultFixedDeltaTime;
 
@@ -134,10 +141,13 @@ namespace tofu
 			// lock to 60 fps
 			if (deltaTime < 0.016f) continue;
 
+#if TOFU_PERFORMANCE_TIMER_ENABLED == 1
 			float cpuTime = PerformanceTimer::GetTime(PerformanceTimer::deltaTimerSlots[kPerformanceTimerSlotFrameTime]);
 			float physicsTime = PerformanceTimer::GetTime(PerformanceTimer::deltaTimerSlots[kPerformanceTimerSlotPhysicsTime]);
 			float userModuleTime = PerformanceTimer::GetTime(PerformanceTimer::deltaTimerSlots[kPerformanceTimerSlotUserUpdateTime]);
 			float renderingSystemTime = PerformanceTimer::GetTime(PerformanceTimer::deltaTimerSlots[kPerformanceTimerSlotRenderingSystemTime]);
+			float customMeasuringTime = PerformanceTimer::GetTime(PerformanceTimer::deltaTimerSlots[kPerformanceTimerSlotCustem]);
+#endif
 
 			PERFORMANCE_TIMER_START(kPerformanceTimerSlotFrameTime);
 
@@ -153,6 +163,8 @@ namespace tofu
 			CHECKED(renderingSystem->BeginFrame());
 
 			CHECKED(inputSystem->Update());
+
+			CHECKED(audioManager->Update());
 
 			PERFORMANCE_TIMER_START(kPerformanceTimerSlotPhysicsTime);
 
@@ -195,7 +207,7 @@ namespace tofu
 
 			PERFORMANCE_TIMER_START(kPerformanceTimerSlotRenderingSystemTime);
 
-#if PERFORMANCE_TIMER_ENABLED == 1
+#if TOFU_PERFORMANCE_TIMER_ENABLED == 1
 			GUI* gui = GUI::instance();
 
 			gui->SetCanvasSize(1920, 1080);
@@ -211,7 +223,7 @@ namespace tofu
 			sprintf_s(textBuf, "Physics Time: %.2f ms", physicsTime);
 			gui->Text(layer, -950, -520, 24, textBuf, white, kTextAlignTop);
 
-			sprintf_s(textBuf, "User Module Time: %.2f ms", userModuleTime);
+			sprintf_s(textBuf, "Gameplay Logic Time: %.2f ms", userModuleTime);
 			gui->Text(layer, -950, -500, 24, textBuf, white, kTextAlignTop);
 
 			sprintf_s(textBuf, "Rendering System Time: %.2f ms", renderingSystemTime);
@@ -219,11 +231,18 @@ namespace tofu
 
 			sprintf_s(textBuf, "GPU Time: %.2f ms", renderingSystem->GetGPUTime());
 			gui->Text(layer, -950, -460, 24, textBuf, white, kTextAlignTop);
+
+			//sprintf_s(textBuf, "Custom Measuring Time: %.2f ms", customMeasuringTime);
+			//gui->Text(layer, -950, -440, 24, textBuf, white, kTextAlignTop);
 #endif
 
 			CHECKED(renderingSystem->Update());
 
+			PERFORMANCE_TIMER_START(kPerformanceTimerSlotCustem);
+			//PERFORMANCE_TIMER_PAUSE(kPerformanceTimerSlotCustem);
 			CHECKED(renderingSystem->EndFrame());
+			//PERFORMANCE_TIMER_RESUME(kPerformanceTimerSlotCustem);
+			PERFORMANCE_TIMER_END(kPerformanceTimerSlotCustem);
 
 			PERFORMANCE_TIMER_END(kPerformanceTimerSlotRenderingSystemTime);
 
@@ -268,6 +287,9 @@ namespace tofu
 		CHECKED(renderingSystem->Shutdown());
 		delete renderingSystem;
 
+		CHECKED(audioManager->Shutdown());
+		delete audioManager;
+
 		CHECKED(nativeContext->Shutdown());
 		delete nativeContext;
 
@@ -288,5 +310,4 @@ namespace tofu
 
 		return kOK;
 	}
-
 }

@@ -94,6 +94,10 @@ private:
 	bool debugMode;
 
 	Utility::GhostPlayer* DebugPlayer;
+
+	tofu::AudioSource			gameplay{ "assets/sounds/Game_Play.wav" };
+	tofu::AudioSource			jumpSfx{ "assets/sounds/Jump.wav" };
+
 	//*********************************************************************************************
 
 	// UI

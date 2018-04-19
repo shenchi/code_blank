@@ -20,6 +20,8 @@
 
 #include "Collision.h"
 
+#include "PerformanceTimer.h"
+
 #define TOFU_FILTER_VFOG 1
 
 namespace
@@ -111,12 +113,18 @@ namespace tofu
 {
 	struct RenderingObject
 	{
+		uint64_t		sortKey;
 		uint32_t		materialType;
 		ModelHandle		model;
 		uint32_t		submesh;
 		MaterialHandle	material;
 		uint32_t		transformIdx;
 		uint32_t		renderableId;
+
+		TF_INLINE void BuildSortKey()
+		{
+			sortKey = (((uint64_t)materialType << 48u) | ((uint64_t)material.id << 32u) | (model.id << 16u) | (submesh & 0xffffu));
+		}
 	};
 
 	SINGLETON_IMPL(RenderingSystem);
@@ -208,17 +216,17 @@ namespace tofu
 		//CHECKED(LoadVertexShader("assets/shadow_opaque_vs.shader", materialVSs[kMaterialTypeDepth]));
 		//CHECKED(LoadVertexShader("assets/shadow_opaqueskinned_vs.shader", materialVSs[kMaterialTypeDepthSkinned]));
 
-
+		CHECKED(LoadVertexShader("assets/shadow_instanced_vs.shader", materialVSs[kMaterialShadowInstanced]));
 		CHECKED(LoadVertexShader("assets/shadow_vs.shader", materialVSs[kMaterialShadow]));
 		CHECKED(LoadVertexShader("assets/shadow_skinned_vs.shader", materialVSs[kMaterialShadowSkinned]));
 
-		CHECKED(InitBuiltinMaterial(kMaterialDeferredGeometryOpaque,
-			"assets/deferred_geometry_vs.shader",
+		CHECKED(InitBuiltinMaterial(kMaterialDeferredGeometryOpaqueInstanced,
+			"assets/deferred_geometry_instanced_vs.shader",
 			"assets/deferred_geometry_ps.shader"));
 
-		CHECKED(InitBuiltinMaterial(kMaterialDeferredGeometryOpaqueSkinned,
-			"assets/deferred_geometry_skinned_vs.shader",
-			"assets/deferred_geometry_ps.shader"));
+		CHECKED(LoadVertexShader("assets/deferred_geometry_vs.shader", materialVSs[kMaterialDeferredGeometryOpaque]));
+
+		CHECKED(LoadVertexShader("assets/deferred_geometry_skinned_vs.shader", materialVSs[kMaterialDeferredGeometryOpaqueSkinned]));
 
 		CHECKED(InitBuiltinMaterial(kMaterialDeferredLightingPointLight,
 			"assets/deferred_lighting_vs.shader",
@@ -235,6 +243,7 @@ namespace tofu
 		CHECKED(LoadPixelShader("assets/post_process_tone_mapping_ps.shader", materialPSs[kMaterialPostProcessToneMapping]));
 		CHECKED(LoadPixelShader("assets/post_process_extract_bright_ps.shader", materialPSs[kMaterialPostProcessExtractBright]));
 		CHECKED(LoadPixelShader("assets/post_process_blur_ps.shader", materialPSs[kMaterialPostProcessBlur]));
+		CHECKED(LoadPixelShader("assets/post_process_fxaa_ps.shader", materialPSs[kMaterialPostProcessAntiAliasing]));
 
 		CHECKED(LoadPixelShader("assets/volumetric_fog_apply_ps.shader", materialPSs[kMaterialPostProcessVolumetricFog]));
 
@@ -298,6 +307,20 @@ namespace tofu
 				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 			}
 
+			materialPSOs[kMaterialShadowInstanced] = pipelineStateHandleAlloc.Allocate();
+			assert(materialPSOs[kMaterialShadowInstanced]);
+			{
+				CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
+				params->handle = materialPSOs[kMaterialShadowInstanced];
+				params->vertexShader = materialVSs[kMaterialShadowInstanced];
+
+				params->viewport = { 0.0f, 0.0f, 1024.0f, 1024.0f, 0.0f, 1.0f };
+
+				params->label = kResourceGlobal;
+
+				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+			}
+
 			materialPSOs[kMaterialShadow] = pipelineStateHandleAlloc.Allocate();
 			assert(materialPSOs[kMaterialShadow]);
 			{
@@ -327,13 +350,31 @@ namespace tofu
 				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
 			}
 
+			materialPSOs[kMaterialDeferredGeometryOpaqueInstanced] = pipelineStateHandleAlloc.Allocate();
+			assert(materialPSOs[kMaterialDeferredGeometryOpaqueInstanced]);
+			{
+				CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
+				params->handle = materialPSOs[kMaterialDeferredGeometryOpaqueInstanced];
+				params->vertexShader = materialVSs[kMaterialDeferredGeometryOpaqueInstanced];
+				params->pixelShader = materialPSs[kMaterialDeferredGeometryOpaqueInstanced];
+				//params->stencilEnable = 1;
+				//params->frontFacePassOp = kStencilOpReplace;
+				//params->stencilRef = 1u;
+
+				params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
+
+				params->label = kResourceGlobal;
+
+				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+			}
+
 			materialPSOs[kMaterialDeferredGeometryOpaque] = pipelineStateHandleAlloc.Allocate();
 			assert(materialPSOs[kMaterialDeferredGeometryOpaque]);
 			{
 				CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
 				params->handle = materialPSOs[kMaterialDeferredGeometryOpaque];
 				params->vertexShader = materialVSs[kMaterialDeferredGeometryOpaque];
-				params->pixelShader = materialPSs[kMaterialDeferredGeometryOpaque];
+				params->pixelShader = materialPSs[kMaterialDeferredGeometryOpaqueInstanced];
 				//params->stencilEnable = 1;
 				//params->frontFacePassOp = kStencilOpReplace;
 				//params->stencilRef = 1u;
@@ -351,7 +392,7 @@ namespace tofu
 				CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
 				params->handle = materialPSOs[kMaterialDeferredGeometryOpaqueSkinned];
 				params->vertexShader = materialVSs[kMaterialDeferredGeometryOpaqueSkinned];
-				params->pixelShader = materialPSs[kMaterialDeferredGeometryOpaqueSkinned];
+				params->pixelShader = materialPSs[kMaterialDeferredGeometryOpaqueInstanced];
 				params->vertexFormat = kVertexFormatSkinned;
 				//params->stencilEnable = 1;
 				//params->frontFacePassOp = kStencilOpReplace;
@@ -461,6 +502,26 @@ namespace tofu
 			params->blendEnable = 1;
 			params->srcBlend = kBlendOne;
 			params->destBlend = kBlendOne;
+
+			params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
+
+			params->label = kResourceGlobal;
+
+			cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+		}
+
+		materialPSOs[kMaterialDeferredTransparentInstanced] = pipelineStateHandleAlloc.Allocate();
+		assert(materialPSOs[kMaterialDeferredTransparentInstanced]);
+		{
+			CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
+			params->handle = materialPSOs[kMaterialDeferredTransparentInstanced];
+			params->vertexShader = materialVSs[kMaterialDeferredGeometryOpaqueInstanced];
+			params->pixelShader = materialPSs[kMaterialDeferredTransparent];
+
+			params->depthWrite = 0;
+			params->blendEnable = 1;
+			params->srcBlend = kBlendSrcAlpha;
+			params->destBlend = kBlendInvSrcAlpha;
 
 			params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
 
@@ -579,6 +640,25 @@ namespace tofu
 			params->handle = materialPSOs[kMaterialPostProcessVolumetricFog];
 			params->vertexShader = materialVSs[kMaterialDeferredLightingAmbient];
 			params->pixelShader = materialPSs[kMaterialPostProcessVolumetricFog];
+
+			params->depthEnable = 0;
+
+			params->cullMode = kCullBack;
+
+			params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
+
+			params->label = kResourceGlobal;
+
+			cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+		}
+
+		materialPSOs[kMaterialPostProcessAntiAliasing] = pipelineStateHandleAlloc.Allocate();
+		assert(materialPSOs[kMaterialPostProcessAntiAliasing]);
+		{
+			CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
+			params->handle = materialPSOs[kMaterialPostProcessAntiAliasing];
+			params->vertexShader = materialVSs[kMaterialDeferredLightingAmbient];
+			params->pixelShader = materialPSs[kMaterialPostProcessAntiAliasing];
 
 			params->depthEnable = 0;
 
@@ -1530,6 +1610,7 @@ namespace tofu
 
 			// TODO culling
 
+			/*
 			// fill transform matrices;
 			uint32_t idx = numActiveEntities++;
 
@@ -1539,6 +1620,7 @@ namespace tofu
 			transformArrayOpaque[idx * 4] = transform->GetWorldTransform().GetMatrix();
 #endif
 			transformArray[idx * 4 + 1] = math::transpose(math::inverse(transformArray[idx * 4]));
+			/**/
 
 			// add all submeshes into the queue
 			uint32_t numMeshes = comp.model->numMeshes;
@@ -1554,7 +1636,8 @@ namespace tofu
 				obj.materialType = mat->type;
 				obj.submesh = j;
 				obj.renderableId = i;
-				obj.transformIdx = idx;
+				//obj.transformIdx = idx;
+				obj.BuildSortKey();
 
 				if (obj.materialType == kMaterialDeferredTransparent || obj.materialType == kMaterialDeferredTransparentSkinned)
 				{
@@ -1570,14 +1653,64 @@ namespace tofu
 		// sorting rendering objects
 		std::sort(activeObjects, activeObjects + numActiveObjects, [](RenderingObject& a, RenderingObject& b)
 		{
-			return a.materialType < b.materialType;
+			return a.sortKey < b.sortKey;
 		});
 
-		// upload transform matrices
-		if (numActiveEntities > 0)
+#if TOFU_DYNAMIC_INSTANCING_ENABLED == 1
+		// find instanced objs
+		for (uint32_t i = 0; i < numActiveObjects; i++)
 		{
-			UpdateConstantBuffer(transformBuffer, sizeof(math::float4x4) * 4 * numActiveEntities, transformArray);
+			if (activeObjects[i].materialType == kMaterialDeferredGeometryOpaqueSkinned ||
+				activeObjects[i].materialType == kMaterialDeferredTransparentSkinned)
+				continue;
+
+			uint32_t startIdx = i;
+			while (i < numActiveObjects - 1 &&
+				activeObjects[i].sortKey == activeObjects[i + 1].sortKey)
+			{
+				// change it to instanced type
+				activeObjects[i].materialType = activeObjects[i].materialType - 1;
+				activeObjects[i].BuildSortKey();
+				i++;
+			}
+
+			if (startIdx != i)
+			{
+				// change it to instanced type
+				activeObjects[i].materialType = activeObjects[i].materialType - 1;
+				activeObjects[i].BuildSortKey();
+			}
 		}
+
+		// sort again
+		std::sort(activeObjects, activeObjects + numActiveObjects, [](RenderingObject& a, RenderingObject& b)
+		{
+			return a.sortKey < b.sortKey;
+		});
+#endif
+
+		// update transform matrices
+		for (uint32_t i = 0; i < numActiveObjects; i++)
+		{
+			RenderingObject& obj = activeObjects[i];
+			obj.transformIdx = i;
+
+			TransformComponent transform = renderables[obj.renderableId].entity.GetComponent<TransformComponent>();
+
+#ifdef TOFU_USE_GLM
+			transformArray[i * 4] = math::transpose(transform->GetWorldTransform().GetMatrix());
+#else
+			transformArrayOpaque[idx * 4] = transform->GetWorldTransform().GetMatrix();
+#endif
+			transformArray[i * 4 + 1] = math::transpose(math::inverse(transformArray[i * 4]));
+		}
+
+		// upload transform matrices
+		if (numActiveObjects > 0)
+		{
+			UpdateConstantBuffer(transformBuffer, sizeof(math::float4x4) * 4 * numActiveObjects, transformArray);
+		}
+
 
 		// get all lights
 		LightComponentData* lights = LightComponent::GetAllComponents();
@@ -1844,8 +1977,59 @@ namespace tofu
 				cmdBuf->Add(RendererCommand::kCommandClearRenderTargets, params);
 			}
 
+			uint32_t iObject = 0;
+
+#if TOFU_DYNAMIC_INSTANCING_ENABLED == 1
+			for (; iObject < numOpaqueObjects; iObject++)
+			{
+				uint32_t startIdx = iObject;
+				while (iObject < numOpaqueObjects - 1 &&
+					iObject - startIdx < 256 &&
+					activeObjects[iObject].sortKey == activeObjects[iObject + 1].sortKey)
+				{
+					iObject++;
+				}
+
+				if (iObject == startIdx) break;
+
+				uint32_t numInstances = (iObject - startIdx + 1);
+
+				const RenderingObject& obj = activeObjects[startIdx];
+				assert(obj.materialType == kMaterialDeferredGeometryOpaqueInstanced);
+
+				assert(obj.model);
+
+				Model& model = models[obj.model.id];
+				uint32_t iMesh = obj.submesh;
+
+				assert(model.meshes[iMesh]);
+				Mesh& mesh = meshes[model.meshes[iMesh].id];
+
+				const Material* mat = &materials[obj.material.id];
+
+				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
+				params->pipelineState = materialPSOs[kMaterialShadowInstanced];
+				params->vertexBuffer = mesh.VertexBuffer;
+				params->indexBuffer = mesh.IndexBuffer;
+				params->startIndex = mesh.StartIndex;
+				params->startVertex = mesh.StartVertex;
+				params->indexCount = mesh.NumIndices;
+
+				params->instanceCount = numInstances;
+
+				params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(obj.transformIdx * 16), (uint16_t)(16 * numInstances)};
+				params->vsConstantBuffers[1] = { shadowMatricesBuffer, static_cast<uint16_t>(iLight * 16), 16 };
+
+				params->renderTargets[0] = TextureHandle();
+				params->depthRenderTarget = shadowMaps[iLight];
+
+
+				cmdBuf->Add(RendererCommand::kCommandDraw, params);
+			}
+#endif
+
 			// TODO: culling
-			for (uint32_t iObject = 0; iObject < numOpaqueObjects; iObject++)
+			for (; iObject < numOpaqueObjects; iObject++)
 			{
 				const RenderingObject& obj = activeObjects[iObject];
 
@@ -1916,47 +2100,48 @@ namespace tofu
 		}
 
 		// generate draw call for active renderables in command buffer
-		for (uint32_t i = 0; i < numOpaqueObjects; ++i)
 		{
-			RenderingObject& obj = activeObjects[i];
+			uint32_t i = 0;
 
-			assert(obj.model);
-
-			Model& model = models[obj.model.id];
-			uint32_t iMesh = obj.submesh;
-
-			assert(model.meshes[iMesh]);
-			Mesh& mesh = meshes[model.meshes[iMesh].id];
-
-			const Material* mat = &materials[obj.material.id];
-
-			DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
-			params->pipelineState = materialPSOs[mat->type];
-			params->vertexBuffer = mesh.VertexBuffer;
-			params->indexBuffer = mesh.IndexBuffer;
-			params->startIndex = mesh.StartIndex;
-			params->startVertex = mesh.StartVertex;
-			params->indexCount = mesh.NumIndices;
-
-			//if (mat->type == kMaterialTypeOpaque) params->pipelineState = materialPSOs[kMaterialDeferredGeometryOpaque];
-			//if (mat->type == kMaterialTypeOpaqueSkinned) params->pipelineState = materialPSOs[kMaterialDeferredGeometryOpaqueSkinned];
-
-			switch (mat->type)
+#if TOFU_DYNAMIC_INSTANCING_ENABLED == 1
+			for (; i < numOpaqueObjects; ++i)
 			{
-			case kMaterialDeferredGeometryOpaqueSkinned:
-				(void*)0;
+				uint32_t startIdx = i;
+				while (i < numOpaqueObjects - 1 &&
+					i - startIdx < 256 &&
+					activeObjects[i].sortKey == activeObjects[i + 1].sortKey)
 				{
-					Entity entity = renderables[obj.renderableId].entity;
-					AnimationComponent anim = entity.GetComponent<AnimationComponent>();
-					if (!anim || !anim->boneMatricesBuffer)
-					{
-						return kErrUnknown;
-					}
-					params->vsConstantBuffers[2] = { anim->boneMatricesBuffer, 0, 0 };
+					i++;
 				}
-				// fall through
-			case kMaterialDeferredGeometryOpaque:
-				params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(obj.transformIdx * 16), 16 };
+
+				if (i == startIdx) break;
+
+				uint32_t numInstances = (i - startIdx + 1);
+
+				RenderingObject& obj = activeObjects[startIdx];
+				assert(obj.materialType == kMaterialDeferredGeometryOpaqueInstanced);
+
+				assert(obj.model);
+
+				Model& model = models[obj.model.id];
+				uint32_t iMesh = obj.submesh;
+
+				assert(model.meshes[iMesh]);
+				Mesh& mesh = meshes[model.meshes[iMesh].id];
+
+				const Material* mat = &materials[obj.material.id];
+
+				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
+				params->pipelineState = materialPSOs[kMaterialDeferredGeometryOpaqueInstanced];
+				params->vertexBuffer = mesh.VertexBuffer;
+				params->indexBuffer = mesh.IndexBuffer;
+				params->startIndex = mesh.StartIndex;
+				params->startVertex = mesh.StartVertex;
+				params->indexCount = mesh.NumIndices;
+
+				params->instanceCount = numInstances;
+
+				params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(obj.transformIdx * 16), (uint16_t)(16 * numInstances) };
 				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
 
 				params->psConstantBuffers[0] = { mat->materialParamsBuffer, 0, 0 };
@@ -1973,13 +2158,75 @@ namespace tofu
 				params->renderTargets[2] = gBuffer3;
 				params->renderTargets[3] = gBuffer4;
 
-				break;
-			default:
-				assert(false && "this material type is not applicable for entities");
-				break;
+				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
+#endif
 
-			cmdBuf->Add(RendererCommand::kCommandDraw, params);
+			for (; i < numOpaqueObjects; ++i)
+			{
+				RenderingObject& obj = activeObjects[i];
+
+				assert(obj.model);
+
+				Model& model = models[obj.model.id];
+				uint32_t iMesh = obj.submesh;
+
+				assert(model.meshes[iMesh]);
+				Mesh& mesh = meshes[model.meshes[iMesh].id];
+
+				const Material* mat = &materials[obj.material.id];
+
+				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
+				params->pipelineState = materialPSOs[mat->type];
+				params->vertexBuffer = mesh.VertexBuffer;
+				params->indexBuffer = mesh.IndexBuffer;
+				params->startIndex = mesh.StartIndex;
+				params->startVertex = mesh.StartVertex;
+				params->indexCount = mesh.NumIndices;
+
+				//if (mat->type == kMaterialTypeOpaque) params->pipelineState = materialPSOs[kMaterialDeferredGeometryOpaque];
+				//if (mat->type == kMaterialTypeOpaqueSkinned) params->pipelineState = materialPSOs[kMaterialDeferredGeometryOpaqueSkinned];
+
+				switch (mat->type)
+				{
+				case kMaterialDeferredGeometryOpaqueSkinned:
+					(void*)0;
+					{
+						Entity entity = renderables[obj.renderableId].entity;
+						AnimationComponent anim = entity.GetComponent<AnimationComponent>();
+						if (!anim || !anim->boneMatricesBuffer)
+						{
+							return kErrUnknown;
+						}
+						params->vsConstantBuffers[2] = { anim->boneMatricesBuffer, 0, 0 };
+					}
+					// fall through
+				case kMaterialDeferredGeometryOpaque:
+					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(obj.transformIdx * 16), 16 };
+					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
+
+					params->psConstantBuffers[0] = { mat->materialParamsBuffer, 0, 0 };
+
+					params->psShaderResources[0] = mat->mainTex ? mat->mainTex : defaultAlbedoMap;
+					params->psShaderResources[1] = mat->normalMap ? mat->normalMap : defaultNormalMap;
+					params->psShaderResources[2] = mat->metallicGlossMap ? mat->metallicGlossMap : defaultMetallicGlossMap;
+					params->psShaderResources[3] = mat->occlusionMap ? mat->occlusionMap : defaultOcclusionMap;
+					params->psShaderResources[4] = mat->emissionMap ? mat->emissionMap : defaultEmissionMap;
+					params->psSamplers[0] = defaultSampler;
+
+					params->renderTargets[0] = gBuffer1;
+					params->renderTargets[1] = gBuffer2;
+					params->renderTargets[2] = gBuffer3;
+					params->renderTargets[3] = gBuffer4;
+
+					break;
+				default:
+					assert(false && "this material type is not applicable for entities");
+					break;
+				}
+
+				cmdBuf->Add(RendererCommand::kCommandDraw, params);
+			}
 		}
 
 		// Lighting Pass
@@ -2171,56 +2418,109 @@ namespace tofu
 		}
 
 		// Transparent Pass
-		for (uint32_t i = numOpaqueObjects; i < numActiveObjects; ++i)
 		{
-			RenderingObject& obj = activeObjects[i];
+			uint32_t i = numOpaqueObjects;
 
-			assert(obj.model);
-
-			Model& model = models[obj.model.id];
-			uint32_t iMesh = obj.submesh;
-
-			assert(model.meshes[iMesh]);
-			Mesh& mesh = meshes[model.meshes[iMesh].id];
-
-			const Material* mat = &materials[obj.material.id];
-
-			DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
-			params->pipelineState = materialPSOs[mat->type];
-			params->vertexBuffer = mesh.VertexBuffer;
-			params->indexBuffer = mesh.IndexBuffer;
-			params->startIndex = mesh.StartIndex;
-			params->startVertex = mesh.StartVertex;
-			params->indexCount = mesh.NumIndices;
-
-			switch (mat->type)
+#if TOFU_DYNAMIC_INSTANCING_ENABLED == 1
+			for (; i < numActiveObjects; ++i)
 			{
-			case kMaterialDeferredTransparentSkinned:
-				(void*)0;
+				uint32_t startIdx = i;
+				while (i < numActiveObjects - 1 &&
+					i - startIdx < 256 &&
+					activeObjects[i].sortKey == activeObjects[i + 1].sortKey)
 				{
-					Entity entity = renderables[obj.renderableId].entity;
-					AnimationComponent anim = entity.GetComponent<AnimationComponent>();
-					if (!anim || !anim->boneMatricesBuffer)
-					{
-						return kErrUnknown;
-					}
-					params->vsConstantBuffers[2] = { anim->boneMatricesBuffer, 0, 0 };
+					i++;
 				}
-				// fall through
-			case kMaterialDeferredTransparent:
-				params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(obj.transformIdx * 16), 16 };
+
+				if (i == startIdx) break;
+
+				uint32_t numInstances = (i - startIdx + 1);
+
+				RenderingObject& obj = activeObjects[startIdx];
+				assert(obj.materialType == kMaterialDeferredTransparentInstanced);
+
+				assert(obj.model);
+
+				Model& model = models[obj.model.id];
+				uint32_t iMesh = obj.submesh;
+
+				assert(model.meshes[iMesh]);
+				Mesh& mesh = meshes[model.meshes[iMesh].id];
+
+				const Material* mat = &materials[obj.material.id];
+
+				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
+				params->pipelineState = materialPSOs[kMaterialDeferredTransparentInstanced];
+				params->vertexBuffer = mesh.VertexBuffer;
+				params->indexBuffer = mesh.IndexBuffer;
+				params->startIndex = mesh.StartIndex;
+				params->startVertex = mesh.StartVertex;
+				params->indexCount = mesh.NumIndices;
+
+				params->instanceCount = numInstances;
+
+				params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(obj.transformIdx * 16), (uint16_t)(16 * numInstances) };
 				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
 				params->psShaderResources[0] = mat->mainTex ? mat->mainTex : defaultAlbedoMap;
 				params->psSamplers[0] = defaultSampler;
 
 				params->renderTargets[0] = hdrTarget;
-				break;
-			default:
-				assert(false && "this material type is not applicable for entities");
-				break;
-			}
 
-			cmdBuf->Add(RendererCommand::kCommandDraw, params);
+				cmdBuf->Add(RendererCommand::kCommandDraw, params);
+			}
+#endif
+
+			for (; i < numActiveObjects; ++i)
+			{
+				RenderingObject& obj = activeObjects[i];
+
+				assert(obj.model);
+
+				Model& model = models[obj.model.id];
+				uint32_t iMesh = obj.submesh;
+
+				assert(model.meshes[iMesh]);
+				Mesh& mesh = meshes[model.meshes[iMesh].id];
+
+				const Material* mat = &materials[obj.material.id];
+
+				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
+				params->pipelineState = materialPSOs[mat->type];
+				params->vertexBuffer = mesh.VertexBuffer;
+				params->indexBuffer = mesh.IndexBuffer;
+				params->startIndex = mesh.StartIndex;
+				params->startVertex = mesh.StartVertex;
+				params->indexCount = mesh.NumIndices;
+
+				switch (mat->type)
+				{
+				case kMaterialDeferredTransparentSkinned:
+					(void*)0;
+					{
+						Entity entity = renderables[obj.renderableId].entity;
+						AnimationComponent anim = entity.GetComponent<AnimationComponent>();
+						if (!anim || !anim->boneMatricesBuffer)
+						{
+							return kErrUnknown;
+						}
+						params->vsConstantBuffers[2] = { anim->boneMatricesBuffer, 0, 0 };
+					}
+					// fall through
+				case kMaterialDeferredTransparent:
+					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(obj.transformIdx * 16), 16 };
+					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
+					params->psShaderResources[0] = mat->mainTex ? mat->mainTex : defaultAlbedoMap;
+					params->psSamplers[0] = defaultSampler;
+
+					params->renderTargets[0] = hdrTarget;
+					break;
+				default:
+					assert(false && "this material type is not applicable for entities");
+					break;
+				}
+
+				cmdBuf->Add(RendererCommand::kCommandDraw, params);
+			}
 		}
 
 		// post-process effect
@@ -2280,45 +2580,45 @@ namespace tofu
 				cmdBuf->Add(RendererCommand::kCommandCompute, params);
 			}
 
-			// Extract bright part
-			{
-				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
-				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
-
-				params->pipelineState = materialPSOs[kMaterialPostProcessExtractBright];
-
-				params->vertexBuffer = mesh.VertexBuffer;
-				params->indexBuffer = mesh.IndexBuffer;
-				params->startIndex = mesh.StartIndex;
-				params->startVertex = mesh.StartVertex;
-				params->indexCount = mesh.NumIndices;
-
-				params->psShaderResources[0] = hdrTarget;
-
-				params->renderTargets[0] = hdrTarget2;
-
-				cmdBuf->Add(RendererCommand::kCommandDraw, params);
-			}
-
-			// Blur
-			{
-				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
-				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
-
-				params->pipelineState = materialPSOs[kMaterialPostProcessBlur];
-
-				params->vertexBuffer = mesh.VertexBuffer;
-				params->indexBuffer = mesh.IndexBuffer;
-				params->startIndex = mesh.StartIndex;
-				params->startVertex = mesh.StartVertex;
-				params->indexCount = mesh.NumIndices;
-
-				params->psShaderResources[0] = hdrTarget2;
-
-				params->renderTargets[0] = hdrTarget;
-
-				cmdBuf->Add(RendererCommand::kCommandDraw, params);
-			}
+			//// Extract bright part
+			//{
+			//	Mesh& mesh = meshes[builtinQuad->meshes[0].id];
+			//	DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
+			//
+			//	params->pipelineState = materialPSOs[kMaterialPostProcessExtractBright];
+			//
+			//	params->vertexBuffer = mesh.VertexBuffer;
+			//	params->indexBuffer = mesh.IndexBuffer;
+			//	params->startIndex = mesh.StartIndex;
+			//	params->startVertex = mesh.StartVertex;
+			//	params->indexCount = mesh.NumIndices;
+			//
+			//	params->psShaderResources[0] = hdrTarget;
+			//
+			//	params->renderTargets[0] = hdrTarget2;
+			//
+			//	cmdBuf->Add(RendererCommand::kCommandDraw, params);
+			//}
+			//
+			//// Blur
+			//{
+			//	Mesh& mesh = meshes[builtinQuad->meshes[0].id];
+			//	DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
+			//
+			//	params->pipelineState = materialPSOs[kMaterialPostProcessBlur];
+			//
+			//	params->vertexBuffer = mesh.VertexBuffer;
+			//	params->indexBuffer = mesh.IndexBuffer;
+			//	params->startIndex = mesh.StartIndex;
+			//	params->startVertex = mesh.StartVertex;
+			//	params->indexCount = mesh.NumIndices;
+			//
+			//	params->psShaderResources[0] = hdrTarget2;
+			//
+			//	params->renderTargets[0] = hdrTarget;
+			//
+			//	cmdBuf->Add(RendererCommand::kCommandDraw, params);
+			//}
 
 			// volumetric fog
 			{
@@ -2360,6 +2660,28 @@ namespace tofu
 				params->indexCount = mesh.NumIndices;
 
 				params->psShaderResources[0] = hdrTarget2;
+				params->renderTargets[0] = hdrTarget;
+
+				cmdBuf->Add(RendererCommand::kCommandDraw, params);
+			}
+
+			// anti-aliasing
+			{
+				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
+				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
+
+				params->pipelineState = materialPSOs[kMaterialPostProcessAntiAliasing];
+
+				params->psConstantBuffers[0] = { frameConstantBuffer, 0, 0 };
+
+				params->vertexBuffer = mesh.VertexBuffer;
+				params->indexBuffer = mesh.IndexBuffer;
+				params->startIndex = mesh.StartIndex;
+				params->startVertex = mesh.StartVertex;
+				params->indexCount = mesh.NumIndices;
+
+				params->psShaderResources[0] = hdrTarget;
+				params->psSamplers[0] = volumeSampler;
 
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}

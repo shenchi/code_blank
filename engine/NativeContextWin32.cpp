@@ -62,6 +62,10 @@ namespace tofu
 		DirectX::Keyboard*		keyboard;
 		DirectX::Mouse*			mouse;
 		DirectX::GamePad*		gamepad;
+
+		int32_t					width;
+		int32_t					height;
+		bool					fullscreen;
 		
 	public:
 		int32_t Init() override
@@ -70,18 +74,27 @@ namespace tofu
 
 			//int32_t w = 1600;// config->GetInt32("display.width", 800);
 			//int32_t h = 900;// config->GetInt32("display.height", 600);
-			int32_t w =	1600; //1280 1770 x 996 is the largest none full screen resolution that fits
-			int32_t h = 900;  //720
+			int32_t w = 1280;
+			int32_t h = 720;
+			fullscreen = false;
+
+			//int32_t w = 1920;
+			//int32_t h = 1080;
+			//fullscreen = true;
+
 			std::string title = "tofu";// config->GetString("game.title");
 			std::wstring wtitle(title.begin(), title.end());
 
 			WNDCLASSEX cls{ 0 };
 			cls.cbSize = sizeof(WNDCLASSEX);
-			cls.hbrBackground = (HBRUSH)COLOR_BACKGROUND;
 			cls.hInstance = hInstance;
 			cls.lpfnWndProc = WndProc;
 			cls.lpszClassName = g_WindowClassName;
 			cls.style = CS_HREDRAW | CS_VREDRAW;
+			if (!fullscreen)
+			{
+				cls.hbrBackground = (HBRUSH)COLOR_BACKGROUND;
+			}
 
 			if (!RegisterClassEx(&cls))
 			{
@@ -124,6 +137,9 @@ namespace tofu
 			mouse->SetMode(DirectX::Mouse::Mode::MODE_RELATIVE);
 			gamepad = new DirectX::GamePad();
 
+			width = uint32_t(w);
+			height = uint32_t(h);
+
 			return kOK;
 		}
 
@@ -161,6 +177,27 @@ namespace tofu
 		intptr_t GetContextHandle() override
 		{
 			return reinterpret_cast<intptr_t>(hWnd);
+		}
+
+		void GetResolution(int32_t* w, int32_t* h) override
+		{
+			if (fullscreen)
+			{
+				*w = width;
+				*h = height;
+			}
+			else
+			{
+				RECT rect = {};
+				GetClientRect(hWnd, &rect);
+				*w = rect.right - rect.left;
+				*h = rect.bottom - rect.top;
+			}
+		}
+
+		bool IsFullScreen() override
+		{
+			return fullscreen;
 		}
 
 		int64_t GetTimeCounter() override

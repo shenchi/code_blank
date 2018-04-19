@@ -799,6 +799,21 @@
             "Flamable_2"
           ],
           "type": "renderable"
+        },
+        {
+          "colliderType": "capsule",
+          "center": {
+            "x": -0.000479400158,
+            "y": -0.0004914701,
+            "z": -0.000404685736
+          },
+          "size": {
+            "x": 0.442401,
+            "y": 0.3213421,
+            "z": 0.0
+          },
+          "model": null,
+          "type": "physics"
         }
       ],
       "children": null
@@ -868,6 +883,21 @@
             "Flamable_2"
           ],
           "type": "renderable"
+        },
+        {
+          "colliderType": "capsule",
+          "center": {
+            "x": -0.000479400158,
+            "y": -0.0004914701,
+            "z": -0.000404685736
+          },
+          "size": {
+            "x": 0.442401,
+            "y": 0.3213421,
+            "z": 0.0
+          },
+          "model": null,
+          "type": "physics"
         }
       ],
       "children": null
@@ -901,18 +931,18 @@
           "type": "renderable"
         },
         {
-          "colliderType": "mesh",
+          "colliderType": "capsule",
           "center": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
+            "x": 1.49011612E-08,
+            "y": 0.0004413426,
+            "z": -0.00110585988
           },
           "size": {
-            "x": 1.0,
-            "y": 1.0,
-            "z": 1.0
+            "x": 0.266112983,
+            "y": 0.07698208,
+            "z": 0.0
           },
-          "model": "models/Wooden_Barrel_Barrel_Low.model",
+          "model": null,
           "type": "physics"
         }
       ],
@@ -947,18 +977,18 @@
           "type": "renderable"
         },
         {
-          "colliderType": "mesh",
+          "colliderType": "capsule",
           "center": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
+            "x": 1.49011612E-08,
+            "y": 0.0004413426,
+            "z": -0.00110585988
           },
           "size": {
-            "x": 1.0,
-            "y": 1.0,
-            "z": 1.0
+            "x": 0.266112983,
+            "y": 0.07698208,
+            "z": 0.0
           },
-          "model": "models/Wooden_Barrel_Barrel_Low.model",
+          "model": null,
           "type": "physics"
         }
       ],
