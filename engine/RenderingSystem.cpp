@@ -2580,45 +2580,45 @@ namespace tofu
 				cmdBuf->Add(RendererCommand::kCommandCompute, params);
 			}
 
-			//// Extract bright part
-			//{
-			//	Mesh& mesh = meshes[builtinQuad->meshes[0].id];
-			//	DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
-			//
-			//	params->pipelineState = materialPSOs[kMaterialPostProcessExtractBright];
-			//
-			//	params->vertexBuffer = mesh.VertexBuffer;
-			//	params->indexBuffer = mesh.IndexBuffer;
-			//	params->startIndex = mesh.StartIndex;
-			//	params->startVertex = mesh.StartVertex;
-			//	params->indexCount = mesh.NumIndices;
-			//
-			//	params->psShaderResources[0] = hdrTarget;
-			//
-			//	params->renderTargets[0] = hdrTarget2;
-			//
-			//	cmdBuf->Add(RendererCommand::kCommandDraw, params);
-			//}
-			//
-			//// Blur
-			//{
-			//	Mesh& mesh = meshes[builtinQuad->meshes[0].id];
-			//	DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
-			//
-			//	params->pipelineState = materialPSOs[kMaterialPostProcessBlur];
-			//
-			//	params->vertexBuffer = mesh.VertexBuffer;
-			//	params->indexBuffer = mesh.IndexBuffer;
-			//	params->startIndex = mesh.StartIndex;
-			//	params->startVertex = mesh.StartVertex;
-			//	params->indexCount = mesh.NumIndices;
-			//
-			//	params->psShaderResources[0] = hdrTarget2;
-			//
-			//	params->renderTargets[0] = hdrTarget;
-			//
-			//	cmdBuf->Add(RendererCommand::kCommandDraw, params);
-			//}
+			// Extract bright part
+			{
+				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
+				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
+			
+				params->pipelineState = materialPSOs[kMaterialPostProcessExtractBright];
+			
+				params->vertexBuffer = mesh.VertexBuffer;
+				params->indexBuffer = mesh.IndexBuffer;
+				params->startIndex = mesh.StartIndex;
+				params->startVertex = mesh.StartVertex;
+				params->indexCount = mesh.NumIndices;
+			
+				params->psShaderResources[0] = hdrTarget;
+			
+				params->renderTargets[0] = hdrTarget2;
+			
+				cmdBuf->Add(RendererCommand::kCommandDraw, params);
+			}
+			
+			// Blur
+			{
+				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
+				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
+			
+				params->pipelineState = materialPSOs[kMaterialPostProcessBlur];
+			
+				params->vertexBuffer = mesh.VertexBuffer;
+				params->indexBuffer = mesh.IndexBuffer;
+				params->startIndex = mesh.StartIndex;
+				params->startVertex = mesh.StartVertex;
+				params->indexCount = mesh.NumIndices;
+			
+				params->psShaderResources[0] = hdrTarget2;
+			
+				params->renderTargets[0] = hdrTarget;
+			
+				cmdBuf->Add(RendererCommand::kCommandDraw, params);
+			}
 
 			// volumetric fog
 			{

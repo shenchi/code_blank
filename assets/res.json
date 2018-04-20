@@ -1270,39 +1270,39 @@
         },
         {
             "name": "Merged_Mesh_Tutorial_WIP_0",
-            "guid": "1474112479"
+            "guid": "508601420"
         },
         {
             "name": "Merged_Mesh_Tutorial_WIP_1",
-            "guid": "182721956"
+            "guid": "864538384"
         },
         {
             "name": "Merged_Mesh_Tutorial_WIP_2",
-            "guid": "72430928"
+            "guid": "479820049"
         },
         {
             "name": "Merged_Mesh_Tutorial_WIP_3",
-            "guid": "1175743499"
+            "guid": "632724600"
         },
         {
             "name": "Merged_Mesh_Tutorial_WIP_4",
-            "guid": "1810322166"
+            "guid": "554426317"
         },
         {
             "name": "Merged_Mesh_Tutorial_WIP_5",
-            "guid": "711719463"
+            "guid": "25559178"
         },
         {
             "name": "Merged_Mesh_Tutorial_WIP_6",
-            "guid": "886752128"
+            "guid": "1053310969"
         },
         {
             "name": "Merged_Mesh_Tutorial_WIP_7",
-            "guid": "1011897753"
+            "guid": "1600249182"
         },
         {
             "name": "Merged_Mesh_Tutorial_WIP_8",
-            "guid": "303675574"
+            "guid": "1645938755"
         },
         {
             "name": "Merged_Mesh_Tutorial_WIP_9",
@@ -1379,6 +1379,214 @@
         {
             "name": "HandLight_HandLight",
             "guid": "2b858557e2e59a748a2c7606a9052648"
+        },
+        {
+            "name": "PZYB1_Merged_Mesh_0_PZYB1_Merged_Mesh_0",
+            "guid": "c96ae1667d394514b8b6ebfaf1068568"
+        },
+        {
+            "name": "Unity_Builtin_Cube",
+            "guid": "0000000000000000e000000000000000"
+        },
+        {
+            "name": "tube_main_Anvil_Iron_Metal_pCylinder15",
+            "guid": "25dbc79cb5253f440adb9539b48b70d1"
+        },
+        {
+            "name": "ZLJB4_Merged_Mesh_0_ZLJB4_Merged_Mesh_0",
+            "guid": "36430070dfbe5394487e73d27c179deb"
+        },
+        {
+            "name": "TrashBag_TrashBag",
+            "guid": "b30f6b19eb795ff4eb91de10c8b3724f"
+        },
+        {
+            "name": "LSJB3_Merged_Mesh_0_LSJB3_Merged_Mesh_0",
+            "guid": "3642fd810b2063047854a66c5eaedc7c"
+        },
+        {
+            "name": "ZLJB3_Merged_Mesh_0_ZLJB3_Merged_Mesh_0",
+            "guid": "af42a087b295ba14e8d8d508c5cbc6e7"
+        },
+        {
+            "name": "ZLJB3_Merged_Mesh_1_ZLJB3_Merged_Mesh_1",
+            "guid": "4279a247f8055394fa943e82afa3da2c"
+        },
+        {
+            "name": "LSJB3_Merged_Mesh_1_LSJB3_Merged_Mesh_1",
+            "guid": "9e6650416a055924ab4faba0ba26914c"
+        },
+        {
+            "name": "PZYB1_Merged_Mesh_1_PZYB1_Merged_Mesh_1",
+            "guid": "f508a7a6a46e7184e863b5ec8e299267"
+        },
+        {
+            "name": "ZLJB3_Merged_Mesh_2_ZLJB3_Merged_Mesh_2",
+            "guid": "928dc9ce13215b7449a7fa008228b797"
+        },
+        {
+            "name": "ZLJB2_Merged_Mesh_0_ZLJB2_Merged_Mesh_0",
+            "guid": "c292a82939c8bc64a9de3ae7d752149c"
+        },
+        {
+            "name": "ZLJB4_Merged_Mesh_1_ZLJB4_Merged_Mesh_1",
+            "guid": "290a827d1991f1744949417d957783a7"
+        },
+        {
+            "name": "LSJB3_Merged_Mesh_2_LSJB3_Merged_Mesh_2",
+            "guid": "04c13deb4f711da4fb6a039a2a2fc66a"
+        },
+        {
+            "name": "floor1Wall_Brick_Standard_Dirty_pPlane20",
+            "guid": "6a51b3933f292924f8de09519c291ccf"
+        },
+        {
+            "name": "ZLJB2_Merged_Mesh_1_ZLJB2_Merged_Mesh_1",
+            "guid": "49b77dba120a447419541726005e1881"
+        },
+        {
+            "name": "TinCan1_TinCan1",
+            "guid": "c18b3f23cdaf639489063e86889a5d0e"
+        },
+        {
+            "name": "TinCan3_TinCan3",
+            "guid": "f7651a3b038eed048b7447dee1e534f6"
+        },
+        {
+            "name": "ZLJB2_Merged_Mesh_2_ZLJB2_Merged_Mesh_2",
+            "guid": "2772a404f82b57f4e8ef09b318bf518f"
+        },
+        {
+            "name": "ZLJB4_Merged_Mesh_2_ZLJB4_Merged_Mesh_2",
+            "guid": "34e90c65cd3351247a580f0773c520a1"
+        },
+        {
+            "name": "floor1_wall_polySurface1",
+            "guid": "dc417ce9124aac446b611bf69c0afdaf"
+        },
+        {
+            "name": "LSJB3_Merged_Mesh_3_LSJB3_Merged_Mesh_3",
+            "guid": "63290c144c519ce4e8ea549f1abfca28"
+        },
+        {
+            "name": "PZYB1_Merged_Mesh_2_PZYB1_Merged_Mesh_2",
+            "guid": "c7a1309f07d0d28419b12d041a9c84cd"
+        },
+        {
+            "name": "ZLJB3_Merged_Mesh_3_ZLJB3_Merged_Mesh_3",
+            "guid": "a0e192e99205b69488a85e530441e50f"
+        },
+        {
+            "name": "ZLJB2_Merged_Mesh_3_ZLJB2_Merged_Mesh_3",
+            "guid": "646d1821c3ee0ac489e6e96629294668"
+        },
+        {
+            "name": "ZLJB4_Merged_Mesh_3_ZLJB4_Merged_Mesh_3",
+            "guid": "f9892f11b0242c74baa081240d3b5da4"
+        },
+        {
+            "name": "LSJB3_Merged_Mesh_4_LSJB3_Merged_Mesh_4",
+            "guid": "b5cbec47063778e4a8899ef18c718242"
+        },
+        {
+            "name": "ZLJB2_Merged_Mesh_4_ZLJB2_Merged_Mesh_4",
+            "guid": "fa6496bc90b65274cb97ffa8a782f6ab"
+        },
+        {
+            "name": "ZLJB4_Merged_Mesh_4_ZLJB4_Merged_Mesh_4",
+            "guid": "8285e8489d4eb1347bb6488422b0f281"
+        },
+        {
+            "name": "ZLJB3_Merged_Mesh_4_ZLJB3_Merged_Mesh_4",
+            "guid": "9cf9e946fd759e947860648f36faa735"
+        },
+        {
+            "name": "ZLJB2_Merged_Mesh_5_ZLJB2_Merged_Mesh_5",
+            "guid": "1a1a9f2c767e79d4fa3d19cfbfe9dfa6"
+        },
+        {
+            "name": "Building3_LSJ_Floor3_Grid_Industrial Metal Base Texture_pCube105",
+            "guid": "75ef2dd12141ce04d88dc73cd99fc3b8"
+        },
+        {
+            "name": "floor1SideBlockingBoard_FlatSteelPlateWithRailing_pCube113",
+            "guid": "580f04b4da83b734e9883a947a486224"
+        },
+        {
+            "name": "ZLJB2_Merged_Mesh_6_ZLJB2_Merged_Mesh_6",
+            "guid": "2d6eca53e69e57f49b49509ec8a7230b"
+        },
+        {
+            "name": "floor1_Store1_door_SciFi_metal_with_ribs_pPlane3",
+            "guid": "af0afb304010c4c4da03bf1aa58ab31c"
+        },
+        {
+            "name": "PZYB1_Merged_Mesh_3_PZYB1_Merged_Mesh_3",
+            "guid": "3d44dec524ccc2f43bac44726b99fe39"
+        },
+        {
+            "name": "Building1_PZY_FirstFloor_Door_Building1_PZY_FirstFloor_Door",
+            "guid": "34c492e21b743fb48a45cc4732876f22"
+        },
+        {
+            "name": "floor1_store2_Door_glass_pPlane31",
+            "guid": "3f173243747950448b3fe9a0c8fd256b"
+        },
+        {
+            "name": "Building3_LSJ_Floor1_door2_polySurface13",
+            "guid": "502765a4029be4f46960dce2e35c9b6d"
+        },
+        {
+            "name": "floor1_storeDoor_Thick_Metal_Grating_pCube80",
+            "guid": "1473860dd9e68fa41aa329e70980ce6b"
+        },
+        {
+            "name": "ZLJB3_Merged_Mesh_5_ZLJB3_Merged_Mesh_5",
+            "guid": "7614b3f2ccedfa74387f18abc6e05332"
+        },
+        {
+            "name": "PZYB1_Merged_Mesh_4_PZYB1_Merged_Mesh_4",
+            "guid": "b9b0c401a534c5c4ebf906448a1beef9"
+        },
+        {
+            "name": "ZLJB2_Merged_Mesh_7_ZLJB2_Merged_Mesh_7",
+            "guid": "415a54f7544c8b646baa2cd1e67e5bb5"
+        },
+        {
+            "name": "Building3_LSJ_Floor1_glass_Frosty Glass_polySurface48",
+            "guid": "0fffd8a835d3e2b4f81ffde070fee6ba"
+        },
+        {
+            "name": "Window_glass_pPlane30",
+            "guid": "7b801ae83c85a684aaf6d8d3f444b7bd"
+        },
+        {
+            "name": "Building3_LSJ_Floor2_colmn2_Futuristic Metal Grid Rusty_polySurface55",
+            "guid": "83f0ffa24f13cb94aa324dcd8bd80898"
+        },
+        {
+            "name": "PillarCylinder_CastIronMetal_pPipe45",
+            "guid": "896241198e3783f4fb912c08067c2393"
+        },
+        {
+            "name": "billboard_frame_weird_meteor_metal_polySurface40",
+            "guid": "1c96bd5d3e7326547a47809e2b8d73e7"
+        },
+        {
+            "name": "Wooden Box_Large_Wooden Box_Large",
+            "guid": "23733f9355105974391e151da4f6793e"
+        },
+        {
+            "name": "LJB3_Merged_Mesh_0_LJB3_Merged_Mesh_0",
+            "guid": "804e2dd194953c44faecd55591197565"
+        },
+        {
+            "name": "LJB3_Merged_Mesh_5_LJB3_Merged_Mesh_5",
+            "guid": "14095cac83e30c349abe6964b4bc6819"
+        },
+        {
+            "name": "LJB2_Merged_Mesh_5_LJB2_Merged_Mesh_5",
+            "guid": "9408fc622ec3a7242b952853de3abae9"
         }
     ],
     "materials": [
