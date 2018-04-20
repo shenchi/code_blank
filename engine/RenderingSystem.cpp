@@ -1627,8 +1627,9 @@ namespace tofu
 		//	AABB.Transform(transform->GetWorldTransform());
 		//	boundsBuffer[i] = AABB;
 		//}
-		
-		// fill in transform matrix for active renderables
+
+		PERFORMANCE_TIMER_RESUME(kPerformanceTimerSlotCustem);
+		// fill in active renderables
 		for (uint32_t i = 0; i < renderableCount; ++i)
 			// for (uint32_t i = renderableCount - 2; i < renderableCount; ++i)
 		{
@@ -1637,14 +1638,14 @@ namespace tofu
 			TransformComponent transform = comp.entity.GetComponent<TransformComponent>();
 			assert(transform);
 
-			// TODO culling
-			//const BoundingBox& AABB = comp.model->bounds;
-			//OrientedBoundingBox OBB(AABB.center, AABB.extends, math::quat());
-			//OBB.Transform(transform->GetWorldTransform());
-			//
-			////bool intersected = camFrustum.Intersects(OBB);
-			//if (!camFrustum.Intersects(OBB)) 
-			//	continue;
+			// frustum culling
+			const BoundingBox& AABB = comp.model->bounds;
+			OrientedBoundingBox OBB(AABB.center, AABB.extends, math::quat());
+			OBB.Transform(transform->GetWorldTransform());
+			
+			//bool intersected = camFrustum.Intersects(OBB);
+			if (!camFrustum.Intersects(OBB)) 
+				continue;
 
 			/*
 			// fill transform matrices;
@@ -1685,6 +1686,7 @@ namespace tofu
 				}
 			}
 		}
+		PERFORMANCE_TIMER_PAUSE(kPerformanceTimerSlotCustem);
 
 		// sorting rendering objects
 		std::sort(activeObjects, activeObjects + numActiveObjects, [](RenderingObject& a, RenderingObject& b)
@@ -1725,7 +1727,6 @@ namespace tofu
 		});
 #endif
 
-		PERFORMANCE_TIMER_RESUME(kPerformanceTimerSlotCustem);
 		// update transform matrices
 		for (uint32_t i = 0; i < numActiveObjects; i++)
 		{
@@ -1733,15 +1734,20 @@ namespace tofu
 			obj.transformIdx = i;
 
 			TransformComponent transform = renderables[obj.renderableId].entity.GetComponent<TransformComponent>();
+			Transform t = transform->GetWorldTransform();
 
 #ifdef TOFU_USE_GLM
-			transformArray[i * 4] = math::transpose(transform->GetWorldTransform().GetMatrix());
+			transformArray[i * 4] = math::transpose(t.GetMatrix());
 #else
 			transformArrayOpaque[idx * 4] = transform->GetWorldTransform().GetMatrix();
 #endif
-			transformArray[i * 4 + 1] = math::transpose(math::inverse(transformArray[i * 4]));
+			// make it rotate only
+			t.SetTranslation(glm::vec3());
+			t.SetScale(glm::vec3(1.0f));
+
+			//transformArray[i * 4 + 1] = math::transpose(math::inverse(transformArray[i * 4]));
+			transformArray[i * 4 + 1] = math::transpose(t.GetMatrix());
 		}
-		PERFORMANCE_TIMER_PAUSE(kPerformanceTimerSlotCustem);
 
 		// upload transform matrices
 		if (numActiveObjects > 0)
