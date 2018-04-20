@@ -1612,6 +1612,23 @@ namespace tofu
 		uint32_t numOpaqueObjects = 0;
 		uint32_t numTransparentObjects = 0;
 
+		//PERFORMANCE_TIMER_RESUME(kPerformanceTimerSlotCustem);
+		//uint32_t sizeOfBoundsBuffer = sizeof(BoundingBox) * ((renderableCount + 3u) & (~3u));
+		//BoundingBox* boundsBuffer = reinterpret_cast<BoundingBox*>(MemoryAllocator::FrameAlloc(sizeOfBoundsBuffer));
+		//
+		//for (uint32_t i = 0; i < renderableCount; ++i)
+		//{
+		//	RenderingComponentData& comp = renderables[i];
+		//
+		//	TransformComponent transform = comp.entity.GetComponent<TransformComponent>();
+		//	assert(transform);
+		//
+		//	BoundingBox AABB = comp.model->bounds;
+		//	AABB.Transform(transform->GetWorldTransform());
+		//	boundsBuffer[i] = AABB;
+		//}
+		//PERFORMANCE_TIMER_PAUSE(kPerformanceTimerSlotCustem);
+
 		// fill in transform matrix for active renderables
 		for (uint32_t i = 0; i < renderableCount; ++i)
 			// for (uint32_t i = renderableCount - 2; i < renderableCount; ++i)
@@ -1622,10 +1639,11 @@ namespace tofu
 			assert(transform);
 
 			// TODO culling
-			BoundingBox AABB = comp.model->bounds;
-			AABB.Transform(transform->GetWorldTransform());
+			const BoundingBox& AABB = comp.model->bounds;
+			OrientedBoundingBox OBB(AABB.center, AABB.extends, math::quat());
+			OBB.Transform(transform->GetWorldTransform());
 			
-			if (!camFrustum.Intersects(AABB)) 
+			if (!camFrustum.Intersects(OBB)) 
 				continue;
 
 			/*
@@ -1667,8 +1685,6 @@ namespace tofu
 				}
 			}
 		}
-
-		PERFORMANCE_TIMER_RESUME(kPerformanceTimerSlotCustem);
 
 		// sorting rendering objects
 		std::sort(activeObjects, activeObjects + numActiveObjects, [](RenderingObject& a, RenderingObject& b)

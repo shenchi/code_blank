@@ -234,6 +234,9 @@ namespace tofu
 
 			sprintf_s(textBuf, "Custom Measuring Time: %.2f ms", customMeasuringTime);
 			gui->Text(layer, -950, -440, 24, textBuf, white, kTextAlignTop);
+
+			sprintf_s(textBuf, "Phys and Gameplay Time Diff: %.2f ms", Time::TotalTime - Time::PhysicsTotalTime);
+			gui->Text(layer, -950, -420, 24, textBuf, white, kTextAlignTop);
 #endif
 
 			PERFORMANCE_TIMER_START(kPerformanceTimerSlotCustem);
@@ -243,7 +246,6 @@ namespace tofu
 
 			CHECKED(renderingSystem->EndFrame());
 
-			PERFORMANCE_TIMER_PAUSE(kPerformanceTimerSlotCustem);
 			PERFORMANCE_TIMER_RESUME(kPerformanceTimerSlotCustem);
 			PERFORMANCE_TIMER_END(kPerformanceTimerSlotCustem);
 

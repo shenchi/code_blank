@@ -134,7 +134,7 @@ namespace tofu
 	constexpr uint32_t kMaxRenderTargetBindings = 8;
 
 	constexpr float kDefaultFixedDeltaTime = 0.0016f;
-	constexpr uint32_t kMaxPhysicsStepsPerFrame = 24;
+	constexpr uint32_t kMaxPhysicsStepsPerFrame = 12;
 	constexpr uint32_t kMaxLevelResources = 10240;
 
 	constexpr uint32_t kMaxGpuTimeQueries = 8;
