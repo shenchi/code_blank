@@ -9,8 +9,8 @@
 #include <cassert>
 
 #include "Game.h"
-#include "CharacterControllerJam.h"
-#include "RenderingTest.h"
+//#include "CharacterControllerJam.h"
+//#include "RenderingTest.h"
 
 using tofu::kOK;
 

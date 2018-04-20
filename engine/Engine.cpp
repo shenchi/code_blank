@@ -232,16 +232,19 @@ namespace tofu
 			sprintf_s(textBuf, "GPU Time: %.2f ms", renderingSystem->GetGPUTime());
 			gui->Text(layer, -950, -460, 24, textBuf, white, kTextAlignTop);
 
-			//sprintf_s(textBuf, "Custom Measuring Time: %.2f ms", customMeasuringTime);
-			//gui->Text(layer, -950, -440, 24, textBuf, white, kTextAlignTop);
+			sprintf_s(textBuf, "Custom Measuring Time: %.2f ms", customMeasuringTime);
+			gui->Text(layer, -950, -440, 24, textBuf, white, kTextAlignTop);
 #endif
+
+			PERFORMANCE_TIMER_START(kPerformanceTimerSlotCustem);
+			PERFORMANCE_TIMER_PAUSE(kPerformanceTimerSlotCustem);
 
 			CHECKED(renderingSystem->Update());
 
-			PERFORMANCE_TIMER_START(kPerformanceTimerSlotCustem);
-			//PERFORMANCE_TIMER_PAUSE(kPerformanceTimerSlotCustem);
 			CHECKED(renderingSystem->EndFrame());
-			//PERFORMANCE_TIMER_RESUME(kPerformanceTimerSlotCustem);
+
+			PERFORMANCE_TIMER_PAUSE(kPerformanceTimerSlotCustem);
+			PERFORMANCE_TIMER_RESUME(kPerformanceTimerSlotCustem);
 			PERFORMANCE_TIMER_END(kPerformanceTimerSlotCustem);
 
 			PERFORMANCE_TIMER_END(kPerformanceTimerSlotRenderingSystemTime);

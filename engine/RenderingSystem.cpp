@@ -1074,6 +1074,19 @@ namespace tofu
 				indices + meshes[id].StartIndex * sizeof(uint16_t));
 		}
 
+		math::float3 minCoord = *reinterpret_cast<math::float3*>(vertices);
+		math::float3 maxCoord = minCoord;
+
+		for (uint32_t i = 0; i < model.numVertices; i++)
+		{
+			const math::float3& pos = *reinterpret_cast<math::float3*>(vertices + i * model.vertexSize);
+
+			minCoord = math::min(minCoord, pos);
+			maxCoord = math::max(maxCoord, pos);
+		}
+
+		model.bounds = BoundingBox((minCoord + maxCoord) * 0.5f, (maxCoord - minCoord) * 0.5f);
+
 		// keep pointers to bone and animation structures
 		if (header->NumBones > 0)
 		{
@@ -1527,8 +1540,8 @@ namespace tofu
 			data->leftBottomRay = worldTrans.TransformVector(math::float4{ -farClipMaxX, -farClipMaxY, farClipZ, 0 });
 			data->rightBottomRay = worldTrans.TransformVector(math::float4{ farClipMaxX, -farClipMaxY, farClipZ, 0 });
 
-			camFrustum.near = nearClipZ;
-			camFrustum.far = farClipZ;
+			camFrustum.nearPlane = nearClipZ;
+			camFrustum.farPlane = farClipZ;
 			camFrustum.topSlope = tanHalfFOV;
 			camFrustum.bottomSlope = -tanHalfFOV;
 			camFrustum.rightSlope = tanHalfFOV * data->perspectiveParams.y;
@@ -1609,6 +1622,11 @@ namespace tofu
 			assert(transform);
 
 			// TODO culling
+			BoundingBox AABB = comp.model->bounds;
+			AABB.Transform(transform->GetWorldTransform());
+			
+			if (!camFrustum.Intersects(AABB)) 
+				continue;
 
 			/*
 			// fill transform matrices;
@@ -1649,6 +1667,8 @@ namespace tofu
 				}
 			}
 		}
+
+		PERFORMANCE_TIMER_RESUME(kPerformanceTimerSlotCustem);
 
 		// sorting rendering objects
 		std::sort(activeObjects, activeObjects + numActiveObjects, [](RenderingObject& a, RenderingObject& b)

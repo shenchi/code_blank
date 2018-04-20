@@ -2,6 +2,7 @@
 
 #include "Common.h"
 #include "ModelFormat.h"
+#include "Collision.h"
 
 namespace tofu
 {
@@ -53,6 +54,7 @@ namespace tofu
 		uint32_t					numIndices[kMaxMeshesPerModel];
 		void*						rawData;
 		size_t						rawDataSize;
+		BoundingBox					bounds;
 
 	public:
 		//Model() :animationTable(model::AnimationTable()) {}
