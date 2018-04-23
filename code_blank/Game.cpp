@@ -494,7 +494,7 @@ uint32_t Game::LoadScene(sceneType num)
 			//CHECKED(sceneMgr.LoadScene("assets/scenes/EngineExport.json"));
 			//CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial_WIP.json"));
 			CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial_WIP_Batched.json"));
-			CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial_WIP.json"));
+			//CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial_WIP.json"));
 			//CHECKED(sceneMgr.LoadScene("assets/scenes/EngineExport.json"));
 
 			int pathLength = sceneMgr.GetPathNodesLength();
