@@ -24,22 +24,28 @@ void GameplayAnimationMachine::Play(CharacterState state, float duration, size_t
 	case kNoState:
 		return;
 	case kIdleOutCombat:
-		aComp->CrossFade("idle", 0.05f, 0);
-		aComp->CrossFade("idle", 0.05f, 1);
+		aComp->CrossFade("kInjuredIdle", 0.05f, 0);
+		aComp->CrossFade("kInjuredIdle", 0.05f, 1);
+		//aComp->CrossFade("idle", 0.05f, 0);
+		//aComp->CrossFade("idle", 0.05f, 1);
 		break;
 	case kIdleInCombat:
 		aComp->CrossFade("combat_idle", duration, 0);
 		aComp->CrossFade("combat_idle", duration, 1);
 		break;
 	case kWalk:
-		aComp->CrossFade("walk", 0.2f, 0);
-		aComp->CrossFade("walk", 0.2f, 1);
+		aComp->CrossFade("kInjuredWalk", 0.2f, 0);
+		aComp->CrossFade("kInjuredWalk", 0.2f, 1);
+		//aComp->CrossFade("walk", 0.2f, 0);
+		//aComp->CrossFade("walk", 0.2f, 1);
 		break;
 	case kRun:
 		aComp->CrossFade("run", 0.1f, 0);
 		aComp->CrossFade("run", 0.1f, 1);
 		break;
 	case kJumpingPrepare:
+		//aComp->CrossFade("kRunJump", 0.05f, 0);
+		//aComp->CrossFade("kRunJump", 0.05f, 1);
 		aComp->CrossFade("jump_up", 0.05f, 0);
 		aComp->CrossFade("jump_up", 0.05f, 1);
 		break;
@@ -56,8 +62,10 @@ void GameplayAnimationMachine::Play(CharacterState state, float duration, size_t
 		aComp->CrossFade("jump_down", 0.1f, 1);
 		break;
 	case kDead:
-		aComp->CrossFade("kDeath", 0.5f, 0);
-		aComp->CrossFade("kDeath", 0.5f, 1);
+		aComp->CrossFade("kHitHeadWeak", 0.5f, 0);
+		aComp->CrossFade("kHitHeadWeak", 0.5f, 1);
+		//aComp->CrossFade("kDeath", 0.5f, 0);
+		//aComp->CrossFade("kDeath", 0.5f, 1);
 		break;
 	case kRoll:
 		aComp->CrossFade("kRoll", 0.5f, 0);

@@ -138,6 +138,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ActionList.h" />
+    <ClInclude Include="ActionSelector.h" />
     <ClInclude Include="AnimationDemo.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Character.h" />
@@ -145,11 +147,14 @@
     <ClInclude Include="CombatManager.h" />
     <ClInclude Include="Companion.h" />
     <ClInclude Include="CubemapProbeDemo.h" />
+    <ClInclude Include="NavigationAgent.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameplayAnimationMachine.h" />
     <ClInclude Include="GameplayDS.h" />
     <ClInclude Include="Gun.h" />
+    <ClInclude Include="NavigationSingleton.h" />
+    <ClInclude Include="PathingNode.h" />
     <ClInclude Include="PController.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="RenderingTest.h" />
@@ -158,6 +163,8 @@
     <ClInclude Include="Utility.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ActionList.cpp" />
+    <ClCompile Include="ActionSelector.cpp" />
     <ClCompile Include="AnimationDemo.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Character.cpp" />
@@ -170,6 +177,9 @@
     <ClCompile Include="GameplayAnimationMachine.cpp" />
     <ClCompile Include="Gun.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="NavigationAgent.cpp" />
+    <ClCompile Include="NavigationSingleton.cpp" />
+    <ClCompile Include="PathingNode.cpp" />
     <ClCompile Include="PController.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="RenderingTest.cpp" />

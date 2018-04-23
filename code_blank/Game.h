@@ -1,11 +1,14 @@
 #pragma once
 
 #include <Tofu.h>
+#include <AudioManager.h>
 #include "Character.h"
 #include "PController.h"
 #include "Camera.h"
 #include "Enemy.h"
 #include "Utility.h"
+
+using namespace tofu;
 
 // Game: The main game loop.
 // Runs all things game related.
@@ -66,30 +69,83 @@ private:
 	tofu::SceneManager sceneMgr;
 	sceneType currentScene;
 	sceneType lastScene;
+	sceneType levelToLoad;
 
 	// Member Functions
 	// These may be temporary or call the needed functions.
 	// Will change int to file name later for JSON use.
-	bool LoadScene(sceneType);
-	bool UnloadScene(sceneType);
-	bool LoadOnTop(sceneType);
-	bool UnloadOffTop(sceneType);
+	uint32_t LoadScene(sceneType);
+	uint32_t UnloadScene(sceneType);
+	uint32_t LoadOnTop(sceneType);
+	uint32_t UnloadOffTop(sceneType);
+	UIResult LoadUI(sceneType);
 
 	//*********************************************************************************************
 	//temp for test
-	//Enemy* enemy01;
-	//Enemy* enemy02;
-	//Enemy* enemy03;
+	Enemy* enemy01;
+	Enemy* enemy02;
+	Enemy* enemy03;
+	Enemy* enemy04;
+	Enemy* enemy05;
+	Enemy* enemy06;
 	float timePassed;
 	float startTime;
 	bool loopStart;
+	//*********************************************************************************************
 
 	bool debugMode;
 
 	Utility::GhostPlayer* DebugPlayer;
 
-	tofu::AudioSource			gameplay{ "assets/sounds/Game_Play.wav" };
-	tofu::AudioSource			jumpSfx{ "assets/sounds/Jump.wav" };
+	// Sound
 
-	//*********************************************************************************************
+	uint32_t PlayBGM(sceneType scene);
+	uint32_t StopBGM(tofu::AudioSource*);
+
+	tofu::AudioSource*			currentTrack = {};
+	tofu::AudioSource			title_BGM{ "assets/sounds/Title_BGM.wav" };
+	tofu::AudioSource			game_BGM{ "assets/sounds/Game_BGM.wav" };
+	tofu::AudioSource			options_BGM{ "assets/sounds/Options_BGM.wav" };
+	tofu::AudioSource			credits_BGM{ "assets/sounds/Credits_BGM.wav" };
+	tofu::AudioSource			loading_BGM{ "assets/sounds/Loading_BGM.wav" };
+	tofu::AudioSource			combat_BGM{ "assets/sounds/Combat_BG.wav" };
+	tofu::AudioSource			death_BGM{ "assets/sounds/Death_BGM.wav" };
+	tofu::AudioSource			lowHealth_BGM{ "assets/sounds/Heart_Beat.wav" };
+	tofu::AudioSource			city_BGA{ "assets/sounds/City_BGA.wav" };
+
+	bool isTitle_Playing;
+	bool isGame_Playing;
+	bool isOptions_Playing;
+	bool isCredits_Playing;
+	bool isLoading_Playing;
+	bool isCombat_Playing;
+	bool isDeath_Playing;
+	bool isLowHealth_Playing;
+	bool isCity_Playing;
+	
+	// UI
+	tofu::TextureHandle			uiBGTex_0;
+	tofu::TextureHandle			uiButTex;
+	tofu::TextureHandle			uiGamePadPC;
+	tofu::Atlas					atlas;
+
+	uint32_t					mainMenuSelectedItem;
+	uint32_t					levelMenuSelectedItem;
+	uint32_t					optionMenuSelectedItem;
+	uint32_t					helpMenuSelectedItem;
+	uint32_t					creditsMenuSelectedItem;
+	uint32_t					endMenuSelectedItem;
+	uint32_t					deathMenuSelectedItem;
+
+	bool						mainMenuFocused;
+	bool						levelMenuFocused;
+	bool						optionMenuFocused;
+	bool						helpMenuFocused;
+
+	uint32_t					inverseCameraAxisX;
+	uint32_t					inverseCameraAxisY;
+
+	UIResult					uiResult;
+
+	uint32_t					uiTimer;
 };

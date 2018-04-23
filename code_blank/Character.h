@@ -67,6 +67,7 @@ public:
 	void SetComponents(tofu::TransformComponent, tofu::PhysicsComponent, tofu::AnimationComponent);
 
 protected:
+	float GetAnimationDuration(CharacterState state);
 
 	std::string tag;
 

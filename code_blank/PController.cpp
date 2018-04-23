@@ -24,7 +24,7 @@ PController::PController()
 	dodgeButtonDown = false;
 	specialButtonDown = false;
 
-	// Default control scheme: 1, 1, 1, -1
+	// Default control scheme: 1, 1, -1, 1
 	// movement - horizontal, veritcal / camera - veritcal, horizontal
 	SetControlMods(1, 1, -1, 1);
 }

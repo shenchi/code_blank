@@ -30,7 +30,7 @@ namespace tofu {
 		// TODO: maintain background music list in AudioManager for volumn management
 
 		soundInstance->SetVolume(AudioManager::instance()->volumn);
-		soundInstance->Play();
+		soundInstance->Play(true);
 	}
 
 	void AudioSource::Stop()

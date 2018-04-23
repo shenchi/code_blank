@@ -82,10 +82,10 @@ int32_t RenderingTest::Init()
 
 #if UI_ENABLED == 1
 	{
-		uiTex = RenderingSystem::instance()->CreateTexture("assets/001.texture", kResourceGlobal);
-		uiTex1 = RenderingSystem::instance()->CreateTexture("assets/ui.texture", kResourceGlobal);
+		uiTex = RenderingSystem::instance()->CreateTexture("assets/UI_Textures/title_background.texture", kResourceGlobal);
+		uiTex1 = RenderingSystem::instance()->CreateTexture("assets/UI_Textures/ui.texture", kResourceGlobal);
 
-		CHECKED(atlas.LoadFromFile("assets/ui.json"));
+		CHECKED(atlas.LoadFromFile("assets/UI_Textures/ui.json"));
 
 		if (!uiTex || !uiTex1)
 		{

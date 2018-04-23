@@ -10,6 +10,20 @@ namespace tofu
 		kOK = 0,
 
 		kErrConfigLoadingFailed,
+
+		kErrUILoadingFailed,
+
+		kErrAudioFailure,
+
+		kErrBadAudioTrack,
+
+		kErrSceneLoadFailed,
+
+		kErrSceneUnloadFailed,
+
+		kErrGameUpdateFailed,
+
+		kErrGameFixedUpdateFailed,
 	};
 
 	

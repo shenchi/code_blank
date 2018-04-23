@@ -142,6 +142,36 @@
 				"source": "Death.fbx",
 				"avatar": "mixamo_avatar.json",
 				"clip": "mixamo.com"
+			},
+            {
+				"name": "kRunJump",
+				"source": "Running_Jump.fbx",
+				"avatar": "mixamo_avatar.json",
+				"clip": "mixamo.com"
+			},
+            {
+				"name": "kRunRoll",
+				"source": "Roll_To_Run.fbx",
+				"avatar": "mixamo_avatar.json",
+				"clip": "mixamo.com"
+			},
+            {
+				"name": "kHitHeadWeak",
+				"source": "Head_Weak.fbx",
+				"avatar": "mixamo_avatar.json",
+				"clip": "mixamo.com"
+			},
+            {
+				"name": "kInjuredIdle",
+				"source": "Injured_Idle.fbx",
+				"avatar": "mixamo_avatar.json",
+				"clip": "mixamo.com"
+			},
+            {
+				"name": "kInjuredWalk",
+				"source": "Injured_Walk.fbx",
+				"avatar": "mixamo_avatar.json",
+				"clip": "mixamo.com"
 			}
 		]
 	}
