@@ -56,9 +56,21 @@ int32_t Game::Init()
 		
 	}
 
+	isTitle_Playing = false;
+	isGame_Playing = false;
+	isOptions_Playing = false;
+	isCredits_Playing = false;
+	isLoading_Playing = false;
+	isCombat_Playing = false;
+	isDeath_Playing = false;
+	isLowHealth_Playing = false;
+	isCity_Playing = false;
+		
 	// Load the initial scene (Defalut is Intro)
 	// Load other scenes here for fast testing
 	currentScene = intro;
+
+	//PlayBGM(currentScene);
 
 	// Set up initial UI
 	{
@@ -91,8 +103,6 @@ int32_t Game::Init()
 	//temp for test
 	timePassed = 0.0f;
 	loopStart = true;
-
-	gameplay.Play();
 	//*********************************************************************************************
 
 	return kOK;
@@ -109,6 +119,14 @@ int32_t Game::FixedUpdate()
 	uint32_t ret;
 	switch (currentScene)
 	{
+	case 0:
+	case 1:
+	case 2:
+	case 3:
+	case 4:
+	{
+		break;
+	}
 		case 5:	// Tutorial
 		{
 			break;
@@ -128,6 +146,16 @@ int32_t Game::FixedUpdate()
 			}
 			break;
 		}
+		case 7:
+		case 8:
+		case 9:
+		case 10:
+		{
+			break;
+		}
+		default:
+			return kErrGameFixedUpdateFailed;
+			break;
 	}
 
 	return kOK;
@@ -425,11 +453,9 @@ int32_t Game::Update()
 		break;
 	}
 	default:
-		assert(true);
-		//return 1; // Not OK
+		return kErrGameUpdateFailed;
 		break;
 	}
-
 
 	return kOK;
 }// End of Update Loop
@@ -437,7 +463,7 @@ int32_t Game::Update()
 // Load a scene
 // Most scenes actually have nothing to load
 // Will load from JSON files later, later as in never
-bool Game::LoadScene(sceneType num)
+uint32_t Game::LoadScene(sceneType num)
 {
 	switch (num)
 	{
@@ -607,16 +633,19 @@ bool Game::LoadScene(sceneType num)
 			break;
 		}
 		default:
-			return 1; // Not OK
+			return kErrSceneLoadFailed;
 			break;
 	}// End of Switch
+
+	uint32_t ret = PlayBGM(currentScene);
+	assert(ret == kOK);
 
 	return kOK;
 }
 
 // Unload a scene
 // Most scenes have nothing to unload
-bool Game::UnloadScene(sceneType num)
+uint32_t Game::UnloadScene(sceneType num)
 {
 	switch (num)
 	{
@@ -648,7 +677,7 @@ bool Game::UnloadScene(sceneType num)
 		break;
 	}
 	default:
-		return 1; // Not OK
+		return kErrSceneUnloadFailed;
 		break;
 	}
 
@@ -656,7 +685,7 @@ bool Game::UnloadScene(sceneType num)
 }
 
 // Load a scene on top of another
-bool Game::LoadOnTop(sceneType num)
+uint32_t Game::LoadOnTop(sceneType num)
 {
 	// Temp code until JSON is implemented
 		switch (num)
@@ -668,7 +697,7 @@ bool Game::LoadOnTop(sceneType num)
 			break;
 		}
 		default:
-			return 1; // Not OK
+			return kErrSceneLoadFailed;
 			break;
 		}
 
@@ -676,7 +705,7 @@ bool Game::LoadOnTop(sceneType num)
 }
 
 // Unload a top loaded scene
-bool Game::UnloadOffTop(sceneType num)
+uint32_t Game::UnloadOffTop(sceneType num)
 {
 	// Temp code until JSON is implemented
 	switch (num)
@@ -688,7 +717,7 @@ bool Game::UnloadOffTop(sceneType num)
 		break;
 	}
 	default:
-		return 1; // Not OK
+		return kErrSceneUnloadFailed;
 		break;
 	}
 
@@ -1308,4 +1337,122 @@ UIResult Game::LoadUI(sceneType num)
 	result.errorCode = kOK;
 
 	return result;
+}
+
+
+// Play Background Music
+uint32_t Game::PlayBGM(sceneType scene)
+{
+	uint32_t ret = kOK;
+
+	switch (scene)
+	{
+	case Game::intro:
+	{
+		if (!isTitle_Playing)
+		{
+			title_BGM.Play();
+			isTitle_Playing = true;
+		}
+	}
+		break;
+	case Game::menu:
+		if (!isTitle_Playing)
+		{
+			title_BGM.Play();
+			isTitle_Playing = true;
+		}
+		if (isCredits_Playing)
+		{
+			ret = StopBGM(&credits_BGM);
+			isCredits_Playing = false;
+		}
+		break;
+	case Game::options:
+		break;
+	case Game::help:
+		break;
+	case Game::loading:
+		if (!isLoading_Playing)
+		{
+			loading_BGM.Play();
+			isLoading_Playing = true;
+		}
+		if (isTitle_Playing)
+		{
+			ret = StopBGM(&title_BGM);
+			isTitle_Playing = false;
+		}
+		break;
+	case Game::tutorial:
+	case Game::level:
+		if (!isGame_Playing)
+		{
+			game_BGM.Play();
+			isGame_Playing = true;
+		}
+		if (isLoading_Playing)
+		{
+			ret = StopBGM(&loading_BGM);
+			isLoading_Playing = false;
+		}
+		break;
+	case Game::pause:
+		
+		break;
+	case Game::death:
+		if (!isDeath_Playing)
+		{
+			death_BGM.Play();
+			isDeath_Playing = true;
+		}
+		if (isGame_Playing)
+		{
+			ret = StopBGM(&game_BGM);
+			isGame_Playing = false;
+		}
+		break;
+	case Game::levelEnd:
+		if (!isTitle_Playing)
+		{
+			title_BGM.Play();
+			isTitle_Playing = true;
+		}
+		if (isGame_Playing)
+		{
+			ret = StopBGM(&game_BGM);
+			isGame_Playing = false;
+		}
+		break;
+	case Game::credits:
+		if (!isCredits_Playing)
+		{
+			credits_BGM.Play();
+			isCredits_Playing = true;
+		}
+		if (isTitle_Playing)
+		{
+			ret = StopBGM(&title_BGM);
+			isTitle_Playing = false;
+		}
+		break;
+	default:
+		return kErrAudioFailure;
+		break;
+	}
+
+	return ret;
+}
+
+// Stop background track; BGM_1 = 1, BGM_2 = 2, BGA_1 = 3 
+uint32_t Game::StopBGM(tofu::AudioSource* source)
+{
+	if (nullptr == source)
+	{
+		return kErrAudioFailure;
+	}
+
+	source->Stop();
+
+	return kOK;
 }

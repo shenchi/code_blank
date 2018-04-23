@@ -12,6 +12,18 @@ namespace tofu
 		kErrConfigLoadingFailed,
 
 		kErrUILoadingFailed,
+
+		kErrAudioFailure,
+
+		kErrBadAudioTrack,
+
+		kErrSceneLoadFailed,
+
+		kErrSceneUnloadFailed,
+
+		kErrGameUpdateFailed,
+
+		kErrGameFixedUpdateFailed,
 	};
 
 	
