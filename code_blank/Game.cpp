@@ -80,7 +80,7 @@ int32_t Game::Init()
 		uiBGTex_0 = RenderingSystem::instance()->CreateTexture("assets/UI_Textures/title_background.texture", kResourceGlobal);
 		uiBGTex_1 = RenderingSystem::instance()->CreateTexture("assets/UI_Textures/temp.texture", kResourceGlobal);
 		uiButTex = RenderingSystem::instance()->CreateTexture("assets/UI_Textures/ui.texture", kResourceGlobal);
-		uiGamePadPC = RenderingSystem::instance()->CreateTexture("assets/UI_Textures/gamePad_PC.texture", kResourceGlobal);
+		uiGamePadPC = RenderingSystem::instance()->CreateTexture("assets/UI_Textures/controller2.texture", kResourceGlobal);
 		uiFrame = RenderingSystem::instance()->CreateTexture("assets/UI_Textures/ui_frame.texture", kResourceGlobal);
 		//uiGamePadPS = RenderingSystem::instance()->CreateTexture("assets/UI_Textures/gamePad_PS.texture", kResourceGlobal);
 
@@ -924,7 +924,7 @@ UIResult Game::LoadUI(sceneType num)
 				gui->BeginMenu(helpMenuSelectedItem, helpMenuFocused);
 
 				gui->SetupLayer(1, uiGamePadPC);
-				gui->Texture(1, -480, -270, 960, 540);
+				gui->Texture(1, -480, -270, 960, 960);
 
 				gui->SetupLayer(2, uiButTex);
 
