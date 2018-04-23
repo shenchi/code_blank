@@ -125,8 +125,10 @@ private:
 	
 	// UI
 	tofu::TextureHandle			uiBGTex_0;
+	tofu::TextureHandle			uiBGTex_1;
 	tofu::TextureHandle			uiButTex;
 	tofu::TextureHandle			uiGamePadPC;
+	tofu::TextureHandle			uiFrame;
 	tofu::Atlas					atlas;
 
 	uint32_t					mainMenuSelectedItem;

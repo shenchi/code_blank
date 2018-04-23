@@ -57,8 +57,8 @@ struct BaseHandle
 		TF_INLINE explicit CLASS_NAME##Handle(uint32_t _id) : BaseHandle(_id, kHandleType##CLASS_NAME) {} \
 	};
 
-#define TOFU_PERFORMANCE_TIMER_ENABLED 1
-#define TOFU_DYNAMIC_INSTANCING_ENABLED 1
+#define TOFU_PERFORMANCE_TIMER_ENABLED 0
+#define TOFU_DYNAMIC_INSTANCING_ENABLED 0
 #define TOFU_VSYNC 1
 
 namespace tofu
