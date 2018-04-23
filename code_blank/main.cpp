@@ -10,7 +10,7 @@
 
 #include "Game.h"
 //#include "CharacterControllerJam.h"
-//#include "RenderingTest.h"
+#include "RenderingTest.h"
 
 using tofu::kOK;
 
@@ -30,8 +30,8 @@ int CALLBACK WinMain(
 	CHECKED(engine.Init("config.lua"));
 
 	//CHECKED(engine.AddModule(new CharacterControllerJam()));
-	CHECKED(engine.AddModule(new Game()));
-	//CHECKED(engine.AddModule(new RenderingTest()));
+	//CHECKED(engine.AddModule(new Game()));
+	CHECKED(engine.AddModule(new RenderingTest()));
 
 	return engine.Run();
 }

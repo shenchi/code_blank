@@ -6,7 +6,16 @@ struct Input
 	float2 uv		: TEXCOORD0;
 };
 
-float4 main(Input input) : SV_POSITION
+struct Output
 {
-	return float4(input.position, 1);
+	float4 position : SV_POSITION;
+	float2 uv		: TEXCOORD0;
+};
+
+Output main(Input input)
+{
+	Output output;
+	output.position = float4(input.position, 1);
+	output.uv = input.uv;
+	return output;
 }

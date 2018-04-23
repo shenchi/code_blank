@@ -8,7 +8,7 @@ float4 main(float4 pos : SV_POSITION) : SV_TARGET
 	float3 color = tex.Load(int3(uv, 0)).rgb;
 
 	float intensity = dot(color.rgb, GrayScaleIntensity);
-	float bloomThreshold = 1;
+	float bloomThreshold = 1.1;
 
 	return float4(step(bloomThreshold, intensity) * color, 1);
 }
