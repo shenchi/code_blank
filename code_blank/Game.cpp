@@ -80,17 +80,27 @@ int32_t Game::Init()
 		uiBGTex_0 = RenderingSystem::instance()->CreateTexture("assets/UI_Textures/title_background.texture", kResourceGlobal);
 		uiBGTex_1 = RenderingSystem::instance()->CreateTexture("assets/UI_Textures/temp.texture", kResourceGlobal);
 		uiButTex = RenderingSystem::instance()->CreateTexture("assets/UI_Textures/ui.texture", kResourceGlobal);
-		uiGamePadPC = RenderingSystem::instance()->CreateTexture("assets/UI_Textures/controller2.texture", kResourceGlobal);
+		uiGamePadPC = RenderingSystem::instance()->CreateTexture("assets/UI_Textures/controller.texture", kResourceGlobal);
 		uiFrame = RenderingSystem::instance()->CreateTexture("assets/UI_Textures/ui_frame.texture", kResourceGlobal);
+		uiPlayer = RenderingSystem::instance()->CreateTexture("assets/UI_Textures/playerUI.texture", kResourceGlobal);
+		uiBars = RenderingSystem::instance()->CreateTexture("assets/UI_Textures/bars.texture", kResourceGlobal);
 		//uiGamePadPS = RenderingSystem::instance()->CreateTexture("assets/UI_Textures/gamePad_PS.texture", kResourceGlobal);
 
+
 		CHECKED(atlas.LoadFromFile("assets/UI_Textures/ui.json"));
+		CHECKED(atlasBars.LoadFromFile("assets/UI_Textures/bars.json"));
 
 		if (!uiBGTex_0 || !uiButTex)
 		{
 			return kErrUILoadingFailed - 1;
 		}
 
+		healthPercent = 180;
+		energyPercent = 160;
+		staminaPercent = 150;
+		healthMaxPercent = healthPercent;
+		energyMaxPercent = energyPercent;
+		staminaMaxPercent = staminaPercent;
 
 		uiResult = LoadUI(currentScene);
 		assert(uiResult.errorCode != kErrUILoadingFailed);
@@ -319,6 +329,15 @@ int32_t Game::Update()
 		}
 		else
 		{
+			healthPercent = player->GetCurrentHealthPercent() * healthMaxPercent;
+			if (healthPercent < 0) healthPercent = 0.0f;
+
+			staminaPercent = player->GetCurrentStaminaPercent() * staminaMaxPercent;
+			if (staminaPercent < 0) staminaPercent = 0.0f;
+
+			energyPercent = player->GetCurrentEnergyPercent() * energyMaxPercent;
+			if (energyPercent < 0) energyPercent = 0.0f;
+
 			//if (input->IsButtonDown(ButtonId::kKeyEnter))
 			//{
 			//	// Load next scene
@@ -494,9 +513,9 @@ uint32_t Game::LoadScene(sceneType num)
 			//CHECKED(sceneMgr.LoadScene("assets/scenes/OptiTest.json"));
 			//CHECKED(sceneMgr.LoadScene("assets/scenes/OptiTest_Batched.json"));
 			//CHECKED(sceneMgr.LoadScene("assets/scenes/EngineExport.json"));
-			//CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial_WIP.json"));
-			CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial_WIP_Batched.json"));
 			CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial_WIP.json"));
+			//CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial_WIP_Batched.json"));
+			//CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial_Final_WIP.json"));
 			//CHECKED(sceneMgr.LoadScene("assets/scenes/EngineExport.json"));
 
 			int pathLength = sceneMgr.GetPathNodesLength();
@@ -549,6 +568,10 @@ uint32_t Game::LoadScene(sceneType num)
 				playerDetails.scale = { 0.01f, 0.01f, 0.01f };
 				playerDetails.position = sceneMgr.GetPlayerSpawnPoint();
 				playerDetails.health = 200.0f;
+				playerDetails.energy = 100.0f;
+				playerDetails.stamina = 100.0f;
+				playerDetails.energyRegenRate = 0.1f;
+				playerDetails.staminaRegenRate = 0.5f;
 				playerDetails.jumpPower = 5.0f;
 				playerDetails.walkSpeed = 4.0f;
 				playerDetails.sprintSpeed = 8.0f;
@@ -843,29 +866,29 @@ UIResult Game::LoadUI(sceneType num)
 
 			if (!optionMenuFocused && !helpMenuFocused)
 			{
-				gui->Text(0, 0, -400, 128, "Code Blank", math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignTop);
+				//gui->Text(0, 0, -400, 128, "Code Blank", math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignTop);
 
 				// main menu
 				gui->BeginMenu(mainMenuSelectedItem, mainMenuFocused);
 
 				gui->BeginMenuItem();
-				gui->Image(1, -500, 0, 288, 53, style1);
+				gui->Image(1, -900, 0, 288, 53, style1);
 				gui->EndMenuItem();
 
 				gui->BeginMenuItem();
-				gui->Image(1, -500, 60, 288, 53, style2);
+				gui->Image(1, -900, 60, 288, 53, style2);
 				gui->EndMenuItem();
 
 				gui->BeginMenuItem();
-				gui->Image(1, -500, 120, 288, 53, style3);
+				gui->Image(1, -900, 120, 288, 53, style3);
 				gui->EndMenuItem();
 
 				gui->BeginMenuItem();
-				gui->Image(1, -500, 180, 288, 53, style4);
+				gui->Image(1, -900, 180, 288, 53, style4);
 				gui->EndMenuItem();
 
 				gui->BeginMenuItem();
-				gui->Image(1, -500, 240, 288, 53, style5);
+				gui->Image(1, -900, 240, 288, 53, style5);
 				gui->EndMenuItem();
 
 				mainMenuSelectedItem = gui->EndMenu();
@@ -875,15 +898,15 @@ UIResult Game::LoadUI(sceneType num)
 					gui->BeginMenu(levelMenuSelectedItem, levelMenuFocused);
 
 					gui->BeginMenuItem();
-					gui->Image(1, -144, 0, 288, 53, style6);
+					gui->Image(1, -575, 0, 288, 53, style6);
 					gui->EndMenuItem();
 
 					gui->BeginMenuItem();
-					gui->Image(1, -144, 60, 288, 53, style7);
+					gui->Image(1, -575, 60, 288, 53, style7);
 					gui->EndMenuItem();
 
 					gui->BeginMenuItem();
-					gui->Image(1, -144, 120, 288, 53, style8);
+					gui->Image(1, -575, 120, 288, 53, style8);
 					gui->EndMenuItem();
 
 					levelMenuSelectedItem = gui->EndMenu();
@@ -891,30 +914,36 @@ UIResult Game::LoadUI(sceneType num)
 			}
 			else if(optionMenuFocused)
 			{
+				// Background Frame
+				gui->SetupLayer(1, uiFrame);
+				gui->Texture(1, -500, -200, 1000, 400);
+
+				gui->SetupLayer(2, uiButTex);
+
 				gui->BeginMenu(optionMenuSelectedItem, optionMenuFocused);
 
 				gui->BeginMenuItem();
-				gui->Label(1, -400, -100, 400, 50, 36, "Inverse Camera Axis X", style1, kTextAlignLeft | kTextAlignMiddle);
+				gui->Label(2, -400, -100, 400, 50, 36, "Inverse Camera Axis X", style1, kTextAlignLeft | kTextAlignMiddle);
 
 				gui->BeginSwitch(300, -100, 100, 50, inverseCameraAxisX);
-				gui->Option(1, 36, "Off", style1);
-				gui->Option(1, 36, "On", style1);
+				gui->Option(2, 36, "Off", style1);
+				gui->Option(2, 36, "On", style1);
 				inverseCameraAxisX = gui->EndSwitch();
 
 				gui->EndMenuItem();
 
 				gui->BeginMenuItem();
-				gui->Label(1, -400, -50, 400, 50, 36, "Inverse Camera Axis Y", style1, kTextAlignLeft | kTextAlignMiddle);
+				gui->Label(2, -400, -50, 400, 50, 36, "Inverse Camera Axis Y", style1, kTextAlignLeft | kTextAlignMiddle);
 
 				gui->BeginSwitch(300, -50, 100, 50, inverseCameraAxisY);
-				gui->Option(1, 36, "Off", style1);
-				gui->Option(1, 36, "On", style1);
+				gui->Option(2, 36, "Off", style1);
+				gui->Option(2, 36, "On", style1);
 				inverseCameraAxisY = gui->EndSwitch();
 
 				gui->EndMenuItem();
 
 				gui->BeginMenuItem();
-				gui->Image(1, -144, 120, 288, 53, style8);
+				gui->Image(2, -144, 120, 288, 53, style8);
 				gui->EndMenuItem();
 
 				optionMenuSelectedItem = gui->EndMenu();
@@ -923,13 +952,42 @@ UIResult Game::LoadUI(sceneType num)
 			{
 				gui->BeginMenu(helpMenuSelectedItem, helpMenuFocused);
 
-				gui->SetupLayer(1, uiGamePadPC);
-				gui->Texture(1, -480, -270, 960, 960);
+				// Background Frame
+				gui->SetupLayer(1, uiFrame);
+				gui->Texture(1, -950, -515, 1900, 1000);
 
-				gui->SetupLayer(2, uiButTex);
+				gui->SetupLayer(2, uiGamePadPC);
+				gui->Texture(2, -600, -175, 525, 350);
+
+				// Help Text
+				gui->Text(2, -720, -90, 36, "Movement", math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignTop);
+				gui->Text(2, -420, 115, 36, "Menu", math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignTop);
+				gui->Text(2, -260, 115, 36, "Camera", math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignTop);
+				gui->Text(2, -180, -275, 36, "RT - Sprint", math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignTop);
+				gui->Text(2, -75, -135, 36, "Sword", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
+				gui->Text(2, -75, -90, 36, "Cancel / Dodge", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
+				gui->Text(2, -75, -50, 36, "Confirm / Jump", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
+				gui->Text(2, -75, 20, 36, "Attack", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
+				gui->Text(2, -330, -200, 36, "Exit", math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignTop);
+
+				// Keyboard Help Text
+				gui->Text(2, 450, -375, 36, "Keyboard", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
+				gui->Text(2, 350, -300, 36, "Movement - WASD", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
+				gui->Text(2, 350, -250, 36, "Menu - Arrows", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
+				gui->Text(2, 350, -200, 36, "Camera - Mouse", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
+				gui->Text(2, 350, -150, 36, "Confrim - Enter", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
+				gui->Text(2, 350, -100, 36, "Cancel - ", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
+				gui->Text(2, 350, -50, 36, "Sprint - Left Shift", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
+				gui->Text(2, 350, 0, 36, "Sword - E", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
+				gui->Text(2, 350, 50, 36, "Dodge - Right Mouse Button", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
+				gui->Text(2, 350, 100, 36, "Jump - Space", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
+				gui->Text(2, 350, 150, 36, "Attack - Left Mouse Button", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
+				gui->Text(2, 350, 200, 36, "Exit - Escape", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
+
+				gui->SetupLayer(3, uiButTex);
 
 				gui->BeginMenuItem();
-				gui->Image(2, -150, 400, 288, 53, style8);
+				gui->Image(3, -150, 480, 288, 53, style8);
 				gui->EndMenuItem();
 
 				helpMenuSelectedItem = gui->EndMenu();
@@ -974,7 +1032,9 @@ UIResult Game::LoadUI(sceneType num)
 					case 0:
 						uiTimer = 0;
 						levelMenuFocused = false;
-						result.uiCode = 5;
+						//result.uiCode = 5;
+						// Temp
+						result.uiCode = 6;
 						break;
 					case 1:
 						uiTimer = 0;
@@ -1123,6 +1183,35 @@ UIResult Game::LoadUI(sceneType num)
 	{
 		// TODO
 		//  Main Level UI
+		GUIStyle styleStamina = {
+			{ 1, 1, 1, 1 },
+			{ 1, 1, 1, 1 },
+			atlasBars.rects[0],
+			atlasBars.rects[0],
+		};
+
+		GUIStyle styleEnergy = {
+			{ 1, 1, 1, 1 },
+			{ 1, 1, 1, 1 },
+			atlasBars.rects[1],
+			atlasBars.rects[1],
+		};
+
+		GUIStyle styleHealth = {
+			{ 1, 1, 1, 1 },
+			{ 1, 1, 1, 1 },
+			atlasBars.rects[2],
+			atlasBars.rects[2],
+		};
+
+
+		gui->SetupLayer(1, uiBars);
+		gui->Image(1, -790, -462, healthPercent, 15, styleHealth);
+		gui->Image(1, -791, -441, energyPercent, 15, styleEnergy);
+		gui->Image(1, -800, -416, staminaPercent, 15, styleStamina);
+
+		gui->SetupLayer(2, uiPlayer);
+		gui->Texture(2, -950, -530, 342, 181);
 		break;
 	}
 	case 7:

@@ -129,7 +129,17 @@ private:
 	tofu::TextureHandle			uiButTex;
 	tofu::TextureHandle			uiGamePadPC;
 	tofu::TextureHandle			uiFrame;
+	tofu::TextureHandle			uiPlayer;
+	tofu::TextureHandle			uiBars;
 	tofu::Atlas					atlas;
+	tofu::Atlas					atlasBars;
+
+	float healthPercent;
+	float energyPercent;
+	float staminaPercent;
+	float healthMaxPercent;
+	float energyMaxPercent;
+	float staminaMaxPercent;
 
 	uint32_t					mainMenuSelectedItem;
 	uint32_t					levelMenuSelectedItem;

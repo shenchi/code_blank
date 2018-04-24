@@ -85,6 +85,13 @@ protected:
 
 	// Player Stats
 	float health;
+	float maxHealth;
+	float energy;
+	float maxEnergy;
+	float stamina;
+	float maxStamina;
+	float staminaRegen;
+	float energyRegen;
 	float groundCheckDistance;
 
 	int animationParameter;

@@ -21,8 +21,8 @@ public:
 	void BasicCombo();
 	void SpecialCombat();
 	void GunShot();
-	void SwordCombo();
-	void SwordSpecialCombat();
+	bool SwordCombo();
+	bool SwordSpecialCombat();
 	void Attack();
 	void Shoot();
 	void Effect();

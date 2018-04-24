@@ -113,6 +113,10 @@ struct CharacterDetails
 	tofu::math::float3	position;
 	tofu::math::float3	scale;
 	float				health;
+	float				energy;
+	float				energyRegenRate;
+	float				stamina;
+	float				staminaRegenRate;
 	float				walkSpeed;//
 	float				sprintSpeed;
 	float				jumpPower;

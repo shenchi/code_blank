@@ -278,44 +278,48 @@ void CombatManager::GunShot()
 }
 
 // Sword Attack Combos
-void CombatManager::SwordCombo()
+bool CombatManager::SwordCombo()
 {
 	//if can attack
 	//if with in combat timer
 	//NextCombat()
 	if (!GetCanAttack())
 	{
-		return;
+		return false;
 	}
 	NextSwordCombat();
 	if (CheckTarget())
 	{
 		Attack();
 		character->UseSpecial(25, true, false);
+		return true;
 	}
 	else
 	{
 		Adjust();
 	}
+
+	return false;
 }
 
-void CombatManager::SwordSpecialCombat()
+bool CombatManager::SwordSpecialCombat()
 {
 	if (!GetCanAttack())
 	{
-		return;
+		return false;
 	}
 	NextSwordSpecial();
 	if (CheckTarget())
 	{
 		Attack();
 		character->UseSpecial(50, true, false);
+		return true;
 	}
 	else
 	{
 		Adjust();
 	}
-
+	return false;
 }
 
 // Melee Attacks

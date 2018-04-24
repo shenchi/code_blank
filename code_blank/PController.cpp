@@ -24,6 +24,9 @@ PController::PController()
 	dodgeButtonDown = false;
 	specialButtonDown = false;
 
+	onSprintCoolDown = false;
+	onEnergyCoolDown = false;
+
 	// Default control scheme: 1, 1, -1, 1
 	// movement - horizontal, veritcal / camera - veritcal, horizontal
 	SetControlMods(1, 1, -1, 1);
@@ -101,7 +104,19 @@ void PController::FixedUpdate(float fDT)
 	else if (input->IsButtonDown(kKeyLeftShift) // Sprint
 		|| (input->GetRightTrigger() > 0))
 	{
-		player->Sprint(true);
+		if (player->GetStamina() > 5 && !onSprintCoolDown)
+		{
+			player->Sprint(true);
+		}
+		else
+		{
+			onSprintCoolDown = true;
+			player->Sprint(false);
+		}
+		if (player->GetStamina() > 15)
+		{
+			onSprintCoolDown = false;
+		}
 	}
 
 	// Change Camera control if in aiming mode
