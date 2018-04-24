@@ -113,6 +113,7 @@ namespace
 		uint32_t					width;
 		uint32_t					height;
 		uint32_t					depth;
+		uint32_t					mipmaps;
 		uint32_t					label;
 	};
 
@@ -154,7 +155,6 @@ namespace
 		ID3D11InputLayout*			inputLayout;
 		tofu::VertexShaderHandle	vertexShader;
 		tofu::PixelShaderHandle		pixelShader;
-		D3D11_VIEWPORT				viewport;
 		uint32_t					label;
 		uint8_t						stencilRef;
 	};
@@ -467,6 +467,7 @@ namespace tofu
 			PipelineStateHandle			currentPipelineState;
 			TextureHandle				renderTargets[kMaxRenderTargetBindings];
 			TextureHandle				depthRenderTarget;
+			D3D11_VIEWPORT				currentViewport;
 
 			bool						standby;
 
@@ -499,6 +500,7 @@ namespace tofu
 				&RendererDX11::CreatePipelineState,
 				&RendererDX11::DestroyPipelineState,
 				&RendererDX11::ClearRenderTargets,
+				&RendererDX11::GenerateMipmaps,
 				&RendererDX11::Draw,
 				&RendererDX11::Compute,
 			};
@@ -1249,7 +1251,12 @@ namespace tofu
 						return kErrUnknown;
 
 					Texture& sourceTex = textures[params->sliceSource.id];
-					if (sourceTex.arraySize == 1 || sourceTex.arraySize < params->arraySize)
+					if (params->sliceStartArrayIndex + params->arraySize > sourceTex.arraySize)
+						return kErrUnknown;
+
+					uint32_t mipmapLevels = params->mipmaps == 0 ? 1 : params->mipmaps;
+
+					if (params->mostDetailedMipmapLevel + mipmapLevels > sourceTex.mipmaps)
 						return kErrUnknown;
 
 					DXCHECKED(sourceTex.tex->QueryInterface<ID3D11Texture2D>(&tex2d));
@@ -1259,8 +1266,8 @@ namespace tofu
 						CD3D11_SHADER_RESOURCE_VIEW_DESC desc(tex2d,
 							D3D11_SRV_DIMENSION_TEXTURE2DARRAY,
 							PixelFormatTable[params->format],
-							0,
-							1,
+							params->mostDetailedMipmapLevel,
+							mipmapLevels,
 							params->sliceStartArrayIndex,
 							params->arraySize
 						);
@@ -1273,7 +1280,7 @@ namespace tofu
 						CD3D11_UNORDERED_ACCESS_VIEW_DESC desc(tex2d,
 							D3D11_UAV_DIMENSION_TEXTURE2DARRAY,
 							PixelFormatTable[params->format],
-							0,
+							params->mostDetailedMipmapLevel,
 							params->sliceStartArrayIndex,
 							params->arraySize
 						);
@@ -1286,7 +1293,7 @@ namespace tofu
 						CD3D11_RENDER_TARGET_VIEW_DESC desc(tex2d,
 							D3D11_RTV_DIMENSION_TEXTURE2DARRAY,
 							PixelFormatTable[params->format],
-							0,
+							params->mostDetailedMipmapLevel,
 							params->sliceStartArrayIndex,
 							params->arraySize
 						);
@@ -1299,7 +1306,7 @@ namespace tofu
 						CD3D11_DEPTH_STENCIL_VIEW_DESC desc(tex2d,
 							D3D11_DSV_DIMENSION_TEXTURE2DARRAY,
 							PixelFormatTable[params->format],
-							0,
+							params->mostDetailedMipmapLevel,
 							params->sliceStartArrayIndex,
 							params->arraySize
 						);
@@ -1321,7 +1328,7 @@ namespace tofu
 						params->width,
 						params->height,
 						params->depth,
-						1U,
+						(params->mipmaps == 0 ? 1U : params->mipmaps),
 						bindingFlags,
 						(params->dynamic == 1 ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT),
 						(params->dynamic == 1 ? D3D11_CPU_ACCESS_WRITE : 0U),
@@ -1352,18 +1359,20 @@ namespace tofu
 				}
 				else // load the texture from raw data
 				{
+					uint32_t mipmapLevels = (params->mipmaps == 0 ? 1U : params->mipmaps);
+
 					CD3D11_TEXTURE2D_DESC texDesc(
 						PixelFormatTable[params->format],
 						params->width,
 						params->height,
 						params->arraySize,
-						1U,
+						mipmapLevels,
 						bindingFlags,
 						(params->dynamic == 1 ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT),
 						(params->dynamic == 1 ? D3D11_CPU_ACCESS_WRITE : 0U),
 						1U,
 						0U,
-						(params->cubeMap == 1 ? D3D11_RESOURCE_MISC_TEXTURECUBE : 0U)
+						(params->cubeMap == 1 ? D3D11_RESOURCE_MISC_TEXTURECUBE : 0U) | (mipmapLevels > 1 ? D3D11_RESOURCE_MISC_GENERATE_MIPS : 0U)
 
 					);
 
@@ -1393,7 +1402,7 @@ namespace tofu
 							if (params->cubeMap == 1)
 							{
 								desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
-								desc.TextureCube.MipLevels = 1;
+								desc.TextureCube.MipLevels = mipmapLevels;
 								desc.TextureCube.MostDetailedMip = 0;
 							}
 							else if (params->arraySize > 1)
@@ -1401,13 +1410,13 @@ namespace tofu
 								desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
 								desc.Texture2DArray.ArraySize = params->arraySize;
 								desc.Texture2DArray.FirstArraySlice = 0;
-								desc.Texture2DArray.MipLevels = 1;
+								desc.Texture2DArray.MipLevels = mipmapLevels;
 								desc.Texture2DArray.MostDetailedMip = 0;
 							}
 							else
 							{
 								desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-								desc.Texture2D.MipLevels = 1;
+								desc.Texture2D.MipLevels = mipmapLevels;
 								desc.Texture2D.MostDetailedMip = 0;
 							}
 
@@ -1501,6 +1510,7 @@ namespace tofu
 					textures[id].width = desc.Width;
 					textures[id].height = desc.Height;
 					textures[id].depth = 0;
+					textures[id].mipmaps = desc.MipLevels;
 					textures[id].label = params->label;
 				}
 				else
@@ -1516,6 +1526,7 @@ namespace tofu
 					textures[id].width = desc.Width;
 					textures[id].height = desc.Height;
 					textures[id].depth = desc.Depth;
+					textures[id].mipmaps = desc.MipLevels;
 					textures[id].label = params->label;
 				}
 
@@ -1857,13 +1868,6 @@ namespace tofu
 					&(pipelineStates[id].inputLayout)
 				));
 
-
-				pipelineStates[id].viewport = {
-					params->viewport.topLeftX, params->viewport.topLeftY,
-					params->viewport.width, params->viewport.height,
-					params->viewport.minZ, params->viewport.maxZ
-				};
-
 				pipelineStates[id].vertexShader = params->vertexShader;
 				pipelineStates[id].pixelShader = params->pixelShader;
 
@@ -1932,6 +1936,23 @@ namespace tofu
 				return kOK;
 			}
 
+			int32_t GenerateMipmaps(void* _params)
+			{
+				TextureHandle handle = *reinterpret_cast<TextureHandle*>(_params);
+
+				if (!handle)
+					return kErrUnknown;
+
+				Texture& tex = textures[handle.id];
+
+				if (nullptr == tex.srv)
+					return kErrUnknown;
+
+				context->GenerateMips(tex.srv);
+
+				return kOK;
+			}
+
 			int32_t Draw(void* _params)
 			{
 				DrawParams* params = reinterpret_cast<DrawParams*>(_params);
@@ -1947,7 +1968,6 @@ namespace tofu
 					context->VSSetShader(vertexShaders[pso.vertexShader.id].shader, nullptr, 0);
 					context->PSSetShader((pso.pixelShader ? pixelShaders[pso.pixelShader.id].shader : nullptr), nullptr, 0);
 					context->RSSetState(pso.rasterizerState);
-					context->RSSetViewports(1, &(pso.viewport));
 					context->OMSetDepthStencilState(pso.depthStencilState, pso.stencilRef);
 					context->OMSetBlendState(pso.blendState, nullptr, 0xffffffffu);
 
@@ -1959,6 +1979,29 @@ namespace tofu
 
 				// bind vs and ps resources
 				CHECKED(BindShaderResources(params));
+
+				// setup viewport
+				{
+					D3D11_VIEWPORT viewport = {};
+
+					viewport.TopLeftX = params->viewport.topLeftX;
+					viewport.TopLeftY = params->viewport.topLeftY;
+					viewport.Width = params->viewport.width == 0.0f ? (winWidth - viewport.TopLeftX) : params->viewport.width;
+					viewport.Height = params->viewport.height == 0.0f ? (winHeight - viewport.TopLeftY) : params->viewport.height;
+					viewport.MinDepth = params->viewport.minZ;
+					viewport.MaxDepth = params->viewport.maxZ == 0.0f ? 1.0f : params->viewport.maxZ;
+
+					if (viewport.TopLeftX != currentViewport.TopLeftX ||
+						viewport.TopLeftY != currentViewport.TopLeftY ||
+						viewport.Width != currentViewport.Width ||
+						viewport.Height != currentViewport.Height ||
+						viewport.MinDepth != currentViewport.MinDepth ||
+						viewport.MaxDepth != currentViewport.MaxDepth )
+					{
+						currentViewport = viewport;
+						context->RSSetViewports(1, &viewport);
+					}
+				}
 
 				// draw call
 				{

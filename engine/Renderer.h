@@ -26,6 +26,7 @@ namespace tofu
 			kCommandCreatePipelineState,
 			kCommandDestroyPipelineState,
 			kCommandClearRenderTargets,
+			kCommandGenerateMipmaps,
 			kCommandDraw,
 			kCommandCompute,
 			kMaxRendererCommands
@@ -242,6 +243,8 @@ namespace tofu
 			uint32_t		sliceStartArrayIndex;
 		};
 		uint32_t			depth;
+		uint32_t			mipmaps; // 0 -> 1,  and ignored when creating from file
+		uint32_t			mostDetailedMipmapLevel; // only used for slice
 		uint32_t			pitch;
 		uint32_t			slicePitch;
 		uint32_t			label;
@@ -254,6 +257,8 @@ namespace tofu
 			width(),
 			height(),
 			depth(),
+			mipmaps(),
+			mostDetailedMipmapLevel(),
 			pitch(),
 			slicePitch(),
 			label(),
@@ -269,21 +274,23 @@ namespace tofu
 			width = static_cast<uint32_t>(size);
 		}
 
-		TF_INLINE void InitAsTexture2D(TextureHandle handle, uint32_t width, uint32_t height, PixelFormat format = kFormatR8g8b8a8Unorm, uint32_t arraySize = 1, uint32_t binding = kBindingShaderResource)
+		TF_INLINE void InitAsTexture2D(TextureHandle handle, uint32_t width, uint32_t height, PixelFormat format = kFormatR8g8b8a8Unorm, uint32_t mipmaps = 1, uint32_t arraySize = 1, uint32_t binding = kBindingShaderResource)
 		{
 			this->handle = handle;
 			this->bindingFlags = binding;
 			this->format = format;
+			this->mipmaps = mipmaps;
 			this->arraySize = arraySize;
 			this->width = width;
 			this->height = height;
 		}
 
-		TF_INLINE void InitAsTexture2D(TextureHandle handle, uint32_t width, uint32_t height, PixelFormat format, void* data, uint32_t pitch, uint32_t arraySize = 1, uint32_t binding = kBindingShaderResource)
+		TF_INLINE void InitAsTexture2D(TextureHandle handle, uint32_t width, uint32_t height, PixelFormat format, void* data, uint32_t pitch, uint32_t mipmaps = 1, uint32_t arraySize = 1, uint32_t binding = kBindingShaderResource)
 		{
 			this->handle = handle;
 			this->bindingFlags = binding;
 			this->format = format;
+			this->mipmaps = mipmaps;
 			this->arraySize = arraySize;
 			this->width = width;
 			this->height = height;
@@ -291,29 +298,32 @@ namespace tofu
 			this->data = data;
 		}
 
-		TF_INLINE void InitAsTextureCubeMap(TextureHandle handle, uint32_t width, uint32_t height, PixelFormat format = kFormatR8g8b8a8Unorm, uint32_t binding = kBindingShaderResource)
+		TF_INLINE void InitAsTextureCubeMap(TextureHandle handle, uint32_t width, uint32_t height, PixelFormat format = kFormatR8g8b8a8Unorm, uint32_t mipmaps = 1, uint32_t binding = kBindingShaderResource)
 		{
 			this->handle = handle;
 			this->bindingFlags = binding;
 			this->format = format;
 			this->cubeMap = 1;
+			this->mipmaps = mipmaps;
 			this->arraySize = 6;
 			this->width = width;
 			this->height = height;
 		}
 
-		TF_INLINE void InitAsTexture2DSlice(TextureHandle handle, TextureHandle sliceSource, uint32_t startArrayIndex, uint32_t arraySize, PixelFormat format = kFormatAuto, uint32_t binding = kBindingShaderResource)
+		TF_INLINE void InitAsTexture2DSlice(TextureHandle handle, TextureHandle sliceSource, uint32_t mostDetailedMipmapLevel, uint32_t mipmapLevels, uint32_t startArrayIndex, uint32_t arraySize, PixelFormat format = kFormatAuto, uint32_t binding = kBindingShaderResource)
 		{
 			this->handle = handle;
 			this->bindingFlags = binding;
 			this->format = format;
+			this->mostDetailedMipmapLevel = mostDetailedMipmapLevel;
+			this->mipmaps = mipmapLevels;
 			this->arraySize = arraySize;
 			this->isSlice = 1;
 			this->sliceSource = sliceSource;
 			this->sliceStartArrayIndex = startArrayIndex;
 		}
 
-		TF_INLINE void InitAsTexture3D(TextureHandle handle, uint32_t width, uint32_t height, uint32_t depth, PixelFormat format = kFormatR8g8b8a8Unorm, uint32_t binding = kBindingShaderResource)
+		TF_INLINE void InitAsTexture3D(TextureHandle handle, uint32_t width, uint32_t height, uint32_t depth, PixelFormat format = kFormatR8g8b8a8Unorm, uint32_t mipmaps = 1, uint32_t binding = kBindingShaderResource)
 		{
 			this->handle = handle;
 			this->bindingFlags = binding;
@@ -321,9 +331,10 @@ namespace tofu
 			this->width = width;
 			this->height = height;
 			this->depth = depth;
+			this->mipmaps = 1;
 		}
 
-		TF_INLINE void InitAsTexture3D(TextureHandle handle, uint32_t width, uint32_t height, uint32_t depth, PixelFormat format, void* data, uint32_t pitch, uint32_t slicePitch, uint32_t binding = kBindingShaderResource)
+		TF_INLINE void InitAsTexture3D(TextureHandle handle, uint32_t width, uint32_t height, uint32_t depth, PixelFormat format, void* data, uint32_t pitch, uint32_t slicePitch, uint32_t mipmaps = 1, uint32_t binding = kBindingShaderResource)
 		{
 			this->handle = handle;
 			this->bindingFlags = binding;
@@ -331,6 +342,7 @@ namespace tofu
 			this->width = width;
 			this->height = height;
 			this->depth = depth;
+			this->mipmaps = mipmaps;
 			this->pitch = pitch;
 			this->slicePitch = slicePitch;
 			this->data = data;
@@ -468,16 +480,6 @@ namespace tofu
 			uint32_t				blendState;
 		};
 
-		struct
-		{
-			float					topLeftX;
-			float					topLeftY;
-			float					width;
-			float					height;
-			float					minZ;
-			float					maxZ;
-		}							viewport;
-
 		uint32_t					label;
 
 		CreatePipelineStateParams()
@@ -511,7 +513,6 @@ namespace tofu
 			destBlendAlpha(kBlendZero),
 			blendOpAlpha(kBlendOpAdd),
 			blendWriteMask(kColorWriteAll),
-			viewport(),
 			label()
 		{}
 	};
@@ -553,6 +554,16 @@ namespace tofu
 		uint16_t			sizeInVectors;
 	};
 
+	struct Viewport
+	{
+		float				topLeftX;
+		float				topLeftY;
+		float				width;
+		float				height;
+		float				minZ;
+		float				maxZ;
+	};
+
 	struct DrawParams
 	{
 		PipelineStateHandle		pipelineState;
@@ -570,6 +581,7 @@ namespace tofu
 		SamplerHandle			psSamplers[kMaxSamplerBindings];
 		TextureHandle			renderTargets[kMaxRenderTargetBindings];
 		TextureHandle			depthRenderTarget;
+		Viewport				viewport;
 
 		DrawParams()
 			:
@@ -587,7 +599,8 @@ namespace tofu
 			vsSamplers(),
 			psSamplers(),
 			renderTargets(),
-			depthRenderTarget(kDefaultRenderTarget)
+			depthRenderTarget(kDefaultRenderTarget),
+			viewport()
 		{
 			renderTargets[0] = kDefaultRenderTarget;
 		}

@@ -340,6 +340,9 @@
     <FxCompile Include="post_process_gaussian_blur_v_ps.hlsl">
       <Filter>Shaders\new</Filter>
     </FxCompile>
+    <FxCompile Include="post_process_bloom_apply_ps.hlsl">
+      <Filter>Shaders\new</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

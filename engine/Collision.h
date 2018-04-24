@@ -657,7 +657,7 @@ namespace tofu
 		{
 			for (size_t j = 0; j < 6; ++j)
 			{
-				math::float3 axis = math::cross(R[i], edgeAxes[j]);
+				math::float3 axis = math::cross(R[uint32_t(i)], edgeAxes[uint32_t(j)]);
 
 				float minD = math::dot(axis, corners[0]);
 				float maxD = minD;

@@ -1,24 +1,11 @@
-cbuffer FrameConstants : register (b0)
-{
-	float4x4				matView;
-	float4x4				matProj;
-	float4x4				matViewInv;
-	float4x4				matProjInv;
-	float4					cameraPos;
-	float4					bufferSize;
-	float4					leftTopRay;
-	float4					rightTopRay;
-	float4					leftBottomRay;
-	float4					rightBottomRay;
-	float4					perspectiveParams; //(fov, aspect, zNear, zFar)
-	float					padding3[4 * 9];
-};
-
 Texture2D tex : register(t0);
 SamplerState samp : register(s0);
 
-static float offset[3] = { 0.0, 1.3846153846, 3.2307692308 };
-static float weight[3] = { 0.2270270270, 0.3162162162, 0.0702702703 };
+static float offset[6] = { 0, 1.4845360824742266, 3.463917525773196, 5.443298969072165, 7.422680412371134, 9.402061855670103 };
+static float weight[6] = { 0.08386783725046117, 0.15938312254618253, 0.12993450638945953, 0.08989179687321099, 0.052709280893837356, 0.026147374672079025 };
+
+//static float offset[3] = { 0.0, 1.3846153846, 3.2307692308 };
+//static float weight[3] = { 0.2270270270, 0.3162162162, 0.0702702703 };
 
 struct Input
 {
@@ -28,9 +15,12 @@ struct Input
 
 float4 main(Input input) : SV_TARGET
 {
-	float2 uv = input.uv;
+	float2 texSize;
+	tex.GetDimensions(texSize.x, texSize.y);
+	float2 texelSize = 1.0f / texSize;
 
-	float2 texelSize = 1.0f / bufferSize.xy;
+	float2 uv = input.position.xy / texSize;
+
 #ifdef TOFU_BLUR_HORIZONTAL
 	float2 step = float2(texelSize.x, 0);
 #else
@@ -39,11 +29,11 @@ float4 main(Input input) : SV_TARGET
 
 	float3 color = tex.Sample(samp, uv).rgb * weight[0];
 
-	color += tex.Sample(samp, uv + step * offset[1]).rgb * weight[1];
-	color += tex.Sample(samp, uv - step * offset[1]).rgb * weight[1];
-
-	color += tex.Sample(samp, uv + step * offset[2]).rgb * weight[2];
-	color += tex.Sample(samp, uv - step * offset[2]).rgb * weight[2];
+	for (int i = 1; i < 6; i++)
+	{
+		color += tex.Sample(samp, uv + step * offset[i]).rgb * weight[i];
+		color += tex.Sample(samp, uv - step * offset[i]).rgb * weight[i];
+	}
 
 	return float4(color, 1.0f);
 }

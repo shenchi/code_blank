@@ -128,9 +128,9 @@ namespace tofu
 	constexpr uint32_t kMaxComputeShaders = 256;
 	constexpr uint32_t kMaxPipelineStates = 256;
 
-	constexpr uint32_t kMaxConstantBufferBindings = 14;
-	constexpr uint32_t kMaxTextureBindings = 16;
-	constexpr uint32_t kMaxSamplerBindings = 16;
+	constexpr uint32_t kMaxConstantBufferBindings = 8;
+	constexpr uint32_t kMaxTextureBindings = 8;
+	constexpr uint32_t kMaxSamplerBindings = 4;
 	constexpr uint32_t kMaxRenderTargetBindings = 8;
 
 	constexpr float kDefaultFixedDeltaTime = 0.0016f;

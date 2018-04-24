@@ -13,6 +13,8 @@
 #include <unordered_map>
 #include <string>
 
+#define TOFU_BLOOM_MIPMAP_LEVELS 1
+
 namespace tofu
 {
 	class AnimationComponentData;
@@ -53,11 +55,11 @@ namespace tofu
 
 		TextureHandle CreateTexture(const char* filename, uint32_t label = kResourceLevel);
 
-		TextureHandle CreateTexture(PixelFormat format, uint32_t width, uint32_t height, uint32_t arraySize = 1, uint32_t pitch = 0, void* data = nullptr, uint32_t binding = kBindingShaderResource, uint32_t label = kResourceLevel);
+		TextureHandle CreateTexture(PixelFormat format, uint32_t width, uint32_t height, uint32_t mipmaps = 1, uint32_t arraySize = 1, uint32_t pitch = 0, void* data = nullptr, uint32_t binding = kBindingShaderResource, uint32_t label = kResourceLevel);
 
-		TextureHandle CreateTexture(TextureHandle source, uint32_t startIndex, uint32_t arraySize = 1, uint32_t binding = kBindingShaderResource, PixelFormat format = kFormatAuto, uint32_t label = kResourceLevel);
+		TextureHandle CreateTexture(TextureHandle source, uint32_t startMipmapLevel, uint32_t mipmapLevels, uint32_t startIndex, uint32_t arraySize = 1, uint32_t binding = kBindingShaderResource, PixelFormat format = kFormatAuto, uint32_t label = kResourceLevel);
 
-		TextureHandle CreateTexture(PixelFormat format, uint32_t width, uint32_t height, uint32_t depth, uint32_t pitch = 0, uint32_t slicePitch = 0, void* data = nullptr, uint32_t binding = kBindingShaderResource, uint32_t label = kResourceLevel);
+		TextureHandle CreateTexture(PixelFormat format, uint32_t width, uint32_t height, uint32_t depth, uint32_t mipmaps = 1, uint32_t pitch = 0, uint32_t slicePitch = 0, void* data = nullptr, uint32_t binding = kBindingShaderResource, uint32_t label = kResourceLevel);
 
 		Material* CreateMaterial(MaterialType type, uint32_t label = kResourceLevel);
 
@@ -154,6 +156,16 @@ namespace tofu
 
 		TextureHandle			hdrTarget;
 		TextureHandle			hdrTarget2;
+
+#if TOFU_BLOOM_MIPMAP_LEVELS > 1
+		TextureHandle			brightPartTextureArray;
+		TextureHandle			blurTextureArray;
+
+		TextureHandle			brightPartTextures[TOFU_BLOOM_MIPMAP_LEVELS];
+		TextureHandle			blurTextures[TOFU_BLOOM_MIPMAP_LEVELS];
+#elif TOFU_BLOOM_MIPMAP_LEVELS == 1
+		TextureHandle			hdrTarget3;
+#endif
 
 		BufferHandle			ambientDirLightBuffer;
 		BufferHandle			pointLightBuffer;
