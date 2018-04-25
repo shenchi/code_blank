@@ -746,8 +746,8 @@ namespace tofu
 			{
 				CreateSamplerParams* params = MemoryAllocator::FrameAlloc<CreateSamplerParams>();
 				params->handle = defaultSampler;
-				params->filter = kTextureFilterAnisotropic;
-				params->maxAnisotropy = 7;
+				//params->filter = kTextureFilterAnisotropic;
+				//params->maxAnisotropy = 1;
 				params->textureAddressU = kTextureAddressWarp;
 				params->textureAddressV = kTextureAddressWarp;
 				params->textureAddressW = kTextureAddressWarp;
@@ -1995,8 +1995,8 @@ namespace tofu
 			params->time = Time::TotalTime;
 			params->noiseScale = 0.5f;
 			params->noiseBase = 0;
-			params->noiseAmp = 2;
-			params->density = 3;
+			params->noiseAmp = 1;
+			params->density = 2;
 			params->maxFarClip = 50;
 			float fogfarClip = math::min(params->maxFarClip, farClipZ);
 			params->maxZ01 = (fogfarClip - nearClipZ) / (farClipZ - nearClipZ);
@@ -2542,7 +2542,11 @@ namespace tofu
 
 				params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(obj.transformIdx * 16), (uint16_t)(16 * numInstances) };
 				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
-				params->psShaderResources[0] = mat->mainTex ? mat->mainTex : defaultAlbedoMap;
+
+
+				params->psConstantBuffers[0] = { mat->materialParamsBuffer, 0, 0 };
+				params->psShaderResources[0] = mat->mainTex ? mat->mainTex : defaultEmissionMap;
+				params->psShaderResources[1] = mat->emissionMap ? mat->emissionMap : defaultEmissionMap;
 				params->psSamplers[0] = defaultSampler;
 
 				params->renderTargets[0] = hdrTarget;
@@ -2590,7 +2594,10 @@ namespace tofu
 				case kMaterialDeferredTransparent:
 					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(obj.transformIdx * 16), 16 };
 					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
-					params->psShaderResources[0] = mat->mainTex ? mat->mainTex : defaultAlbedoMap;
+
+					params->psConstantBuffers[0] = { mat->materialParamsBuffer, 0, 0 };
+					params->psShaderResources[0] = mat->mainTex ? mat->mainTex : defaultEmissionMap;
+					params->psShaderResources[1] = mat->emissionMap ? mat->emissionMap : defaultEmissionMap;
 					params->psSamplers[0] = defaultSampler;
 
 					params->renderTargets[0] = hdrTarget;

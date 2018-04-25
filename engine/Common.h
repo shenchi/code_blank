@@ -59,7 +59,7 @@ struct BaseHandle
 
 #define TOFU_PERFORMANCE_TIMER_ENABLED 1
 #define TOFU_DYNAMIC_INSTANCING_ENABLED 1
-#define TOFU_VSYNC 1
+#define TOFU_VSYNC 0
 
 namespace tofu
 {

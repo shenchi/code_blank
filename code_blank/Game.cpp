@@ -68,7 +68,7 @@ int32_t Game::Init()
 		
 	// Load the initial scene (Defalut is Intro)
 	// Load other scenes here for fast testing
-	currentScene = intro;
+	currentScene = level;
 
 	//PlayBGM(currentScene);
 
@@ -493,9 +493,10 @@ uint32_t Game::LoadScene(sceneType num)
 			//CHECKED(sceneMgr.LoadScene("assets/scenes/OptiTest_Batched.json"));
 			//CHECKED(sceneMgr.LoadScene("assets/scenes/EngineExport.json"));
 			//CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial_WIP.json"));
-			CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial_WIP_Batched.json"));
+			//CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial_WIP_Batched.json"));
 			//CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial_WIP.json"));
 			//CHECKED(sceneMgr.LoadScene("assets/scenes/EngineExport.json"));
+			CHECKED(sceneMgr.LoadScene("assets/scenes/Layout_Final_Export_Batched.json"));
 
 			int pathLength = sceneMgr.GetPathNodesLength();
 			if (pathLength > 0)

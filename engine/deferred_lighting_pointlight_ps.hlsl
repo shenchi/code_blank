@@ -83,7 +83,9 @@ float4 main(float4 clipPos : SV_POSITION, uint iid : SV_InstanceID) : SV_TARGET
 
 	float NdotV = max(dot(worldNormal, viewDir), 0);
 
-	float3 radiance = light.color.rgb * atten * light.intensity;
+	float3 radiance = light.color.rgb * atten * light.intensity * 0.5f;
+	//return float4(NdotH.xxx, 1);
+
 	float3 Lo = LightingModel(radiance, albedo, NdotH, HdotV, NdotV, NdotL, metallic, roughness);
 
 	float3 finalColor = Lo;
