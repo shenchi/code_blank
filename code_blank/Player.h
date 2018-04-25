@@ -82,6 +82,8 @@ private:
 	float maxHoldTime;
 	float specialButtonTimer;
 	float rollDodgeCost;
+
+	uint32_t footStepsMod;
 	
 	//CapstoneAnimation animator;
 

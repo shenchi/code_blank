@@ -286,6 +286,8 @@ Player::Player(CharacterDetails details, void* comp)
 	maxStamina = stamina;
 	energyRegen = details.energyRegenRate;
 	staminaRegen = details.staminaRegenRate;
+
+	footStepsMod = 0;
 }
 
 Player::~Player()
@@ -464,6 +466,17 @@ void Player::MoveReg(float dT, bool _jump, math::float3 inputDir, math::quat cam
 
 		if (isGrounded)
 		{
+			footStepsMod++;
+			if (footStepsMod > 299 && footStepsMod < 301)
+			{
+				
+				footstep1_SFX.PlayOneShot();
+			}
+			else if (footStepsMod > 599)
+			{
+				footstep2_SFX.PlayOneShot();
+				footStepsMod = 0;
+			}
 			combatManager->SetIsMoving(true);
 			moving = true;
 

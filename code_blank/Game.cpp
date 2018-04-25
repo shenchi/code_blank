@@ -128,7 +128,6 @@ int32_t Game::Shutdown()
 
 int32_t Game::FixedUpdate()
 {
-	uint32_t ret;
 	switch (currentScene)
 	{
 	case 0:
@@ -798,7 +797,7 @@ UIResult Game::LoadUI(sceneType num)
 			{
 				// Only one button
 				result.uiCode = 1;
-
+				buttonSelect_SFX.PlayOneShot();
 				mainMenuFocused = true;
 			}
 		}
@@ -1003,22 +1002,27 @@ UIResult Game::LoadUI(sceneType num)
 						mainMenuFocused = false;
 						levelMenuFocused = true;
 						levelMenuSelectedItem = 0;
+						buttonSelect_SFX.PlayOneShot();
 						break;
 					case 1:
 						mainMenuFocused = false;
 						optionMenuFocused = true;
 						optionMenuSelectedItem = 0;
+						buttonSelect_SFX.PlayOneShot();
 						break;
 					case 2:
 						mainMenuFocused = false;
 						helpMenuFocused = true;
+						buttonSelect_SFX.PlayOneShot();
 						break;
 					case 3:
 						mainMenuFocused = false;
 						creditsMenuSelectedItem = 0;
 						result.uiCode = 10;
+						buttonSelect_SFX.PlayOneShot();
 						break;
 					case 4:
+						//buttonStart_SFX.PlayOneShot(); // TODO Fix the engine bug
 						Engine::instance()->Quit();
 						break;
 					default:
@@ -1033,6 +1037,7 @@ UIResult Game::LoadUI(sceneType num)
 						uiTimer = 0;
 						levelMenuFocused = false;
 						//result.uiCode = 5;
+						buttonStart_SFX.PlayOneShot();
 						// Temp
 						result.uiCode = 6;
 						break;
@@ -1040,10 +1045,12 @@ UIResult Game::LoadUI(sceneType num)
 						uiTimer = 0;
 						levelMenuFocused = false;
 						result.uiCode = 6;
+						buttonStart_SFX.PlayOneShot();
 						break;
 					case 2:
 						mainMenuFocused = true;
 						levelMenuFocused = false;
+						buttonSelect_SFX.PlayOneShot();
 						break;
 					default:
 						break;
@@ -1056,6 +1063,7 @@ UIResult Game::LoadUI(sceneType num)
 					case 2:
 						mainMenuFocused = true;
 						optionMenuFocused = false;
+						buttonSelect_SFX.PlayOneShot();
 						break;
 					default:
 						break;
@@ -1068,6 +1076,7 @@ UIResult Game::LoadUI(sceneType num)
 					case 0:
 						helpMenuFocused = false;
 						mainMenuFocused = true;
+						buttonSelect_SFX.PlayOneShot();
 						break;
 					default:
 						break;
@@ -1134,6 +1143,7 @@ UIResult Game::LoadUI(sceneType num)
 			{
 			case 2:
 				mainMenuFocused = true;
+				buttonSelect_SFX.PlayOneShot();
 				//result.uiCode = ;
 				break;
 			default:
@@ -1272,12 +1282,15 @@ UIResult Game::LoadUI(sceneType num)
 			{
 			case 0:
 				result.uiCode = 6;
+				buttonStart_SFX.PlayOneShot();
 				break;
 			case 1:
 				result.uiCode = 5;
+				buttonStart_SFX.PlayOneShot();
 				break;
 			case 2:
 				result.uiCode = 10;
+				buttonSelect_SFX.PlayOneShot();
 				break;
 			default:
 				break;
@@ -1320,6 +1333,7 @@ UIResult Game::LoadUI(sceneType num)
 			// Only one button
 			result.uiCode = 10;
 			creditsMenuSelectedItem = 0;
+			buttonSelect_SFX.PlayOneShot();
 		}
 
 		break;
@@ -1420,8 +1434,8 @@ UIResult Game::LoadUI(sceneType num)
 			{
 				// Only one button
 				result.uiCode = 1;
-
 				mainMenuFocused = true;
+				buttonSelect_SFX.PlayOneShot();
 			}
 		}
 		break;

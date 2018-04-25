@@ -112,6 +112,9 @@ private:
 	tofu::AudioSource			death_BGM{ "assets/sounds/Death_BGM.wav" };
 	tofu::AudioSource			lowHealth_BGM{ "assets/sounds/Heart_Beat.wav" };
 	tofu::AudioSource			city_BGA{ "assets/sounds/City_BGA.wav" };
+	tofu::AudioSource			buttonStart_SFX{ "assets/sounds/Button_Game_Start.wav" };
+	tofu::AudioSource			buttonSelect_SFX{ "assets/sounds/Button_Select.wav" };
+	
 
 	bool isTitle_Playing;
 	bool isGame_Playing;

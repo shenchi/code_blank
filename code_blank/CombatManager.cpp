@@ -210,9 +210,39 @@ bool CombatManager::UpdateState(float stateTimer, float dT)
 	return false;
 }
 
-// Hit a character with an attack
-void CombatManager::Hit(HitPosition pos, HitDirection dir, HitPower power, float _hitTime, float dmg)
+// Hit a character
+void CombatManager::Hit(CombatMoveDetails details)
 {
+	if (nullptr != details.sFX)
+	{
+		details.sFX->PlayOneShot();
+	}
+
+	isHit = true;
+	character->StateTimer(0);
+	inCombat = true;
+	inCombatTimer = inCombatDuration;
+	hitAnimationInfo = (int)details.pos * 100 + (int)details.dir * 10 + (int)details.power;
+	hitTime = details.HT;
+	resetHit = true;
+
+	
+
+	isAttacking = false;
+	isRolling = false;
+	isAdjusting = false;
+	isJumping = false;
+	isMoving = false;
+}
+
+// Hit a character with an attack
+void CombatManager::Hit(HitPosition pos, HitDirection dir, HitPower power, float _hitTime, float dmg, tofu::AudioSource* sFX)
+{
+	if (nullptr != sFX)
+	{
+		sFX->PlayOneShot();
+	}
+
 	isHit = true;
 	character->StateTimer(0);
 	inCombat = true;
@@ -428,13 +458,13 @@ void CombatManager::Effect()
 					if (math::distance(enemyList->at(i)->GetPosition() , character->GetPosition()) <
 						allMoves[(int)currentCombat - 1].ED)
 					{
-						enemyList->at(i)->GetCombatManager()->Hit(enemyList->at(i)->GetCombatManager()->GetCurrentHitPos(), dir, currentPower, currentHitTime, currentDmgAmount);
+						enemyList->at(i)->GetCombatManager()->Hit(enemyList->at(i)->GetCombatManager()->GetCurrentHitPos(), dir, currentPower, currentHitTime, currentDmgAmount, currentSFX);
 					}
 				}
 			}
 			else
 			{
-				currentTarget->GetCombatManager()->Hit(currentTarget->GetCombatManager()->GetCurrentHitPos(), dir, currentPower, currentHitTime, currentDmgAmount);
+				currentTarget->GetCombatManager()->Hit(currentTarget->GetCombatManager()->GetCurrentHitPos(), dir, currentPower, currentHitTime, currentDmgAmount, currentSFX);
 			}
 		}
 
@@ -610,37 +640,44 @@ void CombatManager::NextCombat()
 {
 	if (currentCombat == kNone)
 	{
-		//combatAudio.PlayOneShot(punchFX);
+		currentSFX = allMoves[0].sFX;
+		punch_SFX.PlayOneShot();
 		currentCombat = kPunchJabL;
 	}
 	else if (currentCombat == kPunchJabL)
 	{
-		//combatAudio.PlayOneShot(punchFX);
+		currentSFX = allMoves[1].sFX;
+		punch_SFX.PlayOneShot();
 		currentCombat = kPunchJabR;
 	}
 	else if (currentCombat == kPunchJabR)
 	{
-		//combatAudio.PlayOneShot(punchFX);
+		currentSFX = allMoves[2].sFX;
+		punch_SFX.PlayOneShot();
 		currentCombat = kPunchHookL;
 	}
 	else if (currentCombat == kPunchHookL)
 	{
-		//combatAudio.PlayOneShot(punchFX);
+		currentSFX = allMoves[3].sFX;
+		punch_SFX.PlayOneShot();
 		currentCombat = kPunchHookR;
 	}
 	else if (currentCombat == kPunchHookR)
 	{
-		//combatAudio.PlayOneShot(punchFX);
+		currentSFX = allMoves[6].sFX;
+		kick_SFX.PlayOneShot();
 		currentCombat = kKickStraightMidR;
 	}
 	else if (currentCombat == kKickStraightMidR)
 	{
-		//combatAudio.PlayOneShot(kickFX);
+		currentSFX = allMoves[0].sFX;
+		punch_SFX.PlayOneShot();
 		currentCombat = kPunchJabL;
 	}
 	else
 	{
-		//combatAudio.PlayOneShot(punchFX);
+		currentSFX = allMoves[0].sFX;
+		punch_SFX.PlayOneShot();
 		currentCombat = kPunchJabL;
 	}
 
@@ -661,37 +698,44 @@ void CombatManager::NextSpecial()
 {
 	if (currentCombat == kNone)
 	{
-		//combatAudio.PlayOneShot(kickFX);
+		currentSFX = allMoves[7].sFX;
+		kick_SFX.PlayOneShot();
 		currentCombat = kKickAxeKick;
 	}
 	else if (currentCombat == kPunchJabL)
 	{
-		//combatAudio.PlayOneShot(kickFX);
+		currentSFX = allMoves[7].sFX;
+		kick_SFX.PlayOneShot();
 		currentCombat = kKickAxeKick;
 	}
 	else if (currentCombat == kPunchJabR)
 	{
-		//combatAudio.PlayOneShot(kickFX);
+		currentSFX = allMoves[7].sFX;
+		kick_SFX.PlayOneShot();
 		currentCombat = kKickAxeKick;
 	}
 	else if (currentCombat == kPunchHookL)
 	{
-		//combatAudio.PlayOneShot(kickFX);
+		currentSFX = allMoves[7].sFX;
+		kick_SFX.PlayOneShot();
 		currentCombat = kKickAxeKick;
 	}
 	else if (currentCombat == kPunchHookR)
 	{
-		//combatAudio.PlayOneShot(kickFX);
+		currentSFX = allMoves[7].sFX;
+		kick_SFX.PlayOneShot();
 		currentCombat = kKickAxeKick;
 	}
 	else if (currentCombat == kKickStraightMidR)
 	{
-		//combatAudio.PlayOneShot(kickFX);
+		currentSFX = allMoves[8].sFX;
+		kick_SFX.PlayOneShot();
 		currentCombat = kKickHorseKick;
 	}
 	else
 	{
-		//combatAudio.PlayOneShot(kickFX);
+		currentSFX = allMoves[7].sFX;
+		kick_SFX.PlayOneShot();
 		currentCombat = kKickAxeKick;
 	}
 
@@ -714,17 +758,20 @@ void CombatManager::NextSwordCombat()
 {
 	if (currentCombat == kNone)
 	{
-		//combatAudio.PlayOneShot(swordFX);
+		currentSFX = allMoves[9].sFX;
+		sword_SFX.PlayOneShot();
 		currentCombat = kSwordAttackR;
 	}
 	else if (currentCombat == kSwordAttackR)
 	{
-		//combatAudio.PlayOneShot(swordFX);
+		currentSFX = allMoves[10].sFX;
+		sword_SFX.PlayOneShot();
 		currentCombat = kSwordAttackRL;
 	}
 	else
 	{
-		//combatAudio.PlayOneShot(swordFX);
+		currentSFX = allMoves[9].sFX;
+		sword_SFX.PlayOneShot();
 		currentCombat = kSwordAttackR;
 	}
 
@@ -752,42 +799,50 @@ void CombatManager::NextSwordSpecial()
 {
 	if (currentCombat == kNone)
 	{
-		//combatAudio.PlayOneShot(swordFX);
+		currentSFX = allMoves[12].sFX;
+		sword_SFX.PlayOneShot();
 		currentCombat = kSwordAttackComboLL;
 	}
 	else if (currentCombat == kPunchJabL)
 	{
-		//combatAudio.PlayOneShot(swordFX);
+		currentSFX = allMoves[11].sFX;
+		sword_SFX.PlayOneShot();
 		currentCombat = kSwordAttackSpU;
 	}
 	else if (currentCombat == kPunchJabR)
 	{
-		//combatAudio.PlayOneShot(swordFX);
+		currentSFX = allMoves[11].sFX;
+		sword_SFX.PlayOneShot();
 		currentCombat = kSwordAttackSpU;
 	}
 	else if (currentCombat == kPunchHookL)
 	{
-		//combatAudio.PlayOneShot(swordFX);
+		currentSFX = allMoves[11].sFX;
+		sword_SFX.PlayOneShot();
 		currentCombat = kSwordAttackSpU;
 	}
 	else if (currentCombat == kPunchHookR)
 	{
-		//combatAudio.PlayOneShot(swordFX);
+		currentSFX = allMoves[11].sFX;
+		sword_SFX.PlayOneShot();
 		currentCombat = kSwordAttackSpU;
 	}
 	else if (currentCombat == kKickStraightMidR)
 	{
-		//combatAudio.PlayOneShot(swordFX);
+		currentSFX = allMoves[11].sFX;
+		sword_SFX.PlayOneShot();
 		currentCombat = kSwordAttackSpU;
 	}
 	else if (currentCombat == kSwordAttackRL)
 	{
-		//combatAudio.PlayOneShot(swordFX);
+		currentSFX = allMoves[11].sFX;
+		sword_SFX.PlayOneShot();
 		currentCombat = kSwordAttackSpU;
 	}
 	else
 	{
-		//combatAudio.PlayOneShot(swordFX);
+		currentSFX = allMoves[12].sFX;
+		sword_SFX.PlayOneShot();
 		currentCombat = kSwordAttackComboLL;
 	}
 
@@ -824,6 +879,7 @@ void CombatManager::SetMoves()
 	defaultMove.pos = kHigh;
 	defaultMove.dir = kDirForward;
 	defaultMove.power = kWeak;
+	defaultMove.sFX = &punch01_SFX;
 	allMoves.push_back(defaultMove);
 
 	// Punch_Jab_R
@@ -836,6 +892,7 @@ void CombatManager::SetMoves()
 	defaultMove.pos = kHigh;
 	defaultMove.dir = kDirForward;
 	defaultMove.power = kWeak;
+	defaultMove.sFX = &punch01_SFX;
 	allMoves.push_back(defaultMove);
 
 	// Punch_Hook_L
@@ -848,6 +905,7 @@ void CombatManager::SetMoves()
 	defaultMove.pos = kHigh;
 	defaultMove.dir = kDirForward;
 	defaultMove.power = kWeak;
+	defaultMove.sFX = &punch02_SFX;
 	allMoves.push_back(defaultMove);
 
 	// Punch_Hook_R
@@ -860,6 +918,7 @@ void CombatManager::SetMoves()
 	defaultMove.pos = kHigh;
 	defaultMove.dir = kDirForward;
 	defaultMove.power = kWeak;
+	defaultMove.sFX = &punch02_SFX;
 	allMoves.push_back(defaultMove);
 
 	// Punch_Upper_Cut_L
@@ -872,6 +931,7 @@ void CombatManager::SetMoves()
 	defaultMove.pos = kHigh;
 	defaultMove.dir = kDirForward;
 	defaultMove.power = kWeak;
+	defaultMove.sFX = &punch03_SFX;
 	allMoves.push_back(defaultMove);
 	
 	// Punch_Upper_Cut_R
@@ -884,6 +944,7 @@ void CombatManager::SetMoves()
 	defaultMove.pos = kHigh;
 	defaultMove.dir = kDirForward;
 	defaultMove.power = kWeak;
+	defaultMove.sFX = &punch03_SFX;
 	allMoves.push_back(defaultMove);
 
 	// Kick_Straight_Mid_R
@@ -896,6 +957,7 @@ void CombatManager::SetMoves()
 	defaultMove.pos = kHigh;
 	defaultMove.dir = kDirForward;
 	defaultMove.power = kWeak;
+	defaultMove.sFX = &kick01_SFX;
 	allMoves.push_back(defaultMove);
 
 	// Kick_Knee
@@ -908,6 +970,7 @@ void CombatManager::SetMoves()
 	defaultMove.pos = kMid;
 	defaultMove.dir = kDirForward;
 	defaultMove.power = kWeak;
+	defaultMove.sFX = &kick01_SFX;
 	allMoves.push_back(defaultMove);
 
 	// Kick_Axe_Kick
@@ -920,6 +983,7 @@ void CombatManager::SetMoves()
 	defaultMove.pos = kHigh;
 	defaultMove.dir = kDirForward;
 	defaultMove.power = kWeak;
+	defaultMove.sFX = &kick01_SFX;
 	allMoves.push_back(defaultMove);
 
 	// Kick_Horse_Kick
@@ -932,6 +996,7 @@ void CombatManager::SetMoves()
 	defaultMove.pos = kHigh;
 	defaultMove.dir = kDirForward;
 	defaultMove.power = kWeak;
+	defaultMove.sFX = &kick01_SFX;
 	allMoves.push_back(defaultMove);
 
 	// Sword_Attack_R
@@ -945,6 +1010,7 @@ void CombatManager::SetMoves()
 	defaultMove.pos = kMid;
 	defaultMove.dir = kDirLeft;
 	defaultMove.power = kWeak;
+	defaultMove.sFX = &hitSword_SFX;
 	allMoves.push_back(defaultMove);
 
 	// Sword_Attack_RL
@@ -958,6 +1024,7 @@ void CombatManager::SetMoves()
 	defaultMove.pos = kHigh;
 	defaultMove.dir = kDirRight;
 	defaultMove.power = kWeak;
+	defaultMove.sFX = &hitSword_SFX;
 	allMoves.push_back(defaultMove);
 
 	// Sword_Attack_Sp_U
@@ -971,6 +1038,7 @@ void CombatManager::SetMoves()
 	defaultMove.pos = kHigh;
 	defaultMove.dir = kDirForward;
 	defaultMove.power = kPowerful;
+	defaultMove.sFX = &hitSword_SFX;
 	allMoves.push_back(defaultMove);
 
 	// Sword_Attack_Combo_LL
@@ -984,6 +1052,7 @@ void CombatManager::SetMoves()
 	defaultMove.pos = kHigh;
 	defaultMove.dir = kDirRight;
 	defaultMove.power = kPowerful;
+	defaultMove.sFX = &hitSword_SFX;
 	allMoves.push_back(defaultMove);
 }
 
