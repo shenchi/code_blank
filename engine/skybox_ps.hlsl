@@ -9,5 +9,5 @@ SamplerState samp : register(s0);
 
 float4 main(V2F input) : SV_TARGET
 {
-	return cubeMap.Sample(samp, input.uv) * 10.0;
+	return cubeMap.Sample(samp, input.uv);
 }

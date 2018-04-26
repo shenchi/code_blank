@@ -72,10 +72,10 @@ namespace tofu
 		{
 			hInstance = GetModuleHandle(nullptr);
 
-			//int32_t w = 1600;// config->GetInt32("display.width", 800);
-			//int32_t h = 900;// config->GetInt32("display.height", 600);
-			int32_t w = 1280;
-			int32_t h = 720;
+			int32_t w = 1600;// config->GetInt32("display.width", 800);
+			int32_t h = 900;// config->GetInt32("display.height", 600);
+			//int32_t w = 1280;
+			//int32_t h = 720;
 			fullscreen = false;
 
 			//int32_t w = 1920;
