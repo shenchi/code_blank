@@ -13,7 +13,7 @@
 #include <unordered_map>
 #include <string>
 
-#define TOFU_BLOOM_MIPMAP_LEVELS 0
+#define TOFU_BLOOM_MIPMAP_LEVELS 1
 
 namespace tofu
 {

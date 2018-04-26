@@ -42174,29 +42174,6 @@
           "children": null
         }
       ]
-    },
-    {
-      "name": "Camera",
-      "transform": {
-        "translate": {
-          "x": -142.510941,
-          "y": 4.52192545,
-          "z": -5.17526627
-        },
-        "rotate": {
-          "x": -0.0118386187,
-          "y": 0.154773057,
-          "z": -0.002116481,
-          "w": -0.987876832
-        },
-        "scale": {
-          "x": 1.0,
-          "y": 1.0,
-          "z": 1.0
-        }
-      },
-      "components": null,
-      "children": null
     }
   ],
   "spawnerNodes": null,

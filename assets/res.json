@@ -2341,9 +2341,9 @@
             "Path": "textures/Sign_NRM",
             "GUID": "523e0dea111165d489885641b0dd50e9",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2368,9 +2368,9 @@
             "Path": "textures/Plane_RustMteal_Normal",
             "GUID": "b1525999b7b878a40a3cf87c91ad8e3a",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2395,9 +2395,9 @@
             "Path": "textures/SCF_ComputerControl_NRM",
             "GUID": "a88c3a7c9e3ca6c4494cd4955cc9fe39",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2413,9 +2413,9 @@
             "Path": "textures/Plane_Modern concrete 001_Normal",
             "GUID": "dd6a4d2fde08f6345a03b6541b47cb4e",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2440,9 +2440,9 @@
             "Path": "textures/Plane_Concrete Europe_Normal",
             "GUID": "47e87cb87ccddaa43ae1783d77ac5b1c",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2467,9 +2467,9 @@
             "Path": "textures/SCF_TowerCraneControl_NRM",
             "GUID": "12e49c740f17a994db9b6283831bfca2",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2485,9 +2485,9 @@
             "Path": "textures/Plane_Brick_Normal",
             "GUID": "1b1b8e7079490b041ad114d22356bfc0",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2512,9 +2512,9 @@
             "Path": "textures/SCF_LightObjects_NRM",
             "GUID": "f58e7cf08b4b90f4f90df0eb65c2071f",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 10,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2539,9 +2539,9 @@
             "Path": "textures/Plane_Weapon Metal_Normal",
             "GUID": "05a797acd8e6c9048829c684413f05cd",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2566,9 +2566,9 @@
             "Path": "textures/SCF_CraneSystem_NRM",
             "GUID": "d50cb08467fc2fd41a7d7b24aafb0c9a",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2584,9 +2584,9 @@
             "Path": "textures/Plane_Brick_wall_with_plaster_Normal",
             "GUID": "dbee3cea8655a3a44a30fa7ba9e67ea0",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2611,9 +2611,9 @@
             "Path": "textures/Plane_Building Panel 03_Normal",
             "GUID": "f978598e715c3da41a0ec25efe4c4020",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2656,9 +2656,9 @@
             "Path": "textures/Plane_MedBay_Floor_Normal",
             "GUID": "2f1152cb659cba440bfd754136d4d06f",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2683,9 +2683,9 @@
             "Path": "textures/Plane_Sci fi -3_Normal",
             "GUID": "393c53760a8598a4e8c940097c214998",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2710,9 +2710,9 @@
             "Path": "textures/SCF_Cutouts_NRM",
             "GUID": "ab278f1c7cb05f749ba12a92eff801ff",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2728,9 +2728,9 @@
             "Path": "textures/Plane_Bare_contrete_Normal",
             "GUID": "eced4fdacfd50d946933fba36ea9a4ef",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2755,9 +2755,9 @@
             "Path": "textures/SCF_CratesSet_NRM",
             "GUID": "39d3b9c5ad2a9d64bb7dc127a994e218",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2773,9 +2773,9 @@
             "Path": "textures/Plane_Iron Plates_Normal",
             "GUID": "6bc77dee2b5d66245bd3a9104455c560",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2800,9 +2800,9 @@
             "Path": "textures/SCF_ArchBasics_NRM",
             "GUID": "6c96b766b0c9a554794b33b3bcf6109d",
             "Dimension": "tex2d",
-            "WrapMode": "clamp",
-            "FilterMode": "trilinear",
-            "MipmapCount": 12,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2827,9 +2827,9 @@
             "Path": "textures/Plane_Sunken_Metal_Normal",
             "GUID": "0e9ef7e38ab8ce246a377c041cbdcb75",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2854,9 +2854,9 @@
             "Path": "textures/Building1_CFT_N",
             "GUID": "49915f6d65b559e438f719c298adac00",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2881,9 +2881,9 @@
             "Path": "textures/SCF_Pipes_NRM",
             "GUID": "8c7cdf849ef9ba74a8c2c557c13e6f94",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2899,9 +2899,9 @@
             "Path": "textures/Plane_Metal Panels 001_Normal",
             "GUID": "58264a03ac38fee41a8745526a2ee78a",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2926,9 +2926,9 @@
             "Path": "textures/SCF_Floors_NRM",
             "GUID": "70c5d772f1b15a144ae9c70a49d22435",
             "Dimension": "tex2d",
-            "WrapMode": "clamp",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2944,9 +2944,9 @@
             "Path": "textures/Plane_Door_Normal",
             "GUID": "804cf90a6110e584699e9a53439c4120",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2971,9 +2971,9 @@
             "Path": "textures/Plane_Sci fi -2_Normal",
             "GUID": "1e364b6416485544e9479c21b84a476b",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2998,9 +2998,9 @@
             "Path": "textures/Plane_Glass_Normal",
             "GUID": "f7bfb9dee6b0fcf4d9a1a95d90f1e567",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -3025,9 +3025,9 @@
             "Path": "textures/Building1_ZLJ_N",
             "GUID": "b933bba65fbc269409dc4f0c7e317821",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -3061,9 +3061,9 @@
             "Path": "textures/SCF_WallLocker_NRM",
             "GUID": "460f5c3192ed3fc4b931ca6664701ddc",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -3088,9 +3088,9 @@
             "Path": "textures/Plane_Overlaping Plates Bolted_Normal",
             "GUID": "2e11d2452b143b94a984f8bcb09228fd",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -3124,9 +3124,9 @@
             "Path": "textures/Plane_Old_Brick_Normal",
             "GUID": "4335206f8b8fe934d8df30be90375cca",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -3151,9 +3151,9 @@
             "Path": "textures/Plane_Sci fi -8_Normal",
             "GUID": "1ef0775d93b915142b49b2cacbfda467",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -3178,9 +3178,9 @@
             "Path": "textures/SCF_Barrel_NRM",
             "GUID": "a04ce63304bb400419ce3d561a2d513e",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -3268,9 +3268,9 @@
             "Path": "textures/Plane_MedBay_Walls_Normal",
             "GUID": "c86771830409b394d92a6ead7c814208",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
