@@ -1086,7 +1086,7 @@ namespace tofu
 			defaultOcclusionMap = whiteTex;
 			defaultEmissionMap = blackTex;
 
-			lutMap = CreateTexture("assets/textures/test/BrdfLUT-Copy.texture", kResourceGlobal);
+			lutMap = CreateTexture("assets/BrdfLUT-Copy.texture", kResourceGlobal);
 		}
 
 		// TODO when back buffer size changed !
@@ -2063,7 +2063,7 @@ namespace tofu
 		uint32_t numSpotLights = 0;
 		uint32_t numShadowCastingLights = 0;
 		{
-			ambDirLightParams->ambient = math::float4(0.1f, 0.1f, 0.1f, 1.0f);
+			ambDirLightParams->ambient = math::float4(0.4f, 0.4f, 0.4f, 1.0f);
 
 			for (uint32_t i = 0; i < lightsCount; ++i)
 			{

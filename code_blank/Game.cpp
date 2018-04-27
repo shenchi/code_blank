@@ -572,8 +572,11 @@ uint32_t Game::LoadScene(sceneType num)
 				assert(player != NULL);
 
 				TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/nightSky.dds");
+				TextureHandle skyboxSpec = RenderingSystem::instance()->CreateTexture("assets/prefilteredMap.texture");
+				TextureHandle skyboxDiff = RenderingSystem::instance()->CreateTexture("assets/diffuseIrradianceMap.texture");
 
 				cam->SetSkybox(tex);
+				cam->SetSkyboxDiffAndSpecMap(skyboxDiff, skyboxSpec);
 				cam->SetPosition(playerDetails.position);
 				cam->SetTarget(playerDetails.position);				
 				

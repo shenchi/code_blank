@@ -210,6 +210,12 @@ void Camera::SetSkybox(tofu::TextureHandle skyBox)
 	cam->SetSkybox(skyBox);
 }
 
+void Camera::SetSkyboxDiffAndSpecMap(tofu::TextureHandle diff, tofu::TextureHandle spec)
+{
+	cam->SetSkyboxDiffuseMap(diff);
+	cam->SetSkyboxSpecularMap(spec);
+}
+
 
 // Set Camera Target
 void Camera::SetTarget(math::float3 target)
