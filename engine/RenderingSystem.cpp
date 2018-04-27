@@ -3101,31 +3101,31 @@ namespace tofu
 
 				//params->psShaderResources[0] = hdrTarget;
 				params->psShaderResources[0] = hdrTarget2;
-				//params->renderTargets[0] = hdrTarget;
+				params->renderTargets[0] = hdrTarget;
 
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
 
-			//// anti-aliasing
-			//{
-			//	Mesh& mesh = meshes[builtinQuad->meshes[0].id];
-			//	DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
-			//
-			//	params->pipelineState = materialPSOs[kMaterialPostProcessAntiAliasing];
-			//
-			//	params->psConstantBuffers[0] = { frameConstantBuffer, 0, 0 };
-			//
-			//	params->vertexBuffer = mesh.VertexBuffer;
-			//	params->indexBuffer = mesh.IndexBuffer;
-			//	params->startIndex = mesh.StartIndex;
-			//	params->startVertex = mesh.StartVertex;
-			//	params->indexCount = mesh.NumIndices;
-			//
-			//	params->psShaderResources[0] = hdrTarget;
-			//	params->psSamplers[0] = volumeSampler;
-			//
-			//	cmdBuf->Add(RendererCommand::kCommandDraw, params);
-			//}
+			// anti-aliasing
+			{
+				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
+				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
+			
+				params->pipelineState = materialPSOs[kMaterialPostProcessAntiAliasing];
+			
+				params->psConstantBuffers[0] = { frameConstantBuffer, 0, 0 };
+			
+				params->vertexBuffer = mesh.VertexBuffer;
+				params->indexBuffer = mesh.IndexBuffer;
+				params->startIndex = mesh.StartIndex;
+				params->startVertex = mesh.StartVertex;
+				params->indexCount = mesh.NumIndices;
+			
+				params->psShaderResources[0] = hdrTarget;
+				params->psSamplers[0] = volumeSampler;
+			
+				cmdBuf->Add(RendererCommand::kCommandDraw, params);
+			}
 		}
 
 		return kOK;
