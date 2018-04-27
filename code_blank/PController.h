@@ -42,6 +42,9 @@ private:
 	int pitchMod;
 	int yawMod;
 
+	bool onSprintCoolDown;
+	bool onEnergyCoolDown;
+
 	// Buttons
 	bool attackButtonDown;
 	bool dodgeButtonDown;

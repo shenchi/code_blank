@@ -22,6 +22,16 @@ public:
 	void Special(bool, float);
 	void VisionHack();
 
+	void UseEnergy(float);
+	void UseStamina(float);
+
+	float GetHealth();
+	float GetCurrentHealthPercent();
+	float GetEnergy();
+	float GetCurrentEnergyPercent();
+	float GetStamina();
+	float GetCurrentStaminaPercent();
+
 	/*
 	void AnimationParameter(int _animationParameter);
 	
@@ -65,8 +75,6 @@ private:
 
 	tofu::math::float3 lastMoveDir;
 
-	Gun* gun;
-
 	bool attackButtonDown;
 	bool specialButtonDown;
 	float attackButtonTimer;
@@ -75,9 +83,7 @@ private:
 	float specialButtonTimer;
 	float rollDodgeCost;
 
-	//GameObject charBody;
-	//GameObject camera;
-
+	uint32_t footStepsMod;
 	
 	//CapstoneAnimation animator;
 

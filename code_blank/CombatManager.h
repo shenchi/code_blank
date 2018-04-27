@@ -2,6 +2,7 @@
 #include "Companion.h"
 #include "Character.h"
 #include "GameplayDS.h"
+#include <AudioManager.h>
 
 class Character;
 class Player;
@@ -17,12 +18,13 @@ public:
 
 	void Update(float);
 	bool UpdateState(float, float);
-	void Hit(HitPosition, HitDirection, HitPower, float, float);
+	void Hit(CombatMoveDetails);
+	void Hit(HitPosition, HitDirection, HitPower, float, float, tofu::AudioSource*);
 	void BasicCombo();
 	void SpecialCombat();
 	void GunShot();
-	void SwordCombo();
-	void SwordSpecialCombat();
+	bool SwordCombo();
+	bool SwordSpecialCombat();
 	void Attack();
 	void Shoot();
 	void Effect();
@@ -111,13 +113,15 @@ private:
 	//GameObject[] enemyArray;
 	bool isPlayer;
 	//*******************************************************************
-
-	//Character m_char;
-	//AudioSource combatAudio;
-	//AudioClip punchFX;
-	//AudioClip kickFX;
-	//AudioClip swordFX;
-	//AudioClip gunShotFX;
+	tofu::AudioSource*			currentSFX = {};
+	tofu::AudioSource			kick01_SFX{ "assets/sounds/kick_01.wav" };
+	tofu::AudioSource			kick_SFX{ "assets/sounds/kick_SFX.wav" };
+	tofu::AudioSource			punch_SFX{ "assets/sounds/punch_SFX.wav" };
+	tofu::AudioSource			punch01_SFX{ "assets/sounds/punch_01.wav" };
+	tofu::AudioSource			punch02_SFX{ "assets/sounds/punch_02.wav" };
+	tofu::AudioSource			punch03_SFX{ "assets/sounds/punch_03.wav" };
+	tofu::AudioSource			sword_SFX{ "assets/sounds/sword_SFX.wav" };
+	tofu::AudioSource			hitSword_SFX{ "assets/sounds/hit_Sword.wav" };
 
 	//---------------------------------------------------------------------------------------------
 	// Special Combat Variables

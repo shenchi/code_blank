@@ -54,6 +54,7 @@ void Character::HandleGroundedMovement(math::float3 _moveDir, bool _hasInput, bo
 		jump = true;
 		hasJumped = true;
 		stateTimer = 0;
+		jump_SFX.PlayOneShot();
 	}
 
 	if (!isSprinting && !isRolling)
@@ -186,8 +187,7 @@ void Character::CheckGroundStatus()
 	}
 	if (inAir && isGrounded)
 	{
-		//charAudio.Stop();
-		//charAudio.PlayOneShot(landFX);
+		land_SFX.PlayOneShot();
 		hasJumped = false;
 		inAir = false;
 	}

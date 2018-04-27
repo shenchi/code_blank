@@ -78,9 +78,9 @@ namespace tofu
 			//int32_t h = 720;
 			fullscreen = false;
 
-			//int32_t w = 1920;
-			//int32_t h = 1080;
-			//fullscreen = true;
+			/*int32_t w = 1920;
+			int32_t h = 1080;
+			fullscreen = true;*/
 
 			std::string title = "tofu";// config->GetString("game.title");
 			std::wstring wtitle(title.begin(), title.end());

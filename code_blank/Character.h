@@ -5,6 +5,7 @@
 #include <AnimationComponent.h>
 #include "CombatManager.h"
 #include "GameplayAnimationMachine.h"
+#include <AudioManager.h>
 
 class Character
 {
@@ -83,8 +84,20 @@ protected:
 	CharacterState currentState;
 	CharacterState lastState;
 
+	tofu::AudioSource			footstep1_SFX{ "assets/sounds/Footstep01.wav" };
+	tofu::AudioSource			footstep2_SFX{ "assets/sounds/Footstep02.wav" };
+	tofu::AudioSource			jump_SFX{ "assets/sounds/Jump.wav" };
+	tofu::AudioSource			land_SFX{ "assets/sounds/Land.wav" };
+
 	// Player Stats
 	float health;
+	float maxHealth;
+	float energy;
+	float maxEnergy;
+	float stamina;
+	float maxStamina;
+	float staminaRegen;
+	float energyRegen;
 	float groundCheckDistance;
 
 	int animationParameter;

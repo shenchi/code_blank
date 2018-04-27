@@ -112,6 +112,9 @@ private:
 	tofu::AudioSource			death_BGM{ "assets/sounds/Death_BGM.wav" };
 	tofu::AudioSource			lowHealth_BGM{ "assets/sounds/Heart_Beat.wav" };
 	tofu::AudioSource			city_BGA{ "assets/sounds/City_BGA.wav" };
+	tofu::AudioSource			buttonStart_SFX{ "assets/sounds/Button_Game_Start.wav" };
+	tofu::AudioSource			buttonSelect_SFX{ "assets/sounds/Button_Select.wav" };
+	
 
 	bool isTitle_Playing;
 	bool isGame_Playing;
@@ -125,9 +128,21 @@ private:
 	
 	// UI
 	tofu::TextureHandle			uiBGTex_0;
+	tofu::TextureHandle			uiBGTex_1;
 	tofu::TextureHandle			uiButTex;
 	tofu::TextureHandle			uiGamePadPC;
+	tofu::TextureHandle			uiFrame;
+	tofu::TextureHandle			uiPlayer;
+	tofu::TextureHandle			uiBars;
 	tofu::Atlas					atlas;
+	tofu::Atlas					atlasBars;
+
+	float healthPercent;
+	float energyPercent;
+	float staminaPercent;
+	float healthMaxPercent;
+	float energyMaxPercent;
+	float staminaMaxPercent;
 
 	uint32_t					mainMenuSelectedItem;
 	uint32_t					levelMenuSelectedItem;

@@ -278,13 +278,20 @@ Player::Player(CharacterDetails details, void* comp)
 	minHoldTime = 0.5f;
 	maxHoldTime = 1.5f; // Approximatelly measured in seconds
 
-	gun = new Gun();
+	health = details.health;
+	energy = details.energy;
+	stamina = details.stamina;
+	maxHealth = health;
+	maxEnergy = energy;
+	maxStamina = stamina;
+	energyRegen = details.energyRegenRate;
+	staminaRegen = details.staminaRegenRate;
+
+	footStepsMod = 0;
 }
 
 Player::~Player()
-{
-	delete gun;
-}
+{}
 
 void Player::Update(float dT)
 {
@@ -309,8 +316,24 @@ void Player::Update(float dT)
 	}
 	if (specialButtonTimer >= maxHoldTime && specialButtonDown)
 	{
-		combatManager->SwordSpecialCombat();
+		if (energy > 49.0f)
+		{
+			if (combatManager->SwordSpecialCombat())
+			{
+				UseEnergy(49.0f);
+			}
+
+		}
 		specialButtonDown = false;
+	}
+
+	if (stamina < maxStamina)
+	{
+		stamina += staminaRegen;
+	}
+	if (energy < maxEnergy)
+	{
+		energy += energyRegen;
 	}
 }
 
@@ -443,6 +466,17 @@ void Player::MoveReg(float dT, bool _jump, math::float3 inputDir, math::quat cam
 
 		if (isGrounded)
 		{
+			footStepsMod++;
+			if (footStepsMod > 299 && footStepsMod < 301)
+			{
+				
+				footstep1_SFX.PlayOneShot();
+			}
+			else if (footStepsMod > 599)
+			{
+				footstep2_SFX.PlayOneShot();
+				footStepsMod = 0;
+			}
 			combatManager->SetIsMoving(true);
 			moving = true;
 
@@ -454,6 +488,7 @@ void Player::MoveReg(float dT, bool _jump, math::float3 inputDir, math::quat cam
 			{
 				moveSpeedMultiplier = sprintSpeedMultiplier;
 				combatManager->SetIsSprinting(true);
+				UseStamina(0.05f);
 			}
 
 			if (moveSpeedMultiplier > kMaxSpeed)
@@ -735,7 +770,7 @@ void Player::UpdateState(float dT)
 		}
 		else if (stateTimer > deathTimer)
 		{
-			currentState = kNoState;
+		currentState = kNoState;
 		}
 	}
 
@@ -762,7 +797,7 @@ void Player::Attack(bool down, float dT)
 			attackButtonDown = true;
 			attackButtonTimer = 0;
 		}
-		
+
 		// If attack button is released and timer is less than a hold time, use basic attack
 		if (attackButtonDown && !down && attackButtonTimer <= minHoldTime)
 		{
@@ -787,14 +822,14 @@ void Player::Die()
 // Dodge, in the current player direction
 void Player::Dodge(tofu::math::float3 inputDir)
 {
-    // If can roll
-	if(combatManager->GetCanRoll())
-    {
+	// If can roll
+	if (combatManager->GetCanRoll())
+	{
 		isRolling = true;
 		combatManager->Roll();
-        // Remove stamina
-        //playerCharacter.UseStamina(rollDodgeCost);
-    }
+		// Remove stamina
+		//playerCharacter.UseStamina(rollDodgeCost);
+	}
 }
 
 // Interact with interactable object
@@ -818,14 +853,27 @@ void Player::Special(bool down, float dT)
 	// If attack button is released and timer is less than a hold time, use basic attack
 	if (specialButtonDown && !down && specialButtonTimer <= minHoldTime) // TODO Add energy hook: playerCharacter.SpecialBar > 24.9999f
 	{
-		combatManager->SwordCombo();
+		if (energy > 24.0f)
+		{
+			if (combatManager->SwordCombo())
+			{
+				UseEnergy(24.0f);
+			}
+		}
 		specialButtonDown = false;
 	}
 
 	// If attack button is released
 	if ((!down && attackButtonDown && specialButtonTimer > minHoldTime))
 	{
-		combatManager->SwordSpecialCombat();
+		if (energy > 49.0f)
+		{
+			if(combatManager->SwordSpecialCombat() )
+			{
+				UseEnergy(49.0f);
+			}
+			
+		}
 		specialButtonDown = false;
 	}
 }
@@ -857,16 +905,58 @@ void Player::VisionHack()
 	*/
 }
 
+// Use Energy
+void Player::UseEnergy(float amount)
+{
+	energy -= amount;
+	if (energy < 0)
+		energy = 0.0f;
+}
+
+// Use Stamina
+void Player::UseStamina(float amount)
+{
+	stamina -= amount;
+	if (stamina < 0)
+		stamina = 0.0f;
+}
+
+
 //-------------------------------------------------------------------------------------------------
 // Setters
-
-
-
-
-
 
 
 //-------------------------------------------------------------------------------------------------
 // Getters
 
+// Current Health
+float Player::GetHealth()
+{
+	return health;
+}
 
+// Health Percentage
+float Player::GetCurrentHealthPercent()
+{
+	return health / maxHealth;
+}
+
+float Player::GetEnergy()
+{
+	return energy;
+}
+
+float Player::GetCurrentEnergyPercent()
+{
+	return energy / maxEnergy;
+}
+
+float Player::GetStamina()
+{
+	return stamina;
+}
+
+float Player::GetCurrentStaminaPercent()
+{
+	return stamina / maxStamina;
+}

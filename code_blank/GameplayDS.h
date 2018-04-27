@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <TofuMath.h>
+#include <AudioManager.h>
 
 enum CharacterState
 {
@@ -102,6 +103,7 @@ struct CombatMoveDetails
 	CombatDirection dir;
 	HitPower power;
 	float strikeDistance;
+	tofu::AudioSource* sFX;
 };
 
 struct CharacterDetails
@@ -113,6 +115,10 @@ struct CharacterDetails
 	tofu::math::float3	position;
 	tofu::math::float3	scale;
 	float				health;
+	float				energy;
+	float				energyRegenRate;
+	float				stamina;
+	float				staminaRegenRate;
 	float				walkSpeed;//
 	float				sprintSpeed;
 	float				jumpPower;
