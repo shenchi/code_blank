@@ -7,7 +7,8 @@ namespace tofu {
 	/**
 		AudioSource
 	*/
-	AudioSource::AudioSource(char* file)
+	AudioSource::AudioSource(char* file, float volumn)
+		:volumn(volumn)
 	{
 		size_t outSize;
 		wchar_t wstr[256];
@@ -29,7 +30,7 @@ namespace tofu {
 
 		// TODO: maintain background music list in AudioManager for volumn management
 
-		soundInstance->SetVolume(AudioManager::instance()->volumn);
+		soundInstance->SetVolume(AudioManager::instance()->volumn * volumn);
 		soundInstance->Play(true);
 	}
 
@@ -41,7 +42,7 @@ namespace tofu {
 
 	void AudioSource::PlayOneShot()
 	{
-		sound->Play(AudioManager::instance()->volumn, 0.f, 0.f);
+		sound->Play(AudioManager::instance()->volumn * volumn, 0.f, 0.f);
 	}
 
 	/**

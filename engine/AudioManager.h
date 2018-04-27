@@ -14,7 +14,7 @@ namespace DirectX
 namespace tofu {
 	class AudioSource {
 	public:
-		AudioSource(char* file);
+		AudioSource(char* file, float volumn = 1.0f);
 		~AudioSource();
 
 		void Play();
@@ -25,6 +25,8 @@ namespace tofu {
 	private:
 		std::unique_ptr<DirectX::SoundEffect> sound;
 		std::unique_ptr<DirectX::SoundEffectInstance> soundInstance = nullptr;
+
+		float volumn;
 	};
 
 	class AudioManager : public Module
