@@ -57,7 +57,7 @@ PS_OUTPUT main(V2F input)
 
 	albedo *= color.rgb;
 
-	emission *= emissionColor.rgb;
+	emission *= emissionColor.rgb * 10;
 
 	output.rt1 = float4(albedo, metallicGloss.x);
 	output.rt2 = float4(normal, input.position.z);

@@ -5,6 +5,14 @@
             "guid": "28c8009c95e2945bcb75678913a597c0"
         },
         {
+            "name": "Unity_Builtin_Quad",
+            "guid": "0000000000000000e000000000000000"
+        },
+        {
+            "name": "Bin_Large_TrashBin_Large",
+            "guid": "ef3b83c1822b6d34eb9325e07c9bc4cb"
+        },
+        {
             "name": "tube_main_Anvil_Iron_Metal_pCylinder15",
             "guid": "25dbc79cb5253f440adb9539b48b70d1"
         },
@@ -49,6 +57,18 @@
             "guid": "36430070dfbe5394487e73d27c179deb"
         },
         {
+            "name": "TrashBag_TrashBag",
+            "guid": "b30f6b19eb795ff4eb91de10c8b3724f"
+        },
+        {
+            "name": "Trashcan6_Cube",
+            "guid": "f2208d21c9d678a4f9bdbe84483bc323"
+        },
+        {
+            "name": "CBox_Square1_CBox_Square1",
+            "guid": "6775913dfae055d4eb78cfac5ec0240b"
+        },
+        {
             "name": "ZLJB3_Merged_Mesh_0_ZLJB3_Merged_Mesh_0",
             "guid": "af42a087b295ba14e8d8d508c5cbc6e7"
         },
@@ -69,6 +89,10 @@
             "guid": "a198fdb37efb7e94995bb8e24901272b"
         },
         {
+            "name": "uvd rims_Cylinder_1",
+            "guid": "44015d164237f0248b3ec7573515e60d"
+        },
+        {
             "name": "ZLJB3_Merged_Mesh_1_ZLJB3_Merged_Mesh_1",
             "guid": "4279a247f8055394fa943e82afa3da2c"
         },
@@ -87,6 +111,10 @@
         {
             "name": "floor1_wall_Rusty_Pitted_lead_metal_pPlane23",
             "guid": "40c1e61d1fbd70342bef0e5612f376c3"
+        },
+        {
+            "name": "RoadBlock1_Cube",
+            "guid": "4d316562094e094428cd5d8323fdc1cb"
         },
         {
             "name": "LIT_CeilingLamp_B_LIT_CeilingLamp_B",
@@ -153,6 +181,10 @@
             "guid": "49b77dba120a447419541726005e1881"
         },
         {
+            "name": "Trashcan7_Cube",
+            "guid": "b8925c60a8c96194d9c7767ed2274bd7"
+        },
+        {
             "name": "EQP_Control_SmallTVSet_EQP_Control_SmallTVScreen",
             "guid": "6c446944a38ee87468d700805e34b436"
         },
@@ -175,18 +207,6 @@
         {
             "name": "floor1_wall_polySurface1",
             "guid": "dc417ce9124aac446b611bf69c0afdaf"
-        },
-        {
-            "name": "EQP_Crane_BeamsSupport_EQP_Crane_BeamsGirder",
-            "guid": "45b26a22a24b6f64a8b094ae5a76f4a5"
-        },
-        {
-            "name": "EQP_Crane_ControlTowerAll_EQP_Crane_ControlTowerGirders",
-            "guid": "a198fdb37efb7e94995bb8e24901272b"
-        },
-        {
-            "name": "FLO_Walkway_Grills_5m_FLO_Walkway_Grills_5m_Floor",
-            "guid": "ba407c0ef92a7a54eb7e126fe9bde8ae"
         },
         {
             "name": "ZLJB4_Merged_Mesh_3_ZLJB4_Merged_Mesh_3",
@@ -275,6 +295,10 @@
         {
             "name": "ZLJB2_Merged_Mesh_5_ZLJB2_Merged_Mesh_5",
             "guid": "1a1a9f2c767e79d4fa3d19cfbfe9dfa6"
+        },
+        {
+            "name": "Barrel_WhiteRust_Barrel_WhiteRust",
+            "guid": "98fe0d1eafc37594db0d0dc6eda2a6b8"
         },
         {
             "name": "LiuCheng_BD1_floor1",
@@ -521,12 +545,20 @@
             "guid": "13bb1b4ff75fe5146af35a83fe409799"
         },
         {
+            "name": "Barrier_Cube",
+            "guid": "d19f1fe9c57d51747906381dce97a89d"
+        },
+        {
             "name": "floor1_Store1_door_SciFi_metal_with_ribs_pPlane3",
             "guid": "af0afb304010c4c4da03bf1aa58ab31c"
         },
         {
             "name": "ZLJB2_Merged_Mesh_6_ZLJB2_Merged_Mesh_6",
             "guid": "2d6eca53e69e57f49b49509ec8a7230b"
+        },
+        {
+            "name": "Trashcan5_Cube",
+            "guid": "b68640577ab949449bf0348c999c9cdc"
         },
         {
             "name": "FLO_Walkway_Open_5m_FLO_Walkway_Open_5m_Plates",
@@ -593,6 +625,58 @@
             "guid": "d43ee1f6d05d5cc47a7ac11154649acc"
         },
         {
+            "name": "muscle car 1_black0_1",
+            "guid": "ca7d55d45cad6e24f986dab95df2bac8"
+        },
+        {
+            "name": "muscle car 1_body",
+            "guid": "ca7d55d45cad6e24f986dab95df2bac8"
+        },
+        {
+            "name": "muscle car 1_chrome8_1",
+            "guid": "ca7d55d45cad6e24f986dab95df2bac8"
+        },
+        {
+            "name": "muscle car 1_chrome58_1",
+            "guid": "ca7d55d45cad6e24f986dab95df2bac8"
+        },
+        {
+            "name": "muscle car 1_chrome58_1_1",
+            "guid": "ca7d55d45cad6e24f986dab95df2bac8"
+        },
+        {
+            "name": "muscle car 1_headlight_1_1",
+            "guid": "ca7d55d45cad6e24f986dab95df2bac8"
+        },
+        {
+            "name": "muscle car 1_headlight_1_1_2",
+            "guid": "ca7d55d45cad6e24f986dab95df2bac8"
+        },
+        {
+            "name": "muscle car 1_RetopoGroup1_1",
+            "guid": "ca7d55d45cad6e24f986dab95df2bac8"
+        },
+        {
+            "name": "muscle car 1_RetopoGroup1_11",
+            "guid": "ca7d55d45cad6e24f986dab95df2bac8"
+        },
+        {
+            "name": "EQP_Crane_BeamsSupport_EQP_Crane_BeamsGirder",
+            "guid": "45b26a22a24b6f64a8b094ae5a76f4a5"
+        },
+        {
+            "name": "EQP_Crane_ControlTowerAll_EQP_Crane_ControlTowerGirders",
+            "guid": "a198fdb37efb7e94995bb8e24901272b"
+        },
+        {
+            "name": "FLO_Walkway_Grills_5m_FLO_Walkway_Grills_5m_Floor",
+            "guid": "ba407c0ef92a7a54eb7e126fe9bde8ae"
+        },
+        {
+            "name": "Panel_Panel1",
+            "guid": "cbd5866251142476aac4aa556bab6146"
+        },
+        {
             "name": "Floor1_Pillar_Damaged_Iron_Metal_polySurface10",
             "guid": "14fa3c7057f07bf4fa4afb2a93a7ddda"
         },
@@ -605,72 +689,68 @@
             "guid": "c31e2b584fcb23444b528b943c48f97d"
         },
         {
-            "name": "Panel_Panel1",
-            "guid": "cbd5866251142476aac4aa556bab6146"
-        },
-        {
             "name": "Merged_Mesh_Layout_Final_Export_0",
-            "guid": "572719345"
+            "guid": "1480557487"
         },
         {
             "name": "Merged_Mesh_Layout_Final_Export_1",
-            "guid": "2133928838"
+            "guid": "299164104"
         },
         {
             "name": "Merged_Mesh_Layout_Final_Export_2",
-            "guid": "2008923468"
+            "guid": "56179928"
         },
         {
             "name": "Merged_Mesh_Layout_Final_Export_3",
-            "guid": "1163284678"
+            "guid": "1304640121"
         },
         {
             "name": "Merged_Mesh_Layout_Final_Export_4",
-            "guid": "1707862961"
+            "guid": "1819301708"
         },
         {
             "name": "Merged_Mesh_Layout_Final_Export_5",
-            "guid": "164477061"
+            "guid": "330262811"
         },
         {
             "name": "Merged_Mesh_Layout_Final_Export_6",
-            "guid": "1892211145"
+            "guid": "1845974548"
         },
         {
             "name": "Merged_Mesh_Layout_Final_Export_7",
-            "guid": "227248781"
+            "guid": "326602538"
         },
         {
             "name": "Merged_Mesh_Layout_Final_Export_8",
-            "guid": "697601194"
+            "guid": "2100138044"
         },
         {
             "name": "Merged_Mesh_Layout_Final_Export_9",
-            "guid": "889699885"
+            "guid": "36692058"
         },
         {
             "name": "Merged_Mesh_Layout_Final_Export_10",
-            "guid": "274617325"
+            "guid": "1770042838"
         },
         {
             "name": "Merged_Mesh_Layout_Final_Export_11",
-            "guid": "1029441483"
+            "guid": "774032392"
         },
         {
             "name": "Merged_Mesh_Layout_Final_Export_12",
-            "guid": "1307709173"
+            "guid": "1438665307"
         },
         {
             "name": "Merged_Mesh_Layout_Final_Export_13",
-            "guid": "574286000"
+            "guid": "250824461"
         },
         {
             "name": "Merged_Mesh_Layout_Final_Export_14",
-            "guid": "1537996123"
+            "guid": "904770754"
         },
         {
-            "name": "Unity_Builtin_Quad",
-            "guid": "0000000000000000e000000000000000"
+            "name": "Merged_Mesh_Layout_Final_Export_15",
+            "guid": "753327647"
         },
         {
             "name": "LJB3_Merged_Mesh_0_LJB3_Merged_Mesh_0",
@@ -681,12 +761,12 @@
             "guid": "65646b4eeaff41549adb033fcc1b35b9"
         },
         {
-            "name": "LIT_SpotSmall_LIT_SpotSmall",
-            "guid": "edc666d6312f4d94592ac88814a5d0c5"
+            "name": "RoadBlock2_Cube",
+            "guid": "f5fdf981ea9783e408e5a398d43837df"
         },
         {
-            "name": "FLO_Walkway_Grills_Ring_FLO_Walkway_Grills_Ring_Floors",
-            "guid": "a0ef8d6e39ea0604099f8e6d6716b765"
+            "name": "LIT_SpotSmall_LIT_SpotSmall",
+            "guid": "edc666d6312f4d94592ac88814a5d0c5"
         },
         {
             "name": "EQP_BigContainer_EQP_BigContainer",
@@ -703,6 +783,14 @@
         {
             "name": "LJB3_Merged_Mesh_5_LJB3_Merged_Mesh_5",
             "guid": "14095cac83e30c349abe6964b4bc6819"
+        },
+        {
+            "name": "muscle car 1_RetopoGroup1_1_1",
+            "guid": "ca7d55d45cad6e24f986dab95df2bac8"
+        },
+        {
+            "name": "FLO_Walkway_Grills_Ring_FLO_Walkway_Grills_Ring_Floors",
+            "guid": "a0ef8d6e39ea0604099f8e6d6716b765"
         },
         {
             "name": "COL_FLO_Walkway_Grills_Ring_COL_FLO_Walkway_Grills_Ring",
@@ -756,1099 +844,8 @@
                 "y": 1.0,
                 "z": 0.0,
                 "w": 0.0
-            }
-        },
-        {
-            "Name": "Plane_RustMteal",
-            "GUID": "fbd092a1e327cbe47a95b43a7bb6c63c",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/Plane_RustMteal_AlbedoTransparency",
-            "NormalMap": "textures/Plane_RustMteal_Normal",
-            "MetallicGlossMap": "textures/Plane_RustMteal_MetallicSmoothness",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
             },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "light_orange",
-            "GUID": "88c80302ec7e3e7468a38ae483f7baf6",
-            "Type": "Opaque",
-            "AlbedoMap": "",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 0.2689654529094696,
-                "b": 0.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 1.0,
-                "g": 0.39939141273498537,
-                "b": 0.07352942228317261,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "SCF_ComputerControl",
-            "GUID": "59162062923c1a1489a36121f51a34bd",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/SCF_ComputerControl_COL",
-            "NormalMap": "textures/SCF_ComputerControl_NRM",
-            "MetallicGlossMap": "",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 0.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "Plane_Modern concrete 001",
-            "GUID": "bb83f7725dadf0c40a75d85c119c8690",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/Plane_Modern concrete 001_AlbedoTransparency",
-            "NormalMap": "textures/Plane_Modern concrete 001_Normal",
-            "MetallicGlossMap": "textures/Plane_Modern concrete 001_MetallicSmoothness",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 2.0,
-                "y": 2.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "Plane_Concrete Europe",
-            "GUID": "fd72cd23a5833da40aa1de5cb8bcdfc6",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/Plane_Concrete Europe_AlbedoTransparency",
-            "NormalMap": "textures/Plane_Concrete Europe_Normal",
-            "MetallicGlossMap": "textures/Plane_Concrete Europe_MetallicSmoothness",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "SCF_TowerCraneControl",
-            "GUID": "93a68d93841e63544b212a3d8b07f358",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/SCF_TowerCraneControl_COL",
-            "NormalMap": "textures/SCF_TowerCraneControl_NRM",
-            "MetallicGlossMap": "",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 0.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "Plane_Brick",
-            "GUID": "19f38a24201791340a977d77ac9bad74",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/Plane_Brick_AlbedoTransparency",
-            "NormalMap": "textures/Plane_Brick_Normal",
-            "MetallicGlossMap": "textures/Plane_Brick_MetallicSmoothness",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 2.0,
-                "y": 2.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "SCF_LightObjects",
-            "GUID": "663a24e508e3c9e4482a337cb5878e3d",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/SCF_LightObjects_COL",
-            "NormalMap": "textures/SCF_LightObjects_NRM",
-            "MetallicGlossMap": "",
-            "OcclusionMap": "",
-            "EmissionMap": "textures/SCF_LightObjects_EMI",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.6100000143051148,
-                "g": 0.6100000143051148,
-                "b": 0.6100000143051148,
-                "a": 0.6100000143051148
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "Plane_Weapon Metal",
-            "GUID": "17e03de588178284894b73e396c7063a",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/Plane_Weapon Metal_AlbedoTransparency",
-            "NormalMap": "textures/Plane_Weapon Metal_Normal",
-            "MetallicGlossMap": "textures/Plane_Weapon Metal_MetallicSmoothness",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "SCF_CraneSystem",
-            "GUID": "b5c81ef53daa22541a88492a961c469d",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/SCF_CraneSystem_COL",
-            "NormalMap": "textures/SCF_CraneSystem_NRM",
-            "MetallicGlossMap": "",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 0.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "Plane_Brick_wall_with_plaster",
-            "GUID": "be40d036fa74b3a4bb42a0032e241e23",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/Plane_Brick_wall_with_plaster_AlbedoTransparency",
-            "NormalMap": "textures/Plane_Brick_wall_with_plaster_Normal",
-            "MetallicGlossMap": "textures/Plane_Brick_wall_with_plaster_MetallicSmoothness",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "Plane_Building Panel 03",
-            "GUID": "cb694f56409a3a2478ad53d6e023433e",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/Plane_Building Panel 03_AlbedoTransparency",
-            "NormalMap": "textures/Plane_Building Panel 03_Normal",
-            "MetallicGlossMap": "textures/Plane_Building Panel 03_MetallicSmoothness",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "M_GreenSign",
-            "GUID": "c6ee9496958484c598e42dd6f36f5a48",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/GreenSign_DIF",
-            "NormalMap": "textures/Sign_NRM",
-            "MetallicGlossMap": "",
-            "OcclusionMap": "",
-            "EmissionMap": "textures/Sign_GLOW",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.5862069129943848,
-                "g": 5.0,
-                "b": 0.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "SCF_ScreenGraphics",
-            "GUID": "d4ce4ae6a4cb60e4e9d0459e27da00bc",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/SCF_ScreenGraphics_COL",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": "",
-            "EmissionMap": "textures/SCF_ScreenGraphics_COL",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "light",
-            "GUID": "151f0e27f054f174f81ecd4a68a354ff",
-            "Type": "Opaque",
-            "AlbedoMap": "",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 0.22058820724487306,
-                "b": 0.817241370677948,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 1.0,
-                "g": 0.29411762952804568,
-                "b": 0.834482729434967,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "Plane_MedBay_Floor",
-            "GUID": "ebcc015706bd56f47a811baab861c806",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/Plane_MedBay_Floor_AlbedoTransparency",
-            "NormalMap": "textures/Plane_MedBay_Floor_Normal",
-            "MetallicGlossMap": "textures/Plane_MedBay_Floor_MetallicSmoothness",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "Plane_Sci fi -3",
-            "GUID": "8f3bd257976fe374aafd85eef89abd7c",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/Plane_Sci fi -3_AlbedoTransparency",
-            "NormalMap": "textures/Plane_Sci fi -3_Normal",
-            "MetallicGlossMap": "textures/Plane_Sci fi -3_MetallicSmoothness",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "SCF_Cutouts",
-            "GUID": "e3eeb2b7354ad4949a14f49f5878a3cc",
-            "Type": "Transparent",
-            "AlbedoMap": "textures/SCF_Cutouts_COL",
-            "NormalMap": "textures/SCF_Cutouts_NRM",
-            "MetallicGlossMap": "",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 0.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "Plane_Bare_contrete",
-            "GUID": "74d424b7a8bec124fb0224f8135132cb",
-            "Type": "Transparent",
-            "AlbedoMap": "textures/Plane_Bare_contrete_AlbedoTransparency",
-            "NormalMap": "textures/Plane_Bare_contrete_Normal",
-            "MetallicGlossMap": "textures/Plane_Bare_contrete_MetallicSmoothness",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "SCF_CratesSet",
-            "GUID": "934d3af75cb808443931cb99f1fc4d85",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/SCF_CratesSet_COL",
-            "NormalMap": "textures/SCF_CratesSet_NRM",
-            "MetallicGlossMap": "",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 0.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "Plane_Iron Plates",
-            "GUID": "b088df48732c44d4a80c27e420246705",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/Plane_Iron Plates_AlbedoTransparency",
-            "NormalMap": "textures/Plane_Iron Plates_Normal",
-            "MetallicGlossMap": "textures/Plane_Iron Plates_MetallicSmoothness",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "SCF_ArchBasics",
-            "GUID": "5772d6e8e56da78499ff2669d526e2b1",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/SCF_ArchBasics_COL",
-            "NormalMap": "textures/SCF_ArchBasics_NRM",
-            "MetallicGlossMap": "textures/SCF_ArchBasics_MET",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 0.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "Plane_Sunken_Metal",
-            "GUID": "90f32b4933ba6084b8ef97472820492e",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/Plane_Sunken_Metal_AlbedoTransparency",
-            "NormalMap": "textures/Plane_Sunken_Metal_Normal",
-            "MetallicGlossMap": "textures/Plane_Sunken_Metal_MetallicSmoothness",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "LCB1",
-            "GUID": "5db49caa42a1673449073c6627e82298",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/Building1_CFT_D",
-            "NormalMap": "textures/Building1_CFT_N",
-            "MetallicGlossMap": "textures/Building1_CFT_MT",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "SCF_Pipes",
-            "GUID": "fae7080b58cb8f6419b0fde25ad60542",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/SCF_Pipes_COL",
-            "NormalMap": "textures/SCF_Pipes_NRM",
-            "MetallicGlossMap": "",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 0.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "Plane_Metal Panels 001",
-            "GUID": "325b153be5c943d4ab5121d16ee8617c",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/Plane_Metal Panels 001_AlbedoTransparency",
-            "NormalMap": "textures/Plane_Metal Panels 001_Normal",
-            "MetallicGlossMap": "textures/Plane_Metal Panels 001_MetallicSmoothness",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "SCF_Floors",
-            "GUID": "7c36ff1cc0ff64e4abe4d6865ccc9867",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/SCF_Floors_COL",
-            "NormalMap": "textures/SCF_Floors_NRM",
-            "MetallicGlossMap": "",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 0.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "Plane_Door",
-            "GUID": "a4ce7adcd6c26fb4e90e2e6826048bdb",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/Plane_Door_AlbedoTransparency",
-            "NormalMap": "textures/Plane_Door_Normal",
-            "MetallicGlossMap": "textures/Plane_Door_MetallicSmoothness",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.13235294818878175,
-                "g": 0.13137976825237275,
-                "b": 0.13137976825237275,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "Plane_Sci fi -2",
-            "GUID": "6ce7036d74500b44798d0011995a3845",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/Plane_Sci fi -2_AlbedoTransparency",
-            "NormalMap": "textures/Plane_Sci fi -2_Normal",
-            "MetallicGlossMap": "textures/Plane_Sci fi -2_MetallicSmoothness",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "Plane_Glass",
-            "GUID": "10b62a9df6e25a74893fe42cc0d2c268",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/Plane_Glass_AlbedoTransparency",
-            "NormalMap": "textures/Plane_Glass_Normal",
-            "MetallicGlossMap": "textures/Plane_Glass_MetallicSmoothness",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 1.084381341934204,
-                "g": 1.2000000476837159,
-                "b": 0.758823573589325,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "ZLJB1",
-            "GUID": "11c1f5bd8b1ff2e4696e194f980e049b",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/Building1_ZLJ_D",
-            "NormalMap": "textures/Building1_ZLJ_N",
-            "MetallicGlossMap": "textures/Building1_ZLJ_MT",
-            "OcclusionMap": "textures/building1_ZLJ_AO",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "SCF_WallLocker",
-            "GUID": "60c5055effaf94c48ad404832e83a679",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/SCF_WallLocker_COL",
-            "NormalMap": "textures/SCF_WallLocker_NRM",
-            "MetallicGlossMap": "textures/SCF_WallLocker_MET",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 0.9191176295280457,
-                "g": 0.9191176295280457,
-                "b": 0.9191176295280457,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 0.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "Plane_Overlaping Plates Bolted",
-            "GUID": "8fe90aae6ee268e4f97c9ae19568cfb1",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/Plane_Overlaping Plates Bolted_AlbedoTransparency",
-            "NormalMap": "textures/Plane_Overlaping Plates Bolted_Normal",
-            "MetallicGlossMap": "textures/Plane_Overlaping Plates Bolted_MetallicSmoothness",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "light_2",
-            "GUID": "e0e75d1f336b0fa4da7fe6f4cc641be0",
-            "Type": "Opaque",
-            "AlbedoMap": "",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 0.09837746620178223,
-                "g": 0.06617647409439087,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.20496992766857148,
-                "g": 0.13970595598220826,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "ligh_4yellow",
-            "GUID": "0f80abcf520fcde47b0ba9cf2681eeb8",
-            "Type": "Opaque",
-            "AlbedoMap": "",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 0.9508113265037537,
-                "b": 0.2867646813392639,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 1.0,
-                "g": 0.7655172348022461,
-                "b": 0.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "cube_initialShadingGroup1",
-            "GUID": "51d3c2ffda4918f4bb151c43e2418151",
-            "Type": "Opaque",
-            "AlbedoMap": "",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 0.5,
-                "g": 0.5,
-                "b": 0.5,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "SCF_Volumetric",
-            "GUID": "74bcba72c2286ce429281c86d5928418",
-            "Type": "Transparent",
-            "AlbedoMap": "textures/RayVOLUM",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 0.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 0.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "M_Arrow",
-            "GUID": "1a64ed7df01122a4caedd0966fdde568",
-            "Type": "Transparent",
-            "AlbedoMap": "",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 0.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 0.0
-            },
-            "TextureScaleOffset": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "M_Panel_Dragon",
-            "GUID": "91a3c1ceeabd4f144b081bd005f47c49",
-            "Type": "Transparent",
-            "AlbedoMap": "",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 0.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 0.0
-            },
-            "TextureScaleOffset": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0,
-                "w": 0.0
-            }
+            "Cutoff": 0.5
         },
         {
             "Name": "Plane_Old_Brick",
@@ -1876,11 +873,824 @@
                 "y": 1.0,
                 "z": 0.0,
                 "w": 0.0
-            }
+            },
+            "Cutoff": 0.5
         },
         {
-            "Name": "BuildingLongji_pCube558Shape",
-            "GUID": "c7bfcea3a67bf3d45bca7548b987935f",
+            "Name": "M_LargeBin_Unit",
+            "GUID": "f21750e06edfe0747bb2546d87a8a376",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Trash bin_Large_1024_Diff",
+            "NormalMap": "textures/Trash bin_Large_1024_NRM",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Plane_RustMteal",
+            "GUID": "fbd092a1e327cbe47a95b43a7bb6c63c",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Plane_RustMteal_AlbedoTransparency",
+            "NormalMap": "textures/Plane_RustMteal_Normal",
+            "MetallicGlossMap": "textures/Plane_RustMteal_MetallicSmoothness",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "light_orange",
+            "GUID": "88c80302ec7e3e7468a38ae483f7baf6",
+            "Type": "Opaque",
+            "AlbedoMap": "",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 0.2689654529094696,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 1.0,
+                "g": 0.39939141273498537,
+                "b": 0.07352942228317261,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "SCF_ComputerControl",
+            "GUID": "59162062923c1a1489a36121f51a34bd",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/SCF_ComputerControl_COL",
+            "NormalMap": "textures/SCF_ComputerControl_NRM",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Plane_Modern concrete 001",
+            "GUID": "bb83f7725dadf0c40a75d85c119c8690",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Plane_Modern concrete 001_AlbedoTransparency",
+            "NormalMap": "textures/Plane_Modern concrete 001_Normal",
+            "MetallicGlossMap": "textures/Plane_Modern concrete 001_MetallicSmoothness",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 2.0,
+                "y": 2.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "M_TrashBag_Yellow",
+            "GUID": "48283d82730fbc141b0e0715ddd4892f",
+            "Type": "Opaque",
+            "AlbedoMap": "",
+            "NormalMap": "textures/TrashBag_NM",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.9117646813392639,
+                "g": 0.8544327020645142,
+                "b": 0.08044984936714173,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Trashcan9",
+            "GUID": "da82c992b80247f4a9c6b573e3582590",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Trashcan6",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "M_TrashBag_Black",
+            "GUID": "6180efb29ad29bc4ab4b2c8dcabce84a",
+            "Type": "Opaque",
+            "AlbedoMap": "",
+            "NormalMap": "textures/TrashBag_NM",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.14705884456634522,
+                "g": 0.14705884456634522,
+                "b": 0.14705884456634522,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "M_CardboardBox_2",
+            "GUID": "191b2003779d6b146add8de9293d78fa",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Cardboard_Box2_UV_1024",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.9191176295280457,
+                "g": 0.9191176295280457,
+                "b": 0.9191176295280457,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Plane_Concrete Europe",
+            "GUID": "fd72cd23a5833da40aa1de5cb8bcdfc6",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Plane_Concrete Europe_AlbedoTransparency",
+            "NormalMap": "textures/Plane_Concrete Europe_Normal",
+            "MetallicGlossMap": "textures/Plane_Concrete Europe_MetallicSmoothness",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "SCF_TowerCraneControl",
+            "GUID": "93a68d93841e63544b212a3d8b07f358",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/SCF_TowerCraneControl_COL",
+            "NormalMap": "textures/SCF_TowerCraneControl_NRM",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "default_Base_Color",
+            "GUID": "07d34bd3a4b65c5408e9f3047e0bcdbd",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/default_Base_Color",
+            "NormalMap": "textures/default_Normal_DirectX",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Plane_Brick",
+            "GUID": "19f38a24201791340a977d77ac9bad74",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Plane_Brick_AlbedoTransparency",
+            "NormalMap": "textures/Plane_Brick_Normal",
+            "MetallicGlossMap": "textures/Plane_Brick_MetallicSmoothness",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 2.0,
+                "y": 2.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "RoadBlock1",
+            "GUID": "7713d6659c372f7419139b3d09b92996",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/RoadBlock1",
+            "NormalMap": "textures/RoadBlock1 - N",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.75,
+                "g": 0.75,
+                "b": 0.75,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "SCF_LightObjects",
+            "GUID": "663a24e508e3c9e4482a337cb5878e3d",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/SCF_LightObjects_COL",
+            "NormalMap": "textures/SCF_LightObjects_NRM",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "textures/SCF_LightObjects_EMI",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.6100000143051148,
+                "g": 0.6100000143051148,
+                "b": 0.6100000143051148,
+                "a": 0.6100000143051148
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Plane_Weapon Metal",
+            "GUID": "17e03de588178284894b73e396c7063a",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Plane_Weapon Metal_AlbedoTransparency",
+            "NormalMap": "textures/Plane_Weapon Metal_Normal",
+            "MetallicGlossMap": "textures/Plane_Weapon Metal_MetallicSmoothness",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "SCF_CraneSystem",
+            "GUID": "b5c81ef53daa22541a88492a961c469d",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/SCF_CraneSystem_COL",
+            "NormalMap": "textures/SCF_CraneSystem_NRM",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Plane_Brick_wall_with_plaster",
+            "GUID": "be40d036fa74b3a4bb42a0032e241e23",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Plane_Brick_wall_with_plaster_AlbedoTransparency",
+            "NormalMap": "textures/Plane_Brick_wall_with_plaster_Normal",
+            "MetallicGlossMap": "textures/Plane_Brick_wall_with_plaster_MetallicSmoothness",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Plane_Building Panel 03",
+            "GUID": "cb694f56409a3a2478ad53d6e023433e",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Plane_Building Panel 03_AlbedoTransparency",
+            "NormalMap": "textures/Plane_Building Panel 03_Normal",
+            "MetallicGlossMap": "textures/Plane_Building Panel 03_MetallicSmoothness",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Trashcan12",
+            "GUID": "dd75ab6619e70d049a8cc12a97c7bc3e",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Trashcan7",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "M_GreenSign",
+            "GUID": "c6ee9496958484c598e42dd6f36f5a48",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/GreenSign_DIF",
+            "NormalMap": "textures/Sign_NRM",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "textures/Sign_GLOW",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.5862069129943848,
+                "g": 5.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "SCF_ScreenGraphics",
+            "GUID": "d4ce4ae6a4cb60e4e9d0459e27da00bc",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/SCF_ScreenGraphics_COL",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "textures/SCF_ScreenGraphics_COL",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "light",
+            "GUID": "151f0e27f054f174f81ecd4a68a354ff",
+            "Type": "Opaque",
+            "AlbedoMap": "",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 0.22058820724487306,
+                "b": 0.817241370677948,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 1.0,
+                "g": 0.29411762952804568,
+                "b": 0.834482729434967,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Plane_MedBay_Floor",
+            "GUID": "ebcc015706bd56f47a811baab861c806",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Plane_MedBay_Floor_AlbedoTransparency",
+            "NormalMap": "textures/Plane_MedBay_Floor_Normal",
+            "MetallicGlossMap": "textures/Plane_MedBay_Floor_MetallicSmoothness",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Plane_Sci fi -3",
+            "GUID": "8f3bd257976fe374aafd85eef89abd7c",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Plane_Sci fi -3_AlbedoTransparency",
+            "NormalMap": "textures/Plane_Sci fi -3_Normal",
+            "MetallicGlossMap": "textures/Plane_Sci fi -3_MetallicSmoothness",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Plane_Bare_contrete",
+            "GUID": "74d424b7a8bec124fb0224f8135132cb",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Plane_Bare_contrete_AlbedoTransparency",
+            "NormalMap": "textures/Plane_Bare_contrete_Normal",
+            "MetallicGlossMap": "textures/Plane_Bare_contrete_MetallicSmoothness",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "SCF_CratesSet",
+            "GUID": "934d3af75cb808443931cb99f1fc4d85",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/SCF_CratesSet_COL",
+            "NormalMap": "textures/SCF_CratesSet_NRM",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Plane_Iron Plates",
+            "GUID": "b088df48732c44d4a80c27e420246705",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Plane_Iron Plates_AlbedoTransparency",
+            "NormalMap": "textures/Plane_Iron Plates_Normal",
+            "MetallicGlossMap": "textures/Plane_Iron Plates_MetallicSmoothness",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Light",
+            "GUID": "956cd8989ebef4c4ba022b824b70eea9",
             "Type": "Opaque",
             "AlbedoMap": "",
             "NormalMap": "",
@@ -1894,7 +1704,7 @@
                 "a": 1.0
             },
             "EmissionColor": {
-                "r": 0.0,
+                "r": 2.0,
                 "g": 0.0,
                 "b": 0.0,
                 "a": 1.0
@@ -1904,15 +1714,45 @@
                 "y": 1.0,
                 "z": 0.0,
                 "w": 0.0
-            }
+            },
+            "Cutoff": 0.5
         },
         {
-            "Name": "Plane_Sci fi -8",
-            "GUID": "297c7e8df72e8514e911768b0b8ebd86",
+            "Name": "SCF_ArchBasics",
+            "GUID": "5772d6e8e56da78499ff2669d526e2b1",
             "Type": "Opaque",
-            "AlbedoMap": "textures/Plane_Sci fi -8_AlbedoTransparency",
-            "NormalMap": "textures/Plane_Sci fi -8_Normal",
-            "MetallicGlossMap": "textures/Plane_Sci fi -8_MetallicSmoothness",
+            "AlbedoMap": "textures/SCF_ArchBasics_COL",
+            "NormalMap": "textures/SCF_ArchBasics_NRM",
+            "MetallicGlossMap": "textures/SCF_ArchBasics_MET",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Plane_Sunken_Metal",
+            "GUID": "90f32b4933ba6084b8ef97472820492e",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Plane_Sunken_Metal_AlbedoTransparency",
+            "NormalMap": "textures/Plane_Sunken_Metal_Normal",
+            "MetallicGlossMap": "textures/Plane_Sunken_Metal_MetallicSmoothness",
             "OcclusionMap": "",
             "EmissionMap": "",
             "TintColor": {
@@ -1932,14 +1772,73 @@
                 "y": 1.0,
                 "z": 0.0,
                 "w": 0.0
-            }
+            },
+            "Cutoff": 0.5
         },
         {
-            "Name": "SCF_Barrel",
-            "GUID": "28f390ed5ffe9b044860de3b027e53e9",
+            "Name": "M_WhiteBarrelRust",
+            "GUID": "fb9892c976bdde54bb383a75164590b0",
             "Type": "Opaque",
-            "AlbedoMap": "textures/SCF_Barrel_COL",
-            "NormalMap": "textures/SCF_Barrel_NRM",
+            "AlbedoMap": "textures/Barrel_WhiteRust_2048_Diff",
+            "NormalMap": "textures/Barrel_WhiteRust_2048_NRM",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.7941176295280457,
+                "g": 0.7941176295280457,
+                "b": 0.7941176295280457,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "LCB1",
+            "GUID": "5db49caa42a1673449073c6627e82298",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Building1_CFT_D",
+            "NormalMap": "textures/Building1_CFT_N",
+            "MetallicGlossMap": "textures/Building1_CFT_MT",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "SCF_Pipes",
+            "GUID": "fae7080b58cb8f6419b0fde25ad60542",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/SCF_Pipes_COL",
+            "NormalMap": "textures/SCF_Pipes_NRM",
             "MetallicGlossMap": "",
             "OcclusionMap": "",
             "EmissionMap": "",
@@ -1960,50 +1859,139 @@
                 "y": 1.0,
                 "z": 0.0,
                 "w": 0.0
-            }
+            },
+            "Cutoff": 0.5
         },
         {
-            "Name": "Mat_Signs",
-            "GUID": "96ef337e5ebc3ae45b359d0c8a26b849",
-            "Type": "Transparent",
-            "AlbedoMap": "textures/tx_neon",
+            "Name": "Barrier2",
+            "GUID": "d5c3121b1a876304791b1756a16e4c9f",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Barrier2",
             "NormalMap": "",
             "MetallicGlossMap": "",
             "OcclusionMap": "",
-            "EmissionMap": "textures/tx_neon",
+            "EmissionMap": "",
             "TintColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
                 "r": 1.0,
                 "g": 1.0,
                 "b": 1.0,
                 "a": 1.0
             },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
             "TextureScaleOffset": {
                 "x": 1.0,
                 "y": 1.0,
                 "z": 0.0,
                 "w": 0.0
-            }
+            },
+            "Cutoff": 0.5
         },
         {
-            "Name": "SCF_ParticlesDust",
-            "GUID": "1ad5a303bddd0134aa3e2340e212bca4",
-            "Type": "Transparent",
-            "AlbedoMap": "textures/SCF_ParticleDust",
+            "Name": "Plane_Metal Panels 001",
+            "GUID": "325b153be5c943d4ab5121d16ee8617c",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Plane_Metal Panels 001_AlbedoTransparency",
+            "NormalMap": "textures/Plane_Metal Panels 001_Normal",
+            "MetallicGlossMap": "textures/Plane_Metal Panels 001_MetallicSmoothness",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Trashcan11",
+            "GUID": "367e486bb135c174c905e40e656d8a27",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Trashcan5",
             "NormalMap": "",
             "MetallicGlossMap": "",
             "OcclusionMap": "",
             "EmissionMap": "",
             "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
                 "r": 0.0,
                 "g": 0.0,
                 "b": 0.0,
-                "a": 0.0
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Plane_Wall_StuccoBrick",
+            "GUID": "548a0d9b4d166084c9fcbdfdc023e025",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Plane_Wall_StuccoBrick_AlbedoTransparency",
+            "NormalMap": "textures/Plane_Wall_StuccoBrick_Normal",
+            "MetallicGlossMap": "textures/Plane_Wall_StuccoBrick_MetallicSmoothness",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "SCF_Floors",
+            "GUID": "7c36ff1cc0ff64e4abe4d6865ccc9867",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/SCF_Floors_COL",
+            "NormalMap": "textures/SCF_Floors_NRM",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
             },
             "EmissionColor": {
                 "r": 0.0,
@@ -2016,27 +2004,202 @@
                 "y": 1.0,
                 "z": 0.0,
                 "w": 0.0
-            }
+            },
+            "Cutoff": 0.5
         },
         {
-            "Name": "Neon_1",
-            "GUID": "74b923115b0edee4aa89e1ca8b56c0f1",
-            "Type": "Transparent",
+            "Name": "Plane_Door",
+            "GUID": "a4ce7adcd6c26fb4e90e2e6826048bdb",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Plane_Door_AlbedoTransparency",
+            "NormalMap": "textures/Plane_Door_Normal",
+            "MetallicGlossMap": "textures/Plane_Door_MetallicSmoothness",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Plane_Sci fi -2",
+            "GUID": "6ce7036d74500b44798d0011995a3845",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Plane_Sci fi -2_AlbedoTransparency",
+            "NormalMap": "textures/Plane_Sci fi -2_Normal",
+            "MetallicGlossMap": "textures/Plane_Sci fi -2_MetallicSmoothness",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Plane_Glass",
+            "GUID": "10b62a9df6e25a74893fe42cc0d2c268",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Plane_Glass_AlbedoTransparency",
+            "NormalMap": "textures/Plane_Glass_Normal",
+            "MetallicGlossMap": "textures/Plane_Glass_MetallicSmoothness",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 1.084381341934204,
+                "g": 1.2000000476837159,
+                "b": 0.758823573589325,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "ZLJB1",
+            "GUID": "11c1f5bd8b1ff2e4696e194f980e049b",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Building1_ZLJ_D",
+            "NormalMap": "textures/Building1_ZLJ_N",
+            "MetallicGlossMap": "textures/Building1_ZLJ_MT",
+            "OcclusionMap": "textures/building1_ZLJ_AO",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "SCF_WallLocker",
+            "GUID": "60c5055effaf94c48ad404832e83a679",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/SCF_WallLocker_COL",
+            "NormalMap": "textures/SCF_WallLocker_NRM",
+            "MetallicGlossMap": "textures/SCF_WallLocker_MET",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.9191176295280457,
+                "g": 0.9191176295280457,
+                "b": 0.9191176295280457,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Plane_Overlaping Plates Bolted",
+            "GUID": "8fe90aae6ee268e4f97c9ae19568cfb1",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Plane_Overlaping Plates Bolted_AlbedoTransparency",
+            "NormalMap": "textures/Plane_Overlaping Plates Bolted_Normal",
+            "MetallicGlossMap": "textures/Plane_Overlaping Plates Bolted_MetallicSmoothness",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "light_2",
+            "GUID": "e0e75d1f336b0fa4da7fe6f4cc641be0",
+            "Type": "Opaque",
             "AlbedoMap": "",
             "NormalMap": "",
             "MetallicGlossMap": "",
             "OcclusionMap": "",
-            "EmissionMap": "textures/Neon_9",
+            "EmissionMap": "",
             "TintColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 0.0
+                "r": 0.09837746620178223,
+                "g": 0.06617647409439087,
+                "b": 1.0,
+                "a": 1.0
             },
             "EmissionColor": {
-                "r": 1.2999999523162842,
-                "g": 1.2999999523162842,
-                "b": 1.2999999523162842,
+                "r": 0.20496992766857148,
+                "g": 0.13970595598220826,
+                "b": 1.0,
                 "a": 1.0
             },
             "TextureScaleOffset": {
@@ -2044,7 +2207,153 @@
                 "y": 1.0,
                 "z": 0.0,
                 "w": 0.0
-            }
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "ligh_4yellow",
+            "GUID": "0f80abcf520fcde47b0ba9cf2681eeb8",
+            "Type": "Opaque",
+            "AlbedoMap": "",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 0.9508113265037537,
+                "b": 0.2867646813392639,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 1.0,
+                "g": 0.7655172348022461,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "M_TrashBag_Blue",
+            "GUID": "08ddbfdfc6f35df4aa5f0601d66313a0",
+            "Type": "Opaque",
+            "AlbedoMap": "",
+            "NormalMap": "textures/TrashBag_NM",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.028330476954579355,
+                "g": 0.653749406337738,
+                "b": 0.9632353186607361,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "cube_initialShadingGroup1",
+            "GUID": "51d3c2ffda4918f4bb151c43e2418151",
+            "Type": "Opaque",
+            "AlbedoMap": "",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Car",
+            "GUID": "cd77bfed94e08954f9e39adc114e522e",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/car_D",
+            "NormalMap": "textures/car_N",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "SCF_Cutouts",
+            "GUID": "e3eeb2b7354ad4949a14f49f5878a3cc",
+            "Type": "Cutoff",
+            "AlbedoMap": "textures/SCF_Cutouts_COL",
+            "NormalMap": "textures/SCF_Cutouts_NRM",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.4285714328289032
         },
         {
             "Name": "Neon_6",
@@ -2072,63 +2381,8 @@
                 "y": 1.0,
                 "z": 0.0,
                 "w": 0.0
-            }
-        },
-        {
-            "Name": "Neon_7",
-            "GUID": "e89224223d80f85489f46895d3c09f65",
-            "Type": "Transparent",
-            "AlbedoMap": "",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": "",
-            "EmissionMap": "textures/Neon_2",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 0.0
             },
-            "EmissionColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "Neon_4",
-            "GUID": "5110838497f8e074b82473bb37be5ceb",
-            "Type": "Transparent",
-            "AlbedoMap": "",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": "",
-            "EmissionMap": "textures/DTRGqZuUMAAd6cE",
-            "TintColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 0.0
-            },
-            "EmissionColor": {
-                "r": 1.5,
-                "g": 1.5,
-                "b": 1.5,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
+            "Cutoff": 0.5
         },
         {
             "Name": "Neon_2",
@@ -2156,63 +2410,8 @@
                 "y": 1.0,
                 "z": 0.0,
                 "w": 0.0
-            }
-        },
-        {
-            "Name": "Neon_5",
-            "GUID": "2311e6f512ab77d4aaff92e11772673c",
-            "Type": "Transparent",
-            "AlbedoMap": "",
-            "NormalMap": "",
-            "MetallicGlossMap": "",
-            "OcclusionMap": "",
-            "EmissionMap": "textures/Neon_24",
-            "TintColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 0.0
             },
-            "EmissionColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
-        },
-        {
-            "Name": "Plane_MedBay_Walls",
-            "GUID": "1568d9c90a9eca34092b609935c5937a",
-            "Type": "Opaque",
-            "AlbedoMap": "textures/Plane_MedBay_Walls_AlbedoTransparency",
-            "NormalMap": "textures/Plane_MedBay_Walls_Normal",
-            "MetallicGlossMap": "textures/Plane_MedBay_Walls_MetallicSmoothness",
-            "OcclusionMap": "",
-            "EmissionMap": "",
-            "TintColor": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0,
-                "a": 1.0
-            },
-            "EmissionColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 1.0
-            },
-            "TextureScaleOffset": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 0.0,
-                "w": 0.0
-            }
+            "Cutoff": 0.5
         },
         {
             "Name": "Neon_3",
@@ -2240,22 +2439,81 @@
                 "y": 1.0,
                 "z": 0.0,
                 "w": 0.0
-            }
+            },
+            "Cutoff": 0.5
         },
         {
-            "Name": "M_Panel_Workshop",
-            "GUID": "dd13eb30dcce74543b419821c9b2d875",
+            "Name": "M_Green_Arrow",
+            "GUID": "94404078f204dcf40be5849bc8bec093",
+            "Type": "Transparent",
+            "AlbedoMap": "textures/Panel_Arrow_DIF_New",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "textures/Panel_Arrow_DIF_New",
+            "TintColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 2.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "M_Green_Dragon",
+            "GUID": "dac26cfe97db5414299bed961e05edc0",
             "Type": "Transparent",
             "AlbedoMap": "",
             "NormalMap": "",
             "MetallicGlossMap": "",
             "OcclusionMap": "",
-            "EmissionMap": "",
+            "EmissionMap": "textures/Panel_DIF_New",
             "TintColor": {
                 "r": 0.0,
                 "g": 0.0,
                 "b": 0.0,
-                "a": 0.0
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 2.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "SCF_Volumetric",
+            "GUID": "74bcba72c2286ce429281c86d5928418",
+            "Type": "Additive",
+            "AlbedoMap": "textures/RayVOLUM",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.8308823704719544,
+                "g": 0.9440162777900696,
+                "b": 1.0,
+                "a": 0.501960813999176
             },
             "EmissionColor": {
                 "r": 0.0,
@@ -2264,26 +2522,56 @@
                 "a": 0.0
             },
             "TextureScaleOffset": {
-                "x": 0.0,
-                "y": 0.0,
+                "x": 1.0,
+                "y": 1.0,
                 "z": 0.0,
                 "w": 0.0
-            }
+            },
+            "Cutoff": 0.0
         },
         {
-            "Name": "M_Panel",
-            "GUID": "82e874025d2e345a3907738578f2234f",
-            "Type": "Transparent",
+            "Name": "BuildingLongji_pCube558Shape",
+            "GUID": "c7bfcea3a67bf3d45bca7548b987935f",
+            "Type": "Opaque",
             "AlbedoMap": "",
             "NormalMap": "",
             "MetallicGlossMap": "",
             "OcclusionMap": "",
             "EmissionMap": "",
             "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
                 "r": 0.0,
                 "g": 0.0,
                 "b": 0.0,
-                "a": 0.0
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "M_PaintCan",
+            "GUID": "a998ab9cfcf2b3b48819a669057a0350",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Paint Tin_1024_Diff",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.9191176295280457,
+                "g": 0.9191176295280457,
+                "b": 0.9191176295280457,
+                "a": 1.0
             },
             "EmissionColor": {
                 "r": 0.0,
@@ -2292,26 +2580,56 @@
                 "a": 0.0
             },
             "TextureScaleOffset": {
-                "x": 0.0,
-                "y": 0.0,
+                "x": 1.0,
+                "y": 1.0,
                 "z": 0.0,
                 "w": 0.0
-            }
+            },
+            "Cutoff": 0.5
         },
         {
-            "Name": "M_Panel_RamenOpen",
-            "GUID": "c7bfb85aecef2af4c8044e7e3b1734e8",
-            "Type": "Transparent",
-            "AlbedoMap": "",
-            "NormalMap": "",
+            "Name": "Plane_Sci fi -8",
+            "GUID": "297c7e8df72e8514e911768b0b8ebd86",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Plane_Sci fi -8_AlbedoTransparency",
+            "NormalMap": "textures/Plane_Sci fi -8_Normal",
+            "MetallicGlossMap": "textures/Plane_Sci fi -8_MetallicSmoothness",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "SCF_Barrel",
+            "GUID": "28f390ed5ffe9b044860de3b027e53e9",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/SCF_Barrel_COL",
+            "NormalMap": "textures/SCF_Barrel_NRM",
             "MetallicGlossMap": "",
             "OcclusionMap": "",
             "EmissionMap": "",
             "TintColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
-                "a": 0.0
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
             },
             "EmissionColor": {
                 "r": 0.0,
@@ -2320,11 +2638,418 @@
                 "a": 0.0
             },
             "TextureScaleOffset": {
-                "x": 0.0,
-                "y": 0.0,
+                "x": 1.0,
+                "y": 1.0,
                 "z": 0.0,
                 "w": 0.0
-            }
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Mat_Signs",
+            "GUID": "96ef337e5ebc3ae45b359d0c8a26b849",
+            "Type": "Transparent",
+            "AlbedoMap": "textures/tx_neon",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "textures/tx_neon",
+            "TintColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "SCF_ParticlesDust",
+            "GUID": "1ad5a303bddd0134aa3e2340e212bca4",
+            "Type": "Additive",
+            "AlbedoMap": "textures/SCF_ParticleDust",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.3235294222831726,
+                "g": 0.44016245007514956,
+                "b": 1.0,
+                "a": 0.2862745225429535
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.0
+        },
+        {
+            "Name": "unity_builtin_extra",
+            "GUID": "0000000000000000f000000000000000",
+            "Type": "Opaque",
+            "AlbedoMap": "",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.9999999403953552
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "RoadBlock2",
+            "GUID": "db852bc4e61347948a3580aab7269dad",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/RoadBlock2",
+            "NormalMap": "textures/RoadBlock2 -N",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 0.779411792755127,
+                "g": 0.779411792755127,
+                "b": 0.779411792755127,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Plane_MedBay_Walls",
+            "GUID": "1568d9c90a9eca34092b609935c5937a",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Plane_MedBay_Walls_AlbedoTransparency",
+            "NormalMap": "textures/Plane_MedBay_Walls_Normal",
+            "MetallicGlossMap": "textures/Plane_MedBay_Walls_MetallicSmoothness",
+            "OcclusionMap": "",
+            "EmissionMap": "",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Neon_8",
+            "GUID": "a65d30758a9886143ae82eb49c64f2c8",
+            "Type": "Opaque",
+            "AlbedoMap": "",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "textures/Neon_27",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "M_Green_Ramen",
+            "GUID": "245fb05af1e2f494cbcc03a3de9dc2b3",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Panel_Ramen_DIF_New2",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "textures/Panel_Ramen_DIF_New2",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 2.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "M_Green_Women",
+            "GUID": "dfab865cffef4a44782e19c66f64957e",
+            "Type": "Opaque",
+            "AlbedoMap": "textures/Panel_DIF_New2",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "textures/Panel_DIF_New2",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 2.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Neon_1",
+            "GUID": "74b923115b0edee4aa89e1ca8b56c0f1",
+            "Type": "Transparent",
+            "AlbedoMap": "",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "textures/Neon_9",
+            "TintColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "EmissionColor": {
+                "r": 1.2999999523162842,
+                "g": 1.2999999523162842,
+                "b": 1.2999999523162842,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Neon_7",
+            "GUID": "e89224223d80f85489f46895d3c09f65",
+            "Type": "Transparent",
+            "AlbedoMap": "",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "textures/Neon_2",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+            },
+            "EmissionColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Neon_4",
+            "GUID": "5110838497f8e074b82473bb37be5ceb",
+            "Type": "Transparent",
+            "AlbedoMap": "",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "textures/DTRGqZuUMAAd6cE",
+            "TintColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "EmissionColor": {
+                "r": 1.5,
+                "g": 1.5,
+                "b": 1.5,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Neon_5",
+            "GUID": "2311e6f512ab77d4aaff92e11772673c",
+            "Type": "Transparent",
+            "AlbedoMap": "",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "textures/Neon_24",
+            "TintColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.0
+            },
+            "EmissionColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "Neon_9",
+            "GUID": "8c5665481c7c8584aa10f9525ea79341",
+            "Type": "Transparent",
+            "AlbedoMap": "",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "textures/Neon_10",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+            },
+            "EmissionColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
+        },
+        {
+            "Name": "M_Green_Workshop",
+            "GUID": "1941309e4bac1d644a79b25a5d0f9747",
+            "Type": "Transparent",
+            "AlbedoMap": "textures/Panel_Ramen_DIF_New",
+            "NormalMap": "",
+            "MetallicGlossMap": "",
+            "OcclusionMap": "",
+            "EmissionMap": "textures/Panel_Ramen_DIF_New",
+            "TintColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "EmissionColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "TextureScaleOffset": {
+                "x": 1.0,
+                "y": 2.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "Cutoff": 0.5
         }
     ],
     "textures": [
@@ -2353,6 +3078,51 @@
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
             "MipmapCount": 8,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Plane_Old_Brick_AlbedoTransparency",
+            "GUID": "3f24c27a8782a82429b52815e5dd38ed",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Plane_Old_Brick_Normal",
+            "GUID": "4335206f8b8fe934d8df30be90375cca",
+            "Dimension": "tex2d",
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Plane_Old_Brick_MetallicSmoothness",
+            "GUID": "5a82cf53291d4794b895ce4612743a06",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Trash bin_Large_1024_Diff",
+            "GUID": "d6f0dbfbb798f9a41a31e3efc333b93e",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Trash bin_Large_1024_NRM",
+            "GUID": "e4737b710eb276d42ad066083cb17fee",
+            "Dimension": "tex2d",
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2428,6 +3198,33 @@
             "MipmapBias": 0.0
         },
         {
+            "Path": "textures/TrashBag_NM",
+            "GUID": "42e9c08adb3950142aefc7a75964077f",
+            "Dimension": "tex2d",
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Trashcan6",
+            "GUID": "658f43b63f13f2b469263d4f43667c56",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Cardboard_Box2_UV_1024",
+            "GUID": "3f363903d9666c04ba608781104777c4",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
             "Path": "textures/Plane_Concrete Europe_AlbedoTransparency",
             "GUID": "5b5cdc21f0cd1e54ca3454740d0489fb",
             "Dimension": "tex2d",
@@ -2473,6 +3270,24 @@
             "MipmapBias": 0.0
         },
         {
+            "Path": "textures/default_Base_Color",
+            "GUID": "f809148abde65cb4c8fb3c7b410ba949",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 9,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/default_Normal_DirectX",
+            "GUID": "d4760b691d937ef41ae90346966e19ef",
+            "Dimension": "tex2d",
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
+            "MipmapBias": 0.0
+        },
+        {
             "Path": "textures/Plane_Brick_AlbedoTransparency",
             "GUID": "ea08ddb352ebbfb42a626df3986ebd7d",
             "Dimension": "tex2d",
@@ -2497,6 +3312,24 @@
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
             "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/RoadBlock1",
+            "GUID": "41f6a25f18d1ba94f8a60f1d7a98167a",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/RoadBlock1 - N",
+            "GUID": "f98128f5fefcf2149aaf8bce90285030",
+            "Dimension": "tex2d",
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2626,6 +3459,15 @@
             "MipmapBias": 0.0
         },
         {
+            "Path": "textures/Trashcan7",
+            "GUID": "a8f3f9aa30e2f764bb40a2dba2094770",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
             "Path": "textures/GreenSign_DIF",
             "GUID": "2ff67b5a6a821ae44acaaff70c9e4e81",
             "Dimension": "tex2d",
@@ -2695,24 +3537,6 @@
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
             "MipmapCount": 12,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/SCF_Cutouts_COL",
-            "GUID": "fba42d4811f13c14ebd1dfe2072368c1",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 11,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/SCF_Cutouts_NRM",
-            "GUID": "ab278f1c7cb05f749ba12a92eff801ff",
-            "Dimension": "tex2d",
-            "WrapMode": "",
-            "FilterMode": "",
-            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -2842,6 +3666,24 @@
             "MipmapBias": 0.0
         },
         {
+            "Path": "textures/Barrel_WhiteRust_2048_Diff",
+            "GUID": "e3804f5ebbcf43f49902e2564605961e",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Barrel_WhiteRust_2048_NRM",
+            "GUID": "5ff704e4381b2d14fac1092035283037",
+            "Dimension": "tex2d",
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
+            "MipmapBias": 0.0
+        },
+        {
             "Path": "textures/Building1_CFT_D",
             "GUID": "f705b59094ea67348ae1b60b934dae04",
             "Dimension": "tex2d",
@@ -2887,6 +3729,15 @@
             "MipmapBias": 0.0
         },
         {
+            "Path": "textures/Barrier2",
+            "GUID": "65f7118913181904093f6ff94f92fd4b",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
             "Path": "textures/Plane_Metal Panels 001_AlbedoTransparency",
             "GUID": "1d9b827d029b4a14d9ee39bf94fa6b9b",
             "Dimension": "tex2d",
@@ -2907,6 +3758,42 @@
         {
             "Path": "textures/Plane_Metal Panels 001_MetallicSmoothness",
             "GUID": "cebe05c3763dc1544a68e337fac96130",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Trashcan5",
+            "GUID": "9ebc86888e5b57b4f8121f9a7e4a7c35",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Plane_Wall_StuccoBrick_AlbedoTransparency",
+            "GUID": "39f83d6cac7958040958b9aecda62d32",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Plane_Wall_StuccoBrick_Normal",
+            "GUID": "2e4de96c983101c4c90337e1ab99848e",
+            "Dimension": "tex2d",
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Plane_Wall_StuccoBrick_MetallicSmoothness",
+            "GUID": "c04a71f322f99fc46a07928fb31b4c45",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
@@ -3103,6 +3990,87 @@
             "MipmapBias": 0.0
         },
         {
+            "Path": "textures/car_D",
+            "GUID": "8ac74085ceddec64684d44d3787ed4ab",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/car_N",
+            "GUID": "11b4e54b35ae029479750d1622b57365",
+            "Dimension": "tex2d",
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/SCF_Cutouts_COL",
+            "GUID": "fba42d4811f13c14ebd1dfe2072368c1",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/SCF_Cutouts_NRM",
+            "GUID": "ab278f1c7cb05f749ba12a92eff801ff",
+            "Dimension": "tex2d",
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Neon_26",
+            "GUID": "368eacea9c6735e4a97176d64f7219ab",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 10,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Neon_22",
+            "GUID": "572181a15b53923429182b5bb2789cc9",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 10,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Neon_23",
+            "GUID": "286bf67b6cbb6bd4b99ac34cd9489dd9",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 10,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Panel_Arrow_DIF_New",
+            "GUID": "f3ea3b768c031c34d9e5cd5d52b77c2d",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Panel_DIF_New",
+            "GUID": "4a69b38befa2b274c9efa7261cd4c5c3",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
             "Path": "textures/RayVOLUM",
             "GUID": "b42cdfc3269adbd43a341c0a7e35f4ee",
             "Dimension": "tex2d",
@@ -3112,30 +4080,12 @@
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Plane_Old_Brick_AlbedoTransparency",
-            "GUID": "3f24c27a8782a82429b52815e5dd38ed",
+            "Path": "textures/Paint Tin_1024_Diff",
+            "GUID": "db60703d47e5a714f92527641349df9c",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
-            "MipmapCount": 12,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Plane_Old_Brick_Normal",
-            "GUID": "4335206f8b8fe934d8df30be90375cca",
-            "Dimension": "tex2d",
-            "WrapMode": "",
-            "FilterMode": "",
-            "MipmapCount": 0,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Plane_Old_Brick_MetallicSmoothness",
-            "GUID": "5a82cf53291d4794b895ce4612743a06",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 12,
+            "MipmapCount": 11,
             "MipmapBias": 0.0
         },
         {
@@ -3202,35 +4152,8 @@
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Neon_9",
-            "GUID": "30e63e32d9c151c4cb56a80eccf05286",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 10,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Neon_26",
-            "GUID": "368eacea9c6735e4a97176d64f7219ab",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 10,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Neon_2",
-            "GUID": "701385e4fa5c6624bb3d0788415411e7",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 10,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/DTRGqZuUMAAd6cE",
-            "GUID": "7988a6ff5ce735647b60cbb21be6fbdc",
+            "Path": "textures/RoadBlock2",
+            "GUID": "642a4d8221f4e3a4cac46131d7b77f55",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
@@ -3238,21 +4161,12 @@
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Neon_22",
-            "GUID": "572181a15b53923429182b5bb2789cc9",
+            "Path": "textures/RoadBlock2 -N",
+            "GUID": "a4f9664acfabfac43bb23c68b29dcef0",
             "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 10,
-            "MipmapBias": 0.0
-        },
-        {
-            "Path": "textures/Neon_24",
-            "GUID": "0c0b740f20c03c3468266a1864cf1e9a",
-            "Dimension": "tex2d",
-            "WrapMode": "repeat",
-            "FilterMode": "bilinear",
-            "MipmapCount": 10,
+            "WrapMode": "",
+            "FilterMode": "",
+            "MipmapCount": 0,
             "MipmapBias": 0.0
         },
         {
@@ -3283,12 +4197,84 @@
             "MipmapBias": 0.0
         },
         {
-            "Path": "textures/Neon_23",
-            "GUID": "286bf67b6cbb6bd4b99ac34cd9489dd9",
+            "Path": "textures/Neon_27",
+            "GUID": "b6e22abce11fc5e4d8ed266a8004a78b",
             "Dimension": "tex2d",
             "WrapMode": "repeat",
             "FilterMode": "bilinear",
             "MipmapCount": 10,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Panel_Ramen_DIF_New2",
+            "GUID": "88ec02fbf8e55764fa7d0c06aefce44e",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Panel_DIF_New2",
+            "GUID": "2df2c3a5def6dec4185bcce040fb0e2f",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Neon_9",
+            "GUID": "30e63e32d9c151c4cb56a80eccf05286",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 10,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Neon_2",
+            "GUID": "701385e4fa5c6624bb3d0788415411e7",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 10,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/DTRGqZuUMAAd6cE",
+            "GUID": "7988a6ff5ce735647b60cbb21be6fbdc",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 11,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Neon_24",
+            "GUID": "0c0b740f20c03c3468266a1864cf1e9a",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 10,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Neon_10",
+            "GUID": "acaf1d11444d92949bd06734e5990efa",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 10,
+            "MipmapBias": 0.0
+        },
+        {
+            "Path": "textures/Panel_Ramen_DIF_New",
+            "GUID": "b295910b9aa787a4ea7eb5ded0e585d5",
+            "Dimension": "tex2d",
+            "WrapMode": "repeat",
+            "FilterMode": "bilinear",
+            "MipmapCount": 12,
             "MipmapBias": 0.0
         }
     ]

@@ -13,6 +13,7 @@ cbuffer MaterialParams : register (b0)
 	float4		color;
 	float4		emissionColor;
 	float4		textureParams;
+	float4		cutoff;
 }
 
 Texture2D diffuseTex : register(t0);
@@ -29,5 +30,5 @@ float4 main(V2F input) : SV_TARGET
 	
 	float alpha = max(step(0.01, emm.r + emm.g + emm.b), diff.a);
 	
-	return float4(diff.rgb * color.rgb + 10.0 * emm.rgb * emissionColor.rgb, alpha);
+	return float4(cutoff.y * diff.rgb * color.rgb + 10.0 * emm.rgb * emissionColor.rgb, alpha);
 }
