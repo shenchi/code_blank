@@ -74,7 +74,7 @@ float4 main(float4 clipPos : SV_POSITION, uint iid : SV_InstanceID) : SV_TARGET
 	lightDir = normalize(lightDir);
 
 	float NdotL = max(dot(lightDir, worldNormal), 0);
-	float atten = (1 / (dist * dist)) * (1 - step(1, dist));
+	float atten = (1 / (0.1 + 0.2 * dist + dist * dist)) * (1 - step(1, dist));
 	atten *= (1 - dist);
 
 	float3 H = normalize(lightDir + viewDir);
@@ -83,7 +83,7 @@ float4 main(float4 clipPos : SV_POSITION, uint iid : SV_InstanceID) : SV_TARGET
 
 	float NdotV = max(dot(worldNormal, viewDir), 0);
 
-	float3 radiance = light.color.rgb * atten * light.intensity;
+	float3 radiance = light.color.rgb * atten * light.intensity * 0.5f;
 	float3 Lo = LightingModel(radiance, albedo, NdotH, HdotV, NdotV, NdotL, metallic, roughness);
 
 	float3 finalColor = Lo;

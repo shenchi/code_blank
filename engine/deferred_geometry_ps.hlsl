@@ -43,7 +43,8 @@ PS_OUTPUT main(V2F input)
 
 	float2 uv = (input.uv * textureParams.xy) + textureParams.zw;
 
-	float3 normTexel = normalMap.Sample(samp, uv).xyz * 2.0 - 1.0;
+	float3 normTexel = normalMap.Sample(samp, uv).wyz * 2.0 - 1.0;
+	normTexel.z = sqrt(1 - normTexel.x * normTexel.x - normTexel.y * normTexel.y);
 
 	normal = mul(normTexel, TBN);
 
@@ -56,7 +57,7 @@ PS_OUTPUT main(V2F input)
 
 	albedo *= color.rgb;
 
-	emission *= emissionColor.rgb;
+	emission *= emissionColor.rgb * 10;
 
 	output.rt1 = float4(albedo, metallicGloss.x);
 	output.rt2 = float4(normal, input.position.z);

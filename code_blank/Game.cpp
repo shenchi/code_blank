@@ -512,10 +512,11 @@ uint32_t Game::LoadScene(sceneType num)
 			//CHECKED(sceneMgr.LoadScene("assets/scenes/OptiTest.json"));
 			//CHECKED(sceneMgr.LoadScene("assets/scenes/OptiTest_Batched.json"));
 			//CHECKED(sceneMgr.LoadScene("assets/scenes/EngineExport.json"));
-			CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial_WIP.json"));
+			//CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial_WIP.json"));
 			//CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial_WIP_Batched.json"));
-			//CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial_Final_WIP.json"));
+			//CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial_WIP.json"));
 			//CHECKED(sceneMgr.LoadScene("assets/scenes/EngineExport.json"));
+			CHECKED(sceneMgr.LoadScene("assets/scenes/Layout_Final_Export_Batched.json"));
 
 			int pathLength = sceneMgr.GetPathNodesLength();
 			if (pathLength > 0)
@@ -595,8 +596,11 @@ uint32_t Game::LoadScene(sceneType num)
 				assert(player != NULL);
 
 				TextureHandle tex = RenderingSystem::instance()->CreateTexture("assets/nightSky.dds");
+				TextureHandle skyboxSpec = RenderingSystem::instance()->CreateTexture("assets/prefilteredMap.texture");
+				TextureHandle skyboxDiff = RenderingSystem::instance()->CreateTexture("assets/diffuseIrradianceMap.texture");
 
 				cam->SetSkybox(tex);
+				cam->SetSkyboxDiffAndSpecMap(skyboxDiff, skyboxSpec);
 				cam->SetPosition(playerDetails.position);
 				cam->SetTarget(playerDetails.position);				
 				

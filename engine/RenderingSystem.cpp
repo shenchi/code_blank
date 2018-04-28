@@ -107,6 +107,146 @@ namespace
 		float					maxFarClip;
 		float					maxZ01;
 	};
+
+	tofu::MaterialType instancingMaterialTable[tofu::kMaxMaterialTypes] =
+	{
+		tofu::kMaterialNone,
+		tofu::kMaterialNone,
+		tofu::kMaterialShadowInstanced,
+		tofu::kMaterialShadowInstanced,
+		tofu::kMaterialNone,
+		tofu::kMaterialDeferredGeometryOpaqueInstanced,
+		tofu::kMaterialDeferredGeometryCutoffInstanced,
+		tofu::kMaterialDeferredGeometryOpaqueInstanced,
+		tofu::kMaterialNone,
+		tofu::kMaterialDeferredGeometryCutoffInstanced,
+		tofu::kMaterialNone,
+		tofu::kMaterialNone,
+		tofu::kMaterialNone,
+		tofu::kMaterialNone,
+		tofu::kMaterialNone,
+		tofu::kMaterialDeferredTransparentInstanced,
+		tofu::kMaterialDeferredAdditiveInstanced,
+		tofu::kMaterialDeferredTransparentInstanced,
+		tofu::kMaterialNone,
+		tofu::kMaterialDeferredAdditiveInstanced,
+		tofu::kMaterialNone,
+		tofu::kMaterialNone,
+		tofu::kMaterialNone,
+		tofu::kMaterialNone,
+		tofu::kMaterialNone,
+		tofu::kMaterialNone,
+		tofu::kMaterialNone,
+		tofu::kMaterialNone,
+		tofu::kMaterialNone,
+		tofu::kMaterialNone,
+		tofu::kMaterialNone
+	};
+
+	tofu::MaterialType shadowMateiralTable[tofu::kMaxMaterialTypes] =
+	{
+		tofu::kMaterialNone, //kMaterialNone,
+		tofu::kMaterialNone, //kMaterialSkybox,
+		tofu::kMaterialNone, //kMaterialShadowInstanced,
+		tofu::kMaterialNone, //kMaterialShadow,
+		tofu::kMaterialNone, //kMaterialShadowSkinned,
+		tofu::kMaterialShadowInstanced, //kMaterialDeferredGeometryOpaqueInstanced,
+		tofu::kMaterialShadowInstanced, //kMaterialDeferredGeometryCutoffInstanced,
+		tofu::kMaterialShadow, //kMaterialDeferredGeometryOpaque,
+		tofu::kMaterialShadowSkinned, //kMaterialDeferredGeometryOpaqueSkinned,
+		tofu::kMaterialShadow, //kMaterialDeferredGeometryCutoff,
+		tofu::kMaterialShadowSkinned, //kMaterialDeferredGeometryCutoffSkinned,
+		tofu::kMaterialNone, //kMaterialDeferredLightingOcclude,
+		tofu::kMaterialNone, //kMaterialDeferredLightingPointLight,
+		tofu::kMaterialNone, //kMaterialDeferredLightingSpotLight,
+		tofu::kMaterialNone, //kMaterialDeferredLightingAmbient,
+		tofu::kMaterialNone, //kMaterialDeferredTransparentInstanced,
+		tofu::kMaterialNone, //kMaterialDeferredAdditiveInstanced,
+		tofu::kMaterialNone, //kMaterialDeferredTransparent,
+		tofu::kMaterialNone, //kMaterialDeferredTransparentSkinned,
+		tofu::kMaterialNone, //kMaterialDeferredAdditive,
+		tofu::kMaterialNone, //kMaterialDeferredAdditiveSkinned,
+		tofu::kMaterialNone, //kMaterialPostProcessToneMapping,
+		tofu::kMaterialNone, //kMaterialPostProcessExtractBright,
+		tofu::kMaterialNone, //kMaterialPostProcessBlur,
+		tofu::kMaterialNone, //kMaterialPostProcessGaussianBlurH,
+		tofu::kMaterialNone, //kMaterialPostProcessGaussianBlurV,
+		tofu::kMaterialNone, //kMaterialPostProcessBloomApply,
+		tofu::kMaterialNone, //kMaterialPostProcessVolumetricFog,
+		tofu::kMaterialNone, //kMaterialPostProcessAntiAliasing,
+		tofu::kMaterialNone, //kMaterialOverlay,
+		tofu::kMaterialNone, //kMaterialFontRendering
+	};
+
+	bool transparentMateiralTable[tofu::kMaxMaterialTypes] =
+	{
+		false, //kMaterialNone,
+		false, //kMaterialSkybox,
+		false, //kMaterialShadowInstanced,
+		false, //kMaterialShadow,
+		false, //kMaterialShadowSkinned,
+		false, //kMaterialDeferredGeometryOpaqueInstanced,
+		false, //kMaterialDeferredGeometryCutoffInstanced,
+		false, //kMaterialDeferredGeometryOpaque,
+		false, //kMaterialDeferredGeometryOpaqueSkinned,
+		false, //kMaterialDeferredGeometryCutoff,
+		false, //kMaterialDeferredGeometryCutoffSkinned,
+		false, //kMaterialDeferredLightingOcclude,
+		false, //kMaterialDeferredLightingPointLight,
+		false, //kMaterialDeferredLightingSpotLight,
+		false, //kMaterialDeferredLightingAmbient,
+		true, //kMaterialDeferredTransparentInstanced,
+		true, //kMaterialDeferredAdditiveInstanced,
+		true, //kMaterialDeferredTransparent,
+		true, //kMaterialDeferredTransparentSkinned,
+		true, //kMaterialDeferredAdditive,
+		true, //kMaterialDeferredAdditiveSkinned,
+		false, //kMaterialPostProcessToneMapping,
+		false, //kMaterialPostProcessExtractBright,
+		false, //kMaterialPostProcessBlur,
+		false, //kMaterialPostProcessGaussianBlurH,
+		false, //kMaterialPostProcessGaussianBlurV,
+		false, //kMaterialPostProcessBloomApply,
+		false, //kMaterialPostProcessVolumetricFog,
+		false, //kMaterialPostProcessAntiAliasing,
+		false, //kMaterialOverlay,
+		false, //kMaterialFontRendering
+	};
+
+	bool skinnedMateiralTable[tofu::kMaxMaterialTypes] =
+	{
+		false, //kMaterialNone,
+		false, //kMaterialSkybox,
+		false, //kMaterialShadowInstanced,
+		false, //kMaterialShadow,
+		true, //kMaterialShadowSkinned,
+		false, //kMaterialDeferredGeometryOpaqueInstanced,
+		false, //kMaterialDeferredGeometryCutoffInstanced,
+		false, //kMaterialDeferredGeometryOpaque,
+		true, //kMaterialDeferredGeometryOpaqueSkinned,
+		false, //kMaterialDeferredGeometryCutoff,
+		true, //kMaterialDeferredGeometryCutoffSkinned,
+		false, //kMaterialDeferredLightingOcclude,
+		false, //kMaterialDeferredLightingPointLight,
+		false, //kMaterialDeferredLightingSpotLight,
+		false, //kMaterialDeferredLightingAmbient,
+		false, //kMaterialDeferredTransparentInstanced,
+		false, //kMaterialDeferredAdditiveInstanced,
+		false, //kMaterialDeferredTransparent,
+		true, //kMaterialDeferredTransparentSkinned,
+		false, //kMaterialDeferredAdditive,
+		true, //kMaterialDeferredAdditiveSkinned,
+		false, //kMaterialPostProcessToneMapping,
+		false, //kMaterialPostProcessExtractBright,
+		false, //kMaterialPostProcessBlur,
+		false, //kMaterialPostProcessGaussianBlurH,
+		false, //kMaterialPostProcessGaussianBlurV,
+		false, //kMaterialPostProcessBloomApply,
+		false, //kMaterialPostProcessVolumetricFog,
+		false, //kMaterialPostProcessAntiAliasing,
+		false, //kMaterialOverlay,
+		false, //kMaterialFontRendering
+	};
 }
 
 namespace tofu
@@ -228,6 +368,8 @@ namespace tofu
 
 		CHECKED(LoadVertexShader("assets/deferred_geometry_skinned_vs.shader", materialVSs[kMaterialDeferredGeometryOpaqueSkinned]));
 
+		CHECKED(LoadPixelShader("assets/deferred_geometry_cutoff_ps.shader", materialPSs[kMaterialDeferredGeometryCutoff]));
+
 		CHECKED(InitBuiltinMaterial(kMaterialDeferredLightingPointLight,
 			"assets/deferred_lighting_vs.shader",
 			"assets/deferred_lighting_pointlight_ps.shader"));
@@ -243,6 +385,9 @@ namespace tofu
 		CHECKED(LoadPixelShader("assets/post_process_tone_mapping_ps.shader", materialPSs[kMaterialPostProcessToneMapping]));
 		CHECKED(LoadPixelShader("assets/post_process_extract_bright_ps.shader", materialPSs[kMaterialPostProcessExtractBright]));
 		CHECKED(LoadPixelShader("assets/post_process_blur_ps.shader", materialPSs[kMaterialPostProcessBlur]));
+		CHECKED(LoadPixelShader("assets/post_process_gaussian_blur_h_ps.shader", materialPSs[kMaterialPostProcessGaussianBlurH]));
+		CHECKED(LoadPixelShader("assets/post_process_gaussian_blur_v_ps.shader", materialPSs[kMaterialPostProcessGaussianBlurV]));
+		CHECKED(LoadPixelShader("assets/post_process_bloom_apply_ps.shader", materialPSs[kMaterialPostProcessBloomApply]));
 		CHECKED(LoadPixelShader("assets/post_process_fxaa_ps.shader", materialPSs[kMaterialPostProcessAntiAliasing]));
 
 		CHECKED(LoadPixelShader("assets/volumetric_fog_apply_ps.shader", materialPSs[kMaterialPostProcessVolumetricFog]));
@@ -300,8 +445,6 @@ namespace tofu
 				params->cullMode = kCullFront;
 				params->depthFunc = kComparisonLEqual;
 
-				params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
-
 				params->label = kResourceGlobal;
 
 				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
@@ -314,8 +457,6 @@ namespace tofu
 				params->handle = materialPSOs[kMaterialShadowInstanced];
 				params->vertexShader = materialVSs[kMaterialShadowInstanced];
 
-				params->viewport = { 0.0f, 0.0f, 1024.0f, 1024.0f, 0.0f, 1.0f };
-
 				params->label = kResourceGlobal;
 
 				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
@@ -327,8 +468,6 @@ namespace tofu
 				CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
 				params->handle = materialPSOs[kMaterialShadow];
 				params->vertexShader = materialVSs[kMaterialShadow];
-
-				params->viewport = { 0.0f, 0.0f, 1024.0f, 1024.0f, 0.0f, 1.0f };
 
 				params->label = kResourceGlobal;
 
@@ -343,8 +482,6 @@ namespace tofu
 				params->vertexShader = materialVSs[kMaterialShadowSkinned];
 				params->vertexFormat = kVertexFormatSkinned;
 
-				params->viewport = { 0.0f, 0.0f, 1024.0f, 1024.0f, 0.0f, 1.0f };
-
 				params->label = kResourceGlobal;
 
 				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
@@ -357,11 +494,6 @@ namespace tofu
 				params->handle = materialPSOs[kMaterialDeferredGeometryOpaqueInstanced];
 				params->vertexShader = materialVSs[kMaterialDeferredGeometryOpaqueInstanced];
 				params->pixelShader = materialPSs[kMaterialDeferredGeometryOpaqueInstanced];
-				//params->stencilEnable = 1;
-				//params->frontFacePassOp = kStencilOpReplace;
-				//params->stencilRef = 1u;
-
-				params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
 
 				params->label = kResourceGlobal;
 
@@ -375,11 +507,6 @@ namespace tofu
 				params->handle = materialPSOs[kMaterialDeferredGeometryOpaque];
 				params->vertexShader = materialVSs[kMaterialDeferredGeometryOpaque];
 				params->pixelShader = materialPSs[kMaterialDeferredGeometryOpaqueInstanced];
-				//params->stencilEnable = 1;
-				//params->frontFacePassOp = kStencilOpReplace;
-				//params->stencilRef = 1u;
-
-				params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
 
 				params->label = kResourceGlobal;
 
@@ -394,11 +521,46 @@ namespace tofu
 				params->vertexShader = materialVSs[kMaterialDeferredGeometryOpaqueSkinned];
 				params->pixelShader = materialPSs[kMaterialDeferredGeometryOpaqueInstanced];
 				params->vertexFormat = kVertexFormatSkinned;
-				//params->stencilEnable = 1;
-				//params->frontFacePassOp = kStencilOpReplace;
-				//params->stencilRef = 1u;
 
-				params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
+				params->label = kResourceGlobal;
+
+				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+			}
+
+			materialPSOs[kMaterialDeferredGeometryCutoffInstanced] = pipelineStateHandleAlloc.Allocate();
+			assert(materialPSOs[kMaterialDeferredGeometryCutoffInstanced]);
+			{
+				CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
+				params->handle = materialPSOs[kMaterialDeferredGeometryCutoffInstanced];
+				params->vertexShader = materialVSs[kMaterialDeferredGeometryOpaqueInstanced];
+				params->pixelShader = materialPSs[kMaterialDeferredGeometryCutoff];
+
+				params->label = kResourceGlobal;
+
+				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+			}
+
+			materialPSOs[kMaterialDeferredGeometryCutoff] = pipelineStateHandleAlloc.Allocate();
+			assert(materialPSOs[kMaterialDeferredGeometryCutoff]);
+			{
+				CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
+				params->handle = materialPSOs[kMaterialDeferredGeometryCutoff];
+				params->vertexShader = materialVSs[kMaterialDeferredGeometryOpaque];
+				params->pixelShader = materialPSs[kMaterialDeferredGeometryCutoff];
+
+				params->label = kResourceGlobal;
+
+				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+			}
+
+			materialPSOs[kMaterialDeferredGeometryCutoffSkinned] = pipelineStateHandleAlloc.Allocate();
+			assert(materialPSOs[kMaterialDeferredGeometryCutoffSkinned]);
+			{
+				CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
+				params->handle = materialPSOs[kMaterialDeferredGeometryCutoffSkinned];
+				params->vertexShader = materialVSs[kMaterialDeferredGeometryOpaqueSkinned];
+				params->pixelShader = materialPSs[kMaterialDeferredGeometryCutoff];
+				params->vertexFormat = kVertexFormatSkinned;
 
 				params->label = kResourceGlobal;
 
@@ -422,8 +584,6 @@ namespace tofu
 				params->frontFaceDepthFailOp = kStencilOpDec;
 
 				params->cullMode = kCullNone;
-
-				params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
 
 				params->label = kResourceGlobal;
 
@@ -451,8 +611,6 @@ namespace tofu
 				params->srcBlend = kBlendOne;
 				params->destBlend = kBlendOne;
 
-				params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
-
 				params->label = kResourceGlobal;
 
 				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
@@ -479,8 +637,6 @@ namespace tofu
 				params->srcBlend = kBlendOne;
 				params->destBlend = kBlendOne;
 
-				params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
-
 				params->label = kResourceGlobal;
 
 				cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
@@ -503,8 +659,6 @@ namespace tofu
 			params->srcBlend = kBlendOne;
 			params->destBlend = kBlendOne;
 
-			params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
-
 			params->label = kResourceGlobal;
 
 			cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
@@ -523,8 +677,6 @@ namespace tofu
 			params->srcBlend = kBlendSrcAlpha;
 			params->destBlend = kBlendInvSrcAlpha;
 
-			params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
-
 			params->label = kResourceGlobal;
 
 			cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
@@ -542,8 +694,6 @@ namespace tofu
 			params->blendEnable = 1;
 			params->srcBlend = kBlendSrcAlpha;
 			params->destBlend = kBlendInvSrcAlpha;
-
-			params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
 
 			params->label = kResourceGlobal;
 
@@ -564,7 +714,60 @@ namespace tofu
 			params->srcBlend = kBlendSrcAlpha;
 			params->destBlend = kBlendInvSrcAlpha;
 
-			params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
+			params->label = kResourceGlobal;
+
+			cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+		}
+
+		materialPSOs[kMaterialDeferredAdditiveInstanced] = pipelineStateHandleAlloc.Allocate();
+		assert(materialPSOs[kMaterialDeferredAdditiveInstanced]);
+		{
+			CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
+			params->handle = materialPSOs[kMaterialDeferredAdditiveInstanced];
+			params->vertexShader = materialVSs[kMaterialDeferredGeometryOpaqueInstanced];
+			params->pixelShader = materialPSs[kMaterialDeferredTransparent];
+
+			params->depthWrite = 0;
+			params->blendEnable = 1;
+			params->srcBlend = kBlendOne;
+			params->destBlend = kBlendOne;
+
+			params->label = kResourceGlobal;
+
+			cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+		}
+
+		materialPSOs[kMaterialDeferredAdditive] = pipelineStateHandleAlloc.Allocate();
+		assert(materialPSOs[kMaterialDeferredAdditive]);
+		{
+			CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
+			params->handle = materialPSOs[kMaterialDeferredAdditive];
+			params->vertexShader = materialVSs[kMaterialDeferredGeometryOpaque];
+			params->pixelShader = materialPSs[kMaterialDeferredTransparent];
+
+			params->depthWrite = 0;
+			params->blendEnable = 1;
+			params->srcBlend = kBlendOne;
+			params->destBlend = kBlendOne;
+
+			params->label = kResourceGlobal;
+
+			cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+		}
+
+		materialPSOs[kMaterialDeferredAdditiveSkinned] = pipelineStateHandleAlloc.Allocate();
+		assert(materialPSOs[kMaterialDeferredAdditiveSkinned]);
+		{
+			CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
+			params->handle = materialPSOs[kMaterialDeferredAdditiveSkinned];
+			params->vertexShader = materialVSs[kMaterialDeferredGeometryOpaqueSkinned];
+			params->pixelShader = materialPSs[kMaterialDeferredTransparent];
+			params->vertexFormat = kVertexFormatSkinned;
+
+			params->depthWrite = 0;
+			params->blendEnable = 1;
+			params->srcBlend = kBlendOne;
+			params->destBlend = kBlendOne;
 
 			params->label = kResourceGlobal;
 
@@ -583,8 +786,6 @@ namespace tofu
 
 			params->cullMode = kCullBack;
 
-			params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
-
 			params->label = kResourceGlobal;
 
 			cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
@@ -601,8 +802,6 @@ namespace tofu
 			params->depthEnable = 0;
 
 			params->cullMode = kCullBack;
-
-			params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
 
 			params->label = kResourceGlobal;
 
@@ -626,7 +825,61 @@ namespace tofu
 
 			params->cullMode = kCullBack;
 
-			params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
+			params->label = kResourceGlobal;
+
+			cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+		}
+
+		materialPSOs[kMaterialPostProcessGaussianBlurH] = pipelineStateHandleAlloc.Allocate();
+		assert(materialPSOs[kMaterialPostProcessGaussianBlurH]);
+		{
+			CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
+			params->handle = materialPSOs[kMaterialPostProcessGaussianBlurH];
+			params->vertexShader = materialVSs[kMaterialDeferredLightingAmbient];
+			params->pixelShader = materialPSs[kMaterialPostProcessGaussianBlurH];
+
+			params->depthEnable = 0;
+
+			params->cullMode = kCullBack;
+
+			params->label = kResourceGlobal;
+
+			cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+		}
+
+		materialPSOs[kMaterialPostProcessGaussianBlurV] = pipelineStateHandleAlloc.Allocate();
+		assert(materialPSOs[kMaterialPostProcessGaussianBlurV]);
+		{
+			CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
+			params->handle = materialPSOs[kMaterialPostProcessGaussianBlurV];
+			params->vertexShader = materialVSs[kMaterialDeferredLightingAmbient];
+			params->pixelShader = materialPSs[kMaterialPostProcessGaussianBlurV];
+
+			params->depthEnable = 0;
+
+			params->cullMode = kCullBack;
+
+			params->label = kResourceGlobal;
+
+			cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
+		}
+
+		materialPSOs[kMaterialPostProcessBloomApply] = pipelineStateHandleAlloc.Allocate();
+		assert(materialPSOs[kMaterialPostProcessBloomApply]);
+		{
+			CreatePipelineStateParams* params = MemoryAllocator::FrameAlloc<CreatePipelineStateParams>();
+			params->handle = materialPSOs[kMaterialPostProcessBloomApply];
+			params->vertexShader = materialVSs[kMaterialDeferredLightingAmbient];
+			params->pixelShader = materialPSs[kMaterialPostProcessBloomApply];
+
+			params->depthEnable = 0;
+			params->blendEnable = 1;
+			params->srcBlend = kBlendOne;
+			params->destBlend = kBlendOne;
+			params->srcBlendAlpha = kBlendOne;
+			params->destBlendAlpha = kBlendZero;
+
+			params->cullMode = kCullBack;
 
 			params->label = kResourceGlobal;
 
@@ -645,8 +898,6 @@ namespace tofu
 
 			params->cullMode = kCullBack;
 
-			params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
-
 			params->label = kResourceGlobal;
 
 			cmdBuf->Add(RendererCommand::kCommandCreatePipelineState, params);
@@ -663,8 +914,6 @@ namespace tofu
 			params->depthEnable = 0;
 
 			params->cullMode = kCullBack;
-
-			params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
 
 			params->label = kResourceGlobal;
 
@@ -686,7 +935,6 @@ namespace tofu
 
 			params->cullMode = kCullBack;
 
-			params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
 			params->vertexFormat = kVertexFormatOverlay;
 
 			params->label = kResourceGlobal;
@@ -711,7 +959,6 @@ namespace tofu
 
 			params->frontFaceCcw = 1;
 
-			params->viewport = { 0.0f, 0.0f, float(bufferWidth), float(bufferHeight), 0.0f, 1.0f };
 			params->vertexFormat = kVertexFormatOverlay;
 
 			params->label = kResourceGlobal;
@@ -727,8 +974,8 @@ namespace tofu
 			{
 				CreateSamplerParams* params = MemoryAllocator::FrameAlloc<CreateSamplerParams>();
 				params->handle = defaultSampler;
-				params->filter = kTextureFilterAnisotropic;
-				params->maxAnisotropy = 7;
+				//params->filter = kTextureFilterAnisotropic;
+				//params->maxAnisotropy = 1;
 				params->textureAddressU = kTextureAddressWarp;
 				params->textureAddressV = kTextureAddressWarp;
 				params->textureAddressW = kTextureAddressWarp;
@@ -817,20 +1064,20 @@ namespace tofu
 
 			*(data1) = math::float4{ 1, 1, 1, 1 };
 
-			*(data2) = math::float4{ 0.5f, 0.5f, 1, 1 };
+			*(data2) = math::float4{ 0.0f, 0.5f, 0.0f, 0.5f };
 
 			*(data3) = math::float4{ 0, 0, 0, 0 };
 
-			TextureHandle whiteTex = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 1, 16, data1, kBindingShaderResource, kResourceGlobal);
+			TextureHandle whiteTex = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 1, 1, 16, data1, kBindingShaderResource, kResourceGlobal);
 			if (!whiteTex)
 				return kErrUnknown;
 
-			TextureHandle normalUpTex = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 1, 16, data2, kBindingShaderResource, kResourceGlobal);
+			TextureHandle normalUpTex = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 1, 1, 16, data2, kBindingShaderResource, kResourceGlobal);
 			if (!normalUpTex)
 				return kErrUnknown;
 
-			TextureHandle blackTex = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 1, 16, data3, kBindingShaderResource, kResourceGlobal);
-			if (!normalUpTex)
+			TextureHandle blackTex = RenderingSystem::instance()->CreateTexture(kFormatR32g32b32a32Float, 1, 1, 1, 1, 16, data3, kBindingShaderResource, kResourceGlobal);
+			if (!blackTex)
 				return kErrUnknown;
 
 			defaultAlbedoMap = whiteTex;
@@ -839,42 +1086,56 @@ namespace tofu
 			defaultOcclusionMap = whiteTex;
 			defaultEmissionMap = blackTex;
 
-			lutMap = CreateTexture("assets/textures/test/BrdfLUT-Copy.texture", kResourceGlobal);
+			lutMap = CreateTexture("assets/BrdfLUT-Copy.texture", kResourceGlobal);
 		}
 
 		// TODO when back buffer size changed !
 		int32_t w, h;
 		renderer->GetFrameBufferSize(w, h);
-		gBuffer1 = CreateTexture(kFormatR32g32b32a32Float, w, h, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource, kResourceGlobal);
-		gBuffer2 = CreateTexture(kFormatR32g32b32a32Float, w, h, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource, kResourceGlobal);
-		gBuffer3 = CreateTexture(kFormatR32g32b32a32Float, w, h, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource, kResourceGlobal);
-		gBuffer4 = CreateTexture(kFormatR32g32b32a32Float, w, h, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource, kResourceGlobal);
+		gBuffer1 = CreateTexture(kFormatR32g32b32a32Float, w, h, 1, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource, kResourceGlobal);
+		gBuffer2 = CreateTexture(kFormatR32g32b32a32Float, w, h, 1, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource, kResourceGlobal);
+		gBuffer3 = CreateTexture(kFormatR32g32b32a32Float, w, h, 1, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource, kResourceGlobal);
+		gBuffer4 = CreateTexture(kFormatR32g32b32a32Float, w, h, 1, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource, kResourceGlobal);
 
-		hdrTarget = CreateTexture(kFormatR32g32b32a32Float, w, h, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource, kResourceGlobal);
-		hdrTarget2 = CreateTexture(kFormatR32g32b32a32Float, w, h, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource, kResourceGlobal);
+		hdrTarget = CreateTexture(kFormatR32g32b32a32Float, w, h, 1, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource, kResourceGlobal);
+		hdrTarget2 = CreateTexture(kFormatR32g32b32a32Float, w, h, 1, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource, kResourceGlobal);
 
 		if (!gBuffer1 || !gBuffer2 || !gBuffer3 || !gBuffer4 || !hdrTarget || !hdrTarget2)
 		{
 			return kErrUnknown;
 		}
 
-		shadowMapArray = CreateTexture(kFormatD24UnormS8Uint, 1024, 1024, kMaxShadowCastingLights, 0, nullptr, kBindingShaderResource | kBindingDepthStencil, kResourceGlobal);
+#if TOFU_BLOOM_MIPMAP_LEVELS > 1
+		brightPartTextureArray = CreateTexture(kFormatR32g32b32a32Float, w, h, TOFU_BLOOM_MIPMAP_LEVELS, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource, kResourceGlobal);
+		blurTextureArray = CreateTexture(kFormatR32g32b32a32Float, w, h, TOFU_BLOOM_MIPMAP_LEVELS, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource, kResourceGlobal);
+
+		for (uint32_t i = 0; i < TOFU_BLOOM_MIPMAP_LEVELS; i++)
+		{
+			brightPartTextures[i] = CreateTexture(brightPartTextureArray, i, 1, 0, 1, kBindingRenderTarget | kBindingShaderResource, kFormatAuto, kResourceGlobal);
+			blurTextures[i] = CreateTexture(blurTextureArray, i, 1, 0, 1, kBindingRenderTarget | kBindingShaderResource, kFormatAuto, kResourceGlobal);
+		}
+#elif TOFU_BLOOM_MIPMAP_LEVELS == 1
+		hdrTarget3 = CreateTexture(kFormatR32g32b32a32Float, w, h, 1, 1, 0, nullptr, kBindingRenderTarget | kBindingShaderResource, kResourceGlobal);
+#endif
+
+
+		shadowMapArray = CreateTexture(kFormatD24UnormS8Uint, 1024, 1024, 1, kMaxShadowCastingLights, 0, nullptr, kBindingShaderResource | kBindingDepthStencil, kResourceGlobal);
 
 		if (!shadowMapArray) return kErrUnknown;
 
 		for (uint32_t i = 0; i < kMaxShadowCastingLights; i++)
 		{
-			shadowMaps[i] = CreateTexture(shadowMapArray, i, 1, kBindingDepthStencil, kFormatAuto, kResourceGlobal);
+			shadowMaps[i] = CreateTexture(shadowMapArray, 0, 1, i, 1, kBindingDepthStencil, kFormatAuto, kResourceGlobal);
 			if (!shadowMaps[i]) return kErrUnknown;
 		}
 
-		injectionTex = CreateTexture(kFormatR32g32b32a32Float, 160, 90, 128, 0, 0, nullptr, kBindingShaderResource | kBindingUnorderedAccess, kResourceGlobal);
+		injectionTex = CreateTexture(kFormatR32g32b32a32Float, 160, 90, 128, 1, 0, 0, nullptr, kBindingShaderResource | kBindingUnorderedAccess, kResourceGlobal);
 #if TOFU_FILTER_VFOG == 1
-		filteredVolumeTex = CreateTexture(kFormatR32g32b32a32Float, 160, 90, 128, 0, 0, nullptr, kBindingShaderResource | kBindingUnorderedAccess, kResourceGlobal);
+		filteredVolumeTex = CreateTexture(kFormatR32g32b32a32Float, 160, 90, 128, 1, 0, 0, nullptr, kBindingShaderResource | kBindingUnorderedAccess, kResourceGlobal);
 		if (!filteredVolumeTex)
 			return kErrUnknown;
 #endif
-		scatterTex = CreateTexture(kFormatR32g32b32a32Float, 160, 90, 128, 0, 0, nullptr, kBindingShaderResource | kBindingUnorderedAccess, kResourceGlobal);
+		scatterTex = CreateTexture(kFormatR32g32b32a32Float, 160, 90, 128, 1, 0, 0, nullptr, kBindingShaderResource | kBindingUnorderedAccess, kResourceGlobal);
 
 		if (!injectionTex || !scatterTex)
 		{
@@ -1074,6 +1335,19 @@ namespace tofu
 				indices + meshes[id].StartIndex * sizeof(uint16_t));
 		}
 
+		math::float3 minCoord = *reinterpret_cast<math::float3*>(vertices);
+		math::float3 maxCoord = minCoord;
+
+		for (uint32_t i = 0; i < model.numVertices; i++)
+		{
+			const math::float3& pos = *reinterpret_cast<math::float3*>(vertices + i * model.vertexSize);
+
+			minCoord = math::min(minCoord, pos);
+			maxCoord = math::max(maxCoord, pos);
+		}
+
+		model.bounds = BoundingBox((minCoord + maxCoord) * 0.5f, (maxCoord - minCoord) * 0.5f);
+
 		// keep pointers to bone and animation structures
 		if (header->NumBones > 0)
 		{
@@ -1168,7 +1442,7 @@ namespace tofu
 		return handle;
 	}
 
-	TextureHandle RenderingSystem::CreateTexture(PixelFormat format, uint32_t width, uint32_t height, uint32_t arraySize, uint32_t pitch, void* data, uint32_t binding, uint32_t label)
+	TextureHandle RenderingSystem::CreateTexture(PixelFormat format, uint32_t width, uint32_t height, uint32_t mipmaps, uint32_t arraySize, uint32_t pitch, void* data, uint32_t binding, uint32_t label)
 	{
 		TextureHandle handle = textureHandleAlloc.Allocate();
 		if (!handle)
@@ -1178,7 +1452,7 @@ namespace tofu
 
 		CreateTextureParams* params = MemoryAllocator::FrameAlloc<CreateTextureParams>();
 
-		params->InitAsTexture2D(handle, width, height, format, data, pitch, arraySize, binding);
+		params->InitAsTexture2D(handle, width, height, format, data, pitch, mipmaps, arraySize, binding);
 		params->label = label;
 
 		cmdBuf->Add(RendererCommand::kCommandCreateTexture, params);
@@ -1189,7 +1463,7 @@ namespace tofu
 		return handle;
 	}
 
-	TextureHandle RenderingSystem::CreateTexture(TextureHandle source, uint32_t startIndex, uint32_t arraySize, uint32_t binding, PixelFormat format, uint32_t label)
+	TextureHandle RenderingSystem::CreateTexture(TextureHandle source, uint32_t startMipmapLevel, uint32_t mipmapLevels, uint32_t startIndex, uint32_t arraySize, uint32_t binding, PixelFormat format, uint32_t label)
 	{
 		TextureHandle handle = textureHandleAlloc.Allocate();
 		if (!handle)
@@ -1199,7 +1473,7 @@ namespace tofu
 
 		CreateTextureParams* params = MemoryAllocator::FrameAlloc<CreateTextureParams>();
 
-		params->InitAsTexture2DSlice(handle, source, startIndex, arraySize, format, binding);
+		params->InitAsTexture2DSlice(handle, source, startMipmapLevel, mipmapLevels, startIndex, arraySize, format, binding);
 		params->label = label;
 
 		cmdBuf->Add(RendererCommand::kCommandCreateTexture, params);
@@ -1210,7 +1484,7 @@ namespace tofu
 		return handle;
 	}
 
-	TextureHandle RenderingSystem::CreateTexture(PixelFormat format, uint32_t width, uint32_t height, uint32_t depth, uint32_t pitch, uint32_t slicePitch, void* data, uint32_t binding, uint32_t label)
+	TextureHandle RenderingSystem::CreateTexture(PixelFormat format, uint32_t width, uint32_t height, uint32_t depth, uint32_t mipmaps, uint32_t pitch, uint32_t slicePitch, void* data, uint32_t binding, uint32_t label)
 	{
 		TextureHandle handle = textureHandleAlloc.Allocate();
 		if (!handle)
@@ -1220,7 +1494,7 @@ namespace tofu
 
 		CreateTextureParams* params = MemoryAllocator::FrameAlloc<CreateTextureParams>();
 
-		params->InitAsTexture3D(handle, width, height, depth, format, data, pitch, slicePitch, binding);
+		params->InitAsTexture3D(handle, width, height, depth, format, data, pitch, slicePitch, mipmaps, binding);
 		params->label = label;
 
 		cmdBuf->Add(RendererCommand::kCommandCreateTexture, params);
@@ -1527,8 +1801,8 @@ namespace tofu
 			data->leftBottomRay = worldTrans.TransformVector(math::float4{ -farClipMaxX, -farClipMaxY, farClipZ, 0 });
 			data->rightBottomRay = worldTrans.TransformVector(math::float4{ farClipMaxX, -farClipMaxY, farClipZ, 0 });
 
-			camFrustum.near = nearClipZ;
-			camFrustum.far = farClipZ;
+			camFrustum.nearPlane = nearClipZ;
+			camFrustum.farPlane = farClipZ;
 			camFrustum.topSlope = tanHalfFOV;
 			camFrustum.bottomSlope = -tanHalfFOV;
 			camFrustum.rightSlope = tanHalfFOV * data->perspectiveParams.y;
@@ -1599,7 +1873,24 @@ namespace tofu
 		uint32_t numOpaqueObjects = 0;
 		uint32_t numTransparentObjects = 0;
 
-		// fill in transform matrix for active renderables
+		//
+		//uint32_t sizeOfBoundsBuffer = sizeof(BoundingBox) * ((renderableCount + 3u) & (~3u));
+		//BoundingBox* boundsBuffer = reinterpret_cast<BoundingBox*>(MemoryAllocator::FrameAlloc(sizeOfBoundsBuffer));
+		//
+		//for (uint32_t i = 0; i < renderableCount; ++i)
+		//{
+		//	RenderingComponentData& comp = renderables[i];
+		//
+		//	TransformComponent transform = comp.entity.GetComponent<TransformComponent>();
+		//	assert(transform);
+		//
+		//	BoundingBox AABB = comp.model->bounds;
+		//	AABB.Transform(transform->GetWorldTransform());
+		//	boundsBuffer[i] = AABB;
+		//}
+
+		PERFORMANCE_TIMER_RESUME(kPerformanceTimerSlotCustem);
+		// fill in active renderables
 		for (uint32_t i = 0; i < renderableCount; ++i)
 			// for (uint32_t i = renderableCount - 2; i < renderableCount; ++i)
 		{
@@ -1608,7 +1899,14 @@ namespace tofu
 			TransformComponent transform = comp.entity.GetComponent<TransformComponent>();
 			assert(transform);
 
-			// TODO culling
+			// frustum culling
+			//const BoundingBox& AABB = comp.model->bounds;
+			//OrientedBoundingBox OBB(AABB.center, AABB.extends, math::quat());
+			//OBB.Transform(transform->GetWorldTransform());
+			//
+			////bool intersected = camFrustum.Intersects(OBB);
+			//if (!camFrustum.Intersects(OBB)) 
+			//	continue;
 
 			/*
 			// fill transform matrices;
@@ -1639,7 +1937,7 @@ namespace tofu
 				//obj.transformIdx = idx;
 				obj.BuildSortKey();
 
-				if (obj.materialType == kMaterialDeferredTransparent || obj.materialType == kMaterialDeferredTransparentSkinned)
+				if (transparentMateiralTable[obj.materialType])
 				{
 					numTransparentObjects++;
 				}
@@ -1649,6 +1947,7 @@ namespace tofu
 				}
 			}
 		}
+		PERFORMANCE_TIMER_PAUSE(kPerformanceTimerSlotCustem);
 
 		// sorting rendering objects
 		std::sort(activeObjects, activeObjects + numActiveObjects, [](RenderingObject& a, RenderingObject& b)
@@ -1660,8 +1959,7 @@ namespace tofu
 		// find instanced objs
 		for (uint32_t i = 0; i < numActiveObjects; i++)
 		{
-			if (activeObjects[i].materialType == kMaterialDeferredGeometryOpaqueSkinned ||
-				activeObjects[i].materialType == kMaterialDeferredTransparentSkinned)
+			if (skinnedMateiralTable[activeObjects[i].materialType])
 				continue;
 
 			uint32_t startIdx = i;
@@ -1669,7 +1967,7 @@ namespace tofu
 				activeObjects[i].sortKey == activeObjects[i + 1].sortKey)
 			{
 				// change it to instanced type
-				activeObjects[i].materialType = activeObjects[i].materialType - 1;
+				activeObjects[i].materialType = instancingMaterialTable[activeObjects[i].materialType];
 				activeObjects[i].BuildSortKey();
 				i++;
 			}
@@ -1677,7 +1975,7 @@ namespace tofu
 			if (startIdx != i)
 			{
 				// change it to instanced type
-				activeObjects[i].materialType = activeObjects[i].materialType - 1;
+				activeObjects[i].materialType = instancingMaterialTable[activeObjects[i].materialType];
 				activeObjects[i].BuildSortKey();
 			}
 		}
@@ -1696,13 +1994,20 @@ namespace tofu
 			obj.transformIdx = i;
 
 			TransformComponent transform = renderables[obj.renderableId].entity.GetComponent<TransformComponent>();
+			Transform t = transform->GetWorldTransform();
 
 #ifdef TOFU_USE_GLM
-			transformArray[i * 4] = math::transpose(transform->GetWorldTransform().GetMatrix());
+			transformArray[i * 4] = math::transpose(t.GetMatrix());
 #else
 			transformArrayOpaque[idx * 4] = transform->GetWorldTransform().GetMatrix();
 #endif
-			transformArray[i * 4 + 1] = math::transpose(math::inverse(transformArray[i * 4]));
+
+			// make it rotate only
+			t.SetTranslation(glm::vec3());
+			t.SetScale(glm::vec3(1.0f));
+
+			//transformArray[i * 4 + 1] = math::transpose(math::inverse(transformArray[i * 4]));
+			transformArray[i * 4 + 1] = math::transpose(t.GetMatrix());
 		}
 
 		// upload transform matrices
@@ -1758,7 +2063,7 @@ namespace tofu
 		uint32_t numSpotLights = 0;
 		uint32_t numShadowCastingLights = 0;
 		{
-			ambDirLightParams->ambient = math::float4(0.1f, 0.1f, 0.1f, 1.0f);
+			ambDirLightParams->ambient = math::float4(0.4f, 0.4f, 0.4f, 1.0f);
 
 			for (uint32_t i = 0; i < lightsCount; ++i)
 			{
@@ -1917,8 +2222,8 @@ namespace tofu
 			params->time = Time::TotalTime;
 			params->noiseScale = 0.5f;
 			params->noiseBase = 0;
-			params->noiseAmp = 2;
-			params->density = 3;
+			params->noiseAmp = 1.0;
+			params->density = 1.0;
 			params->maxFarClip = 50;
 			float fogfarClip = math::min(params->maxFarClip, farClipZ);
 			params->maxZ01 = (fogfarClip - nearClipZ) / (farClipZ - nearClipZ);
@@ -1995,7 +2300,8 @@ namespace tofu
 				uint32_t numInstances = (iObject - startIdx + 1);
 
 				const RenderingObject& obj = activeObjects[startIdx];
-				assert(obj.materialType == kMaterialDeferredGeometryOpaqueInstanced);
+
+				assert(shadowMateiralTable[obj.materialType] == kMaterialShadowInstanced);
 
 				assert(obj.model);
 
@@ -2023,6 +2329,7 @@ namespace tofu
 				params->renderTargets[0] = TextureHandle();
 				params->depthRenderTarget = shadowMaps[iLight];
 
+				params->viewport = { 0, 0, 1024.0f, 1024.0f, 0.0f, 1.0f };
 
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
@@ -2051,12 +2358,14 @@ namespace tofu
 				params->startVertex = mesh.StartVertex;
 				params->indexCount = mesh.NumIndices;
 
-				if (mat->type == kMaterialDeferredGeometryOpaque) params->pipelineState = materialPSOs[kMaterialShadow];
-				if (mat->type == kMaterialDeferredGeometryOpaqueSkinned) params->pipelineState = materialPSOs[kMaterialShadowSkinned];
+				MaterialType shadowMat = shadowMateiralTable[mat->type];
+				assert(kMaterialNone != shadowMat);
+				params->pipelineState = materialPSOs[shadowMat];
 
 				switch (mat->type)
 				{
 				case kMaterialDeferredGeometryOpaqueSkinned:
+				case kMaterialDeferredGeometryCutoffSkinned:
 					(void*)0;
 					{
 						Entity entity = renderables[obj.renderableId].entity;
@@ -2069,11 +2378,14 @@ namespace tofu
 					}
 					// fall through
 				case kMaterialDeferredGeometryOpaque:
+				case kMaterialDeferredGeometryCutoff:
 					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(obj.transformIdx * 16), 16 };
 					params->vsConstantBuffers[1] = { shadowMatricesBuffer, static_cast<uint16_t>(iLight * 16), 16 };
 
 					params->renderTargets[0] = TextureHandle();
 					params->depthRenderTarget = shadowMaps[iLight];
+
+					params->viewport = { 0, 0, 1024.0f, 1024.0f, 0.0f, 1.0f };
 
 					break;
 				default:
@@ -2119,7 +2431,8 @@ namespace tofu
 				uint32_t numInstances = (i - startIdx + 1);
 
 				RenderingObject& obj = activeObjects[startIdx];
-				assert(obj.materialType == kMaterialDeferredGeometryOpaqueInstanced);
+				assert(obj.materialType == kMaterialDeferredGeometryOpaqueInstanced || 
+					obj.materialType == kMaterialDeferredGeometryCutoffInstanced);
 
 				assert(obj.model);
 
@@ -2132,7 +2445,7 @@ namespace tofu
 				const Material* mat = &materials[obj.material.id];
 
 				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
-				params->pipelineState = materialPSOs[kMaterialDeferredGeometryOpaqueInstanced];
+				params->pipelineState = materialPSOs[obj.materialType];
 				params->vertexBuffer = mesh.VertexBuffer;
 				params->indexBuffer = mesh.IndexBuffer;
 				params->startIndex = mesh.StartIndex;
@@ -2150,7 +2463,7 @@ namespace tofu
 				params->psShaderResources[1] = mat->normalMap ? mat->normalMap : defaultNormalMap;
 				params->psShaderResources[2] = mat->metallicGlossMap ? mat->metallicGlossMap : defaultMetallicGlossMap;
 				params->psShaderResources[3] = mat->occlusionMap ? mat->occlusionMap : defaultOcclusionMap;
-				params->psShaderResources[4] = mat->emissionMap ? mat->emissionMap : defaultEmissionMap;
+				params->psShaderResources[4] = mat->emissionMap ? mat->emissionMap : (mat->HasEmissionColor() ? defaultAlbedoMap : defaultEmissionMap);
 				params->psSamplers[0] = defaultSampler;
 
 				params->renderTargets[0] = gBuffer1;
@@ -2183,13 +2496,11 @@ namespace tofu
 				params->startIndex = mesh.StartIndex;
 				params->startVertex = mesh.StartVertex;
 				params->indexCount = mesh.NumIndices;
-
-				//if (mat->type == kMaterialTypeOpaque) params->pipelineState = materialPSOs[kMaterialDeferredGeometryOpaque];
-				//if (mat->type == kMaterialTypeOpaqueSkinned) params->pipelineState = materialPSOs[kMaterialDeferredGeometryOpaqueSkinned];
-
+				
 				switch (mat->type)
 				{
 				case kMaterialDeferredGeometryOpaqueSkinned:
+				case kMaterialDeferredGeometryCutoffSkinned:
 					(void*)0;
 					{
 						Entity entity = renderables[obj.renderableId].entity;
@@ -2202,6 +2513,7 @@ namespace tofu
 					}
 					// fall through
 				case kMaterialDeferredGeometryOpaque:
+				case kMaterialDeferredGeometryCutoff:
 					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(obj.transformIdx * 16), 16 };
 					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
 
@@ -2211,7 +2523,7 @@ namespace tofu
 					params->psShaderResources[1] = mat->normalMap ? mat->normalMap : defaultNormalMap;
 					params->psShaderResources[2] = mat->metallicGlossMap ? mat->metallicGlossMap : defaultMetallicGlossMap;
 					params->psShaderResources[3] = mat->occlusionMap ? mat->occlusionMap : defaultOcclusionMap;
-					params->psShaderResources[4] = mat->emissionMap ? mat->emissionMap : defaultEmissionMap;
+					params->psShaderResources[4] = mat->emissionMap ? mat->emissionMap : (mat->HasEmissionColor() ? defaultAlbedoMap : defaultEmissionMap);
 					params->psSamplers[0] = defaultSampler;
 
 					params->renderTargets[0] = gBuffer1;
@@ -2437,7 +2749,8 @@ namespace tofu
 				uint32_t numInstances = (i - startIdx + 1);
 
 				RenderingObject& obj = activeObjects[startIdx];
-				assert(obj.materialType == kMaterialDeferredTransparentInstanced);
+				assert(obj.materialType == kMaterialDeferredTransparentInstanced || 
+					obj.materialType == kMaterialDeferredAdditiveInstanced);
 
 				assert(obj.model);
 
@@ -2450,7 +2763,7 @@ namespace tofu
 				const Material* mat = &materials[obj.material.id];
 
 				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
-				params->pipelineState = materialPSOs[kMaterialDeferredTransparentInstanced];
+				params->pipelineState = materialPSOs[obj.materialType];
 				params->vertexBuffer = mesh.VertexBuffer;
 				params->indexBuffer = mesh.IndexBuffer;
 				params->startIndex = mesh.StartIndex;
@@ -2461,7 +2774,11 @@ namespace tofu
 
 				params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(obj.transformIdx * 16), (uint16_t)(16 * numInstances) };
 				params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
-				params->psShaderResources[0] = mat->mainTex ? mat->mainTex : defaultAlbedoMap;
+
+
+				params->psConstantBuffers[0] = { mat->materialParamsBuffer, 0, 0 };
+				params->psShaderResources[0] = mat->mainTex ? mat->mainTex : defaultEmissionMap;
+				params->psShaderResources[1] = mat->emissionMap ? mat->emissionMap : defaultEmissionMap;
 				params->psSamplers[0] = defaultSampler;
 
 				params->renderTargets[0] = hdrTarget;
@@ -2495,6 +2812,7 @@ namespace tofu
 				switch (mat->type)
 				{
 				case kMaterialDeferredTransparentSkinned:
+				case kMaterialDeferredAdditiveSkinned:
 					(void*)0;
 					{
 						Entity entity = renderables[obj.renderableId].entity;
@@ -2507,9 +2825,13 @@ namespace tofu
 					}
 					// fall through
 				case kMaterialDeferredTransparent:
+				case kMaterialDeferredAdditive:
 					params->vsConstantBuffers[0] = { transformBuffer, static_cast<uint16_t>(obj.transformIdx * 16), 16 };
 					params->vsConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
-					params->psShaderResources[0] = mat->mainTex ? mat->mainTex : defaultAlbedoMap;
+
+					params->psConstantBuffers[0] = { mat->materialParamsBuffer, 0, 0 };
+					params->psShaderResources[0] = mat->mainTex ? mat->mainTex : defaultEmissionMap;
+					params->psShaderResources[1] = mat->emissionMap ? mat->emissionMap : defaultEmissionMap;
 					params->psSamplers[0] = defaultSampler;
 
 					params->renderTargets[0] = hdrTarget;
@@ -2580,52 +2902,148 @@ namespace tofu
 				cmdBuf->Add(RendererCommand::kCommandCompute, params);
 			}
 
-			//// Extract bright part
-			//{
-			//	Mesh& mesh = meshes[builtinQuad->meshes[0].id];
-			//	DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
-			//
-			//	params->pipelineState = materialPSOs[kMaterialPostProcessExtractBright];
-			//
-			//	params->vertexBuffer = mesh.VertexBuffer;
-			//	params->indexBuffer = mesh.IndexBuffer;
-			//	params->startIndex = mesh.StartIndex;
-			//	params->startVertex = mesh.StartVertex;
-			//	params->indexCount = mesh.NumIndices;
-			//
-			//	params->psShaderResources[0] = hdrTarget;
-			//
-			//	params->renderTargets[0] = hdrTarget2;
-			//
-			//	cmdBuf->Add(RendererCommand::kCommandDraw, params);
-			//}
-			//
-			//// Blur
-			//{
-			//	Mesh& mesh = meshes[builtinQuad->meshes[0].id];
-			//	DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
-			//
-			//	params->pipelineState = materialPSOs[kMaterialPostProcessBlur];
-			//
-			//	params->vertexBuffer = mesh.VertexBuffer;
-			//	params->indexBuffer = mesh.IndexBuffer;
-			//	params->startIndex = mesh.StartIndex;
-			//	params->startVertex = mesh.StartVertex;
-			//	params->indexCount = mesh.NumIndices;
-			//
-			//	params->psShaderResources[0] = hdrTarget2;
-			//
-			//	params->renderTargets[0] = hdrTarget;
-			//
-			//	cmdBuf->Add(RendererCommand::kCommandDraw, params);
-			//}
+#if TOFU_BLOOM_MIPMAP_LEVELS > 0
+			// Extract bright part
+			{
+				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
+				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
+			
+				params->pipelineState = materialPSOs[kMaterialPostProcessExtractBright];
+			
+				params->vertexBuffer = mesh.VertexBuffer;
+				params->indexBuffer = mesh.IndexBuffer;
+				params->startIndex = mesh.StartIndex;
+				params->startVertex = mesh.StartVertex;
+				params->indexCount = mesh.NumIndices;
+			
+				params->psShaderResources[0] = hdrTarget;
 
-			// volumetric fog
+#if TOFU_BLOOM_MIPMAP_LEVELS > 1
+				params->renderTargets[0] = brightPartTextures[0];
+#else
+				params->renderTargets[0] = hdrTarget2;
+#endif
+			
+				cmdBuf->Add(RendererCommand::kCommandDraw, params);
+
+#if TOFU_BLOOM_MIPMAP_LEVELS > 1
+				cmdBuf->Add(RendererCommand::kCommandGenerateMipmaps, &brightPartTextureArray);
+#endif
+			}
+#endif
+			
+
+#if TOFU_BLOOM_MIPMAP_LEVELS > 0
+
+#if TOFU_BLOOM_MIPMAP_LEVELS > 1
+			Viewport vp = { 0, 0, (float)bufferWidth, (float)bufferHeight, 0.0f, 1.0f };
+
+			// Gaussian Blur
+			for (uint32_t i = 0; i < TOFU_BLOOM_MIPMAP_LEVELS; i++)
+#endif
+			{	
+				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
+				{
+					DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
+
+					params->pipelineState = materialPSOs[kMaterialPostProcessGaussianBlurH];
+
+					params->vertexBuffer = mesh.VertexBuffer;
+					params->indexBuffer = mesh.IndexBuffer;
+					params->startIndex = mesh.StartIndex;
+					params->startVertex = mesh.StartVertex;
+					params->indexCount = mesh.NumIndices;
+
+#if TOFU_BLOOM_MIPMAP_LEVELS > 1
+					params->psShaderResources[0] = brightPartTextures[i];
+#else
+					params->psShaderResources[0] = hdrTarget2;
+#endif
+					params->psSamplers[0] = volumeSampler;
+
+#if TOFU_BLOOM_MIPMAP_LEVELS > 1
+					params->renderTargets[0] = blurTextures[i];
+#else
+					params->renderTargets[0] = hdrTarget3;
+#endif
+					params->depthRenderTarget = TextureHandle();
+
+#if TOFU_BLOOM_MIPMAP_LEVELS > 1
+					params->viewport = vp;
+#endif
+
+					cmdBuf->Add(RendererCommand::kCommandDraw, params);
+				}
+
+				{
+					DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
+
+					params->pipelineState = materialPSOs[kMaterialPostProcessGaussianBlurV];
+
+					params->vertexBuffer = mesh.VertexBuffer;
+					params->indexBuffer = mesh.IndexBuffer;
+					params->startIndex = mesh.StartIndex;
+					params->startVertex = mesh.StartVertex;
+					params->indexCount = mesh.NumIndices;
+
+#if TOFU_BLOOM_MIPMAP_LEVELS > 1
+					params->psShaderResources[0] = blurTextures[i];
+#else
+					params->psShaderResources[0] = hdrTarget3;
+#endif
+					params->psSamplers[0] = volumeSampler;
+
+#if TOFU_BLOOM_MIPMAP_LEVELS > 1
+					params->renderTargets[0] = brightPartTextures[i];
+#else
+					params->renderTargets[0] = hdrTarget2;
+#endif
+					params->depthRenderTarget = TextureHandle();
+
+#if TOFU_BLOOM_MIPMAP_LEVELS > 1
+					params->viewport = vp;
+#endif
+
+					cmdBuf->Add(RendererCommand::kCommandDraw, params);
+				}
+
+
+#if TOFU_BLOOM_MIPMAP_LEVELS > 1
+				vp.width *= 0.5f;
+				vp.height *= 0.5f;
+#endif
+			}
+
+#endif
+
+#if TOFU_BLOOM_MIPMAP_LEVELS > 1
+			// Apply Bloom
+			{
+				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
+				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
+			
+				params->pipelineState = materialPSOs[kMaterialPostProcessBloomApply];
+			
+				params->vertexBuffer = mesh.VertexBuffer;
+				params->indexBuffer = mesh.IndexBuffer;
+				params->startIndex = mesh.StartIndex;
+				params->startVertex = mesh.StartVertex;
+				params->indexCount = mesh.NumIndices;
+			
+				params->psShaderResources[0] = brightPartTextureArray;
+				params->psSamplers[0] = volumeSampler;
+			
+				params->renderTargets[0] = hdrTarget;
+			
+				cmdBuf->Add(RendererCommand::kCommandDraw, params);
+			}
+#elif TOFU_BLOOM_MIPMAP_LEVELS == 1
+			// Apply Bloom
 			{
 				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
 				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
 
-				params->pipelineState = materialPSOs[kMaterialPostProcessVolumetricFog];
+				params->pipelineState = materialPSOs[kMaterialPostProcessBlur];
 
 				params->vertexBuffer = mesh.VertexBuffer;
 				params->indexBuffer = mesh.IndexBuffer;
@@ -2633,16 +3051,38 @@ namespace tofu
 				params->startVertex = mesh.StartVertex;
 				params->indexCount = mesh.NumIndices;
 
+				params->psShaderResources[0] = hdrTarget2;
+				params->psSamplers[0] = volumeSampler;
+
+				params->renderTargets[0] = hdrTarget;
+
+				cmdBuf->Add(RendererCommand::kCommandDraw, params);
+			}
+#endif
+
+			// volumetric fog
+			{
+				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
+				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
+			
+				params->pipelineState = materialPSOs[kMaterialPostProcessVolumetricFog];
+			
+				params->vertexBuffer = mesh.VertexBuffer;
+				params->indexBuffer = mesh.IndexBuffer;
+				params->startIndex = mesh.StartIndex;
+				params->startVertex = mesh.StartVertex;
+				params->indexCount = mesh.NumIndices;
+			
 				params->psConstantBuffers[0] = { fogParamsBuffer, 0, 0 };
 				params->psConstantBuffers[1] = { frameConstantBuffer, 0, 0 };
-
+			
 				params->psShaderResources[0] = hdrTarget;
 				params->psShaderResources[1] = gBuffer2;
 				params->psShaderResources[2] = scatterTex;
 				params->psSamplers[0] = volumeSampler;
-
+			
 				params->renderTargets[0] = hdrTarget2;
-
+			
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
 
@@ -2659,6 +3099,7 @@ namespace tofu
 				params->startVertex = mesh.StartVertex;
 				params->indexCount = mesh.NumIndices;
 
+				//params->psShaderResources[0] = hdrTarget;
 				params->psShaderResources[0] = hdrTarget2;
 				params->renderTargets[0] = hdrTarget;
 
@@ -2669,20 +3110,20 @@ namespace tofu
 			{
 				Mesh& mesh = meshes[builtinQuad->meshes[0].id];
 				DrawParams* params = MemoryAllocator::FrameAlloc<DrawParams>();
-
+			
 				params->pipelineState = materialPSOs[kMaterialPostProcessAntiAliasing];
-
+			
 				params->psConstantBuffers[0] = { frameConstantBuffer, 0, 0 };
-
+			
 				params->vertexBuffer = mesh.VertexBuffer;
 				params->indexBuffer = mesh.IndexBuffer;
 				params->startIndex = mesh.StartIndex;
 				params->startVertex = mesh.StartVertex;
 				params->indexCount = mesh.NumIndices;
-
+			
 				params->psShaderResources[0] = hdrTarget;
 				params->psSamplers[0] = volumeSampler;
-
+			
 				cmdBuf->Add(RendererCommand::kCommandDraw, params);
 			}
 		}

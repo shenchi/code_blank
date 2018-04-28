@@ -27,6 +27,7 @@ public:
 	void SetPosition(tofu::math::float3);
 	void SetSensitivity(float);
 	void SetSkybox(tofu::TextureHandle);
+	void SetSkyboxDiffAndSpecMap(tofu::TextureHandle, tofu::TextureHandle);
 	void SetTarget(tofu::math::float3);
 
 private:

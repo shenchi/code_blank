@@ -30,6 +30,18 @@ namespace tofu
 		return *this;
 	}
 
+	Transform Transform::Inverse() const
+	{
+		Transform t;
+
+		t.rotation = math::inverse(rotation);
+		t.scale = 1.0f / scale;
+
+		t.translation = t.rotation * (t.scale  * -translation);
+
+		return t;
+	}
+
 	float4x4 Transform::GetMatrix() const
 	{
 		return transform(translation, rotation, scale);

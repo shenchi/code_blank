@@ -19,8 +19,8 @@ namespace tofu
 			:
 			entity(e),
 			parent(),
-			children(),
-			dirty(1)
+			children()//,
+			//dirty(1)
 		{}
 
 		void							SetParent(TransformComponent parent, bool updateChildren = true);
@@ -153,6 +153,6 @@ namespace tofu
 
 		Transform						localTransform;
 		Transform						worldTransform;
-		uint32_t						dirty : 1;
+		//uint32_t						dirty : 1;
 	};
 }

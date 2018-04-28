@@ -100,13 +100,23 @@ namespace tofu
 		const rapidjson::Value& tintColor = matConfig["TintColor"];
 		const rapidjson::Value& emissionColor = matConfig["EmissionColor"];
 		const rapidjson::Value& textureParams = matConfig["TextureScaleOffset"];
+		const rapidjson::Value& cutoff = matConfig["Cutoff"];
 
 		const char* typeStr = matConfig["Type"].GetString();
 		MaterialType materialType = kMaterialDeferredGeometryOpaque;
-		if (strcmp(typeStr, "Transparent") == 0)
+		if (strcmp(typeStr, "Cutoff") == 0)
+		{
+			materialType = kMaterialDeferredGeometryCutoff;
+		}
+		else if (strcmp(typeStr, "Transparent") == 0)
 		{
 			materialType = kMaterialDeferredTransparent;
 		}
+		else if (strcmp(typeStr, "Additive") == 0)
+		{
+			materialType = kMaterialDeferredAdditive;
+		}
+
 		Material* mat = RenderingSystem::instance()->CreateMaterial(materialType);
 		mat->SetTexture(albedo);
 		mat->SetNormalMap(normal);
@@ -134,6 +144,13 @@ namespace tofu
 			textureParams["z"].GetFloat(),
 			textureParams["w"].GetFloat()
 		});
+
+		mat->SetCutoff(cutoff.GetFloat());
+
+		if (materialType == kMaterialDeferredAdditive)
+		{
+			mat->SetAdditiveFactor(2.0f);
+		}
 
 		materials.insert(std::pair<std::string, Material*>(name, mat));
 		return mat;

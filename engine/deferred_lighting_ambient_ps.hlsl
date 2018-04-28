@@ -62,8 +62,9 @@ float4 main(float4 clipPos : SV_POSITION) : SV_TARGET
 	float metallic = albedo.a;
 	float roughness = 1 - occlusion.a;
 
+	roughness = max(roughness, 0.3);
 	float3 ambientPBR = EnvironmentLight(worldNormal, viewDir, albedo.rgb, ao, metallic, roughness, skyDiff, skySpec, BrdfLut, samp, sampForLUT);
-	color += ambientPBR * ambient.xyz;
+	color += ambientPBR * ambient.xyz;// *10.0;
 	
 	return float4(color, 1);
 }

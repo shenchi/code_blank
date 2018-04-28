@@ -73,13 +73,13 @@ namespace tofu
 		float				leftSlope;
 		float				topSlope; // y/z
 		float				bottomSlope;
-		float				near;
-		float				far;
+		float				nearPlane;
+		float				farPlane;
 
 		TF_INLINE Frustum(const math::float3& orig, const math::quat& orient, float r, float l, float t, float b, float n, float f)
-			: origin(orig), orientation(orient), rightSlope(r), leftSlope(l), topSlope(t), bottomSlope(b), near(n), far(f) {}
+			: origin(orig), orientation(orient), rightSlope(r), leftSlope(l), topSlope(t), bottomSlope(b), nearPlane(n), farPlane(f) {}
 
-		TF_INLINE Frustum() : origin(), orientation(), rightSlope(1), leftSlope(-1), topSlope(1), bottomSlope(-1), near(0), far(1) {}
+		TF_INLINE Frustum() : origin(), orientation(), rightSlope(1), leftSlope(-1), topSlope(1), bottomSlope(-1), nearPlane(0), farPlane(1) {}
 
 		TF_INLINE void Transform(const Transform& t);
 		TF_INLINE void TransformWithoutScaling(const tofu::Transform& t);
@@ -404,8 +404,8 @@ namespace tofu
 		orientation = t.GetRotation() * orientation;
 		origin = t.TransformPosition(origin);
 		float scale = scale = t.GetScale().z;
-		near *= scale;
-		far *= scale;
+		nearPlane *= scale;
+		farPlane *= scale;
 	}
 
 	TF_INLINE void Frustum::TransformWithoutScaling(const tofu::Transform& t)
@@ -427,7 +427,7 @@ namespace tofu
 			{ 0.0f, -1.0f, bottomSlope }, // bottom plane
 		};
 
-		float planeDists[6] = { -near, far, 0, 0, 0, 0 };
+		float planeDists[6] = { -nearPlane, farPlane, 0, 0, 0, 0 };
 
 		planeAxes[2] = math::normalize(planeAxes[2]);
 		planeAxes[3] = math::normalize(planeAxes[3]);
@@ -491,8 +491,8 @@ namespace tofu
 		math::float3 rightBottomA{ rightSlope, bottomSlope, 1.0f };
 		math::float3 leftTopA{ leftSlope, topSlope, 1.0f };
 		math::float3 leftBottomA{ leftSlope, bottomSlope, 1.0f };
-		math::float3 nearA{ near, near, near };
-		math::float3 farA{ far, far, far };
+		math::float3 nearA{ nearPlane, nearPlane, nearPlane };
+		math::float3 farA{ farPlane, farPlane, farPlane };
 
 		math::float3 corners[8] =
 		{
@@ -550,7 +550,7 @@ namespace tofu
 			{ 0.0f, -1.0f, bottomSlope }, // bottom plane
 		};
 
-		float planeDists[6] = { -near, far, 0, 0, 0, 0 };
+		float planeDists[6] = { -nearPlane, farPlane, 0, 0, 0, 0 };
 
 		math::float3 center = obb.center;
 		math::float3 extends = obb.extends;
@@ -593,8 +593,8 @@ namespace tofu
 		math::float3 rightBottomA{ rightSlope, bottomSlope, 1.0f };
 		math::float3 leftTopA{ leftSlope, topSlope, 1.0f };
 		math::float3 leftBottomA{ leftSlope, bottomSlope, 1.0f };
-		math::float3 nearA{ near, near, near };
-		math::float3 farA{ far, far, far };
+		math::float3 nearA{ nearPlane, nearPlane, nearPlane };
+		math::float3 farA{ farPlane, farPlane, farPlane };
 
 		math::float3 corners[8] =
 		{
@@ -657,7 +657,7 @@ namespace tofu
 		{
 			for (size_t j = 0; j < 6; ++j)
 			{
-				math::float3 axis = math::cross(R[i], edgeAxes[j]);
+				math::float3 axis = math::cross(R[uint32_t(i)], edgeAxes[uint32_t(j)]);
 
 				float minD = math::dot(axis, corners[0]);
 				float maxD = minD;
@@ -704,7 +704,7 @@ namespace tofu
 			{ 0.0f, -1.0f, bottomSlope }, // bottom plane
 		};
 
-		float distA[6] = { -near, far, 0, 0, 0, 0 };
+		float distA[6] = { -nearPlane, farPlane, 0, 0, 0, 0 };
 
 		math::float3 originB = frustum.origin;
 		math::quat orientationB = frustum.orientation;
@@ -719,8 +719,8 @@ namespace tofu
 		math::float3 rightBottomB{ frustum.rightSlope, frustum.bottomSlope, 1.0f };
 		math::float3 leftTopB{ frustum.leftSlope, frustum.topSlope, 1.0f };
 		math::float3 leftBottomB{ frustum.leftSlope, frustum.bottomSlope, 1.0f };
-		math::float3 nearB{ frustum.near, frustum.near, frustum.near };
-		math::float3 farB{ frustum.far, frustum.far, frustum.far };
+		math::float3 nearB{ frustum.nearPlane, frustum.nearPlane, frustum.nearPlane };
+		math::float3 farB{ frustum.farPlane, frustum.farPlane, frustum.farPlane };
 
 		rightTopB = orientationB * rightTopB;
 		rightBottomB = orientationB * rightBottomB;
@@ -796,8 +796,8 @@ namespace tofu
 		math::float3 rightBottomA{ rightSlope, bottomSlope, 1.0f };
 		math::float3 leftTopA{ leftSlope, topSlope, 1.0f };
 		math::float3 leftBottomA{ leftSlope, bottomSlope, 1.0f };
-		math::float3 nearA{ near, near, near };
-		math::float3 farA{ far, far, far };
+		math::float3 nearA{ nearPlane, nearPlane, nearPlane };
+		math::float3 farA{ farPlane, farPlane, farPlane };
 
 		math::float3 cornersA[8] =
 		{

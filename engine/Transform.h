@@ -41,6 +41,9 @@ namespace tofu
 		Transform operator * (const Transform&) const;
 		Transform operator * (const float multiplier) const;
 		Transform& operator *= (const float multiplier);
+
+		Transform Inverse() const;
+
 		math::float4x4				GetMatrix() const;
 
 	public:

@@ -57,9 +57,9 @@ struct BaseHandle
 		TF_INLINE explicit CLASS_NAME##Handle(uint32_t _id) : BaseHandle(_id, kHandleType##CLASS_NAME) {} \
 	};
 
-#define TOFU_PERFORMANCE_TIMER_ENABLED 0
-#define TOFU_DYNAMIC_INSTANCING_ENABLED 0
-#define TOFU_VSYNC 1
+#define TOFU_PERFORMANCE_TIMER_ENABLED 1
+#define TOFU_DYNAMIC_INSTANCING_ENABLED 1
+#define TOFU_VSYNC 0
 
 namespace tofu
 {
@@ -128,13 +128,13 @@ namespace tofu
 	constexpr uint32_t kMaxComputeShaders = 256;
 	constexpr uint32_t kMaxPipelineStates = 256;
 
-	constexpr uint32_t kMaxConstantBufferBindings = 14;
-	constexpr uint32_t kMaxTextureBindings = 16;
-	constexpr uint32_t kMaxSamplerBindings = 16;
+	constexpr uint32_t kMaxConstantBufferBindings = 8;
+	constexpr uint32_t kMaxTextureBindings = 8;
+	constexpr uint32_t kMaxSamplerBindings = 4;
 	constexpr uint32_t kMaxRenderTargetBindings = 8;
 
 	constexpr float kDefaultFixedDeltaTime = 0.0016f;
-	constexpr uint32_t kMaxPhysicsStepsPerFrame = 24;
+	constexpr uint32_t kMaxPhysicsStepsPerFrame = 12;
 	constexpr uint32_t kMaxLevelResources = 10240;
 
 	constexpr uint32_t kMaxGpuTimeQueries = 8;

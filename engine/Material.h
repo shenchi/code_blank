@@ -12,18 +12,27 @@ namespace tofu
 		kMaterialShadow,
 		kMaterialShadowSkinned,
 		kMaterialDeferredGeometryOpaqueInstanced,
+		kMaterialDeferredGeometryCutoffInstanced,
 		kMaterialDeferredGeometryOpaque,
 		kMaterialDeferredGeometryOpaqueSkinned,
+		kMaterialDeferredGeometryCutoff,
+		kMaterialDeferredGeometryCutoffSkinned,
 		kMaterialDeferredLightingOcclude,
 		kMaterialDeferredLightingPointLight,
 		kMaterialDeferredLightingSpotLight,
 		kMaterialDeferredLightingAmbient,
 		kMaterialDeferredTransparentInstanced,
+		kMaterialDeferredAdditiveInstanced,
 		kMaterialDeferredTransparent,
 		kMaterialDeferredTransparentSkinned,
+		kMaterialDeferredAdditive,
+		kMaterialDeferredAdditiveSkinned,
 		kMaterialPostProcessToneMapping,
 		kMaterialPostProcessExtractBright,
 		kMaterialPostProcessBlur,
+		kMaterialPostProcessGaussianBlurH,
+		kMaterialPostProcessGaussianBlurV,
+		kMaterialPostProcessBloomApply,
 		kMaterialPostProcessVolumetricFog,
 		kMaterialPostProcessAntiAliasing,
 		kMaterialOverlay,
@@ -36,12 +45,14 @@ namespace tofu
 		math::float4			color;
 		math::float4			emissionColor;
 		math::float4			texcoordParams;
+		math::float4			cutoff;
 
 		MaterialParams()
 			:
 			color{ 1, 1, 1, 1 },
 			emissionColor{ 0, 0, 0, 0 },
-			texcoordParams{ 1, 1, 0, 0 }
+			texcoordParams{ 1, 1, 0, 0 },
+			cutoff()
 		{}
 	};
 
@@ -65,6 +76,15 @@ namespace tofu
 		void SetEmissionColor(const math::float4& color) { materialParams.emissionColor = color; isDirty = true; }
 
 		void SetTextureParams(const math::float4& params) { materialParams.texcoordParams = params; isDirty = true; }
+
+		bool HasEmissionColor() const { 
+			const math::float4& c = materialParams.emissionColor;
+			return c.x + c.y + c.z > 0.0f;
+		}
+
+		void SetCutoff(float cutoff) { materialParams.cutoff.x = cutoff; isDirty = true; }
+
+		void SetAdditiveFactor(float cutoff) { materialParams.cutoff.y = cutoff; isDirty = true; }
 
 	private:
 		Material(MaterialType type = MaterialType::kMaterialNone)

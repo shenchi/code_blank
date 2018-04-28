@@ -746,7 +746,7 @@ struct ModelFile
 	FbxNodeTable					fbxNodeTable;
 
 
-	int Init(const char* filename, bool withAnim = true, bool ignoreMesh = false)
+	int Init(const char* filename, bool withAnim = true, bool ignoreMesh = false, bool ignoreBones = false)
 	{
 		importer.FreeScene();
 
@@ -783,7 +783,7 @@ struct ModelFile
 		header.NumAnimations = 0;
 
 		// gathering bone information
-		if (scene->mRootNode->mNumChildren > 0) {
+		if (scene->mRootNode->mNumChildren > 0 && !ignoreBones) {
 			// load bone hierarchy	
 			loadBoneHierarchy(scene->mRootNode, bones, boneTable, fbxNodeTable);
 			header.NumBones = static_cast<uint16_t>(bones.size());
@@ -1841,6 +1841,7 @@ int main(int argc, char* argv[])
 	if (argc < 2)
 	{
 		printf("model_converter output_file input_file1 [input_file2 ...]\n");
+		printf("model_converter -A output_file input_file1\n");
 		printf("model_converter config.json\n");
 		return 0;
 	}
@@ -1854,6 +1855,30 @@ int main(int argc, char* argv[])
 		else
 		{
 			return list_information(argv[1]);
+		}
+	}
+	else if (argc == 4 && strcmp(argv[1], "-A") == 0)
+	{
+		ModelFile model = {};
+		int err = model.Init(argv[3], false, false, true);
+		if (err) return err;
+
+		// write
+		err = model.Write(argv[2]);
+		if (err) return err;
+
+		if (model.HasTextures())
+		{
+			char directory[1024] = {};
+			char basename[1024] = {};
+
+			Directory(directory, 1024, argv[1]);
+			Basename(basename, 1024, argv[1]);
+
+			strcat_s(directory, 1024, basename);
+
+			err = model.WriteTextures(directory);
+			if (err) return err;
 		}
 	}
 	else

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Component.h"
+#include "Collision.h"
 
 namespace tofu
 {
@@ -20,7 +21,8 @@ namespace tofu
 			entity(e),
 			numMaterials(0),
 			model(nullptr),
-			materials()
+			materials(),
+			bounds()
 		{}
 
 		void SetModel(Model* model) { this->model = model; }
@@ -71,7 +73,7 @@ namespace tofu
 		uint32_t			numMaterials;
 		Model*				model;
 		Material*			materials[kMaxMeshesPerModel];
-
+		BoundingBox			bounds;
 	};
 
 	typedef Component<RenderingComponentData> RenderingComponent;
