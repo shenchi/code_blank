@@ -223,9 +223,20 @@ Player::Player(CharacterDetails details, void* comp)
 			TextureHandle diffuse = RenderingSystem::instance()->CreateTexture(name);
 			name = details.normalMapName.c_str();
 			TextureHandle normalMap = RenderingSystem::instance()->CreateTexture(name);
+			/*name = details.emissiveName.c_str();
+			TextureHandle emissiveMap = RenderingSystem::instance()->CreateTexture(name);
+			name = details.glossName.c_str();
+			TextureHandle glossMap = RenderingSystem::instance()->CreateTexture(name);
+			name = details.heightName.c_str();
+			TextureHandle heightMap = RenderingSystem::instance()->CreateTexture(name);
+			name = details.specularName.c_str();
+			TextureHandle specularMap = RenderingSystem::instance()->CreateTexture(name);*/
 			
 			material->SetTexture(diffuse);
 			material->SetNormalMap(normalMap);
+			//material->SetEmissionMap(emissiveMap);
+			//material->SetMetallicGlossMap(glossMap);
+			
 
 			r->SetMaterial(material);
 			r->SetModel(model);

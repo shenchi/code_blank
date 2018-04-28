@@ -1,8 +1,8 @@
 [
 	{
-		"target": "archer.model",
-		"source": "archer_idle.fbx",
-		"avatar": "archer_avatar.json",
+		"target": "player.model",
+		"source": "MainCharacter.fbx",
+		"avatar": "mixamo_avatar.json",
 		"animations":
 		[
 			{

@@ -111,6 +111,10 @@ struct CharacterDetails
 	std::string			modelName;
 	std::string			diffuseName;
 	std::string			normalMapName;
+	std::string			emissiveName;
+	std::string			glossName;
+	std::string			heightName;
+	std::string			specularName;
 	std::string			tag;
 	tofu::math::float3	position;
 	tofu::math::float3	scale;
