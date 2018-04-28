@@ -507,7 +507,11 @@ uint32_t Game::LoadScene(sceneType num)
 			// Setup the Scene
 			CHECKED(sceneMgr.Init());
 
+			//CHECKED(sceneMgr.LoadScene("assets/scenes/Tutorial.json"));
 			CHECKED(sceneMgr.LoadScene("assets/scenes/MainLevel.json"));
+
+
+
 			//CHECKED(sceneMgr.LoadScene("assets/scenes/Engine_Tut.json"));
 			//CHECKED(sceneMgr.LoadScene("assets/scenes/OptiTest.json"));
 			//CHECKED(sceneMgr.LoadScene("assets/scenes/OptiTest_Batched.json"));
