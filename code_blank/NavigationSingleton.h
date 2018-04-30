@@ -19,7 +19,7 @@ public:
 	PathingNode* GetCurrentNode(tofu::math::float3);
 	std::vector<PathingNode*> GetPath(PathingNode*, PathingNode*);
 	std::vector<PathingNode*> RetracePath(PathingNode*, PathingNode*);
-	int NavigationSingleton::GetDistance(PathingNode*, PathingNode*);
+	int GetDistance(PathingNode*, PathingNode*);
 	bool GetCanCalculate();
 
 private:

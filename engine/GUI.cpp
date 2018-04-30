@@ -181,7 +181,7 @@ namespace tofu
 	{
 		for (uint32_t i = 0; i < kMaxGUILayers; i++)
 		{
-			layers[i] = {};
+			layers[i] = GUILayer();
 		}
 
 		fontTexData = nullptr;
@@ -367,7 +367,7 @@ namespace tofu
 	{
 		if (layer >= kMaxGUILayers) return;
 
-		layers[layer] = {};
+		layers[layer] = GUILayer();
 		layers[layer].tex = tex;
 		
 		constexpr uint32_t vertexSize = sizeof(float) * 9;

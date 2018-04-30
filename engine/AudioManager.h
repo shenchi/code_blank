@@ -2,6 +2,9 @@
 
 #include "Common.h"
 #include "Module.h"
+
+#ifdef _WIN32
+
 #include <memory>
 
 namespace DirectX
@@ -48,3 +51,33 @@ namespace tofu {
 		std::unique_ptr<DirectX::AudioEngine> audEngine;
 	};
 }
+
+#else
+
+namespace tofu {
+
+	class AudioSource {
+	public:
+		AudioSource(char* file, float volumn = 1.0f) {}
+
+		void Play() {}
+		void Stop() {}
+
+		void PlayOneShot() {}
+	};
+
+	class AudioManager : public Module
+	{
+		friend class AudioSource;
+		SINGLETON_DECL(AudioManager)
+
+	public:
+		AudioManager() { _instance = this; }
+
+		int32_t Init() override { return kOK; }
+		int32_t Shutdown() override { return kOK; }
+		int32_t Update() override { return kOK; }
+	};
+}
+
+#endif
