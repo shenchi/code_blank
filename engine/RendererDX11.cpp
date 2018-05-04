@@ -1216,6 +1216,7 @@ namespace tofu
 				assert(nullptr == textures[id].tex);
 
 				uint32_t bindingFlags = params->bindingFlags & (kBindingShaderResource | kBindingRenderTarget | kBindingDepthStencil | kBindingUnorderedAccess);
+				bool dynamic = false; // (params->dynamic == 1);
 
 				ID3D11Texture2D* tex2d = nullptr;
 				ID3D11Texture3D* tex3d = nullptr;
@@ -1231,9 +1232,9 @@ namespace tofu
 						reinterpret_cast<uint8_t*>(params->data),
 						static_cast<size_t>(params->width),
 						0u,
-						(params->dynamic == 1 ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT),
+						(dynamic ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT),
 						bindingFlags,
-						(params->dynamic == 1 ? D3D11_CPU_ACCESS_WRITE : 0U),
+						(dynamic ? D3D11_CPU_ACCESS_WRITE : 0U),
 						0u,
 						false,
 						&(res),
@@ -1330,8 +1331,8 @@ namespace tofu
 						params->depth,
 						(params->mipmaps == 0 ? 1U : params->mipmaps),
 						bindingFlags,
-						(params->dynamic == 1 ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT),
-						(params->dynamic == 1 ? D3D11_CPU_ACCESS_WRITE : 0U),
+						(dynamic ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT),
+						(dynamic ? D3D11_CPU_ACCESS_WRITE : 0U),
 						0U
 					);
 
@@ -1368,8 +1369,8 @@ namespace tofu
 						params->arraySize,
 						mipmapLevels,
 						bindingFlags,
-						(params->dynamic == 1 ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT),
-						(params->dynamic == 1 ? D3D11_CPU_ACCESS_WRITE : 0U),
+						(dynamic ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT),
+						(dynamic ? D3D11_CPU_ACCESS_WRITE : 0U),
 						1U,
 						0U,
 						(params->cubeMap == 1 ? D3D11_RESOURCE_MISC_TEXTURECUBE : 0U) | (mipmapLevels > 1 ? D3D11_RESOURCE_MISC_GENERATE_MIPS : 0U)
@@ -1502,7 +1503,7 @@ namespace tofu
 					D3D11_TEXTURE2D_DESC desc = {};
 					tex2d->GetDesc(&desc);
 
-					textures[id].dynamic = params->dynamic;
+					textures[id].dynamic = dynamic ? 1 : 0;
 					textures[id].cubeMap = ((desc.MiscFlags & D3D11_RESOURCE_MISC_TEXTURECUBE) != 0 ? 1 : params->cubeMap);
 					textures[id].format = params->isFile ? kFormatAuto : params->format;
 					textures[id].arraySize = params->isSlice ? params->arraySize : desc.ArraySize;
@@ -1518,7 +1519,7 @@ namespace tofu
 					D3D11_TEXTURE3D_DESC desc = {};
 					tex3d->GetDesc(&desc);
 
-					textures[id].dynamic = params->dynamic;
+					textures[id].dynamic = dynamic ? 1 : 0;
 					textures[id].cubeMap = 0;
 					textures[id].format = params->format;
 					textures[id].arraySize = 1;

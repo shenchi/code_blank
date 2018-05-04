@@ -3,6 +3,7 @@
 #include "MemoryAllocator.h"
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 
 namespace tofu
 {
@@ -71,5 +72,13 @@ namespace tofu
 	int32_t FileIO::ReadFile(const char* file, bool isText, size_t alignment, void** data, size_t* size)
 	{
 		return ReadFile(file, isText, alignment, MemoryAllocator::GetCurrentFrameAllocNo(), data, size);
+	}
+
+	void FileIO::ConvertPath(char* output, size_t size, const char* input)
+	{
+		if (strlen(input) + 1 > size)
+			return;
+
+		strcpy_s(output, size, input);
 	}
 }

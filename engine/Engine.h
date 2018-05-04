@@ -40,6 +40,10 @@ namespace tofu
 
 		int32_t UnloadLevel();
 
+		void SetPhysicsSimulationPaused(bool paused) { physicsSimulationPaused = paused; }
+
+		bool IsPhysicsSimulationPaused() const { return physicsSimulationPaused; }
+
 	private:
 
 		int32_t Shutdown();
@@ -61,5 +65,7 @@ namespace tofu
 		int64_t				startTimeCounter;
 		int64_t				lastTimeCounter;
 		int64_t				currentTimeCounter;
+
+		bool				physicsSimulationPaused;
 	};
 }

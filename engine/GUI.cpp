@@ -146,7 +146,9 @@ namespace tofu
 		if (nullptr == fonsContext)
 			return kErrUnknown;
 
-		font = fonsAddFont(fonsContext, "Conthrax Sb", "assets/conthrax-sb.ttf");
+		char path[1024] = {};
+		FileIO::ConvertPath(path, 1024, "assets/conthrax-sb.ttf");
+		font = fonsAddFont(fonsContext, "Conthrax Sb", path);
 		//font = fonsAddFont(fonsContext, "Arial Regular", "C:\\Windows\\Fonts\\arial.ttf");
 		//font = fonsAddFont(fonsContext, "sans", "D:\\DroidSerif-Regular.ttf");
 		if (font == FONS_INVALID) {
@@ -206,6 +208,7 @@ namespace tofu
 			{
 				CreateTextureParams* params = MemoryAllocator::FrameAlloc<CreateTextureParams>();
 				params->InitAsTexture2D(fontTex, fontTexWidth, fontTexHeight, kFormatR8Unorm);
+				params->dynamic = 1;
 
 				cmdBuf->Add(RendererCommand::kCommandCreateTexture, params);
 			}

@@ -39,7 +39,8 @@ namespace tofu
 		timeCounterFreq(0),
 		startTimeCounter(0),
 		lastTimeCounter(0),
-		currentTimeCounter(0)
+		currentTimeCounter(0),
+		physicsSimulationPaused(false)
 	{
 		assert(nullptr == _instance);
 		_instance = this;
@@ -177,19 +178,27 @@ namespace tofu
 			float phyTime = Time::PhysicsTotalTime;
 			uint32_t count = 0;
 
-			while (phyTime + Time::FixedDeltaTime <= Time::TotalTime)
+			if (physicsSimulationPaused)
 			{
-				CHECKED(physicsSystem->Update());
-				phyTime += Time::FixedDeltaTime;
+				phyTime += Time::DeltaTime;
 				Time::PhysicsTotalTime = phyTime;
-
-				for (uint32_t i = 0; i < numUserModules; i++)
+			}
+			else
+			{
+				while (phyTime + Time::FixedDeltaTime <= Time::TotalTime)
 				{
-					CHECKED(userModules[i]->FixedUpdate());
-				}
+					CHECKED(physicsSystem->Update());
+					phyTime += Time::FixedDeltaTime;
+					Time::PhysicsTotalTime = phyTime;
 
-				count++;
-				//if (count >= kMaxPhysicsStepsPerFrame) break;
+					for (uint32_t i = 0; i < numUserModules; i++)
+					{
+						CHECKED(userModules[i]->FixedUpdate());
+					}
+
+					count++;
+					//if (count >= kMaxPhysicsStepsPerFrame) break;
+				}
 			}
 
 			CHECKED(physicsSystem->PostUpdate());

@@ -12,5 +12,7 @@ namespace tofu
 
 		// read a file to a new allocated memory from current frame allocator
 		static int32_t ReadFile(const char* file, bool isText, size_t alignment, void** data, size_t* size);
+
+		static void ConvertPath(char* output, size_t size, const char* input);
 	};
 }
