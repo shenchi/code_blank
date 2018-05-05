@@ -4,6 +4,7 @@
 using namespace tofu;
 
 CombatManager::CombatManager(bool _isPlayer, void* _companion, void* owner, CombatManagerDetails details)
+	: CombatManager()
 {
 	isPlayer = _isPlayer;
 

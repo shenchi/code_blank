@@ -10,6 +10,8 @@ class Enemy;
 
 class CombatManager
 {
+private:
+	CombatManager() = default;
 public:
 	CombatManager(bool, void*, void*, CombatManagerDetails);
 	~CombatManager();
