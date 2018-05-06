@@ -39,7 +39,7 @@ int32_t Game::Init()
 
 	input = InputSystem::instance();
 
-	debugMode = false;
+	debugMode = true;
 
 	if (!debugMode)
 	{
@@ -68,7 +68,7 @@ int32_t Game::Init()
 		
 	// Load the initial scene (Defalut is Intro)
 	// Load other scenes here for fast testing
-	currentScene = intro;
+	currentScene = level;
 
 	//PlayBGM(currentScene);
 
@@ -558,7 +558,7 @@ uint32_t Game::LoadScene(sceneType num)
 
 			if (debugMode)
 			{
-				DebugPlayer = new Utility::GhostPlayer(tofu::math::float3{ -80.0f, 13.0f, 887.0f });
+				DebugPlayer = new Utility::GhostPlayer(sceneMgr.GetPlayerSpawnPoint());
 			}
 			else
 			{
