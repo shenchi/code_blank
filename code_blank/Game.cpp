@@ -970,7 +970,8 @@ UIResult Game::LoadUI(sceneType num)
 				gui->Text(2, -720, -90, 36, "Movement", math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignTop);
 				gui->Text(2, -420, 115, 36, "Menu", math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignTop);
 				gui->Text(2, -260, 115, 36, "Camera", math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignTop);
-				gui->Text(2, -180, -275, 36, "RT - Sprint", math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignTop);
+				gui->Text(2, -140, -275, 36, "RT - Sprint", math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignTop);
+				gui->Text(2, -460, -235, 36, "LB - Vision Hack", math::float4(0, 1, 1, 1), kTextAlignCenter | kTextAlignTop);
 				gui->Text(2, -75, -135, 36, "Sword", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
 				gui->Text(2, -75, -90, 36, "Cancel / Dodge", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
 				gui->Text(2, -75, -50, 36, "Confirm / Jump", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
@@ -987,9 +988,11 @@ UIResult Game::LoadUI(sceneType num)
 				gui->Text(2, 350, -50, 36, "Sprint - Left Shift", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
 				gui->Text(2, 350, 0, 36, "Sword - E", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
 				gui->Text(2, 350, 50, 36, "Dodge - Right Mouse Button", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
-				gui->Text(2, 350, 100, 36, "Jump - Space", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
-				gui->Text(2, 350, 150, 36, "Attack - Left Mouse Button", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
-				gui->Text(2, 350, 200, 36, "Exit - Escape", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
+				gui->Text(2, 350, 100, 36, "Vision Hack - V", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
+				gui->Text(2, 350, 150, 36, "Jump - Space", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
+				gui->Text(2, 350, 200, 36, "Attack - Left Mouse Button", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
+				gui->Text(2, 350, 250, 36, "Pause - P", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
+				gui->Text(2, 350, 300, 36, "Exit - Escape", math::float4(0, 1, 1, 1), kTextAlignLeft | kTextAlignTop);
 
 				gui->SetupLayer(3, uiButTex);
 
